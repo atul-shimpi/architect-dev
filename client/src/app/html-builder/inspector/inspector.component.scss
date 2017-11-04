@@ -1,0 +1,16 @@
+inspector {
+  display: flex;
+  position: relative;
+  box-shadow: 1px 0 2px rgba(0,0,0,.5);
+
+  > .inspector-nav {
+    width: 70px;
+    height: 100%;
+  }
+
+  > .inspector-content {
+    flex: 1 1 auto;
+    height: 100%;
+    padding: 15px;
+  }
+}

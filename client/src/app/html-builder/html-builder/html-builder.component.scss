@@ -1,0 +1,18 @@
+@import "../../../scss/variables";
+
+html-builder {
+  display: flex;
+  height: 100%;
+  width: 100%;
+
+  > inspector {
+    flex: 0 0 $inspector-width;
+    width: $inspector-width;
+    height: 100%;
+  }
+
+  > live-preview {
+    flex: 1 1 auto;
+    height: 100%;
+  }
+}

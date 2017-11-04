@@ -1,0 +1,6 @@
+{
+  "/secure": {
+    "target": "http://localhost/architect3/server",
+    "secure": false
+  }
+}

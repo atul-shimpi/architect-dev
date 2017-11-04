@@ -1,0 +1,50 @@
+@import "../../../scss/variables";
+
+live-preview {
+  display: block;
+  position: relative;
+  z-index: 2;
+
+  > iframe {
+    width: 100%;
+    height: 100%;
+  }
+
+  > .highlights {
+    position: absolute;
+
+    > .hover-box {
+      position: absolute;
+      top: 0;
+      left: 0;
+      border: 1px solid $hover-box-bg-color;
+      color: $hover-box-actions-color;
+      pointer-events: none;
+
+      .hover-box-actions {
+        position: absolute;
+        top: -19px; //overlay actions on top of hover box slightly
+        left: 0;
+        height: 20px;
+        padding: 1px 5px 2px;
+        overflow: hidden;
+        user-select: none;
+        white-space: nowrap;
+        pointer-events: all;
+
+        > .drag-handle {
+          cursor: move;
+        }
+      }
+    }
+  }
+  
+  > .drag-overlay {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
