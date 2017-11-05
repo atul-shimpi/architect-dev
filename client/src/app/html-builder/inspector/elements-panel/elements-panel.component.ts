@@ -15,6 +15,7 @@ export class ElementsPanelComponent implements OnInit {
     constructor(private elements: Elements) {}
 
     ngOnInit() {
+
     }
 
     public getElementsForCategory(name: string) {

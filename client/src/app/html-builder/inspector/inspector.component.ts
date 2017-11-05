@@ -1,4 +1,5 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Inspector} from "./inspector.service";
 
 @Component({
     selector: 'inspector',
@@ -8,10 +9,11 @@ import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 })
 export class InspectorComponent implements OnInit {
 
-    constructor() {
+    constructor(public inspector: Inspector) {
     }
 
     ngOnInit() {
     }
+
 
 }

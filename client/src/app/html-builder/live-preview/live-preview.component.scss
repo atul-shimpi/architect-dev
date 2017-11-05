@@ -8,12 +8,13 @@ live-preview {
   > iframe {
     width: 100%;
     height: 100%;
+    border: none;
   }
 
   > .highlights {
     position: absolute;
 
-    > .hover-box {
+    > .context-box {
       position: absolute;
       top: 0;
       left: 0;
@@ -21,19 +22,32 @@ live-preview {
       color: $hover-box-actions-color;
       pointer-events: none;
 
-      .hover-box-actions {
+      .context-box-actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         position: absolute;
-        top: -19px; //overlay actions on top of hover box slightly
-        left: 0;
-        height: 20px;
-        padding: 1px 5px 2px;
+        top: -24px; //overlay actions on top of hover box slightly
+        left: -1px;
+        height: 25px;
+        padding: 5px;
         overflow: hidden;
         user-select: none;
         white-space: nowrap;
         pointer-events: all;
+        background-color: $hover-box-bg-color;
 
         > .drag-handle {
           cursor: move;
+
+          > svg-icon {
+            display: block;
+          }
+        }
+
+        > .column-name {
+          text-transform: uppercase;
+          font-size: 1.4rem;
         }
       }
     }

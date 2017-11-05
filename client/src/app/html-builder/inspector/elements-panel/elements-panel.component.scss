@@ -6,12 +6,16 @@ elements-panel {
   .category {
     margin-bottom: 5px;
     background-color: transparent;
-    color: $inspector-text-color-200;
+    color: $inspector-text-color-300;
 
     &.mat-expanded {
       > .mat-expansion-panel-header {
         background-color: $inspector-bg-color-100;
       }
+    }
+
+    &.mat-expansion-panel-spacing {
+      margin: 0;
     }
 
     &:not(.mat-expanded) > .mat-expansion-panel-header:not([aria-disabled=true]):hover {
@@ -40,7 +44,7 @@ elements-panel {
     }
 
     .mat-expansion-panel-body {
-      margin: 5px 0 0;
+      margin: 6px 0 3px;
       background-color: transparent;
     }
   }
@@ -60,19 +64,22 @@ elements-panel {
       height: 85px;
       background-color: $inspector-bg-color-200;
       border-radius: 2px;
-      
+      margin-bottom: 3px;
+
       > svg-icon {
         display: block;
         width: 26px;
         height: 26px;
-        color: $inspector-text-color-300;
+        color: $inspector-text-color-400;
       }
 
       > .name {
         text-transform: uppercase;
+        text-align: center;
         font-size: 1rem;
         color: $inspector-text-color-100;
         margin-top: 8px;
+        padding: 0 8px;
       }
     }
   }

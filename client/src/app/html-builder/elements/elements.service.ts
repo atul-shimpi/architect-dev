@@ -25,8 +25,6 @@ export class Elements {
 
     /**
      * Array of special cases conditions when selecting a DOM node.
-     *
-     * @type {Array}
      */
     private specialCases = [
 
@@ -52,8 +50,6 @@ export class Elements {
         },
     ];
 
-    private loaded: false;
-
     public getAll() {
         return this.elements;
     }
@@ -62,8 +58,8 @@ export class Elements {
         return this.elements[name];
     }
 
-    public checkForSpecialCases(node) {
-        if ( ! node ) { return false };
+    public checkForSpecialCases(node: HTMLElement): HTMLElement|boolean {
+        if ( ! node ) return false;
 
         //cache some needed node properties
         let parent = node.parentNode,
@@ -72,57 +68,49 @@ export class Elements {
 
         //test node against every special case until the end or until we find a match
         for (let i = 0; i < this.specialCases.length; i++) {
-            let check = this.specialCases[i](node, parent, classes, parentClasses);
-
-            if (check) { return check; }
+            const check = this.specialCases[i](node, parent, classes, parentClasses);
+            if (check) return check;
         }
     }
 
     /**
-     * Match given DOM node to an element in elements repository.
+     * Match specified DOM node to an element in the repository.
      */
-    public match(node: HTMLElement, type) {
+    public match(node: HTMLElement, type = null, matchParent = true) {
+        if ( ! node || ! node.nodeName) return false;
 
-        if ( ! node || ! node.nodeName) {
-            return false;
-        }
+        const isSpecialCase = this.checkForSpecialCases(node),
+              nodeName = node.nodeName.toLowerCase();
 
-        let check = this.checkForSpecialCases(node);
-
-        if (check) {
+        if (isSpecialCase) {
             if (type == 'hover') {
                 //$rootScope.hover.node = check;
             } else if (type == 'select') {
                 //$rootScope.selected.node = check;
             }
-            node = check;
+            node = isSpecialCase as HTMLElement;
         }
 
-        for (let n in this.elements) {
-            let element = this.elements[n];
+        for (let i = 0; i < this.elements.length; i++) {
+            let element = this.elements[i];
 
             //find by name attribute
-            if (node.dataset.name) {
+            if (node.dataset && node.dataset.name) {
                 return this.getElement(node.dataset.name);
             }
 
             //find by input type
-            // if (node.type) {
-            //     let type = node.nodeName.toLowerCase()+'='+node.type;
-            //
-            //     for (let i = element.nodes.length - 1; i >= 0; i--) {
-            //         if (element.nodes[i] == type) {
-            //             return element;
-            //         }
-            //     };
-            // }
+            if (node['type']) {
+                const type = nodeName+'='+node['type'];
 
-            //find by node name
-            let nodeName = node.nodeName.toLowerCase();
-            for (let i = element.nodes.length - 1; i >= 0; i--) {
-                if (element.nodes[i] == nodeName) {
+                if (element.nodes.find(nodeName => nodeName == type)) {
                     return element;
                 }
+            }
+
+            //find by node name
+            if (element.nodes.indexOf(nodeName) > -1) {
+                return element;
             }
 
             //find by class
@@ -132,7 +120,7 @@ export class Elements {
                 for (let i = 0; i < classes.length; i++) {
 
                     //if element has no class we'll bail
-                    if ( ! element.class) continue;
+                    if (!element.class) continue;
 
                     //if element and passed in node classes match straight
                     //up we'll just return current element
@@ -145,37 +133,34 @@ export class Elements {
                     if (element.class.indexOf('*') > -1 && classes[i].match(new RegExp(element.class.replace('*', '.*')))) {
                         return element;
                     }
-                };
+                }
             }
-        };
+        }
 
-        //if we've got no matches by this point and we've got
-        //a true flag, will try to match this nodes parent instead
+        // if we've got no matches by this point and we've got
+        // a true flag, will try to match this nodes parent instead
+        if (matchParent) {
+            return this.match(node.parentNode as HTMLElement, type, true);
 
-        // if (false) {//if (matchParent) {
-        //     return this.match(node.parentNode, type, true);
-        //
-        //     //if no true flag passed we'll just return a generic object
-        // } else {
-        //     let className = node.className.split(/\s+/)[0];
-        //
-        //     if (className) {
-        //         defaults.name = className.replace('-', ' ');
-        //     } else {
-        //         defaults.name = node.nodeName.toLowerCase();
-        //     }
-        //
-        //     return defaults;
-        // }
+        //if no true flag passed we'll just return a generic object
+        } else {
+            let className = node.className.split(/\s+/)[0];
+            let defaults = Object.assign({}, this.defaults);
+
+            if (className) {
+                defaults.name = className.replace('-', ' ');
+            } else {
+                defaults.name = node.nodeName.toLowerCase();
+            }
+
+            return defaults;
+        }
     }
 
     /**
      * Register a new element with the builder.
-     *
-     * @param {object} config
      */
     public addElement(config) {
-
         //merge defaults and passed in element config objects
         const el = Object.assign({}, this.defaults, config);
 
@@ -185,17 +170,6 @@ export class Elements {
 
         //push newly created element to all elements object
         this.elements.push(el);
-
-        //create a draggable from new element and append it to elements container in the DOM
-        // if (el.canDrag) {
-        //     let description = $translate.instant(el.camelName+'Desc'),
-        //
-        //         //compile list item html with description or without
-        //         html = '<li data-name="'+el.name+'" data-frameworks="'+el.frameworks.toString()+'">'+
-        //             '<div class="el-list-item"><div class="icon"><i class="icon icon-'+el.icon+'"></i></div><div class="text">'+$translate.instant(el.camelName)+'</div><p class="el-description">'+(description == el.camelName+'Desc' ? '' : description)+'</p></li>';
-        //
-        //     draggable.create($(html).appendTo('#'+el.category+' .list-unstyled'), el);
-        // }
     }
 
 

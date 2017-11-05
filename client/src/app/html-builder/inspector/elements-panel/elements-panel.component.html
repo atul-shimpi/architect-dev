@@ -1,6 +1,6 @@
 <section class="categories">
    <mat-accordion>
-       <mat-expansion-panel class="category mat-elevation-z" *ngFor="let category of categories">
+       <mat-expansion-panel class="category mat-elevation-z" [expanded]="index === 0" *ngFor="let category of categories; index as index;">
            <mat-expansion-panel-header>
                <mat-panel-title>{{category}}</mat-panel-title>
            </mat-expansion-panel-header>

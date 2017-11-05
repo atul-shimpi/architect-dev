@@ -1,8 +1,19 @@
 <div class="highlights">
-    <div class="hover-box hover-box-border-color" #hoverBox>
-        <div class="hover-box-actions hover-box-bg-color">
-            <div class="drag-handle" #dragHandle>Drag</div>
-            <div class="column-name">Heading</div>
+    <div class="hover-box context-box" #hoverBox>
+        <div class="context-box-actions">
+            <div class="drag-handle" #dragHandle>
+                <svg-icon name="drag-handle"></svg-icon>
+            </div>
+            <span class="column-name">{{this.getElementDisplayName('hover')}}</span>
+        </div>
+    </div>
+
+    <div class="selected-box context-box" #selectedBox>
+        <div class="context-box-actions">
+            <div class="drag-handle" #dragHandle>
+                <svg-icon name="drag-handle"></svg-icon>
+            </div>
+            <span class="column-name">{{this.getElementDisplayName('selected')}}</span>
         </div>
     </div>
 </div>

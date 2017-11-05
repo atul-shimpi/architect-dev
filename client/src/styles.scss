@@ -1,6 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import "~vebto-client/scss/global";
+@import "~vebto-client/scss/buttons";
+@import "~vebto-client/scss/input";
 @import "scss/colors";
-@import "scss/global";
 

@@ -1,11 +1,13 @@
 import {ElementRef, Injectable, NgZone, Renderer2} from '@angular/core';
 import {Template} from "../../types/models/Template";
 import {ParsedTemplate} from "../templates/parsed-template.service";
+import {Elements} from "./elements/elements.service";
+import {Inspector} from "./inspector/inspector.service";
 
 @Injectable()
 export class LivePreview {
     public container: HTMLElement;
-    public isWebkit: boolean;
+    public isWebkit = true;
     dragging: any;
 
     public hover = {
@@ -18,56 +20,64 @@ export class LivePreview {
         element: null,
         node: null,
         previous: null,
+        path: [],
+        parent: null,
+        parentContents: null,
+        locked: false,
+        isImage: false,
+        hasInlineStyles: false,
     };
 
     private renderer: Renderer2;
 
     private hoverBox: HTMLElement;
+    private selectedBox: HTMLElement;
 
     public document: Document;
 
-    private iframe: HTMLElement;
+    private iframe: HTMLIFrameElement;
 
-    private frameOffset = {
-        left: 300,
-    };
+    private resizing = false;
 
-    constructor(private zone: NgZone) {
+    private selecting = false;
+
+    private rowEditorOpen = false;
+
+    constructor(private zone: NgZone, private elements: Elements, private inspector: Inspector) {
     }
 
-    public init(renderer: Renderer2, iframe: ElementRef, container: ElementRef, hoverBox: ElementRef) {
+    public init(renderer: Renderer2, iframe: ElementRef, container: ElementRef, hoverBox: ElementRef, selectedBox: ElementRef) {
         this.document = iframe.nativeElement.contentWindow.document;
         this.iframe = iframe.nativeElement;
         this.hoverBox = hoverBox.nativeElement;
+        this.selectedBox = selectedBox.nativeElement;
         this.renderer = renderer;
         this.container = container.nativeElement;
 
-        this.zone.runOutsideAngular(() => {
-            this.listenForHover();
-
-            this.renderer.listen(this.document.documentElement, 'scroll', () => {
-                console.log('x');
-                this.renderer.addClass(this.hoverBox, 'hidden');
-            });
-        });
-
-
+        this.bindToIframeEvents();
 
         // this.http.get('templates').subscribe(response => {
         //
         // });
     }
 
+    private bindToIframeEvents() {
+        this.zone.runOutsideAngular(() => {
+            this.listenForHover();
+            this.listenForClick();
+
+            this.document.addEventListener('scroll', e => {
+                this.renderer.addClass(this.hoverBox, 'hidden');
+                if (this.selected.node) this.repositionBox('selected');
+            }, true);
+        });
+    }
+
     public applyTemplate(template: Template) {
         const parsedTemplate = new ParsedTemplate(template);
 
         this.iframe.onload = e => {
-            this.zone.runOutsideAngular(() => this.listenForHover());
-
-            this.renderer.listen(this.document.documentElement, 'scroll', () => {
-                console.log('x');
-                this.renderer.addClass(this.hoverBox, 'hidden');
-            });
+            this.bindToIframeEvents();
         };
 
         this.document.open();
@@ -92,7 +102,7 @@ export class LivePreview {
             if (this.dragging) return;
 
             const node = this.getElementFromPoint(e.pageX, e.pageY - this.document.documentElement.scrollTop);
-            if ( ! node) return;
+            if ( ! node || node === this.hover.node) return;
 
             this.hover.previous = this.hover.node;
 
@@ -105,40 +115,134 @@ export class LivePreview {
             if (node.className.indexOf('ui-resizable-handle') == -1) {
                 this.hover.node = node;
 
-                //this.hover.element = elements.match(this.hover.node, 'hover', true);
+                this.hover.element = this.elements.match(this.hover.node, 'hover', true);
 
                 //only reposition hover box during drag on webkit browsers
                 //as it will cause fairly significant lag on IE and Firefox
                 if ( ! this.dragging || this.isWebkit) {
                     this.repositionBox('hover', this.hover.node, this.hover.element);
                 }
+
+                this.zone.run(() => {});
             }
         });
     }
 
-    public repositionBox(name, node?, el?) {
+    private listenForClick() {
+        this.renderer.listen(this.document.documentElement, 'click', e => {
+            e.preventDefault();
+
+            //hide context menu
+            //this.contextMenu.hide();
+
+            this.iframe.contentWindow.focus();
+
+            if (this.resizing || this.selected.node == e.target) return true;
+
+            let node = e.target;
+
+            if (node.hasAttribute('contenteditable') || node.parentNode.hasAttribute('contenteditable')) {
+                return;
+            }
+
+            let editable = this.iframe.contentDocument.body.querySelectorAll('[contenteditable]');
+
+            for (let i = editable.length - 1; i >= 0; i--) {
+                editable[i].removeAttribute('contenteditable');
+                //editable[i].blur();
+            }
+
+            //hide wysiwyg toolbar when clicked outside it
+            // if ( ! this.textToolbar.hasClass('hidden')) {
+            //     this.textToolbar.addClass('hidden');
+            //     this.$emit('builder.html.changed');
+            // }
+
+            //hide linker
+            //this.linker.addClass('hidden');
+
+            //hide colorpicker when clicked outside it and if it exists
+            // if (this.colorPickerCont) {
+            //     this.colorPickerCont.addClass('hidden');
+            // }
+
+            if (node.nodeName !== 'HTML') {
+                this.zone.run(() => this.selectNode(node));
+            }
+        })
+    }
+
+    /**
+     * Select specified node as active one in the builder.
+     */
+    public selectNode(node: HTMLElement|number) {
+        if (this.rowEditorOpen) { return true; }
+
+        this.selecting = true;
+
+        this.selected.previous = this.selected.node;
+
+        //if we get passed an integer instead of a dom node we'll
+        //select a node at that index in the currently stored path
+        if (typeof node === 'number') {
+            node = this.selected.path[node].node;
+        }
+
+        //if we haven't already stored a reference to passed in node, do it now
+        if (node && this.selected.node !== node) {
+            this.selected.node = node;
+        }
+
+        //cache some more references about the node for later use
+        this.selected.element = this.elements.match(this.selected.node, 'select', true);
+        this.selected.parent = this.selected.node.parentNode;
+        this.selected.parentContents = this.selected.parent.childNodes;
+
+        //position select box on top of the newly selected node
+        this.repositionBox('selected');
+
+        //whether or not the new node is locked
+        this.selected.locked = this.selected.node.className.indexOf('locked') > -1;
+        this.selected.isImage = this.selected.node.nodeName == 'IMG' &&
+            this.selected.node.className.indexOf('preview-node') === -1;
+
+        //create an array from all parents of this node
+        let el = this.selected.node;
+        this.selected.path = [];
+        while (el.nodeType === Node.ELEMENT_NODE && el.nodeName.toLowerCase() !== 'body') {
+            this.selected.path.unshift({node: el, name: this.elements.match(el).name});
+            el = el.parentNode;
+        }
+
+        //whether or not this node is a column
+        //this.selected.isColumn = grid.isColumn(this.selected.node);
+
+        this.selected.hasInlineStyles = this.selected.node.style[0];
+
+        this.inspector.togglePanel('inspector');
+
+        setTimeout(() => {this.selecting = false}, 200);
+    };
+
+    public repositionBox(name: 'hover'|'selected', node?, el?) {
 
         //hide context boxes depending on user settings
         // if (! settings.get('enable'+name.ucFirst()+'Box')) {
         //     return $scope[name+'Box'].hide();
         // }
 
-        if ( ! node) {
-            node = this.selected.node;
-        }
+        if ( ! node) node = this[name].node;
 
         if (node && node.nodeName == 'BODY') {
             return this.renderer.addClass(this[name+'Box'], 'hidden');
         }
 
-        if (! el) {
-            el = this.selected.element;
-        }
+        if ( ! el) el = this[name].element;
 
-        //if (! el) return true;
+        if ( ! el) return true;
 
-        if (name == 'select') {
-            return this.renderer.addClass(this.hoverBox, 'hidden');
+        if (name === 'selected') {
+            this.renderer.addClass(this.hoverBox, 'hidden');
         }
 
         const rect = node.getBoundingClientRect();
@@ -152,13 +256,6 @@ export class LivePreview {
             this.renderer.setStyle(this[name+'Box'], 'width', rect.width+'px');
 
             //this[name+'BoxTag'].textContent = $translate.instant(el.name);
-
-            //make sure boxes don't go over the breadcrumbs
-            // if (rect.top + 39 < 55) {
-            //     this[name+'BoxActions'].style.top = 0;
-            // } else {
-            //     this[name+'BoxActions'].style.top = '-27px';
-            // }
 
             this.renderer.removeClass(this[name+'Box'], 'hidden');
         }

@@ -131,7 +131,7 @@ export class PreviewDragAndDropDirective implements OnInit {
                     }
 
                     //reposition context boxes
-                    return this.livePreview.repositionBox('select');
+                    return this.livePreview.repositionBox('selected');
                 }
             }
         }

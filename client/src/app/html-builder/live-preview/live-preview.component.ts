@@ -11,15 +11,27 @@ import {LivePreview} from "../live-preview.service";
 export class LivePreviewComponent implements OnInit {
     @ViewChild('iframe') iframe: ElementRef;
     @ViewChild('hoverBox') hoverBox: ElementRef;
+    @ViewChild('selectedBox') selectedBox: ElementRef;
 
     constructor(
         private http: AppHttpClient,
-        private livePreview: LivePreview,
+        public livePreview: LivePreview,
         private renderer: Renderer2,
         private el: ElementRef,
     ) {}
 
     ngOnInit() {
-        this.livePreview.init(this.renderer, this.iframe, this.el, this.hoverBox);
+        this.livePreview.init(this.renderer, this.iframe, this.el, this.hoverBox, this.selectedBox);
+    }
+
+    public getElementDisplayName(type: 'hover'|'select') {
+        const el = this.livePreview[type];
+        if ( ! el || ! el.element) return;
+
+        if (el.element.name === 'div container') {
+            return el.node.classList[0];
+        } else {
+            return el.element.name;
+        }
     }
 }

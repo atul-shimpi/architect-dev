@@ -1,7 +1,47 @@
-<nav class="inspector-nav inspector-bg-color-400">
+<nav class="inspector-nav">
+    <button class="no-style back-button" matTooltip="Dashboard">
+        <svg-icon name="keyboard-arrow-left"></svg-icon>
+    </button>
 
+    <div class="panel-nav">
+        <div class="panel-nav-item" [class.active]="inspector.activePanelIs('elements')" (click)="inspector.togglePanel('elements')">
+            <svg-icon name="library-add"></svg-icon>
+            <div class="name" trans>Elements</div>
+        </div>
+        <div class="panel-nav-item" [class.active]="inspector.activePanelIs('inspector')" (click)="inspector.togglePanel('inspector')">
+            <svg-icon name="brush"></svg-icon>
+            <div class="name" trans>Inspector</div>
+        </div>
+        <div class="panel-nav-item" [class.active]="inspector.activePanelIs('pages')" (click)="inspector.togglePanel('pages')">
+            <svg-icon name="description"></svg-icon>
+            <div class="name" trans>Pages</div>
+        </div>
+        <div class="panel-nav-item" [class.active]="inspector.activePanelIs('themes')" (click)="inspector.togglePanel('themes')">
+            <svg-icon name="collections"></svg-icon>
+            <div class="name" trans>Themes</div>
+        </div>
+        <div class="panel-nav-item" [class.active]="inspector.activePanelIs('settings')" (click)="inspector.togglePanel('settings')">
+            <svg-icon name="settings"></svg-icon>
+            <div class="name" trans>Settings</div>
+        </div>
+        <div class="panel-nav-item">
+            <svg-icon name="code"></svg-icon>
+            <div class="name" trans>Code Edtr</div>
+        </div>
+    </div>
+
+    <div class="panel-nav undo-nav">
+        <div class="panel-nav-item">
+            <svg-icon name="undo"></svg-icon>
+            <div class="name" trans>Undo</div>
+        </div>
+        <div class="panel-nav-item">
+            <svg-icon name="redo"></svg-icon>
+            <div class="name" trans>Redo</div>
+        </div>
+    </div>
 </nav>
 
-<div class="inspector-content inspector-bg-color-300">
-    <elements-panel></elements-panel>
+<div class="inspector-content">
+    <elements-panel *ngIf="inspector.activePanelIs('elements')"></elements-panel>
 </div>
