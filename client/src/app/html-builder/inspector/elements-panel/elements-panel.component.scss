@@ -3,52 +3,6 @@
 elements-panel {
   display: block;
 
-  .category {
-    margin-bottom: 5px;
-    background-color: transparent;
-    color: $inspector-text-color-300;
-
-    &.mat-expanded {
-      > .mat-expansion-panel-header {
-        background-color: $inspector-bg-color-100;
-      }
-    }
-
-    &.mat-expansion-panel-spacing {
-      margin: 0;
-    }
-
-    &:not(.mat-expanded) > .mat-expansion-panel-header:not([aria-disabled=true]):hover {
-      background-color: $inspector-bg-color-100;
-    }
-
-    > .mat-expansion-panel-header {
-      border-radius: 3px;
-      background-color: $inspector-bg-color-200;
-      overflow: hidden;
-
-      .mat-expansion-panel-header-title {
-        color: inherit;
-        font-weight: 500;
-        text-transform: capitalize;
-        font-size: 1.4rem;
-      }
-
-      .mat-expansion-indicator {
-        padding-bottom: 5px;
-
-        &:after {
-          color: inherit;
-        }
-      }
-    }
-
-    .mat-expansion-panel-body {
-      margin: 6px 0 3px;
-      background-color: transparent;
-    }
-  }
-
   .elements-grid {
     display: flex;
     flex-wrap: wrap;

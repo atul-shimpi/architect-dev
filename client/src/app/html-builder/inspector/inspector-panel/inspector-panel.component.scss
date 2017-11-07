@@ -1,0 +1,32 @@
+@import "../../../../scss/variables";
+
+inspector-panel {
+  display: block;
+
+  > .breadcrumbs {
+    background-color: $inspector-bg-color-200;
+    padding: 10px;
+    border-radius: 3px;
+    margin-bottom: 20px;
+
+    > .crumb {
+      &:hover {
+        text-decoration: underline;
+      }
+
+      &.last {
+        color: $inspector-text-color-100;
+      }
+    }
+
+    svg-icon {
+      vertical-align: sub;
+      width: 15px;
+      height: 15px;
+    }
+  }
+
+  .mat-expansion-panel .mat-expansion-panel-body {
+    margin: 10px 0;
+  }
+}

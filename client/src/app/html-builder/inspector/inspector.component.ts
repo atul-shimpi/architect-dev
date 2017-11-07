@@ -1,5 +1,6 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {Inspector} from "./inspector.service";
+import {UndoManager} from "../undo-manager/undo-manager.service";
 
 @Component({
     selector: 'inspector',
@@ -9,7 +10,7 @@ import {Inspector} from "./inspector.service";
 })
 export class InspectorComponent implements OnInit {
 
-    constructor(public inspector: Inspector) {
+    constructor(public inspector: Inspector, public undoManager: UndoManager) {
     }
 
     ngOnInit() {

@@ -1,8 +1,11 @@
 import {Directive, Input, OnInit, Renderer2, ViewChild} from '@angular/core';
 import {LivePreview} from "../../live-preview.service";
-import {Elements} from "../../elements/elements.service";
 import {HammerInput} from "@angular/material";
 import {LivePreviewScroller} from "./live-preview-scroller";
+import {UndoManager} from "../../undo-manager/undo-manager.service";
+import ActiveElement from "../live-preview-types";
+import {Elements} from "../../elements/elements.service";
+import commandParams from "../../undo-manager/undo-manager-types";
 
 @Directive({
     selector: '[previewDragAndDrop]'
@@ -30,7 +33,9 @@ export class PreviewDragAndDropDirective implements OnInit {
     /**
      * Element that is being dragged currently.
      */
-    private dragEl: HTMLElement;
+    private dragEl: ActiveElement;
+
+    private undoCommandParams: commandParams;
 
     /**
      * PreviewDragAndDropDirective Constructor.
@@ -38,6 +43,8 @@ export class PreviewDragAndDropDirective implements OnInit {
     constructor(
         private livePreview: LivePreview,
         private renderer: Renderer2,
+        private undoManager: UndoManager,
+        private elements: Elements,
     ) {}
 
     ngOnInit() {
@@ -47,12 +54,27 @@ export class PreviewDragAndDropDirective implements OnInit {
 
     private handleDragStart(e: HammerInput|any) {
         this.livePreview.dragging = true;
+        this.dragEl = this.livePreview.hover;
+
+        //start a new undo command
+        this.undoCommandParams = {
+            undoIndex: this.getNodeIndex(this.dragEl.node.parentNode.childNodes, this.dragEl.node),
+            node: this.dragEl.node,
+            undoParent: this.dragEl.node.parentNode,
+            parentContents: this.dragEl.node.parentNode.childNodes
+        };
+
         this.renderer.setStyle(this.dragOverlay, 'display', 'block');
-        this.dragEl = this.livePreview.hover.node;
-        this.renderer.setAttribute(this.dragEl, 'data-display', this.dragEl.style.display);
+        this.renderer.setAttribute(this.dragEl.node, 'data-display', this.dragEl.node.style.display);
         this.createAndAppendDragMirror();
         this.createAndAppendDropPlaceholder();
-        this.renderer.setStyle(this.dragEl, 'display', 'none');
+        this.renderer.setStyle(this.dragEl.node, 'display', 'none');
+    }
+
+    private getNodeIndex(nodeList: NodeList, node: Node) {
+        for (let i = nodeList.length - 1; i >= 0; i--) {
+            if (nodeList[i] == node) { return i; };
+        }
     }
 
     private handleDrag(e: HammerInput|any) {
@@ -66,13 +88,7 @@ export class PreviewDragAndDropDirective implements OnInit {
 
         this.repositionDragMirror(y, x);
 
-        //only reposition hover box during drag on webkit browsers
-        //as it will cause fairly significant lag on IE and Firefox
-        if (this.livePreview.isWebkit) {
-            this.livePreview.repositionBox('hover', under);
-        }
-
-        const classes = this.dragEl.className;
+        const classes = this.dragEl.node.className;
 
         if (classes && classes.match('col-')) {
             console.log('sort cols');
@@ -85,9 +101,15 @@ export class PreviewDragAndDropDirective implements OnInit {
     private handleDragEnd(e: HammerInput|any) {
         this.scroller.stopScrolling();
         this.livePreview.dragging = false;
-        this.dropPlaceholder.parentNode.replaceChild(this.dragEl, this.dropPlaceholder);
-        this.renderer.setStyle(this.dragEl, 'display', this.dragEl.getAttribute('data-display'));
-        this.renderer.removeAttribute(this.dragEl, 'data-display');
+        this.dropPlaceholder.parentNode.replaceChild(this.dragEl.node, this.dropPlaceholder);
+
+        //store index of active on last command so we can redo it
+        this.undoCommandParams.redoIndex = this.getNodeIndex(this.dragEl.node.parentNode.childNodes, this.dragEl.node);
+        this.undoCommandParams.redoParent = this.dragEl.node.parentNode;
+        this.undoManager.add('reorderElement', this.undoCommandParams);
+
+        this.renderer.setStyle(this.dragEl.node, 'display', this.dragEl.node.getAttribute('data-display'));
+        this.renderer.removeAttribute(this.dragEl.node, 'data-display');
         this.dragMirror.remove();
         this.dragMirror = null;
         this.dropPlaceholder.remove();
@@ -102,7 +124,7 @@ export class PreviewDragAndDropDirective implements OnInit {
         if ( ! node) return;
 
         //check if we're not trying to drop a node inside it's child or itself
-        if (this.dragEl == node || this.dragEl.contains(node)) {
+        if (this.dragEl.node == node || this.dragEl.node.contains(node)) {
             return;
         }
 
@@ -121,7 +143,7 @@ export class PreviewDragAndDropDirective implements OnInit {
                 //if we can insert active element to given node and users
                 //cursor is above one of the children of that node then insert
                 //active element before that child and bail
-                if (true) { //this.elements.canInsert(node, this.dragEl)
+                if (this.elements.canInsert(node, this.dragEl)) {
 
                     //make sure we don't insert elements before body node
                     if (n.nodeName == 'BODY') {
@@ -138,7 +160,7 @@ export class PreviewDragAndDropDirective implements OnInit {
 
         //if users cursor is not above any children on the node we'll
         //just append active element to the node
-        if (true) {//this.elements.canInsertSelectedTo(node)
+        if (this.elements.canInsert(node, this.dragEl)) {
             node.appendChild(this.dropPlaceholder);
         }
 
@@ -176,13 +198,13 @@ export class PreviewDragAndDropDirective implements OnInit {
      * Create drag mirror helper by cloning node that is being dragged.
      */
     private createAndAppendDragMirror() {
-        this.dragMirror = this.dragEl.cloneNode(true) as HTMLElement;
+        this.dragMirror = this.dragEl.node.cloneNode(true) as HTMLElement;
         this.renderer.setStyle(this.dragMirror, 'position', 'fixed');
         this.renderer.setStyle(this.dragMirror, 'pointer-events', 'none');
         this.renderer.setStyle(this.dragMirror, 'margin', 0);
         this.renderer.setStyle(this.dragMirror, 'padding', 0);
         this.renderer.setStyle(this.dragMirror, 'transition', 'none');
-        this.dragEl.parentNode.appendChild(this.dragMirror);
+        this.dragEl.node.parentNode.appendChild(this.dragMirror);
     }
 
     /**
@@ -208,7 +230,7 @@ export class PreviewDragAndDropDirective implements OnInit {
 
     private createAndAppendDropPlaceholder() {
         this.dropPlaceholder = this.livePreview.document.createElement('div');
-        this.renderer.setStyle(this.dropPlaceholder, 'display', this.dragEl.getAttribute('data-display'));
+        this.renderer.setStyle(this.dropPlaceholder, 'display', this.dragEl.node.getAttribute('data-display'));
         this.renderer.setStyle(this.dropPlaceholder, 'pointer-events', 'none');
         this.renderer.setStyle(this.dropPlaceholder, 'height', '20px');
         this.renderer.setStyle(this.dropPlaceholder, 'opacity', '0.7');
@@ -217,6 +239,6 @@ export class PreviewDragAndDropDirective implements OnInit {
             'background',
             'repeating-linear-gradient(45deg,#ccc,#ccc 2px,#dbdbdb 2px,#dbdbdb 4px)'
         );
-        this.dragEl.parentNode.appendChild(this.dropPlaceholder);
+        this.dragEl.node.parentNode.appendChild(this.dropPlaceholder);
     }
 }

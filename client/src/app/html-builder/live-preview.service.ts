@@ -1,8 +1,9 @@
-import {ElementRef, Injectable, NgZone, Renderer2} from '@angular/core';
+import {ElementRef, EventEmitter, Injectable, NgZone, Renderer2} from '@angular/core';
 import {Template} from "../../types/models/Template";
 import {ParsedTemplate} from "../templates/parsed-template.service";
 import {Elements} from "./elements/elements.service";
 import {Inspector} from "./inspector/inspector.service";
+import ActiveElement from "./live-preview/live-preview-types";
 
 @Injectable()
 export class LivePreview {
@@ -10,13 +11,13 @@ export class LivePreview {
     public isWebkit = true;
     dragging: any;
 
-    public hover = {
+    public hover: ActiveElement = {
         node: null,
         previous: null,
         element: null,
     };
 
-    public selected = {
+    public selected: ActiveElement = {
         element: null,
         node: null,
         previous: null,
@@ -39,9 +40,14 @@ export class LivePreview {
 
     private resizing = false;
 
-    private selecting = false;
+    public selecting = false;
 
     private rowEditorOpen = false;
+
+    /**
+     * Fired when element is selected in the builder.
+     */
+    public elementSelected: EventEmitter<ActiveElement> = new EventEmitter();
 
     constructor(private zone: NgZone, private elements: Elements, private inspector: Inspector) {
     }
@@ -190,12 +196,12 @@ export class LivePreview {
 
         //if we haven't already stored a reference to passed in node, do it now
         if (node && this.selected.node !== node) {
-            this.selected.node = node;
+            this.selected.node = node as HTMLElement;
         }
 
         //cache some more references about the node for later use
         this.selected.element = this.elements.match(this.selected.node, 'select', true);
-        this.selected.parent = this.selected.node.parentNode;
+        this.selected.parent = this.selected.node.parentNode as HTMLElement;
         this.selected.parentContents = this.selected.parent.childNodes;
 
         //position select box on top of the newly selected node
@@ -210,18 +216,22 @@ export class LivePreview {
         let el = this.selected.node;
         this.selected.path = [];
         while (el.nodeType === Node.ELEMENT_NODE && el.nodeName.toLowerCase() !== 'body') {
-            this.selected.path.unshift({node: el, name: this.elements.match(el).name});
-            el = el.parentNode;
+            this.selected.path.unshift({node: el, name: this.getElementDisplayName(this.elements.match(el), el)});
+            el = el.parentNode as HTMLElement;
         }
 
         //whether or not this node is a column
         //this.selected.isColumn = grid.isColumn(this.selected.node);
 
-        this.selected.hasInlineStyles = this.selected.node.style[0];
+        this.selected.hasInlineStyles = this.selected.node.style[0] !== null;
 
         this.inspector.togglePanel('inspector');
 
-        setTimeout(() => {this.selecting = false}, 200);
+        setTimeout(() => {
+            this.selecting = false;
+        }, 200);
+
+        this.elementSelected.emit(this.selected);
     };
 
     public repositionBox(name: 'hover'|'selected', node?, el?) {
@@ -261,4 +271,19 @@ export class LivePreview {
         }
     };
 
+    public getElementDisplayName(el: any, node: HTMLElement) {
+        if ( ! el) return;
+
+        if (el.name === 'div container') {
+            if (node.id) {
+                return node.id
+            } else if (node.classList[0]) {
+                return node.classList[0];
+            } else {
+                return el.name
+            }
+        } else {
+            return el.name;
+        }
+    }
 }

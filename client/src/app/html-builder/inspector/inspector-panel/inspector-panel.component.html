@@ -1,0 +1,29 @@
+<div class="breadcrumbs">
+    <ng-container *ngFor="let item of livePreview.selected.path; last as last">
+        <button class="crumb no-style" [class.last]="last" (click)="livePreview.selectNode(item.node)">{{item.name}}</button>
+        <svg-icon name="keyboard-arrow-right" *ngIf="!last"></svg-icon>
+    </ng-container>
+</div>
+
+<mat-accordion>
+    <mat-expansion-panel class="category mat-elevation-z" [expanded]="true">
+        <mat-expansion-panel-header>
+            <mat-panel-title>Attributes</mat-panel-title>
+        </mat-expansion-panel-header>
+        <attributes-panel class="panel-body"></attributes-panel>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel class="category mat-elevation-z">
+        <mat-expansion-panel-header>
+            <mat-panel-title trans>Padding</mat-panel-title>
+        </mat-expansion-panel-header>
+        <spacing-panel type="padding" class="panel-body"></spacing-panel>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel class="category mat-elevation-z">
+        <mat-expansion-panel-header>
+            <mat-panel-title trans>Margin</mat-panel-title>
+        </mat-expansion-panel-header>
+        <spacing-panel type="margin" class="panel-body"></spacing-panel>
+    </mat-expansion-panel>
+</mat-accordion>

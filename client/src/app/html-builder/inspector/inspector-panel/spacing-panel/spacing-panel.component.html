@@ -1,0 +1,10 @@
+<div class="side-controls">
+    <button class="no-style side-control all-control" (click)="toggleSide('all')" [class.active]="isSideEnabled('all')"></button>
+
+    <button class="no-style side-control top-control" (click)="toggleSide('top')" [class.active]="isSideEnabled('top')"></button>
+    <button class="no-style side-control right-control" (click)="toggleSide('right')" [class.active]="isSideEnabled('right')"></button>
+    <button class="no-style side-control bottom-control" (click)="toggleSide('bottom')" [class.active]="isSideEnabled('bottom')"></button>
+    <button class="no-style side-control left-control" (click)="toggleSide('left')" [class.active]="isSideEnabled('left')"></button>
+</div>
+
+<mat-slider></mat-slider>

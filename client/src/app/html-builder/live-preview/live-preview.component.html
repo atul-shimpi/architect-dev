@@ -4,7 +4,7 @@
             <div class="drag-handle" #dragHandle>
                 <svg-icon name="drag-handle"></svg-icon>
             </div>
-            <span class="column-name">{{this.getElementDisplayName('hover')}}</span>
+            <span class="column-name">{{livePreview.getElementDisplayName(livePreview.hover.element, livePreview.hover.node)}}</span>
         </div>
     </div>
 
@@ -13,7 +13,7 @@
             <div class="drag-handle" #dragHandle>
                 <svg-icon name="drag-handle"></svg-icon>
             </div>
-            <span class="column-name">{{this.getElementDisplayName('selected')}}</span>
+            <span class="column-name">{{livePreview.getElementDisplayName(livePreview.selected.element, livePreview.selected.node)}}</span>
         </div>
     </div>
 </div>

@@ -23,15 +23,4 @@ export class LivePreviewComponent implements OnInit {
     ngOnInit() {
         this.livePreview.init(this.renderer, this.iframe, this.el, this.hoverBox, this.selectedBox);
     }
-
-    public getElementDisplayName(type: 'hover'|'select') {
-        const el = this.livePreview[type];
-        if ( ! el || ! el.element) return;
-
-        if (el.element.name === 'div container') {
-            return el.node.classList[0];
-        } else {
-            return el.element.name;
-        }
-    }
 }

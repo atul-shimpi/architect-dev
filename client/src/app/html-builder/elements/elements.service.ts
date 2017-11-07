@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core";
 import {baseElements} from "./definitions/base";
 import {bootstrapElements} from "./definitions/bootstrap";
+import ActiveElement from "../live-preview/live-preview-types";
 
 @Injectable()
 export class Elements {
@@ -74,6 +75,31 @@ export class Elements {
     }
 
     /**
+     * Check if given node accepts currently active element as a child.
+     */
+    public canInsert(parent: HTMLElement, child: ActiveElement) {
+
+        if (parent.nodeName == 'BODY') return true;
+
+        if (parent.nodeName == 'HTML') return false;
+
+        //match given node to an element in element repository
+        const el = this.match(parent);
+
+        //if we've got an element match and it has any valid children check
+        //if specified child can be inserted into given node
+        if (el && el.validChildren && child.element.types) {
+            for (let i = el.validChildren.length - 1; i >= 0; i--) {
+                if (child.element.types.indexOf(el.validChildren[i]) > -1) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Match specified DOM node to an element in the repository.
      */
     public match(node: HTMLElement, type = null, matchParent = true) {
@@ -89,6 +115,32 @@ export class Elements {
                 //$rootScope.selected.node = check;
             }
             node = isSpecialCase as HTMLElement;
+        }
+
+        //find by class
+        if (node.className) {
+            for (let i = 0; i < this.elements.length; i++) {
+                let element = this.elements[i];
+
+                let classes = node.className.toLowerCase().split(/\s+/);
+
+                for (let i = 0; i < classes.length; i++) {
+
+                    //if element has no class we'll bail
+                    if ( ! element.class) continue;
+
+                    //if element and passed in node classes match exactly we'll just return current element
+                    if (classes[i] === element.class) {
+                        return element;
+                    }
+
+                    //if we didn't match an element by this time we'll try to do it using
+                    //a wildcard so we can match bootstrap columns and similar stuff
+                    if (element.class.indexOf('*') > -1 && classes[i].match(new RegExp(element.class.replace('*', '.*')))) {
+                        return element;
+                    }
+                }
+            }
         }
 
         for (let i = 0; i < this.elements.length; i++) {
@@ -111,29 +163,6 @@ export class Elements {
             //find by node name
             if (element.nodes.indexOf(nodeName) > -1) {
                 return element;
-            }
-
-            //find by class
-            if (node.className) {
-                let classes = node.className.split(/\s+/);
-
-                for (let i = 0; i < classes.length; i++) {
-
-                    //if element has no class we'll bail
-                    if (!element.class) continue;
-
-                    //if element and passed in node classes match straight
-                    //up we'll just return current element
-                    if (classes[i] === element.class) {
-                        return element;
-                    }
-
-                    //if we didn't match an element by this time we'll try to do it using
-                    //a wildcard so we can match bootstrap columns and similar stuff
-                    if (element.class.indexOf('*') > -1 && classes[i].match(new RegExp(element.class.replace('*', '.*')))) {
-                        return element;
-                    }
-                }
             }
         }
 

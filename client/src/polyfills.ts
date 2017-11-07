@@ -19,7 +19,7 @@
  */
 
 /** IE9, IE10 and IE11 requires all of the following polyfills. **/
-// import 'core-js/es6/symbol';
+//import 'core-js/es6/symbol';
 // import 'core-js/es6/object';
 // import 'core-js/es6/function';
 // import 'core-js/es6/parse-int';
@@ -74,3 +74,5 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
  * Need to import at least one locale-data with intl.
  */
 // import 'intl/locale-data/jsonp/en';
+
+import 'polyfills/before-after-polyfill'

@@ -1,3 +1,6 @@
+import ActiveElement from "../../live-preview/live-preview-types";
+import {LivePreview} from "../../live-preview.service";
+
 export const baseElements = [];
 
 declare let $;
@@ -196,19 +199,21 @@ baseElements.push({
                 {name: 'h6', value: 'h6'},
             ],
             value: 'h1',
-            onAssign: function ($scope) {
-                let name = $scope.selected.node.nodeName.toLowerCase();
+            onAssign: function (livePreview: LivePreview) {
+                let name = livePreview.selected.node.nodeName.toLowerCase();
 
                 for (let i = this.list.length - 1; i >= 0; i--) {
                     if (name == this.list[i].value) {
-                        return this.value = this.list[i];
+                        return this.value = this.list[i].value;
                     }
                 }
             },
-            onChange: function ($scope, tag) {
-                let name = tag.value;
-                $scope.selected.node = $('<' + name + '>' + $($scope.selected.node).html() + '</' + name + '>').replaceAll($scope.selected.node).get(0);
-                $scope.repositionBox('select');
+            onChange: function (livePreview: LivePreview, value: any) {
+                let newNode = document.createElement(value);
+                newNode.innerHTML = livePreview.selected.node.innerHTML;
+                livePreview.selected.node.parentNode.replaceChild(newNode, livePreview.selected.node);
+                livePreview.selected.node = newNode;
+                livePreview.repositionBox('selected');
             }
         }
     }

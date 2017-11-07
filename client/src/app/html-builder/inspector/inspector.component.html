@@ -31,17 +31,18 @@
     </div>
 
     <div class="panel-nav undo-nav">
-        <div class="panel-nav-item">
+        <button class="no-style panel-nav-item" [disabled]="!undoManager.canUndo()" (click)="undoManager.undo()">
             <svg-icon name="undo"></svg-icon>
-            <div class="name" trans>Undo</div>
-        </div>
-        <div class="panel-nav-item">
+            <span class="name" trans>Undo</span>
+        </button>
+        <button class="no-style panel-nav-item" [disabled]="!undoManager.canRedo()" (click)="undoManager.redo()">
             <svg-icon name="redo"></svg-icon>
-            <div class="name" trans>Redo</div>
-        </div>
+            <span class="name" trans>Redo</span>
+        </button>
     </div>
 </nav>
 
 <div class="inspector-content">
     <elements-panel *ngIf="inspector.activePanelIs('elements')"></elements-panel>
+    <inspector-panel *ngIf="inspector.activePanelIs('inspector')"></inspector-panel>
 </div>
