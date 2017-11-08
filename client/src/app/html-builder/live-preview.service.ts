@@ -3,7 +3,11 @@ import {Template} from "../../types/models/Template";
 import {ParsedTemplate} from "../templates/parsed-template.service";
 import {Elements} from "./elements/elements.service";
 import {Inspector} from "./inspector/inspector.service";
-import ActiveElement from "./live-preview/live-preview-types";
+import {ActiveElement} from "./live-preview/active-element";
+import {Observable} from "rxjs/Observable";
+import {Subject} from "rxjs/Subject";
+import {Subscriber} from "rxjs/Subscriber";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 @Injectable()
 export class LivePreview {
@@ -11,23 +15,9 @@ export class LivePreview {
     public isWebkit = true;
     dragging: any;
 
-    public hover: ActiveElement = {
-        node: null,
-        previous: null,
-        element: null,
-    };
+    public hover = new ActiveElement();
 
-    public selected: ActiveElement = {
-        element: null,
-        node: null,
-        previous: null,
-        path: [],
-        parent: null,
-        parentContents: null,
-        locked: false,
-        isImage: false,
-        hasInlineStyles: false,
-    };
+    public selected = new ActiveElement();
 
     private renderer: Renderer2;
 
@@ -47,7 +37,7 @@ export class LivePreview {
     /**
      * Fired when element is selected in the builder.
      */
-    public elementSelected: EventEmitter<ActiveElement> = new EventEmitter();
+    public elementSelected = new BehaviorSubject(null);
 
     constructor(private zone: NgZone, private elements: Elements, private inspector: Inspector) {
     }
@@ -231,7 +221,7 @@ export class LivePreview {
             this.selecting = false;
         }, 200);
 
-        this.elementSelected.emit(this.selected);
+        this.elementSelected.next(this.selected);
     };
 
     public repositionBox(name: 'hover'|'selected', node?, el?) {

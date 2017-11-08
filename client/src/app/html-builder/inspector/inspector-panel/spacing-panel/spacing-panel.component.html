@@ -7,4 +7,27 @@
     <button class="no-style side-control left-control" (click)="toggleSide('left')" [class.active]="isSideEnabled('left')"></button>
 </div>
 
-<mat-slider></mat-slider>
+<mat-slider min="1" [max]="max" step="1" (input)="applySpacingForEnabledSides($event.value)" [value]="sliderValue"></mat-slider>
+
+<ng-content></ng-content>
+
+<div class="side-inputs">
+    <div class="input-container all-input">
+        <input type="number" min="1" max="999" [(ngModel)]="spacing.all" (ngModelChange)="applySpacingToAllSides()">
+    </div>
+
+    <div class="side-inputs-inner" [ngClass]="type">
+        <div class="input-container top-input">
+            <input type="number" min="1" max="999" [(ngModel)]="spacing.top" (ngModelChange)="applySpacing('top')">
+        </div>
+        <div class="input-container left-input">
+            <input type="number" min="1" max="999" [(ngModel)]="spacing.left" (ngModelChange)="applySpacing('left')">
+        </div>
+        <div class="input-container right-input">
+            <input type="number" min="1" max="999" [(ngModel)]="spacing.right" (ngModelChange)="applySpacing('right')">
+        </div>
+        <div class="input-container bottom-input">
+            <input type="number" min="1" max="999" [(ngModel)]="spacing.bottom" (ngModelChange)="applySpacing('bottom')">
+        </div>
+    </div>
+</div>

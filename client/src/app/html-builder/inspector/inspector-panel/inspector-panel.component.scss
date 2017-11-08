@@ -2,6 +2,7 @@
 
 inspector-panel {
   display: block;
+  overflow: auto;
 
   > .breadcrumbs {
     background-color: $inspector-bg-color-200;

@@ -1,4 +1,3 @@
-import ActiveElement from "../../live-preview/live-preview-types";
 import {LivePreview} from "../../live-preview.service";
 
 export const baseElements = [];

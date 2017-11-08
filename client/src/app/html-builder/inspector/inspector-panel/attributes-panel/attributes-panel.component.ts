@@ -40,8 +40,6 @@ export class AttributesPanelComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.onElementSelected();
-
         this.livePreview.elementSelected.subscribe(() => {
             this.onElementSelected();
         });

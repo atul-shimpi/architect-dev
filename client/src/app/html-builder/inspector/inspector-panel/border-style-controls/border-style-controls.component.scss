@@ -1,0 +1,22 @@
+@import "../../../../../scss/variables";
+
+border-style-controls {
+  display: flex;
+  height: 35px;
+  margin-bottom: 10px;
+
+  > .border-color {
+    display: block;
+    height: 32px;
+    margin-right: 5px;
+    background-color: $inspector-bg-color-200;
+    flex: 1 1 auto;
+    width: 50%;
+    border: 3px solid transparent;
+  }
+
+  > .input-container {
+    flex: 1 1 auto;
+    width: 50%;
+  }
+}

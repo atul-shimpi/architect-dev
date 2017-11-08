@@ -6,10 +6,6 @@ import { InspectorComponent } from './inspector/inspector.component';
 import { LivePreviewComponent } from './live-preview/live-preview.component';
 import {LivePreview} from "./live-preview.service";
 import {Templates} from "../templates/templates.service";
-import {
-    MatChipsModule, MatExpansionModule, MatIconModule, MatInputModule, MatSliderModule,
-    MatTooltipModule
-} from "@angular/material";
 import {PreviewDragAndDropDirective} from './live-preview/drag-and-drop/preview-drag-and-drop.directive';
 import {Elements} from "./elements/elements.service";
 import { ElementsPanelComponent } from './inspector/elements-panel/elements-panel.component';
@@ -19,18 +15,17 @@ import {UndoManager} from "./undo-manager/undo-manager.service";
 import { InspectorPanelComponent } from './inspector/inspector-panel/inspector-panel.component';
 import { AttributesPanelComponent } from './inspector/inspector-panel/attributes-panel/attributes-panel.component';
 import { SpacingPanelComponent } from './inspector/inspector-panel/spacing-panel/spacing-panel.component';
+import {MaterialModule} from "../../shared/material.module";
+import { BorderStyleControlsComponent } from './inspector/inspector-panel/border-style-controls/border-style-controls.component';
+import { ColorPickerModule } from 'ngx-color-picker';
 
 @NgModule({
     imports: [
         CommonModule,
         CoreModule,
         HtmlBuilderRoutingModule,
-
-        //material
-        MatExpansionModule,
-        MatTooltipModule,
-        MatChipsModule,
-        MatSliderModule,
+        MaterialModule,
+        ColorPickerModule,
     ],
     declarations: [
         HtmlBuilderComponent,
@@ -40,7 +35,8 @@ import { SpacingPanelComponent } from './inspector/inspector-panel/spacing-panel
         ElementsPanelComponent,
         InspectorPanelComponent,
         AttributesPanelComponent,
-        SpacingPanelComponent
+        SpacingPanelComponent,
+        BorderStyleControlsComponent
     ],
     providers: [
         LivePreview,
