@@ -1,7 +1,7 @@
 import {Component, OnInit, Renderer2, ViewEncapsulation} from '@angular/core';
 import {LivePreview} from "../../../live-preview.service";
-import ActiveElement from "../../../live-preview/live-preview-types";
 import {UndoManager} from "../../../undo-manager/undo-manager.service";
+import {ActiveElement} from "../../../live-preview/active-element";
 
 @Component({
     selector: 'attributes-panel',

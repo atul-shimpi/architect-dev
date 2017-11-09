@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {baseElements} from "./definitions/base";
 import {bootstrapElements} from "./definitions/bootstrap";
-import ActiveElement from "../live-preview/live-preview-types";
+import {ActiveElement} from "../live-preview/active-element";
 
 @Injectable()
 export class Elements {

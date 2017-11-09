@@ -18,6 +18,8 @@ import { SpacingPanelComponent } from './inspector/inspector-panel/spacing-panel
 import {MaterialModule} from "../../shared/material.module";
 import { BorderStyleControlsComponent } from './inspector/inspector-panel/border-style-controls/border-style-controls.component';
 import { ColorPickerModule } from 'ngx-color-picker';
+import { SideControlBorderComponent } from './inspector/inspector-panel/spacing-panel/side-control-border/side-control-border.component';
+import { TextStylePanelComponent } from './inspector/inspector-panel/text-style-panel/text-style-panel.component';
 
 @NgModule({
     imports: [
@@ -36,7 +38,9 @@ import { ColorPickerModule } from 'ngx-color-picker';
         InspectorPanelComponent,
         AttributesPanelComponent,
         SpacingPanelComponent,
-        BorderStyleControlsComponent
+        BorderStyleControlsComponent,
+        SideControlBorderComponent,
+        TextStylePanelComponent
     ],
     providers: [
         LivePreview,

@@ -1,11 +1,11 @@
-import {Directive, Input, OnInit, Renderer2, ViewChild} from '@angular/core';
+import {Directive, Input, OnInit, Renderer2} from '@angular/core';
 import {LivePreview} from "../../live-preview.service";
 import {HammerInput} from "@angular/material";
 import {LivePreviewScroller} from "./live-preview-scroller";
 import {UndoManager} from "../../undo-manager/undo-manager.service";
-import ActiveElement from "../live-preview-types";
 import {Elements} from "../../elements/elements.service";
 import commandParams from "../../undo-manager/undo-manager-types";
+import {ActiveElement} from "../active-element";
 
 @Directive({
     selector: '[previewDragAndDrop]'

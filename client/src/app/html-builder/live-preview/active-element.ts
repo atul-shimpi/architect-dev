@@ -22,7 +22,7 @@ export class ActiveElement {
 
     public hasInlineStyles?: boolean;
 
-    public applyStyle(name: string, value: string) {
+    public applyStyle(name: string, value: string, addUndoCommand = true) {
         this.node.style[name] = value;
     }
 
