@@ -20,6 +20,10 @@ import { BorderStyleControlsComponent } from './inspector/inspector-panel/border
 import { ColorPickerModule } from 'ngx-color-picker';
 import { SideControlBorderComponent } from './inspector/inspector-panel/spacing-panel/side-control-border/side-control-border.component';
 import { TextStylePanelComponent } from './inspector/inspector-panel/text-style-panel/text-style-panel.component';
+import { BackgroundPanelComponent } from './inspector/inspector-panel/background-panel/background-panel.component';
+import { GradientBackgroundPanelComponent } from './inspector/inspector-panel/background-panel/gradient-background-panel/gradient-background-panel.component';
+import {InspectorFloatingPanel} from "./inspector/inspector-floating-panel.service";
+import { ColorpickerPanelComponent } from './inspector/inspector-panel/colorpicker-panel/colorpicker-panel.component';
 
 @NgModule({
     imports: [
@@ -40,7 +44,14 @@ import { TextStylePanelComponent } from './inspector/inspector-panel/text-style-
         SpacingPanelComponent,
         BorderStyleControlsComponent,
         SideControlBorderComponent,
-        TextStylePanelComponent
+        TextStylePanelComponent,
+        BackgroundPanelComponent,
+        GradientBackgroundPanelComponent,
+        ColorpickerPanelComponent
+    ],
+    entryComponents: [
+        GradientBackgroundPanelComponent,
+        ColorpickerPanelComponent,
     ],
     providers: [
         LivePreview,
@@ -48,6 +59,7 @@ import { TextStylePanelComponent } from './inspector/inspector-panel/text-style-
         Elements,
         Inspector,
         UndoManager,
+        InspectorFloatingPanel,
     ]
 })
 export class HtmlBuilderModule {

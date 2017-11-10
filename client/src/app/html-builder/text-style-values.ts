@@ -1,4 +1,4 @@
-export let baseFonts = [
+export const baseFonts = [
     {name: 'Impact', css: 'Impact, Charcoal, sans-serif'},
     {name: 'Comic Sans', css: '"Comic Sans MS", cursive, sans-serif'},
     {name: 'Arial Black', css: '"Arial Black", Gadget, sans-serif'},
@@ -12,4 +12,4 @@ export let baseFonts = [
     {name: 'Helvetica Neue', css: '"Helvetica Neue", Helvetica, Arial, sans-serif'}
 ];
 
-export let fontWeights = [100, 200, 300, 400, 500, 600, 700, 800, 900];
+export const fontWeights = [100, 200, 300, 400, 500, 600, 700, 800, 900];

@@ -6,11 +6,18 @@
 </div>
 
 <mat-accordion>
-    <mat-expansion-panel class="category mat-elevation-z" [expanded]="true">
+    <mat-expansion-panel class="category mat-elevation-z">
         <mat-expansion-panel-header>
-            <mat-panel-title>Attributes</mat-panel-title>
+            <mat-panel-title trans>Attributes</mat-panel-title>
         </mat-expansion-panel-header>
         <attributes-panel class="panel-body"></attributes-panel>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel class="category mat-elevation-z">
+        <mat-expansion-panel-header>
+            <mat-panel-title trans>Background</mat-panel-title>
+        </mat-expansion-panel-header>
+        <background-panel class="panel-body"></background-panel>
     </mat-expansion-panel>
 
     <mat-expansion-panel class="category mat-elevation-z">
