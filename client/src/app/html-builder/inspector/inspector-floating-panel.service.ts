@@ -22,7 +22,7 @@ export class InspectorFloatingPanel {
     constructor(private overlay: Overlay) {}
 
     public open<T>(component: ComponentType<T>, origin: ElementRef, config = {}): {selected: Observable<any>, closed: Observable<any>} {
-        config = Object.assign({}, this.getDefaultConfig(), config;
+        config = Object.assign({}, this.getDefaultConfig(), config);
         this.close();
 
         const strategy = this.overlay.position().connectedTo(

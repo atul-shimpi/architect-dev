@@ -58,7 +58,7 @@
     "component": {
       "spec": false,
       "inlineTemplate": false,
-      "encapsulation": "None"
+      "viewEncapsulation": "None"
     },
     "service": {
       "spec": false

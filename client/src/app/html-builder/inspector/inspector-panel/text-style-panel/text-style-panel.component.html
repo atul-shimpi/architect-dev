@@ -1,8 +1,14 @@
-<div class="input-container">
-    <select name="font-family" id="font-family" [(ngModel)]="styles.fontFamily" (ngModelChange)="applyTextStyle('fontFamily')">
-        <option value="" trans>Font</option>
-        <option [value]="font.css" *ngFor="let font of baseFonts">{{font.name}}</option>
-    </select>
+<div class="font-family-container" #googleFontsOrigin>
+    <div class="input-container">
+        <select name="font-family" id="font-family" [(ngModel)]="styles.fontFamily" (ngModelChange)="applyTextStyle('fontFamily')">
+            <option value="" trans>Font</option>
+            <option [value]="font.css" *ngFor="let font of baseFonts">{{font.name}}</option>
+        </select>
+    </div>
+
+    <button class="no-style google-fonts-button" type="button" (click)="openGoogleFontsPanel()" matTooltip="Google fonts">
+        <svg-icon name="google-custom"></svg-icon>
+    </button>
 </div>
 
 <div class="text-decorations">

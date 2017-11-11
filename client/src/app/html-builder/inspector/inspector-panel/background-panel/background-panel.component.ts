@@ -3,6 +3,8 @@ import {LivePreview} from "../../../live-preview.service";
 import {GradientBackgroundPanelComponent} from "./gradient-background-panel/gradient-background-panel.component";
 import {InspectorFloatingPanel} from "../../inspector-floating-panel.service";
 import {ColorpickerPanelComponent} from "../colorpicker-panel/colorpicker-panel.component";
+import {MatDialog} from "@angular/material";
+import {UploadFileModalComponent} from "vebto-client/core";
 
 @Component({
     selector: 'background-panel',
@@ -26,6 +28,7 @@ export class BackgroundPanelComponent implements OnInit {
         private livePreview: LivePreview,
         private panel: InspectorFloatingPanel,
         private renderer: Renderer2,
+        private modal: MatDialog,
     ) {}
 
     ngOnInit() {
@@ -50,6 +53,12 @@ export class BackgroundPanelComponent implements OnInit {
             this.setBackgroundButtonColor();
             this.applyBackgroundStyle('backgroundColor');
         });
+    }
+
+    public openBackgroundPanel() {
+        this.modal.open(UploadFileModalComponent, {panelClass: 'modal'}).afterClosed().subscribe(data => {
+            console.log(data);
+        })
     }
 
     private setBackgroundButtonColor() {

@@ -1,12 +1,9 @@
-import {ElementRef, EventEmitter, Injectable, NgZone, Renderer2} from '@angular/core';
+import {ElementRef, Injectable, NgZone, Renderer2} from '@angular/core';
 import {Template} from "../../types/models/Template";
 import {ParsedTemplate} from "../templates/parsed-template.service";
 import {Elements} from "./elements/elements.service";
 import {Inspector} from "./inspector/inspector.service";
 import {ActiveElement} from "./live-preview/active-element";
-import {Observable} from "rxjs/Observable";
-import {Subject} from "rxjs/Subject";
-import {Subscriber} from "rxjs/Subscriber";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 @Injectable()
@@ -15,9 +12,9 @@ export class LivePreview {
     public isWebkit = true;
     dragging: any;
 
-    public hover = new ActiveElement();
+    public hover = new ActiveElement(this);
 
-    public selected = new ActiveElement();
+    public selected = new ActiveElement(this);
 
     private renderer: Renderer2;
 

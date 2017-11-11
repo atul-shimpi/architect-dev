@@ -1,6 +1,8 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {LivePreview} from "../../../live-preview.service";
 import {baseFonts, fontWeights} from "../../../text-style-values";
+import {InspectorFloatingPanel} from "../../inspector-floating-panel.service";
+import {GoogleFontsPanelComponent} from "./google-fonts-panel/google-fonts-panel.component";
 
 @Component({
     selector: 'text-style-panel',
@@ -9,6 +11,7 @@ import {baseFonts, fontWeights} from "../../../text-style-values";
     encapsulation: ViewEncapsulation.None,
 })
 export class TextStylePanelComponent implements OnInit {
+    @ViewChild('googleFontsOrigin') googleFontsOrigin: ElementRef;
 
     public styles: any = {};
 
@@ -19,8 +22,7 @@ export class TextStylePanelComponent implements OnInit {
     /**
      * TextStylePanelComponent Constructor.
      */
-    constructor(private livePreview: LivePreview) {
-    }
+    constructor(private livePreview: LivePreview, private panel: InspectorFloatingPanel) {}
 
     ngOnInit() {
         this.livePreview.elementSelected.subscribe(() => {
@@ -50,6 +52,12 @@ export class TextStylePanelComponent implements OnInit {
         return this.livePreview.selected.getStyle(name).indexOf(value) > -1;
     }
 
+    public openGoogleFontsPanel() {
+        this.panel.open(GoogleFontsPanelComponent, this.googleFontsOrigin).selected.subscribe(fontFamily => {
+            this.livePreview.selected.applyStyle('fontFamily', fontFamily);
+        });
+    }
+
     /**
      * Get current text styles of element selected in the builder.
      */
@@ -64,7 +72,5 @@ export class TextStylePanelComponent implements OnInit {
             fontWeight: this.livePreview.selected.getStyle('fontWeight'),
             textDecoration: this.livePreview.selected.getStyle('textDecoration')
         };
-
-        console.log(this.styles);
     }
 }

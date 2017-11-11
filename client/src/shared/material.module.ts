@@ -1,5 +1,6 @@
 import {
-    MatButtonModule, MatCheckboxModule, MatChipsModule, MatExpansionModule, MatSliderModule,
+    MatAutocompleteModule,
+    MatButtonModule, MatCheckboxModule, MatChipsModule, MatDialogModule, MatExpansionModule, MatSliderModule,
     MatTooltipModule
 } from '@angular/material';
 import {NgModule} from "@angular/core";
@@ -16,6 +17,8 @@ import {OverlayModule} from "@angular/cdk/overlay";
         MatChipsModule,
         PortalModule,
         OverlayModule,
+        MatAutocompleteModule,
+        MatDialogModule,
     ],
     exports: [
         MatButtonModule,
@@ -26,6 +29,8 @@ import {OverlayModule} from "@angular/cdk/overlay";
         MatChipsModule,
         PortalModule,
         OverlayModule,
+        MatAutocompleteModule,
+        MatDialogModule,
     ],
 })
 export class MaterialModule { }

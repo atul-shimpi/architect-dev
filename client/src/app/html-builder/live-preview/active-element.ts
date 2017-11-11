@@ -1,8 +1,8 @@
+import {LivePreview} from "../live-preview.service";
+
 export class ActiveElement {
 
-    constructor() {
-
-    }
+    constructor(private livePreview: LivePreview) {}
 
     public element: any;
 
@@ -24,6 +24,7 @@ export class ActiveElement {
 
     public applyStyle(name: string, value: string, addUndoCommand = true) {
         this.node.style[name] = value;
+        this.livePreview.repositionBox('selected');
     }
 
     public getStyle(name: string) {

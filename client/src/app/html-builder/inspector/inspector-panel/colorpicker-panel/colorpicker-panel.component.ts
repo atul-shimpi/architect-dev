@@ -9,6 +9,8 @@ import {Component, ElementRef, EventEmitter, OnInit, Output, ViewChild, ViewEnca
 export class ColorpickerPanelComponent implements OnInit {
     @ViewChild('trigger') trigger: ElementRef;
 
+    public color: string;
+
     @Output() public selected = new EventEmitter();
 
     /**
@@ -32,5 +34,4 @@ export class ColorpickerPanelComponent implements OnInit {
     public emitClosedEvent(value: string) {
         this.closed.emit(value);
     }
-
 }

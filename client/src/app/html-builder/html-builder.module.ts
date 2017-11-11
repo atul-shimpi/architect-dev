@@ -24,6 +24,7 @@ import { BackgroundPanelComponent } from './inspector/inspector-panel/background
 import { GradientBackgroundPanelComponent } from './inspector/inspector-panel/background-panel/gradient-background-panel/gradient-background-panel.component';
 import {InspectorFloatingPanel} from "./inspector/inspector-floating-panel.service";
 import { ColorpickerPanelComponent } from './inspector/inspector-panel/colorpicker-panel/colorpicker-panel.component';
+import { GoogleFontsPanelComponent } from './inspector/inspector-panel/text-style-panel/google-fonts-panel/google-fonts-panel.component';
 
 @NgModule({
     imports: [
@@ -47,11 +48,13 @@ import { ColorpickerPanelComponent } from './inspector/inspector-panel/colorpick
         TextStylePanelComponent,
         BackgroundPanelComponent,
         GradientBackgroundPanelComponent,
-        ColorpickerPanelComponent
+        ColorpickerPanelComponent,
+        GoogleFontsPanelComponent
     ],
     entryComponents: [
         GradientBackgroundPanelComponent,
         ColorpickerPanelComponent,
+        GoogleFontsPanelComponent,
     ],
     providers: [
         LivePreview,
