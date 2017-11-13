@@ -17,3 +17,5 @@ Route::group(['prefix' => 'secure'], function () {
     Route::get('templates', 'TemplatesController@index');
 
 });
+
+Route::get('{all}', 'Vebto\Bootstrap\HomeController@index')->where('all', '.*');

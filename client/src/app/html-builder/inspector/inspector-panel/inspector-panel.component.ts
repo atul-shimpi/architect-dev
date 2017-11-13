@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, ViewEncapsulation} from '@angular/core';
 import {LivePreview} from "../../live-preview.service";
 
 @Component({
@@ -7,11 +7,18 @@ import {LivePreview} from "../../live-preview.service";
     styleUrls: ['./inspector-panel.component.scss'],
     encapsulation: ViewEncapsulation.None,
 })
-export class InspectorPanelComponent implements OnInit {
+export class InspectorPanelComponent {
 
-    constructor(public livePreview: LivePreview) {
+    /**
+     * InspectorPanelComponent Constructor.
+     */
+    constructor(public livePreview: LivePreview) {}
+
+    /**
+     * Check if specified property/style of this element can be modified.
+     */
+    public canModify(property: string) {
+        return this.livePreview.selected.canModify(property);
     }
 
-    ngOnInit() {
-    }
 }

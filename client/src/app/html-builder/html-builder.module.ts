@@ -15,7 +15,7 @@ import {UndoManager} from "./undo-manager/undo-manager.service";
 import { InspectorPanelComponent } from './inspector/inspector-panel/inspector-panel.component';
 import { AttributesPanelComponent } from './inspector/inspector-panel/attributes-panel/attributes-panel.component';
 import { SpacingPanelComponent } from './inspector/inspector-panel/spacing-panel/spacing-panel.component';
-import {MaterialModule} from "../../shared/material.module";
+import {MaterialModule} from "../shared/material.module";
 import { BorderStyleControlsComponent } from './inspector/inspector-panel/border-style-controls/border-style-controls.component';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { SideControlBorderComponent } from './inspector/inspector-panel/spacing-panel/side-control-border/side-control-border.component';
@@ -25,6 +25,7 @@ import { GradientBackgroundPanelComponent } from './inspector/inspector-panel/ba
 import {InspectorFloatingPanel} from "./inspector/inspector-floating-panel.service";
 import { ColorpickerPanelComponent } from './inspector/inspector-panel/colorpicker-panel/colorpicker-panel.component';
 import { GoogleFontsPanelComponent } from './inspector/inspector-panel/text-style-panel/google-fonts-panel/google-fonts-panel.component';
+import { ImageBackgroundPanelComponent } from './inspector/inspector-panel/background-panel/image-background-panel/image-background-panel.component';
 
 @NgModule({
     imports: [
@@ -49,12 +50,14 @@ import { GoogleFontsPanelComponent } from './inspector/inspector-panel/text-styl
         BackgroundPanelComponent,
         GradientBackgroundPanelComponent,
         ColorpickerPanelComponent,
-        GoogleFontsPanelComponent
+        GoogleFontsPanelComponent,
+        ImageBackgroundPanelComponent
     ],
     entryComponents: [
         GradientBackgroundPanelComponent,
         ColorpickerPanelComponent,
         GoogleFontsPanelComponent,
+        ImageBackgroundPanelComponent,
     ],
     providers: [
         LivePreview,

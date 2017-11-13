@@ -6,42 +6,42 @@
 </div>
 
 <mat-accordion>
-    <mat-expansion-panel class="category mat-elevation-z">
+    <mat-expansion-panel class="category mat-elevation-z" *ngIf="canModify('attributes')">
         <mat-expansion-panel-header>
             <mat-panel-title trans>Attributes</mat-panel-title>
         </mat-expansion-panel-header>
         <attributes-panel class="panel-body"></attributes-panel>
     </mat-expansion-panel>
 
-    <mat-expansion-panel class="category mat-elevation-z">
+    <mat-expansion-panel class="category mat-elevation-z" *ngIf="canModify('background')">
         <mat-expansion-panel-header>
             <mat-panel-title trans>Background</mat-panel-title>
         </mat-expansion-panel-header>
         <background-panel class="panel-body"></background-panel>
     </mat-expansion-panel>
 
-    <mat-expansion-panel class="category mat-elevation-z">
+    <mat-expansion-panel class="category mat-elevation-z" *ngIf="canModify('padding')">
         <mat-expansion-panel-header>
             <mat-panel-title trans>Padding</mat-panel-title>
         </mat-expansion-panel-header>
         <spacing-panel type="padding" class="panel-body"></spacing-panel>
     </mat-expansion-panel>
 
-    <mat-expansion-panel class="category mat-elevation-z">
+    <mat-expansion-panel class="category mat-elevation-z" *ngIf="canModify('margin')">
         <mat-expansion-panel-header>
             <mat-panel-title trans>Margin</mat-panel-title>
         </mat-expansion-panel-header>
         <spacing-panel type="margin" class="panel-body"></spacing-panel>
     </mat-expansion-panel>
 
-    <mat-expansion-panel class="category mat-elevation-z">
+    <mat-expansion-panel class="category mat-elevation-z" *ngIf="canModify('text')">
         <mat-expansion-panel-header>
             <mat-panel-title trans>Text Style</mat-panel-title>
         </mat-expansion-panel-header>
         <text-style-panel class="panel-body"></text-style-panel>
     </mat-expansion-panel>
 
-    <mat-expansion-panel class="category mat-elevation-z">
+    <mat-expansion-panel class="category mat-elevation-z" *ngIf="canModify('box')">
         <mat-expansion-panel-header>
             <mat-panel-title trans>Border</mat-panel-title>
         </mat-expansion-panel-header>
@@ -50,7 +50,7 @@
         </spacing-panel>
     </mat-expansion-panel>
 
-    <mat-expansion-panel class="category mat-elevation-z">
+    <mat-expansion-panel class="category mat-elevation-z" *ngIf="canModify('box')">
         <mat-expansion-panel-header>
             <mat-panel-title trans>Border Roundness</mat-panel-title>
         </mat-expansion-panel-header>

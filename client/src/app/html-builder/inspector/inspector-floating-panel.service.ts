@@ -31,7 +31,9 @@ export class InspectorFloatingPanel {
             {overlayX: 'start', overlayY: 'center'}
         ).withOffsetX(25);
 
-        this.overlayRef = this.overlay.create({positionStrategy: strategy});
+        this.overlayRef = this.overlay.create({positionStrategy: strategy, hasBackdrop: true});
+
+        this.overlayRef.backdropClick().subscribe(() => this.close());
 
         this.componentRef = this.overlayRef.attach(new ComponentPortal(component));
 

@@ -30,4 +30,11 @@ export class ActiveElement {
     public getStyle(name: string) {
         return window.getComputedStyle(this.node)[name];
     }
+
+    /**
+     * Check if specified property/style of this element can be modified.
+     */
+    public canModify(property: string) {
+        return this.element.canModify.indexOf(property.toLowerCase()) > -1;
+    }
 }

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Sentry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Vebto\Files\UploadsController;
 
 class TemplatesController {
 
@@ -45,7 +46,7 @@ class TemplatesController {
 	 */
 	public function index()
 	{
-		return $this->model->with('pages')->orderBy('name', 'desc')->get();
+	    return $this->model->with('pages')->orderBy('name', 'desc')->get();
 	}
 
 	/**

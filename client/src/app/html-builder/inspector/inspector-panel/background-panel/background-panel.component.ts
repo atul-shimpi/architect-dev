@@ -3,8 +3,8 @@ import {LivePreview} from "../../../live-preview.service";
 import {GradientBackgroundPanelComponent} from "./gradient-background-panel/gradient-background-panel.component";
 import {InspectorFloatingPanel} from "../../inspector-floating-panel.service";
 import {ColorpickerPanelComponent} from "../colorpicker-panel/colorpicker-panel.component";
-import {MatDialog} from "@angular/material";
-import {UploadFileModalComponent} from "vebto-client/core";
+import {Modal} from "../../../../shared/modal.service";
+import {ImageBackgroundPanelComponent} from "./image-background-panel/image-background-panel.component";
 
 @Component({
     selector: 'background-panel',
@@ -28,7 +28,7 @@ export class BackgroundPanelComponent implements OnInit {
         private livePreview: LivePreview,
         private panel: InspectorFloatingPanel,
         private renderer: Renderer2,
-        private modal: MatDialog,
+        private modal: Modal,
     ) {}
 
     ngOnInit() {
@@ -41,24 +41,22 @@ export class BackgroundPanelComponent implements OnInit {
 
     public openGradientPanel() {
         this.panel.open(GradientBackgroundPanelComponent, this.gradientButton).selected.subscribe(gradient => {
-            this.styles.backgroundImage = gradient;
             this.setBackgroundButtonColor();
-            this.applyBackgroundStyle('backgroundImage');
+            this.applyBackgroundStyle('backgroundImage', gradient);
         });
     }
 
     public openColorpickerPanel() {
         this.panel.open(ColorpickerPanelComponent, this.gradientButton, {closeOnSelected: false}).selected.subscribe(color => {
-            this.styles.backgroundColor = color;
             this.setBackgroundButtonColor();
-            this.applyBackgroundStyle('backgroundColor');
+            this.applyBackgroundStyle('backgroundColor', color);
         });
     }
 
     public openBackgroundPanel() {
-        this.modal.open(UploadFileModalComponent, {panelClass: 'modal'}).afterClosed().subscribe(data => {
-            console.log(data);
-        })
+        this.panel.open(ImageBackgroundPanelComponent, this.gradientButton).selected.subscribe(url => {
+            this.applyBackgroundStyle('backgroundImage', 'url('+url+')');
+        });
     }
 
     private setBackgroundButtonColor() {
@@ -66,7 +64,8 @@ export class BackgroundPanelComponent implements OnInit {
         this.renderer.setStyle(this.backgroundButton.nativeElement, 'backgroundColor', this.styles.backgroundColor);
     }
 
-    public applyBackgroundStyle(type: string, addUndoCommand = true) {
+    public applyBackgroundStyle(type: string, value, addUndoCommand = true) {
+        this.styles[type] = value;
         this.livePreview.selected.applyStyle(type, this.styles[type], addUndoCommand);
     }
 }
