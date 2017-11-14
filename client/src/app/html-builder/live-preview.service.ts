@@ -122,8 +122,11 @@ export class LivePreview {
     }
 
     private listenForClick() {
+        //prevent navigation via links
         this.renderer.listen(this.document.documentElement, 'click', e => {
-            e.preventDefault();
+            if (e.type === 'click' && e.target.matches('a, a *')) {
+                e.preventDefault();
+            }
 
             //hide context menu
             //this.contextMenu.hide();

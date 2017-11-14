@@ -26,6 +26,7 @@ import {InspectorFloatingPanel} from "./inspector/inspector-floating-panel.servi
 import { ColorpickerPanelComponent } from './inspector/inspector-panel/colorpicker-panel/colorpicker-panel.component';
 import { GoogleFontsPanelComponent } from './inspector/inspector-panel/text-style-panel/google-fonts-panel/google-fonts-panel.component';
 import { ImageBackgroundPanelComponent } from './inspector/inspector-panel/background-panel/image-background-panel/image-background-panel.component';
+import { ShadowsPanelComponent } from './inspector/inspector-panel/shadows-panel/shadows-panel.component';
 
 @NgModule({
     imports: [
@@ -51,7 +52,8 @@ import { ImageBackgroundPanelComponent } from './inspector/inspector-panel/backg
         GradientBackgroundPanelComponent,
         ColorpickerPanelComponent,
         GoogleFontsPanelComponent,
-        ImageBackgroundPanelComponent
+        ImageBackgroundPanelComponent,
+        ShadowsPanelComponent
     ],
     entryComponents: [
         GradientBackgroundPanelComponent,

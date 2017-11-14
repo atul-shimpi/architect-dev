@@ -49,7 +49,7 @@ bootstrapElements.push({
     validChildren: ['flow'],
     category: 'components',
     previewScale: '0.4',
-    icon: 'th-list-1',
+    icon: 'view-list',
 });
 
 bootstrapElements.push({

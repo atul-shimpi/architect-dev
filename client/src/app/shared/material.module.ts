@@ -1,7 +1,6 @@
 import {
     MatAutocompleteModule,
-    MatButtonModule, MatCheckboxModule, MatChipsModule, MatDialogModule, MatExpansionModule, MatRadioGroup,
-    MatRadioGroupBase,
+    MatButtonModule, MatCheckboxModule, MatChipsModule, MatDialogModule, MatExpansionModule,
     MatRadioModule,
     MatSliderModule,
     MatTooltipModule

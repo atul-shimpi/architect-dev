@@ -20,6 +20,13 @@
         <background-panel class="panel-body"></background-panel>
     </mat-expansion-panel>
 
+    <mat-expansion-panel class="category mat-elevation-z" *ngIf="canModify('shadows')">
+        <mat-expansion-panel-header>
+            <mat-panel-title trans>Shadows</mat-panel-title>
+        </mat-expansion-panel-header>
+        <shadows-panel class="panel-body"></shadows-panel>
+    </mat-expansion-panel>
+
     <mat-expansion-panel class="category mat-elevation-z" *ngIf="canModify('padding')">
         <mat-expansion-panel-header>
             <mat-panel-title trans>Padding</mat-panel-title>
