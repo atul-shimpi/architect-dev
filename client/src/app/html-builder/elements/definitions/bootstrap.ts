@@ -14,7 +14,7 @@ bootstrapElements.push({
     validChildren: ['flow'],
     category: 'typography',
     previewScale: '0.4',
-    icon: 'header'
+    icon: 'header-custom'
 });
 
 bootstrapElements.push({
@@ -30,7 +30,7 @@ bootstrapElements.push({
     types: ['flow'],
     validChildren: ['flow'],
     category: 'components',
-    icon: 'progress-2'
+    icon: 'show-chart'
 });
 
 bootstrapElements.push({
@@ -68,7 +68,7 @@ bootstrapElements.push({
     validChildren: ['flow'],
     category: 'components',
     previewScale: '0.4',
-    icon: 'window'
+    icon: 'crop-portrait'
 });
 
 bootstrapElements.push({
@@ -82,7 +82,7 @@ bootstrapElements.push({
     category: 'layout',
     previewScale: '0.15',
     dragHelper: true,
-    icon: 'squares',
+    icon: 'crop-square',
     attributes: {
         type: {
             list: [
@@ -104,7 +104,7 @@ bootstrapElements.push({
     category: 'layout',
     previewScale: '0.15',
     dragHelper: true,
-    icon: 'minus-outline'
+    icon: 'view-stream'
 });
 
 
@@ -117,7 +117,7 @@ bootstrapElements.push({
     types: ['flow'],
     validChildren: ['flow'],
     category: 'layout',
-    icon: 'bucket'
+    icon: 'label-outline'
 });
 
 bootstrapElements.push({
@@ -131,7 +131,7 @@ bootstrapElements.push({
     category: 'typography',
     previewScale: 2,
     hiddenClasses: ['label'],
-    icon: 'tag'
+    icon: 'label-outline'
 });
 
 bootstrapElements.push({
@@ -159,7 +159,7 @@ bootstrapElements.push({
     validChildren: ['button'],
     category: 'buttons',
     previewScale: '0.9',
-    icon: 'columns'
+    icon: 'view-column'
 });
 
 bootstrapElements.push({
@@ -187,7 +187,7 @@ bootstrapElements.push({
     validChildren: ['.btn-group'],
     category: 'buttons',
     previewScale: '0.6',
-    icon: 'progress-3'
+    icon: 'view-module'
 });
 
 
@@ -204,7 +204,7 @@ bootstrapElements.push({
     showWysiwyg: false,
     hiddenClasses: ['form-control'],
     category: 'forms',
-    icon: 'progress-0',
+    icon: 'power-input',
     attributes: {
         placeholder: {
             text: true,
@@ -263,7 +263,7 @@ bootstrapElements.push({
     showWysiwyg: false,
     hiddenClasses: ['form-control'],
     category: 'forms',
-    icon: 'doc-landscape',
+    icon: 'short-text',
     attributes: {
         rows: {
             text: true,
@@ -300,7 +300,7 @@ bootstrapElements.push({
     validChildren: false,
     category: 'forms',
     showWysiwyg: false,
-    icon: 'check'
+    icon: 'check-box'
 });
 
 bootstrapElements.push({
@@ -328,7 +328,7 @@ bootstrapElements.push({
     previewScale: '0.5',
     showWysiwyg: false,
     category: 'forms',
-    icon: 'popup',
+    icon: 'view-list',
     hiddenClasses: ['input-group'],
 });
 
@@ -356,7 +356,7 @@ bootstrapElements.push({
     previewScale: '0.5',
     showWysiwyg: false,
     category: 'forms',
-    icon: 'menu',
+    icon: 'view-headline',
     hiddenClasses: ['form-group']
 });
 
@@ -400,7 +400,7 @@ bootstrapElements.push({
 
         $scope.linker.css({top: top, left: left});
     },
-    icon: 'link-outline'
+    icon: 'link'
 });
 
 
@@ -528,7 +528,7 @@ bootstrapElements.push({
     previewScale: '0.5',
     showWysiwyg: false,
     category: 'forms',
-    icon: 'arrow-combo'
+    icon: 'arrow-drop-down'
 });
 
 bootstrapElements.push({
@@ -539,7 +539,7 @@ bootstrapElements.push({
     types: ['flow', 'phrasing', 'embedded', 'interactive', 'form-associated'],
     validChildren: false,
     category: 'media',
-    icon: 'picture-outline',
+    icon: 'image',
     canModify: ['padding', 'margin', 'attributes', 'shadows', 'borders'],
     previewScale: '0.3',
     onEdit: function ($scope) {
@@ -566,7 +566,7 @@ bootstrapElements.push({
     types: ['flow'],
     validChildren: false,
     category: 'media',
-    icon: 'video',
+    icon: 'video-library',
     canModify: ['padding', 'margin', 'shadows', 'attributes'],
     previewScale: '0.7',
     previewHtml: '<img data-name="responsive video" data-src="//www.youtube.com/embed/sENM2wA_FTg" class="img-responsive preview-node" src="assets/images/previews/responsiveEmbedPreview.png">',
@@ -615,7 +615,7 @@ bootstrapElements.push({
     types: ['flow'],
     validChildren: false,
     category: 'media',
-    icon: 'grid',
+    icon: 'grid-on',
     canModify: ['padding', 'margin', 'shadows', 'attributes'],
     previewScale: '0.2'
 });

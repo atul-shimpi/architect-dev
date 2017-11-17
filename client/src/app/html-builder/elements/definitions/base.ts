@@ -59,7 +59,7 @@ baseElements.push({
     types: ['flow'],
     validChildren: ['phrasing'],
     category: 'typography',
-    icon: 'paragraph'
+    icon: 'short-text'
 });
 
 baseElements.push({
@@ -71,7 +71,7 @@ baseElements.push({
     validChildren: false,
     category: 'layout',
     dragHelper: true,
-    icon: 'divide-outline'
+    icon: 'remove'
 });
 
 baseElements.push({
@@ -82,7 +82,7 @@ baseElements.push({
     types: ['flow', 'phrasing'],
     validChildren: ['phrasing'],
     category: 'typography',
-    icon: 'info-circled'
+    icon: 'info'
 });
 
 baseElements.push({
@@ -105,7 +105,7 @@ baseElements.push({
     category: 'typography',
     previewScale: '0.4',
     scaleDragPreview: false,
-    icon: 'menu-outline'
+    icon: 'view-list'
 });
 
 baseElements.push({
@@ -121,7 +121,7 @@ baseElements.push({
     category: 'typography',
     previewScale: '0.5',
     scaleDragPreview: false,
-    icon: 'quote'
+    icon: 'format-quote'
 });
 
 baseElements.push({
@@ -141,7 +141,7 @@ baseElements.push({
     types: ['flow'],
     validChildren: ['li'],
     category: 'typography',
-    icon: 'th-list'
+    icon: 'format-list-bulleted'
 });
 
 baseElements.push({
@@ -162,7 +162,7 @@ baseElements.push({
     types: ['flow', 'phrasing', 'interactive', 'listed', 'labelable', 'submittable', 'reassociateable', 'form-associated'],
     validChildren: ['phrasing'],
     category: 'buttons',
-    icon: 'doc-landscape'
+    icon: 'button-custom'
 });
 
 baseElements.push({
@@ -175,7 +175,7 @@ baseElements.push({
     category: 'layout',
     dragHelper: true,
     previewScale: '0.7',
-    icon: 'blank'
+    icon: 'crop-landscape'
 });
 
 baseElements.push({
@@ -186,7 +186,7 @@ baseElements.push({
     types: ['heading', 'flow'],
     validChildren: ['phrasing'],
     category: 'typography',
-    icon: 'header',
+    icon: 'format-size',
     attributes: {
         types: {
             list: [

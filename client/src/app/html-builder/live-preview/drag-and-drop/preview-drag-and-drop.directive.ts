@@ -6,6 +6,7 @@ import {UndoManager} from "../../undo-manager/undo-manager.service";
 import {Elements} from "../../elements/elements.service";
 import commandParams from "../../undo-manager/undo-manager-types";
 import {ActiveElement} from "../active-element";
+import {DragVisualHelperComponent} from "./drag-visual-helper/drag-visual-helper.component";
 
 @Directive({
     selector: '[previewDragAndDrop]'
@@ -14,16 +15,12 @@ export class PreviewDragAndDropDirective implements OnInit {
 
     @Input() dragHandle: HTMLElement;
     @Input() dragOverlay: HTMLElement;
+    @Input() dragHelper: DragVisualHelperComponent;
 
     /**
      * Helper service for scrolling preview during drag and drop.
      */
     private scroller: LivePreviewScroller;
-
-    /**
-     * Mirror helper of element that is currently being dragged.
-     */
-    private dragMirror: HTMLElement;
 
     /**
      * Placeholder helper for element that is being dragged.
@@ -66,7 +63,7 @@ export class PreviewDragAndDropDirective implements OnInit {
 
         this.renderer.setStyle(this.dragOverlay, 'display', 'block');
         this.renderer.setAttribute(this.dragEl.node, 'data-display', this.dragEl.node.style.display);
-        this.createAndAppendDragMirror();
+        this.dragHelper.show();
         this.createAndAppendDropPlaceholder();
         this.renderer.setStyle(this.dragEl.node, 'display', 'none');
     }
@@ -110,8 +107,7 @@ export class PreviewDragAndDropDirective implements OnInit {
 
         this.renderer.setStyle(this.dragEl.node, 'display', this.dragEl.node.getAttribute('data-display'));
         this.renderer.removeAttribute(this.dragEl.node, 'data-display');
-        this.dragMirror.remove();
-        this.dragMirror = null;
+        this.dragHelper.hide();
         this.dropPlaceholder.remove();
         this.dropPlaceholder = null;
         this.renderer.setStyle(this.dragOverlay, 'display', 'none');
@@ -195,24 +191,10 @@ export class PreviewDragAndDropDirective implements OnInit {
     }
 
     /**
-     * Create drag mirror helper by cloning node that is being dragged.
-     */
-    private createAndAppendDragMirror() {
-        this.dragMirror = this.dragEl.node.cloneNode(true) as HTMLElement;
-        this.renderer.setStyle(this.dragMirror, 'position', 'fixed');
-        this.renderer.setStyle(this.dragMirror, 'pointer-events', 'none');
-        this.renderer.setStyle(this.dragMirror, 'margin', 0);
-        this.renderer.setStyle(this.dragMirror, 'padding', 0);
-        this.renderer.setStyle(this.dragMirror, 'transition', 'none');
-        this.dragEl.node.parentNode.appendChild(this.dragMirror);
-    }
-
-    /**
      * Position drag mirror at specified coordinates.
      */
     private repositionDragMirror(y: any, x: number) {
-        this.renderer.setStyle(this.dragMirror, 'top', y + 'px');
-        this.renderer.setStyle(this.dragMirror, 'left', x + 'px');
+        this.dragHelper.reposition(y, x);
     }
 
     /**
@@ -232,12 +214,11 @@ export class PreviewDragAndDropDirective implements OnInit {
         this.dropPlaceholder = this.livePreview.document.createElement('div');
         this.renderer.setStyle(this.dropPlaceholder, 'display', this.dragEl.node.getAttribute('data-display'));
         this.renderer.setStyle(this.dropPlaceholder, 'pointer-events', 'none');
-        this.renderer.setStyle(this.dropPlaceholder, 'height', '20px');
-        this.renderer.setStyle(this.dropPlaceholder, 'opacity', '0.7');
+        this.renderer.setStyle(this.dropPlaceholder, 'height', '50px');
         this.renderer.setStyle(
             this.dropPlaceholder,
             'background',
-            'repeating-linear-gradient(45deg,#ccc,#ccc 2px,#dbdbdb 2px,#dbdbdb 4px)'
+            'url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="6" height="6"><rect width="6" height="6" fill="transparent"/><path d="M0 6L6 0ZM7 5L5 7ZM-1 1L1 -1Z" stroke="rgba(0, 0, 0, 0.2)" stroke-width="2"/></svg>\')'
         );
         this.dragEl.node.parentNode.appendChild(this.dropPlaceholder);
     }

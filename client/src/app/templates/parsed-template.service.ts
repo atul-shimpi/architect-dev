@@ -9,10 +9,14 @@ export class ParsedTemplate {
      */
     private doc: Document;
 
+    private baseUrl: string;
+
     /**
      * Parsed template constructor.
      */
-    constructor(private template: Template) {}
+    constructor(private template: Template, baseUrl: string) {
+        this.baseUrl = baseUrl+'storage/';
+    }
 
     /**
      * Get source html of specified page with added css and base tag.
@@ -21,7 +25,7 @@ export class ParsedTemplate {
         this.doc = new DOMParser().parseFromString(this.getValidPageHtml(number), 'text/html');
 
         let base = this.doc.createElement('base');
-        base.href = 'http://localhost/architect3/server/storage/';
+        base.href = this.baseUrl;
         this.doc.head.insertBefore(base, this.doc.head.firstChild);
 
         this.addFrameworkLink('bootstrap-3');
@@ -39,7 +43,7 @@ export class ParsedTemplate {
     private addFrameworkLink(name: string) {
         let link = this.doc.createElement('link');
         link.rel = 'stylesheet';
-        link.href = 'http://localhost/architect3/server/storage/frameworks/'+name+'/styles.min.css';
+        link.href = this.baseUrl+'frameworks/'+name+'/styles.min.css';
         this.doc.head.appendChild(link);
     }
 

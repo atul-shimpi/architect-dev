@@ -2,6 +2,7 @@ import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angu
 import {Templates} from "../../templates/templates.service";
 import {LivePreview} from "../live-preview.service";
 import {Elements} from "../elements/elements.service";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
     selector: 'html-builder',
@@ -15,15 +16,15 @@ export class HtmlBuilderComponent implements OnInit {
         private templates: Templates,
         private livePreview: LivePreview,
         private elements: Elements,
+        private route: ActivatedRoute,
     ) {}
 
     ngOnInit() {
-        this.elements.init();
+        this.elements.init(this.route.snapshot.data['customElements']);
 
         this.templates.all().subscribe(templates => {
             this.livePreview.applyTemplate(templates[0]);
         });
-
     }
 
 

@@ -205,8 +205,23 @@ export class Elements {
     /**
      * Register all the base builder elements
      */
-    public init() {
+    public init(customElements: any[]) {
         const elements = baseElements.concat(bootstrapElements);
         elements.forEach(element => this.addElement(element));
+        this.addCustomElements(customElements);
+    }
+
+    private addCustomElements(customElements: any[]) {
+        let customCss = '';
+
+        customElements.forEach(element => {
+            let config = eval(element.config);
+            config.html = element.html;
+            config.css = element.css;
+
+            this.addElement(config);
+
+            customCss += "\n"+config.css;
+        });
     }
 }

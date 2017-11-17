@@ -17,5 +17,6 @@
         </div>
     </div>
 </div>
-<iframe src="about:blank" #iframe previewDragAndDrop [dragHandle]="dragHandle" [dragOverlay]="dragOverlay"></iframe>
+<iframe src="about:blank" #iframe previewDragAndDrop [dragHandle]="dragHandle" [dragOverlay]="dragOverlay" [dragHelper]="dragHelper"></iframe>
 <div class="drag-overlay" #dragOverlay></div>
+<drag-visual-helper #dragHelper></drag-visual-helper>

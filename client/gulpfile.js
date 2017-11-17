@@ -241,14 +241,37 @@ function getIconNames() {
     var htmlFiles = getFilesInPath('./src/app', '.html'),
         names     = extractIconNamesFromHtmlFiles(htmlFiles);
 
+        var tsFiles = getFilesInPath('./src/app/html-builder/elements/definitions', '.ts');
+        tsFiles = tsFiles.concat(getFilesInPath('./../server/storage/app/public/elements', '.html'));
+
+        names = names.concat(extractIconNamesFromTsFiles(tsFiles));
+
     //add icons that are not in html files, but should be included
-    names = names.concat(['trending-up', 'whatshot', 'album', 'local-offer', 'audiotrack', 'mic', 'person', 'library-music']);
+    names = names.concat([]);
 
     //filter out duplicates from icon names
     return names.reduce(function(accum, current) {
         if (accum.indexOf(current) < 0) accum.push(current);
         return accum;
     }, []);
+}
+
+function extractIconNamesFromTsFiles(files) {
+    var names = [];
+
+    files.forEach(function(path) {
+        var contents = fs.readFileSync(path, 'utf8');
+        var regex = /icon: '(.+?)'/g;
+
+        var matches, output = [];
+        while (matches = regex.exec(contents)) {
+            output.push(matches[1]);
+        }
+
+        names = names.concat(output);
+    });
+
+    return names;
 }
 
 /**

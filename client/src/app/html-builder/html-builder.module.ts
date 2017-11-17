@@ -27,6 +27,9 @@ import { ColorpickerPanelComponent } from './inspector/inspector-panel/colorpick
 import { GoogleFontsPanelComponent } from './inspector/inspector-panel/text-style-panel/google-fonts-panel/google-fonts-panel.component';
 import { ImageBackgroundPanelComponent } from './inspector/inspector-panel/background-panel/image-background-panel/image-background-panel.component';
 import { ShadowsPanelComponent } from './inspector/inspector-panel/shadows-panel/shadows-panel.component';
+import {ElementsApi} from "./elements/elements-api.service";
+import {CustomElementsResolver} from "./elements/custom-elements-resolver.service";
+import { DragVisualHelperComponent } from './live-preview/drag-and-drop/drag-visual-helper/drag-visual-helper.component';
 
 @NgModule({
     imports: [
@@ -53,7 +56,8 @@ import { ShadowsPanelComponent } from './inspector/inspector-panel/shadows-panel
         ColorpickerPanelComponent,
         GoogleFontsPanelComponent,
         ImageBackgroundPanelComponent,
-        ShadowsPanelComponent
+        ShadowsPanelComponent,
+        DragVisualHelperComponent
     ],
     entryComponents: [
         GradientBackgroundPanelComponent,
@@ -68,6 +72,8 @@ import { ShadowsPanelComponent } from './inspector/inspector-panel/shadows-panel
         Inspector,
         UndoManager,
         InspectorFloatingPanel,
+        ElementsApi,
+        CustomElementsResolver,
     ]
 })
 export class HtmlBuilderModule {

@@ -5,6 +5,7 @@ import {Elements} from "./elements/elements.service";
 import {Inspector} from "./inspector/inspector.service";
 import {ActiveElement} from "./live-preview/active-element";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {Settings} from "vebto-client/core";
 
 @Injectable()
 export class LivePreview {
@@ -36,8 +37,12 @@ export class LivePreview {
      */
     public elementSelected = new BehaviorSubject(null);
 
-    constructor(private zone: NgZone, private elements: Elements, private inspector: Inspector) {
-    }
+    constructor(
+        private zone: NgZone,
+        private elements: Elements,
+        private inspector: Inspector,
+        private settings: Settings
+    ) {}
 
     public init(renderer: Renderer2, iframe: ElementRef, container: ElementRef, hoverBox: ElementRef, selectedBox: ElementRef) {
         this.document = iframe.nativeElement.contentWindow.document;
@@ -48,10 +53,6 @@ export class LivePreview {
         this.container = container.nativeElement;
 
         this.bindToIframeEvents();
-
-        // this.http.get('templates').subscribe(response => {
-        //
-        // });
     }
 
     private bindToIframeEvents() {
@@ -67,7 +68,7 @@ export class LivePreview {
     }
 
     public applyTemplate(template: Template) {
-        const parsedTemplate = new ParsedTemplate(template);
+        const parsedTemplate = new ParsedTemplate(template, this.settings.getBaseUrl(true));
 
         this.iframe.onload = e => {
             this.bindToIframeEvents();
