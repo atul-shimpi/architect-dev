@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
 
-type panelNames = 'elements'|'inspector'|'pages'|'themes'|'settings';
+type panelNames = 'elements'|'inspector'|'pages'|'themes'|'settings'|'layout';
 
 @Injectable()
 export class Inspector {
 
-    private activePanel: panelNames = 'elements';
+    private activePanel: panelNames = 'layout';
 
     public togglePanel(name: panelNames) {
         this.activePanel = name;

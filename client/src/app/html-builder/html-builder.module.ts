@@ -30,6 +30,8 @@ import { ShadowsPanelComponent } from './inspector/inspector-panel/shadows-panel
 import {ElementsApi} from "./elements/elements-api.service";
 import {CustomElementsResolver} from "./elements/custom-elements-resolver.service";
 import { DragVisualHelperComponent } from './live-preview/drag-and-drop/drag-visual-helper/drag-visual-helper.component';
+import { LayoutPanelComponent } from './inspector/layout-panel/layout-panel.component';
+import { ColumnPresetsComponent } from './inspector/layout-panel/column-presets/column-presets.component';
 
 @NgModule({
     imports: [
@@ -57,7 +59,9 @@ import { DragVisualHelperComponent } from './live-preview/drag-and-drop/drag-vis
         GoogleFontsPanelComponent,
         ImageBackgroundPanelComponent,
         ShadowsPanelComponent,
-        DragVisualHelperComponent
+        DragVisualHelperComponent,
+        LayoutPanelComponent,
+        ColumnPresetsComponent
     ],
     entryComponents: [
         GradientBackgroundPanelComponent,

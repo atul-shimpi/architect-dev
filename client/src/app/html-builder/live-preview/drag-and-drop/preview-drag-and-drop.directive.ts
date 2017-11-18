@@ -34,6 +34,8 @@ export class PreviewDragAndDropDirective implements OnInit {
 
     private undoCommandParams: commandParams;
 
+    private oldX: number;
+
     /**
      * PreviewDragAndDropDirective Constructor.
      */
@@ -51,7 +53,7 @@ export class PreviewDragAndDropDirective implements OnInit {
 
     private handleDragStart(e: HammerInput|any) {
         this.livePreview.dragging = true;
-        this.dragEl = this.livePreview.hover;
+        this.dragEl = this.livePreview.selected;
 
         //start a new undo command
         this.undoCommandParams = {
@@ -62,10 +64,13 @@ export class PreviewDragAndDropDirective implements OnInit {
         };
 
         this.renderer.setStyle(this.dragOverlay, 'display', 'block');
-        this.renderer.setAttribute(this.dragEl.node, 'data-display', this.dragEl.node.style.display);
         this.dragHelper.show();
-        this.createAndAppendDropPlaceholder();
-        this.renderer.setStyle(this.dragEl.node, 'display', 'none');
+
+        if (this.dragEl.element.name !== 'column') {
+            this.renderer.setAttribute(this.dragEl.node, 'data-display', this.dragEl.node.style.display);
+            this.createAndAppendDropPlaceholder();
+            this.renderer.setStyle(this.dragEl.node, 'display', 'none');
+        }
     }
 
     private getNodeIndex(nodeList: NodeList, node: Node) {
@@ -80,6 +85,7 @@ export class PreviewDragAndDropDirective implements OnInit {
               y = e.center.y + scrollTop;
 
         let under = this.livePreview.getElementFromPoint(x, y);
+        if ( ! under) return;
 
         this.scroller.scroll(y);
 
@@ -88,8 +94,7 @@ export class PreviewDragAndDropDirective implements OnInit {
         const classes = this.dragEl.node.className;
 
         if (classes && classes.match('col-')) {
-            console.log('sort cols');
-            //return this._sortColumns(el, point);
+            return this.sortColumns(under, x, y);
         } else {
             return this.repositionDropPlaceholder(under, x, y);
         }
@@ -98,19 +103,43 @@ export class PreviewDragAndDropDirective implements OnInit {
     private handleDragEnd(e: HammerInput|any) {
         this.scroller.stopScrolling();
         this.livePreview.dragging = false;
-        this.dropPlaceholder.parentNode.replaceChild(this.dragEl.node, this.dropPlaceholder);
+        this.dropPlaceholder && this.dropPlaceholder.parentNode.replaceChild(this.dragEl.node, this.dropPlaceholder);
 
         //store index of active on last command so we can redo it
         this.undoCommandParams.redoIndex = this.getNodeIndex(this.dragEl.node.parentNode.childNodes, this.dragEl.node);
         this.undoCommandParams.redoParent = this.dragEl.node.parentNode;
         this.undoManager.add('reorderElement', this.undoCommandParams);
 
-        this.renderer.setStyle(this.dragEl.node, 'display', this.dragEl.node.getAttribute('data-display'));
-        this.renderer.removeAttribute(this.dragEl.node, 'data-display');
         this.dragHelper.hide();
-        this.dropPlaceholder.remove();
-        this.dropPlaceholder = null;
         this.renderer.setStyle(this.dragOverlay, 'display', 'none');
+
+        if (this.dragEl.element.name !== 'column') {
+            this.renderer.setStyle(this.dragEl.node, 'display', this.dragEl.node.getAttribute('data-display'));
+            this.renderer.removeAttribute(this.dragEl.node, 'data-display');
+            this.dropPlaceholder.remove();
+            this.dropPlaceholder = null;
+        }
+    }
+
+    private sortColumns(node: HTMLElement, x: number, y: number) {
+        const className = node.parentElement.className;
+
+        if (node === this.dragEl.node || node.parentNode !== this.dragEl.node.parentNode) return;
+
+        //constrain column ordering withing row
+        if (className && className.match('row')) {
+
+            //switch column positions
+            if (this.oldX && x > this.oldX) {
+                this.dragEl.node['before'](node);
+            } else {
+                this.dragEl.node['after'](node);
+            }
+
+            this.livePreview.repositionBox('selected');
+        }
+
+        this.oldX = x;
     }
 
     /**

@@ -1,0 +1,22 @@
+<mat-accordion class="containers">
+    <mat-expansion-panel class="container mat-elevation-z" *ngFor="let container of containers; index as index" (opened)="selectRow(container.rows[0])">
+        <mat-expansion-panel-header>
+            <mat-panel-title class="name"><span trans>Container</span> {{index + 1}}</mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="container-config">
+            <div class="rows">
+                <div class="row" *ngFor="let row of container.rows; index as index" (click)="selectRow(row)" [class.selected]="isSelected(row)">
+                    <span trans>Row</span> {{index + 1}}
+                </div>
+            </div>
+
+            <ng-container *ngIf="selectedRow">
+                <column-presets></column-presets>
+
+                <div class="current-columns">
+                    <div class="column" *ngFor="let column of selectedRow.columns" [style.width]="widthFromSpan(column.span)" (click)="selectColumn(column.node)">{{column.span}}</div>
+                </div>
+            </ng-container>
+        </div>
+    </mat-expansion-panel>
+</mat-accordion>

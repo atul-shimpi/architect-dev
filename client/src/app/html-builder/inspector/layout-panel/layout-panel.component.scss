@@ -1,0 +1,37 @@
+@import "../../../../scss/variables";
+
+layout-panel {
+  display: block;
+
+  .container-config {
+    padding: 5px;
+  }
+
+  .rows {
+    > .row {
+      padding: 10px;
+      background-color: $inspector-bg-color-200;
+      margin-bottom: 5px;
+      border-radius: 3px;
+      cursor: pointer;
+
+      &.selected {
+        background-color: $inspector-bg-color-100;
+      }
+    }
+  }
+
+  .current-columns {
+    display: flex;
+    margin-top: 10px;
+
+    > .column {
+      background-color: $inspector-bg-color-200;
+      border: 1px solid $inspector-bg-color-100;
+      margin: 0 0 0 -1px;
+      padding: 10px 0;
+      text-align: center;
+      cursor: pointer;
+    }
+  }
+}

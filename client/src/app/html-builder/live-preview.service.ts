@@ -37,6 +37,11 @@ export class LivePreview {
      */
     public elementSelected = new BehaviorSubject(null);
 
+    /**
+     * Fired when preview iframe contents change.
+     */
+    public contentChanged = new BehaviorSubject(null);
+
     constructor(
         private zone: NgZone,
         private elements: Elements,
@@ -72,6 +77,7 @@ export class LivePreview {
 
         this.iframe.onload = e => {
             this.bindToIframeEvents();
+            this.contentChanged.next(null);
         };
 
         this.document.open();
@@ -172,7 +178,7 @@ export class LivePreview {
     /**
      * Select specified node as active one in the builder.
      */
-    public selectNode(node: HTMLElement|number) {
+    public selectNode(node: HTMLElement|number, openInspector = true) {
         if (this.rowEditorOpen) { return true; }
 
         this.selecting = true;
@@ -216,7 +222,9 @@ export class LivePreview {
 
         this.selected.hasInlineStyles = this.selected.node.style[0] !== null;
 
-        this.inspector.togglePanel('inspector');
+        if (openInspector) {
+            this.inspector.togglePanel('inspector');
+        }
 
         setTimeout(() => {
             this.selecting = false;

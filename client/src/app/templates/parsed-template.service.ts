@@ -29,13 +29,12 @@ export class ParsedTemplate {
         this.doc.head.insertBefore(base, this.doc.head.firstChild);
 
         this.addFrameworkLink('bootstrap-3');
+        this.addIframeCss();
         this.addIconsLink();
 
         let style = this.doc.createElement('style');
         style.innerHTML = this.getValidPageCss(number);
         this.doc.head.appendChild(style);
-
-
 
         return '<!DOCTYPE html>' + this.doc.documentElement.outerHTML;
     }
@@ -68,4 +67,10 @@ export class ParsedTemplate {
         return this.template.pages[number].css.trim();
     }
 
+    private addIframeCss() {
+        let link = this.doc.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = this.baseUrl+'css/iframe.css';
+        this.doc.head.appendChild(link);
+    }
 }

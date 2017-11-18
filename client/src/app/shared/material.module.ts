@@ -1,5 +1,4 @@
 import {
-    MatAutocompleteModule,
     MatButtonModule, MatCheckboxModule, MatChipsModule, MatDialogModule, MatExpansionModule,
     MatRadioModule,
     MatSliderModule,
@@ -19,7 +18,6 @@ import {OverlayModule} from "@angular/cdk/overlay";
         MatChipsModule,
         PortalModule,
         OverlayModule,
-        MatAutocompleteModule,
         MatDialogModule,
         MatRadioModule,
     ],
@@ -32,7 +30,6 @@ import {OverlayModule} from "@angular/cdk/overlay";
         MatChipsModule,
         PortalModule,
         OverlayModule,
-        MatAutocompleteModule,
         MatDialogModule,
         MatRadioModule,
     ],
