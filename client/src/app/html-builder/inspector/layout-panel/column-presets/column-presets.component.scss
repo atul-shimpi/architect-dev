@@ -18,7 +18,11 @@ column-presets {
     flex: 0 0 calc(25% - 4px);
     margin-bottom: 8px;
 
-    &:hover > .col {
+    &.active > .col {
+      background-color: $accent-color;
+    }
+
+    &:hover:not(.active) > .col {
       background-color: lighten($inspector-bg-color-100, 5%);
     }
 
@@ -52,6 +56,19 @@ column-presets {
 
     .col-2 {
       width: percentage(2 / 12);
+    }
+  }
+
+  > .custom-span-panel {
+    margin-top: 5px;
+
+    > input {
+      height: 30px;
+      margin: 0;
+    }
+
+    > .error {
+      margin-top: 5px;
     }
   }
 }

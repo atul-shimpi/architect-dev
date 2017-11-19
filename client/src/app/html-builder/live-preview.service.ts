@@ -1,4 +1,4 @@
-import {ElementRef, Injectable, NgZone, Renderer2} from '@angular/core';
+import {ElementRef, EventEmitter, Injectable, NgZone, Renderer2} from '@angular/core';
 import {Template} from "../../types/models/Template";
 import {ParsedTemplate} from "../templates/parsed-template.service";
 import {Elements} from "./elements/elements.service";
@@ -40,7 +40,7 @@ export class LivePreview {
     /**
      * Fired when preview iframe contents change.
      */
-    public contentChanged = new BehaviorSubject(null);
+    public contentChanged = new EventEmitter();
 
     constructor(
         private zone: NgZone,

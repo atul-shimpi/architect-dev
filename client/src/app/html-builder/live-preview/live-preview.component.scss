@@ -4,6 +4,7 @@ live-preview {
   display: block;
   position: relative;
   z-index: 2;
+  overflow: hidden;
 
   > iframe {
     width: 100%;

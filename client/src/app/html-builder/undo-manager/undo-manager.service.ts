@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
 import {UndoCommand} from "./undo-command";
 import commandParams from "./undo-manager-types";
+import {LivePreview} from "../live-preview.service";
 
 @Injectable()
 export class UndoManager {
 
-    constructor() {
-    }
+    constructor(private livePreview: LivePreview) {}
 
     /**
      * Stack of undo/redo commands.
@@ -43,6 +43,7 @@ export class UndoManager {
         if (command) {
             command.undo();
             this.pointer -= 1;
+            this.livePreview.contentChanged.emit();
         }
     }
 
@@ -55,6 +56,7 @@ export class UndoManager {
         if (command) {
             command.redo();
             this.pointer += 1;
+            this.livePreview.contentChanged.emit();
         }
     }
 

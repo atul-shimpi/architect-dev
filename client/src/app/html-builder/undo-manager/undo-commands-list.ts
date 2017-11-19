@@ -21,6 +21,19 @@ export class UndoCommandsList {
         }
     }
 
+    public static domChanges(params: commandParams) {
+        return {
+            undo: () => {
+                params.node.parentNode.replaceChild(params.oldNode, params.node);
+                params.node = params.oldNode;
+            },
+            redo: () => {
+                params.node.parentNode.replaceChild(params.newNode, params.node);
+                params.node = params.newNode;
+            },
+        }
+    }
+
     // /**
     //  * Command for undoing/redoing dom node deletion.
     //  */

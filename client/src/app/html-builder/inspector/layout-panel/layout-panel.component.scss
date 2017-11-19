@@ -31,7 +31,11 @@ layout-panel {
       margin: 0 0 0 -1px;
       padding: 10px 0;
       text-align: center;
-      cursor: pointer;
+      cursor: ew-resize;
+
+      &:hover {
+        background-color: $inspector-bg-color-100;
+      }
     }
   }
 }

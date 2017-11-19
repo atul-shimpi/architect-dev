@@ -3,6 +3,8 @@
 drag-visual-helper {
   display: block;
   position: absolute;
+  bottom: -50px;
+  left: -100px;
   pointer-events: none;
   background-color: $inspector-bg-color-100;
   color: $inspector-text-color-100;
