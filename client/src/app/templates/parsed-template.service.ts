@@ -1,7 +1,5 @@
-import {Injectable} from '@angular/core';
 import {Template} from "../../types/models/Template";
 
-@Injectable()
 export class ParsedTemplate {
 
     /**

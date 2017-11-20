@@ -7,27 +7,25 @@ inspector {
   box-shadow: 1px 0 2px rgba(0,0,0,.5);
 
   .mat-expansion-panel {
-    margin-bottom: 5px;
-    background-color: transparent;
-    color: $inspector-text-color-300;
+    margin-bottom: 10px;
+    //background-color: $inspector-bg-color-300;
+    border: 1px solid $inspector-bg-color-400;
 
     &.mat-expanded {
+      background-color: $inspector-bg-color-100;
+
       > .mat-expansion-panel-header {
-        background-color: $inspector-bg-color-100;
+        background-color: $inspector-bg-color-200;
       }
     }
 
-    &.mat-expansion-panel-spacing {
-      margin: 0;
-    }
-
     &:not(.mat-expanded) > .mat-expansion-panel-header:not([aria-disabled=true]):hover {
-      background-color: $inspector-bg-color-100;
+      background-color: $inspector-bg-color-200;
     }
 
     > .mat-expansion-panel-header {
       border-radius: 3px;
-      background-color: $inspector-bg-color-200;
+      //background-color: $inspector-bg-color-200;
       overflow: hidden;
 
       .mat-expansion-panel-header-title {
@@ -47,8 +45,7 @@ inspector {
     }
 
     .mat-expansion-panel-body {
-      margin: 6px 0 3px;
-      background-color: transparent;
+      margin: 8px;
       overflow: hidden;
     }
   }
@@ -82,7 +79,7 @@ inspector {
     width: 70px;
     flex: 0 0 70px;
     height: 100%;
-    background-color: $inspector-bg-color-400;
+    background-color: #fff;
     color: $inspector-text-color-200;
     text-align: center;
     padding: 20px 0;
@@ -99,7 +96,7 @@ inspector {
         padding: 12px 0;
 
         &[disabled] {
-          color: #254a5d;
+          color: $inspector-text-color-100;
           cursor: initial;
         }
 

@@ -10,6 +10,7 @@ column-presets {
     line-height: 28px;
     padding: 0 6px;
     font-weight: 500;
+    color: #fff;
   }
 
   > .preset {
@@ -18,19 +19,16 @@ column-presets {
     flex: 0 0 calc(25% - 4px);
     margin-bottom: 8px;
 
-    &.active > .col {
-      background-color: $accent-color;
-    }
-
-    &:hover:not(.active) > .col {
-      background-color: lighten($inspector-bg-color-100, 5%);
+    &.active > .col, &:hover > .col {
+      opacity: 1;
     }
 
     > .col {
       height: 100%;
       margin-right: 3px;
       border-radius: 2px;
-      background-color: $inspector-bg-color-100;
+      background-color: $accent-color;
+      opacity: 0.2;
       cursor: pointer;
     }
 

@@ -1,9 +1,13 @@
-<nav class="inspector-nav">
+<nav class="inspector-nav mat-elevation-z1">
     <button class="no-style back-button" matTooltip="Dashboard">
         <svg-icon name="keyboard-arrow-left"></svg-icon>
     </button>
 
     <div class="panel-nav">
+        <div class="panel-nav-item" [class.active]="inspector.activePanelIs('layout')" (click)="inspector.togglePanel('layout')">
+            <svg-icon name="web-design-custom"></svg-icon>
+            <div class="name" trans>Layout</div>
+        </div>
         <div class="panel-nav-item" [class.active]="inspector.activePanelIs('elements')" (click)="inspector.togglePanel('elements')">
             <svg-icon name="puzzle-custom"></svg-icon>
             <div class="name" trans>Elements</div>

@@ -1,22 +1,43 @@
 <mat-accordion class="containers">
-    <mat-expansion-panel class="container mat-elevation-z" *ngFor="let container of containers; index as index" (closed)="selectRow(container.rows[0])" #expPanel>
-        <mat-expansion-panel-header (click)="expPanel.expanded?selectRow(container.rows[0]):null">
-            <mat-panel-title class="name"><span trans>Container</span> {{index + 1}}</mat-panel-title>
-        </mat-expansion-panel-header>
-        <div class="container-config">
-            <div class="rows">
-                <div class="row" *ngFor="let row of container.rows; index as index" (click)="selectRow(row)" [class.selected]="isSelected(row)">
-                    <span trans>Row</span> {{index + 1}}
+    <button class="no-style add-item-button" (click)="layoutPanel.createContainer(null, 'start')"><span trans>+ ADD CONTAINER</span></button>
+
+    <ng-container *ngFor="let container of layoutPanel.containers; index as index">
+        <mat-expansion-panel class="container mat-elevation-z" [expanded]="containerIsSelected(container)" #expPanel>
+            <mat-expansion-panel-header (click)="expPanel.expanded?onPanelOpen(container, index):null">
+                <mat-panel-title class="name"><span trans>Container</span> {{index + 1}}</mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="container-config">
+                <div class="rows">
+                    <button class="no-style add-item-button" (click)="layoutPanel.createRow(container.node, container.rows[0], 'start')"><span trans>+ ADD ROW</span></button>
+
+                    <ng-container *ngFor="let row of container.rows; index as index">
+                        <div class="row" (click)="layoutPanel.selectRow(row)" [class.selected]="isSelected(row)">
+                            <span trans>Row</span> {{index + 1}}
+                        </div>
+
+                        <button class="no-style add-item-button" (click)="layoutPanel.createRow(container.node, row, 'after')"><span trans>+ ADD ROW</span></button>
+                    </ng-container>
                 </div>
+
+                <ng-container *ngIf="layoutPanel.selectedRow">
+                    <column-presets [preset]="layoutPanel.selectedRow.preset" (selected)="layoutPanel.applyPreset($event)"></column-presets>
+
+                    <div class="current-columns" reorderColumns>
+                        <div class="column column-helper"
+                             #columnHelper
+                             *ngFor="let column of layoutPanel.selectedRow.columns"
+                             [style.width]="widthFromSpan(column.span)"
+                             (click)="layoutPanel.selectColumn(column.node)"
+                             [id]="column.id"
+                             [class.selected]="isSelected(column.node)"
+                        >{{column.span}}</div>
+                    </div>
+                </ng-container>
             </div>
+        </mat-expansion-panel>
 
-            <ng-container *ngIf="selectedRow">
-                <column-presets [preset]="selectedRow.preset" (selected)="applyPreset($event)"></column-presets>
-
-                <div class="current-columns">
-                    <div class="column" #columnHelper *ngFor="let column of selectedRow.columns" [style.width]="widthFromSpan(column.span)" (click)="selectColumn(column.node)">{{column.span}}</div>
-                </div>
-            </ng-container>
-        </div>
-    </mat-expansion-panel>
+        <button class="no-style add-item-button hide-text" (click)="layoutPanel.createContainer(container.node, 'after')">
+            <span trans>+ ADD CONTAINER</span>
+        </button>
+    </ng-container>
 </mat-accordion>
