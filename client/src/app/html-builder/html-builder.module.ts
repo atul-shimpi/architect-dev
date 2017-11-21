@@ -32,8 +32,9 @@ import {CustomElementsResolver} from "./elements/custom-elements-resolver.servic
 import { DragVisualHelperComponent } from './live-preview/drag-and-drop/drag-visual-helper/drag-visual-helper.component';
 import { LayoutPanelComponent } from './inspector/layout-panel/layout-panel.component';
 import { ColumnPresetsComponent } from './inspector/layout-panel/column-presets/column-presets.component';
-import { ReorderColumnsDirective } from './inspector/layout-panel/reorder-columns.directive';
 import {LayoutPanel} from "./inspector/layout-panel/layout-panel.service";
+import {DomHelpers} from "./dom-helpers.service";
+import {ReorderLayoutItemsDirective} from "./inspector/layout-panel/reorder-layout-items.directive";
 
 @NgModule({
     imports: [
@@ -64,7 +65,7 @@ import {LayoutPanel} from "./inspector/layout-panel/layout-panel.service";
         DragVisualHelperComponent,
         LayoutPanelComponent,
         ColumnPresetsComponent,
-        ReorderColumnsDirective
+        ReorderLayoutItemsDirective,
     ],
     entryComponents: [
         GradientBackgroundPanelComponent,
@@ -82,6 +83,7 @@ import {LayoutPanel} from "./inspector/layout-panel/layout-panel.service";
         ElementsApi,
         CustomElementsResolver,
         LayoutPanel,
+        DomHelpers,
     ]
 })
 export class HtmlBuilderModule {

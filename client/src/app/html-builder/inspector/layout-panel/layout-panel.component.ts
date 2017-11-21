@@ -18,8 +18,16 @@ export class LayoutPanelComponent implements AfterViewInit {
 
     ngAfterViewInit() {
         this.livePreview.contentChanged.debounceTime(500).subscribe(() => {
-            this.layoutPanel.selectContainers();
+            this.layoutPanel.loadContainers();
         });
+    }
+
+    public repositionHoverBox(node: HTMLElement) {
+        this.livePreview.repositionBox('hover', node);
+    }
+
+    public hideHoverBox() {
+        this.livePreview.hideBox('hover');
     }
 
     public containerIsSelected(container: Container): boolean {

@@ -25,13 +25,17 @@ export class LayoutPanel {
     constructor(private livePreview: LivePreview, private undoManager: UndoManager) {}
 
     /**
-     * Select all containers in live preview.
+     * Load all containers from live preview.
      */
-    public selectContainers() {
+    public loadContainers() {
         this.containers = [];
         this.nodeListToArray(this.livePreview.document.querySelectorAll('.container')).forEach(node => {
             const rows = this.nodeListToArray(node.querySelectorAll('.row'));
-            this.containers.push({node: node as HTMLElement, rows: rows});
+            this.containers.push({node: node as HTMLElement, rows: rows, id: utils.randomString()});
+
+            if (this.selectedContainer) {
+                this.selectedContainer = this.containers.find(cont => cont.node === this.selectedContainer.node);
+            }
         });
     }
 
@@ -69,9 +73,13 @@ export class LayoutPanel {
             ref[dir](container);
         }
 
-        this.selectedContainer = {node: container, rows: []};
+        this.selectContainer({node: container, rows: [], id: utils.randomString()});
         this.livePreview.selectNode(this.selectedContainer.node, false);
         this.livePreview.contentChanged.emit();
+    }
+
+    public selectContainer(container: Container) {
+        this.selectedContainer = container;
     }
 
     /**
@@ -120,11 +128,14 @@ export class LayoutPanel {
                 this.resizeColumn(this.selectedRow.columns[i].node, span);
             }
 
-            //add new columns, if needed
-            else {
+            //add new columns, if row already has some columns
+            else if (this.selectedRow.columns[i-1]) {
                 this.addNewColumn(this.selectedRow.columns[i-1].node, span);
-            }
 
+            //row is empty
+            } else {
+                this.selectedRow.node.appendChild(this.createColumnNode(span));
+            }
         });
 
         this.undoManager.add('domChanges', {

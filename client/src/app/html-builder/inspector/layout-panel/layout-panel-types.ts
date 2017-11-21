@@ -1,6 +1,7 @@
 export interface Container {
     node: HTMLElement,
-    rows: HTMLElement[]
+    rows: HTMLElement[],
+    id: string,
 }
 
 export interface Column {

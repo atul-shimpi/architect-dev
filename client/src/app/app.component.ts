@@ -23,7 +23,8 @@ import "rxjs/add/operator/startWith";
 })
 export class AppComponent implements OnInit {
 
-    constructor() {}
+    constructor() {
+    }
 
     ngOnInit() {
 

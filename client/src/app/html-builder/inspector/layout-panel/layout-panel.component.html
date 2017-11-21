@@ -1,35 +1,36 @@
-<mat-accordion class="containers">
+<mat-accordion class="containers" reorderLayoutItems="container">
     <button class="no-style add-item-button" (click)="layoutPanel.createContainer(null, 'start')"><span trans>+ ADD CONTAINER</span></button>
 
-    <ng-container *ngFor="let container of layoutPanel.containers; index as index">
+    <div class="container-drag-wrapper" [id]="container.id" *ngFor="let container of layoutPanel.containers; index as index">
         <mat-expansion-panel class="container mat-elevation-z" [expanded]="containerIsSelected(container)" #expPanel>
-            <mat-expansion-panel-header (click)="expPanel.expanded?onPanelOpen(container, index):null">
-                <mat-panel-title class="name"><span trans>Container</span> {{index + 1}}</mat-panel-title>
+            <mat-expansion-panel-header (click)="expPanel.expanded?onPanelOpen(container, index):null" (mouseenter)="repositionHoverBox(container.node)" (mouseleave)="hideHoverBox()">
+                <mat-panel-title class="name"><span trans>Container</span> <span> {{index + 1}}</span></mat-panel-title>
             </mat-expansion-panel-header>
             <div class="container-config">
-                <div class="rows">
+                <div class="rows" reorderLayoutItems="row">
                     <button class="no-style add-item-button" (click)="layoutPanel.createRow(container.node, container.rows[0], 'start')"><span trans>+ ADD ROW</span></button>
 
-                    <ng-container *ngFor="let row of container.rows; index as index">
-                        <div class="row" (click)="layoutPanel.selectRow(row)" [class.selected]="isSelected(row)">
+                    <div class="row-drag-wrapper" *ngFor="let row of container.rows; index as index">
+                        <div class="row" (click)="layoutPanel.selectRow(row)" [class.selected]="isSelected(row)" (mouseenter)="repositionHoverBox(row)" (mouseleave)="hideHoverBox()">
                             <span trans>Row</span> {{index + 1}}
                         </div>
 
                         <button class="no-style add-item-button" (click)="layoutPanel.createRow(container.node, row, 'after')"><span trans>+ ADD ROW</span></button>
-                    </ng-container>
+                    </div>
                 </div>
 
                 <ng-container *ngIf="layoutPanel.selectedRow">
                     <column-presets [preset]="layoutPanel.selectedRow.preset" (selected)="layoutPanel.applyPreset($event)"></column-presets>
 
-                    <div class="current-columns" reorderColumns>
-                        <div class="column column-helper"
-                             #columnHelper
+                    <div class="current-columns" reorderLayoutItems="column">
+                        <div class="column column-helper column-drag-wrapper"
                              *ngFor="let column of layoutPanel.selectedRow.columns"
                              [style.width]="widthFromSpan(column.span)"
                              (click)="layoutPanel.selectColumn(column.node)"
                              [id]="column.id"
                              [class.selected]="isSelected(column.node)"
+                             (mouseenter)="repositionHoverBox(column.node)"
+                             (mouseleave)="hideHoverBox()"
                         >{{column.span}}</div>
                     </div>
                 </ng-container>
@@ -39,5 +40,5 @@
         <button class="no-style add-item-button hide-text" (click)="layoutPanel.createContainer(container.node, 'after')">
             <span trans>+ ADD CONTAINER</span>
         </button>
-    </ng-container>
+    </div>
 </mat-accordion>

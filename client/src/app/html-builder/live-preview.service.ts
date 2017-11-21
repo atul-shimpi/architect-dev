@@ -243,21 +243,23 @@ export class LivePreview {
         if ( ! node) node = this[name].node;
 
         if (node && node.nodeName == 'BODY') {
-            return this.renderer.addClass(this[name+'Box'], 'hidden');
+            return this.hideBox(name);
         }
 
-        if ( ! el) el = this[name].element;
+        if ( ! el) el = this.elements.match(node, name);
 
         if ( ! el) return true;
 
+        this[name].element = el;
+
         if (name === 'selected') {
-            this.renderer.addClass(this.hoverBox, 'hidden');
+            this.hideBox('hover');
         }
 
         const rect = node.getBoundingClientRect();
 
         if ( ! rect.width || ! rect.height) {
-            this.renderer.addClass(this[name+'Box'], 'hidden');
+            this.hideBox(name);
         } else {
             this.renderer.setStyle(this[name+'Box'], 'top', rect.top+'px');
             this.renderer.setStyle(this[name+'Box'], 'left', rect.left+'px');
@@ -269,6 +271,13 @@ export class LivePreview {
             this.renderer.removeClass(this[name+'Box'], 'hidden');
         }
     };
+
+    /**
+     * Hide specified context box.
+     */
+    public hideBox(name: 'hover'|'selected') {
+        this.renderer.addClass(this[name+'Box'], 'hidden');
+    }
 
     public getElementDisplayName(el: any, node: HTMLElement) {
         if ( ! el) return;
