@@ -35,6 +35,7 @@ import { ColumnPresetsComponent } from './inspector/layout-panel/column-presets/
 import {LayoutPanel} from "./inspector/layout-panel/layout-panel.service";
 import {DomHelpers} from "./dom-helpers.service";
 import {ReorderLayoutItemsDirective} from "./inspector/layout-panel/reorder-layout-items.directive";
+import {DragElementsDirective} from "./live-preview/drag-and-drop/drag-elements.directive";
 
 @NgModule({
     imports: [
@@ -66,6 +67,7 @@ import {ReorderLayoutItemsDirective} from "./inspector/layout-panel/reorder-layo
         LayoutPanelComponent,
         ColumnPresetsComponent,
         ReorderLayoutItemsDirective,
+        DragElementsDirective,
     ],
     entryComponents: [
         GradientBackgroundPanelComponent,

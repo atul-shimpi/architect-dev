@@ -1,13 +1,40 @@
-import {Injectable} from '@angular/core';
-
-@Injectable()
 export class DomHelpers {
 
-    constructor() {
+    public static nodeFromString(html: string): HTMLElement {
+        const div = document.createElement('div');
+        div.innerHTML = html;
+        return div.firstChild as HTMLElement;
+    }
+
+    /**
+     * Return whether or not given coordinates are above given element in the dom.
+     */
+    public static coordinatesAboveNode(node: HTMLElement, x: number, y: number): boolean {
+        if (node.nodeName === '#text') return;
+
+        let offset = node.getBoundingClientRect(),
+            width = node.offsetWidth,
+            height = node.offsetHeight;
+
+        let box = [
+            [offset.left, offset.top], //top left
+            [offset.left + width, offset.top], //top right
+            [offset.left + width, offset.top + height], //bottom right
+            [offset.left, offset.top + height] //bottom left
+        ];
+
+        let beforePointY = box[0][1],
+            beforePointX = box[0][0];
+
+        if (y < box[2][1]) {
+            return y < beforePointY || x < beforePointX
+        }
+
+        return false;
     }
 
     public static swapNodes(node1: HTMLElement, node2: HTMLElement) {
-        //if (node1.contains(node2) || node2.contains(node1)) return;
+        if (node1.contains(node2) || node2.contains(node1)) return;
 
         // save the location of node2
         let parent2 = node2.parentNode;

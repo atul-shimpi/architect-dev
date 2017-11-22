@@ -6,6 +6,8 @@ import {Inspector} from "./inspector/inspector.service";
 import {ActiveElement} from "./live-preview/active-element";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Settings} from "vebto-client/core";
+import {UndoManager} from "./undo-manager/undo-manager.service";
+import {DragVisualHelperComponent} from "./live-preview/drag-and-drop/drag-visual-helper/drag-visual-helper.component";
 
 @Injectable()
 export class LivePreview {
@@ -30,7 +32,7 @@ export class LivePreview {
 
     public selecting = false;
 
-    private rowEditorOpen = false;
+    public dragHelper: DragVisualHelperComponent;
 
     /**
      * Fired when element is selected in the builder.
@@ -46,18 +48,25 @@ export class LivePreview {
         private zone: NgZone,
         private elements: Elements,
         private inspector: Inspector,
-        private settings: Settings
+        private settings: Settings,
+        private undoManager: UndoManager,
     ) {}
 
-    public init(renderer: Renderer2, iframe: ElementRef, container: ElementRef, hoverBox: ElementRef, selectedBox: ElementRef) {
+    public init(renderer: Renderer2, iframe: ElementRef, container: ElementRef, hoverBox: ElementRef, selectedBox: ElementRef, dragHelper: DragVisualHelperComponent) {
         this.document = iframe.nativeElement.contentWindow.document;
         this.iframe = iframe.nativeElement;
         this.hoverBox = hoverBox.nativeElement;
         this.selectedBox = selectedBox.nativeElement;
         this.renderer = renderer;
         this.container = container.nativeElement;
+        this.dragHelper = dragHelper;
 
         this.bindToIframeEvents();
+
+        this.undoManager.executedCommand.subscribe(() => {
+            this.repositionBox('selected');
+            this.hideBox('hover');
+        })
     }
 
     private bindToIframeEvents() {
@@ -72,12 +81,16 @@ export class LivePreview {
         });
     }
 
+    public emitContentChanged(type: string, element?: string, node?: HTMLElement) {
+        this.contentChanged.emit({type: type, elementName: element, node: node});
+    }
+
     public applyTemplate(template: Template) {
         const parsedTemplate = new ParsedTemplate(template, this.settings.getBaseUrl(true));
 
         this.iframe.onload = e => {
             this.bindToIframeEvents();
-            this.contentChanged.next(null);
+            this.emitContentChanged('contentReloaded');
         };
 
         this.document.open();
@@ -96,6 +109,39 @@ export class LivePreview {
 
         return el;
     };
+
+    /**
+     * Clone specified node inside the project.
+     */
+    public cloneNode(node: HTMLElement): HTMLElement {
+        const cloned = node.cloneNode(true) as HTMLElement;
+
+        this.undoManager.wrapDomChanges(node.parentNode, () => {
+            node.parentNode.insertBefore(cloned, node.nextSibling);
+            this.emitContentChanged('nodeAdded', this.elements.match(cloned).name, cloned);
+        });
+
+        return cloned as HTMLElement;
+    }
+
+    /**
+     * Delete specified node from the project.
+     */
+    public removeNode(node: HTMLElement): HTMLElement {
+        this.undoManager.wrapDomChanges(node.parentNode, () => {
+            node.parentNode.removeChild(node);
+            this.hideBox('selected');
+            this.emitContentChanged('nodeRemoved', this.elements.match(node).name, node);
+        });
+
+        return node;
+    }
+
+    public scrollIntoView(node?: HTMLElement) {
+        if ( ! node) node = this.selected.node;
+        if ( ! node) return;
+        node.scrollIntoView({behavior: "smooth", block: "center", inline: "center"});
+    }
 
     private listenForHover() {
         this.renderer.listen(this.document.body, 'mousemove', e => {
@@ -179,8 +225,6 @@ export class LivePreview {
      * Select specified node as active one in the builder.
      */
     public selectNode(node: HTMLElement|number, openInspector = true) {
-        if (this.rowEditorOpen) { return true; }
-
         this.selecting = true;
 
         this.selected.previous = this.selected.node;

@@ -2,7 +2,7 @@
 
 drag-visual-helper {
   display: block;
-  position: absolute;
+  position: fixed;
   bottom: -50px;
   left: -100px;
   pointer-events: none;
@@ -15,4 +15,5 @@ drag-visual-helper {
   font-size: 1.5rem;
   text-transform: capitalize;
   padding: 8px 0;
+  z-index: 10;
 }

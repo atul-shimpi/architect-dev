@@ -7,51 +7,39 @@ import {Elements} from "../../elements/elements.service";
 import commandParams from "../../undo-manager/undo-manager-types";
 import {ActiveElement} from "../active-element";
 import {DragVisualHelperComponent} from "./drag-visual-helper/drag-visual-helper.component";
+import {BaseDragAndDrop} from "./base-drag-and-drop";
 
 @Directive({
     selector: '[previewDragAndDrop]'
 })
-export class PreviewDragAndDropDirective implements OnInit {
-
-    @Input() dragHandle: HTMLElement;
-    @Input() dragOverlay: HTMLElement;
-    @Input() dragHelper: DragVisualHelperComponent;
-
-    /**
-     * Helper service for scrolling preview during drag and drop.
-     */
-    private scroller: LivePreviewScroller;
-
-    /**
-     * Placeholder helper for element that is being dragged.
-     */
-    private dropPlaceholder: HTMLElement;
-
-    /**
-     * Element that is being dragged currently.
-     */
-    private dragEl: ActiveElement;
-
-    private undoCommandParams: commandParams;
-
-    private oldX: number;
+export class PreviewDragAndDropDirective extends BaseDragAndDrop implements OnInit {
 
     /**
      * PreviewDragAndDropDirective Constructor.
      */
     constructor(
-        private livePreview: LivePreview,
-        private renderer: Renderer2,
-        private undoManager: UndoManager,
-        private elements: Elements,
-    ) {}
-
-    ngOnInit() {
-        this.initHammer();
-        this.scroller = new LivePreviewScroller(this.livePreview.document, this.livePreview.container);
+        protected livePreview: LivePreview,
+        protected renderer: Renderer2,
+        protected undoManager: UndoManager,
+        protected elements: Elements,
+    ) {
+        super(livePreview, renderer, undoManager, elements);
     }
 
-    private handleDragStart(e: HammerInput|any) {
+    /**
+     * Init hammer manager and bind drag events.
+     */
+    protected initHammer() {
+        let hammer = new Hammer.Manager(this.dragHandle);
+        let pan = new Hammer.Pan({direction: Hammer.DIRECTION_ALL, threshold: 0});
+        hammer.add([pan]);
+
+        hammer.on('panstart', e => this.handleDragStart(e));
+        hammer.on('panmove', e => this.handleDrag(e));
+        hammer.on('panend', e => this.handleDragEnd(e));
+    }
+
+    protected handleDragStart(e: HammerInput|any) {
         this.livePreview.dragging = true;
         this.dragEl = this.livePreview.selected;
 
@@ -73,13 +61,13 @@ export class PreviewDragAndDropDirective implements OnInit {
         }
     }
 
-    private getNodeIndex(nodeList: NodeList, node: Node) {
+    protected getNodeIndex(nodeList: NodeList, node: Node) {
         for (let i = nodeList.length - 1; i >= 0; i--) {
             if (nodeList[i] == node) { return i; };
         }
     }
 
-    private handleDrag(e: HammerInput|any) {
+    protected handleDrag(e: HammerInput|any) {
         const scrollTop = this.livePreview.document.body.scrollTop,
               x = e.center.x - 380,
               y = e.center.y + scrollTop;
@@ -100,7 +88,7 @@ export class PreviewDragAndDropDirective implements OnInit {
         }
     }
 
-    private handleDragEnd(e: HammerInput|any) {
+    protected handleDragEnd(e: HammerInput|any) {
         this.scroller.stopScrolling();
         this.livePreview.dragging = false;
         this.dropPlaceholder && this.dropPlaceholder.parentNode.replaceChild(this.dragEl.node, this.dropPlaceholder);
@@ -121,7 +109,7 @@ export class PreviewDragAndDropDirective implements OnInit {
         }
     }
 
-    private sortColumns(node: HTMLElement, x: number, y: number) {
+    protected sortColumns(node: HTMLElement, x: number, y: number) {
         const className = node.parentElement.className;
 
         if (node === this.dragEl.node || node.parentNode !== this.dragEl.node.parentNode) return;
@@ -145,16 +133,11 @@ export class PreviewDragAndDropDirective implements OnInit {
     /**
      * Append element user is currently dragging to the element users cursor is under.
      */
-    private repositionDropPlaceholder(node: HTMLElement, x: number, y: number) {
+    protected repositionDropPlaceholder(node: HTMLElement, x: number, y: number) {
         if ( ! node) return;
 
-        //check if we're not trying to drop a node inside it's child or itself
-        if (this.dragEl.node == node || this.dragEl.node.contains(node)) {
-            return;
-        }
-
-        //apply styles
-        this.renderer.setStyle(this.dropPlaceholder, 'display', node.style.display);
+        //check if we're not trying to drop a node inside its child or itself
+        if (this.dragEl.node == node || this.dragEl.node.contains(node)) return;
 
         //get all the children of passed in node
         let contents = node.children, n;
@@ -165,7 +148,7 @@ export class PreviewDragAndDropDirective implements OnInit {
             //check if cursor is currently above any of the specified nodes children
             if (this.above(n, x, y)) {
 
-                //if we can insert active element to given node and users
+                //if we can insert active element to given node and user's
                 //cursor is above one of the children of that node then insert
                 //active element before that child and bail
                 if (this.elements.canInsert(node, this.dragEl)) {
@@ -183,7 +166,7 @@ export class PreviewDragAndDropDirective implements OnInit {
             }
         }
 
-        //if users cursor is not above any children on the node we'll
+        //if user's cursor is not above any children on the node we'll
         //just append active element to the node
         if (this.elements.canInsert(node, this.dragEl)) {
             node.appendChild(this.dropPlaceholder);
@@ -195,7 +178,7 @@ export class PreviewDragAndDropDirective implements OnInit {
     /**
      * Return whether or not given coordinates are above given element in the dom.
      */
-    private above(el, x: number, y: number): boolean {
+    protected above(el, x: number, y: number): boolean {
         if (el.nodeName === '#text') return;
 
         let offset = el.getBoundingClientRect(),
@@ -222,24 +205,12 @@ export class PreviewDragAndDropDirective implements OnInit {
     /**
      * Position drag mirror at specified coordinates.
      */
-    private repositionDragMirror(y: any, x: number) {
+    protected repositionDragMirror(y: any, x: number) {
         this.dragHelper.reposition(y, x);
     }
 
-    /**
-     * Init hammer manager and bind drag events.
-     */
-    private initHammer() {
-        let hammer = new Hammer.Manager(this.dragHandle);
-        let pan = new Hammer.Pan({direction: Hammer.DIRECTION_ALL, threshold: 0});
-        hammer.add([pan]);
 
-        hammer.on('panstart', e => this.handleDragStart(e));
-        hammer.on('panmove', e => this.handleDrag(e));
-        hammer.on('panend', e => this.handleDragEnd(e));
-    }
-
-    private createAndAppendDropPlaceholder() {
+    protected createAndAppendDropPlaceholder() {
         this.dropPlaceholder = this.livePreview.document.createElement('div');
         this.renderer.setStyle(this.dropPlaceholder, 'display', this.dragEl.node.getAttribute('data-display'));
         this.renderer.setStyle(this.dropPlaceholder, 'pointer-events', 'none');
@@ -249,6 +220,5 @@ export class PreviewDragAndDropDirective implements OnInit {
             'background',
             'url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="6" height="6"><rect width="6" height="6" fill="transparent"/><path d="M0 6L6 0ZM7 5L5 7ZM-1 1L1 -1Z" stroke="rgba(0, 0, 0, 0.2)" stroke-width="2"/></svg>\')'
         );
-        this.dragEl.node.parentNode.appendChild(this.dropPlaceholder);
     }
 }

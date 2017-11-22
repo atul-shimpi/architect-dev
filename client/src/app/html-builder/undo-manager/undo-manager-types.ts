@@ -1,7 +1,7 @@
 export default interface commandParams {
-    node?: HTMLElement,
-    oldNode?: HTMLElement,
-    newNode?: HTMLElement,
+    node?: HTMLElement|Node,
+    oldNode?: HTMLElement|Node,
+    newNode?: HTMLElement|Node,
     undoParent?: Node,
     redoParent?: Node,
     parentContents?: NodeList,

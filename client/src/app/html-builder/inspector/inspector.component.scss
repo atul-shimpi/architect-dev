@@ -55,8 +55,8 @@ inspector {
       display: block;
       width: 100%;
       margin: 0 0 5px;
-      border-color: transparent;
-      background-color: $inspector-bg-color-200;
+      border-color: $inspector-bg-color-400;
+      background-color: $inspector-bg-color-100;
       color: inherit;
 
       ::-webkit-input-placeholder { /* Chrome/Opera/Safari */

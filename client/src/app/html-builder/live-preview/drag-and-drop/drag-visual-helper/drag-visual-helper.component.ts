@@ -9,6 +9,8 @@ import {LivePreview} from "../../../live-preview.service";
 })
 export class DragVisualHelperComponent implements OnInit {
 
+    private element;
+
     constructor(public livePreview: LivePreview, private renderer: Renderer2, private el: ElementRef) {
     }
 
@@ -17,7 +19,11 @@ export class DragVisualHelperComponent implements OnInit {
     }
 
     public getName() {
-        return this.livePreview.selected.element && this.livePreview.selected.element.name;
+        return this.element && this.element.name;
+    }
+
+    public setElement(element: any) {
+        this.element = element;
     }
 
     public reposition(y: number, x: number) {

@@ -1,12 +1,9 @@
-import {Injectable} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {UndoCommand} from "./undo-command";
 import commandParams from "./undo-manager-types";
-import {LivePreview} from "../live-preview.service";
 
 @Injectable()
 export class UndoManager {
-
-    constructor(private livePreview: LivePreview) {}
 
     /**
      * Stack of undo/redo commands.
@@ -17,6 +14,8 @@ export class UndoManager {
      * Current position of pointer in undo/redo stack.
      */
     private pointer = -1;
+
+    public executedCommand = new EventEmitter();
 
     /**
      * Whether or not there's any undos left in the stack.
@@ -43,7 +42,7 @@ export class UndoManager {
         if (command) {
             command.undo();
             this.pointer -= 1;
-            this.livePreview.contentChanged.emit();
+            this.executedCommand.emit('undo');
         }
     }
 
@@ -56,7 +55,7 @@ export class UndoManager {
         if (command) {
             command.redo();
             this.pointer += 1;
-            this.livePreview.contentChanged.emit();
+            this.executedCommand.emit('redo');
         }
     }
 
@@ -66,7 +65,7 @@ export class UndoManager {
     public add(name: string, params: commandParams) {
 
         //invalidate commands higher on the stack then this one if any exist
-        //this.commands.splice(this.index + 1, this.commands.length - this.index);
+        this.commands.splice(this.pointer + 1, this.commands.length - this.pointer);
 
         //make a new command
         const command = new UndoCommand(name, params);
@@ -78,5 +77,19 @@ export class UndoManager {
         this.pointer = this.commands.length - 1;
 
         return command;
+    }
+
+    public wrapDomChanges(node: HTMLElement|Node, callback: Function) {
+        const original = node.cloneNode(true);
+
+        callback();
+
+        const modified = node.cloneNode(true);
+
+        this.add('domChanges', {
+            oldNode: original,
+            newNode: modified,
+            node:  node,
+        });
     }
 }

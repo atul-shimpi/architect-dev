@@ -4,7 +4,24 @@ layout-panel {
   display: block;
 
   .container-config {
-    padding: 5px;
+    padding: 10px;
+  }
+
+  .mat-action-row, .row-actions {
+    padding: 0;
+
+    > button {
+      margin-left: -1px;
+      padding: 10px;
+      border-left: 1px solid $border-color;
+      border-right: 1px solid $border-color;
+      color: $inspector-text-color-200;
+      cursor: pointer;
+
+      &:hover {
+        color: $inspector-text-color-300;
+      }
+    }
   }
 
   .add-item-button {
@@ -48,11 +65,25 @@ layout-panel {
 
   .rows {
     .row {
-      padding: 10px;
+      display: flex;
+      align-items: center;
       background-color: $inspector-bg-color-200;
       border: 1px solid $inspector-bg-color-400;
       margin-bottom: 5px;
-      cursor: pointer;
+      cursor: move;
+
+      > .row-name {
+        padding: 10px 0 10px 10px;
+      }
+
+      > .row-actions {
+        margin-left: auto;
+
+        > button > svg-icon {
+          width: 16px;
+          height: 16px;
+        }
+      }
 
       &.selected {
         border-color: $accent-color;

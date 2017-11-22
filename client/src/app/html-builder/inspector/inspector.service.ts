@@ -5,7 +5,7 @@ type panelNames = 'elements'|'inspector'|'pages'|'themes'|'settings'|'layout';
 @Injectable()
 export class Inspector {
 
-    private activePanel: panelNames = 'layout';
+    private activePanel: panelNames = 'elements';
 
     public togglePanel(name: panelNames) {
         this.activePanel = name;

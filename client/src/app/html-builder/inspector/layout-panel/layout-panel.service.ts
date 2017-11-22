@@ -32,10 +32,7 @@ export class LayoutPanel {
         this.nodeListToArray(this.livePreview.document.querySelectorAll('.container')).forEach(node => {
             const rows = this.nodeListToArray(node.querySelectorAll('.row'));
             this.containers.push({node: node as HTMLElement, rows: rows, id: utils.randomString()});
-
-            if (this.selectedContainer) {
-                this.selectedContainer = this.containers.find(cont => cont.node === this.selectedContainer.node);
-            }
+            if (this.selectedContainer) this.selectContainer(this.selectedContainer.node);
         });
     }
 
@@ -44,6 +41,7 @@ export class LayoutPanel {
      */
     public createRow(container: HTMLElement, ref: HTMLElement, dir: 'before'|'after'|'start') {
         const row = this.livePreview.document.createElement('div');
+        row.appendChild(this.createColumnNode(12));
         row.classList.add('row');
 
         if (dir === 'start') {
@@ -57,15 +55,20 @@ export class LayoutPanel {
         }
 
         this.selectRow(row);
-        this.livePreview.contentChanged.emit();
+        this.livePreview.emitContentChanged('nodeAdded', 'row', row);
     }
 
     /**
      * Create new container node and add it to the container's list.
      */
     public createContainer(ref: HTMLElement, dir: 'before'|'after'|'start') {
+        const row = this.livePreview.document.createElement('div');
+        row.appendChild(this.createColumnNode(12));
+        row.classList.add('row');
+
         const container = this.livePreview.document.createElement('div');
         container.classList.add('container');
+        container.appendChild(row);
 
         if (dir === 'start') {
             this.livePreview.document.body.appendChild(container);
@@ -73,13 +76,21 @@ export class LayoutPanel {
             ref[dir](container);
         }
 
-        this.selectContainer({node: container, rows: [], id: utils.randomString()});
+        this.livePreview.emitContentChanged('nodeAdded', 'container', container);
+        this.selectContainer(container);
         this.livePreview.selectNode(this.selectedContainer.node, false);
-        this.livePreview.contentChanged.emit();
     }
 
-    public selectContainer(container: Container) {
-        this.selectedContainer = container;
+    public selectContainer(container: Container|HTMLElement) {
+        if (container['nodeType']) {
+            this.selectedContainer = this.containers.find(cont => cont.node === container);
+        } else {
+            this.selectedContainer = container as Container;
+        }
+
+        if (this.selectedContainer) {
+            this.selectRow(this.selectedContainer.rows[0]);
+        }
     }
 
     /**
@@ -93,7 +104,7 @@ export class LayoutPanel {
         const columns = this.getColumns(node),
             preset  = columns.map(col => col.span);
 
-        this.livePreview.selected.node.scrollIntoView({block: "end", inline: "nearest"});
+        this.livePreview.scrollIntoView();
 
         this.selectedRow = {node, columns, preset};
     }
@@ -110,7 +121,7 @@ export class LayoutPanel {
 
     public selectColumn(node: HTMLElement) {
         this.livePreview.selectNode(node, false);
-        this.livePreview.selected.node.scrollIntoView({block: "end", inline: "nearest"});
+        this.livePreview.scrollIntoView();
     }
 
     public applyPreset(preset: number[]) {
@@ -145,7 +156,7 @@ export class LayoutPanel {
         });
 
         this.selectRow(this.selectedRow.node);
-        //this.livePreview.contentChanged.emit();
+        this.livePreview.emitContentChanged('nodeChildrenModified', 'row', this.selectedRow.node);
         this.livePreview.repositionBox('selected');
     }
 

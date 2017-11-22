@@ -23,7 +23,7 @@ attributes-panel {
   .input-container, .mat-chip-list-wrapper {
     display: flex;
     align-items: center;
-    color: $inspector-text-color-400;
+    color: $inspector-text-color-300;
 
     label {
       flex: 1 1 auto;
@@ -36,7 +36,6 @@ attributes-panel {
 
     input, select {
       flex: 0 0 200px;
-      border: 1px solid $inspector-bg-color-100;
       font-size: 1.3rem;
       width: 200px;
     }

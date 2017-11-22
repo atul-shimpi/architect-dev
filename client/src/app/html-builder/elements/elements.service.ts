@@ -55,8 +55,8 @@ export class Elements {
         return this.elements;
     }
 
-    public getElement(name: string) {
-        return this.elements[name];
+    public findByName(name: string) {
+        return this.elements.find(el => el.name === name);
     }
 
     public checkForSpecialCases(node: HTMLElement): HTMLElement|boolean {
@@ -77,20 +77,20 @@ export class Elements {
     /**
      * Check if given node accepts currently active element as a child.
      */
-    public canInsert(parent: HTMLElement, child: ActiveElement) {
+    public canInsert(parent: HTMLElement, element: any) {
 
         if (parent.nodeName == 'BODY') return true;
 
         if (parent.nodeName == 'HTML') return false;
 
         //match given node to an element in element repository
-        const el = this.match(parent);
+        const el = this.match(parent) as any;
 
         //if we've got an element match and it has any valid children check
         //if specified child can be inserted into given node
-        if (el && el.validChildren && child.element.types) {
+        if (el && el.validChildren && element.types) {
             for (let i = el.validChildren.length - 1; i >= 0; i--) {
-                if (child.element.types.indexOf(el.validChildren[i]) > -1) {
+                if (element.types.indexOf(el.validChildren[i]) > -1) {
                     return true;
                 }
             }
@@ -148,7 +148,7 @@ export class Elements {
 
             //find by name attribute
             if (node.dataset && node.dataset.name) {
-                return this.getElement(node.dataset.name);
+                return this.findByName(node.dataset.name);
             }
 
             //find by input type

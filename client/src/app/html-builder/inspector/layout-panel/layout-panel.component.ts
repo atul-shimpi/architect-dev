@@ -2,6 +2,7 @@ import {AfterViewInit, Component, ViewEncapsulation} from '@angular/core';
 import {LivePreview} from "../../live-preview.service";
 import {LayoutPanel} from "./layout-panel.service";
 import {Container} from "./layout-panel-types";
+import {Inspector} from "../inspector.service";
 
 @Component({
     selector: 'layout-panel',
@@ -11,15 +12,36 @@ import {Container} from "./layout-panel-types";
 })
 export class LayoutPanelComponent implements AfterViewInit {
 
+    private types = ['nodeAdded', 'nodeRemoved', 'nodeChildrenModified', 'contentReloaded'];
+
     /**
      * LayoutPanelComponent Constructor.
      */
-    constructor(private livePreview: LivePreview, public layoutPanel: LayoutPanel) {}
+    constructor(
+        private livePreview: LivePreview,
+        public layoutPanel: LayoutPanel,
+        private inspector: Inspector
+    ) {}
 
     ngAfterViewInit() {
-        this.livePreview.contentChanged.debounceTime(500).subscribe(() => {
+        this.livePreview.contentChanged.subscribe(e => {
+            if (this.types.indexOf(e.type) === -1) return;
             this.layoutPanel.loadContainers();
         });
+    }
+
+    public openInspectorPanel(node: HTMLElement) {
+        this.livePreview.selectNode(node, false);
+        this.inspector.togglePanel('inspector');
+    }
+
+    public cloneContainer(container: Container) {
+        const cloned = this.livePreview.cloneNode(container.node);
+        this.layoutPanel.selectContainer(cloned);
+    }
+
+    public removeItem(node: HTMLElement) {
+        this.livePreview.removeNode(node);
     }
 
     public repositionHoverBox(node: HTMLElement) {
