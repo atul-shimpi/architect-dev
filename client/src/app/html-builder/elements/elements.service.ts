@@ -102,7 +102,7 @@ export class Elements {
     /**
      * Match specified DOM node to an element in the repository.
      */
-    public match(node: HTMLElement, type = null, matchParent = true) {
+    public match(node: HTMLElement, type = null, matchParent = true): any {
         if ( ! node || ! node.nodeName) return false;
 
         const isSpecialCase = this.checkForSpecialCases(node),

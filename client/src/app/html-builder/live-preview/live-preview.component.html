@@ -1,22 +1,26 @@
-<div class="highlights">
-    <div class="hover-box context-box" #hoverBox>
-        <div class="context-box-actions">
-            <div class="drag-handle" #dragHandle>
-                <svg-icon name="drag-handle"></svg-icon>
+<ng-container previewDragAndDrop [dragOverlay]="dragOverlay">
+    <div class="highlights">
+        <div class="hover-box context-box" #hoverBox>
+            <div class="context-box-actions">
+                <div class="drag-handle" #dragHandle>
+                    <svg-icon name="drag-handle"></svg-icon>
+                </div>
+                <span class="column-name">{{livePreview.getElementDisplayName(livePreview.hover.element, livePreview.hover.node)}}</span>
             </div>
-            <span class="column-name">{{livePreview.getElementDisplayName(livePreview.hover.element, livePreview.hover.node)}}</span>
         </div>
-    </div>
 
-    <div class="selected-box context-box" #selectedBox>
-        <div class="context-box-actions">
-            <div class="drag-handle" #dragHandle>
-                <svg-icon name="drag-handle"></svg-icon>
+        <div class="selected-box context-box" #selectedBox>
+            <div class="context-box-actions">
+                <div class="drag-handle" #dragHandle>
+                    <svg-icon name="drag-handle"></svg-icon>
+                </div>
+                <span class="column-name">{{livePreview.getElementDisplayName(livePreview.selected.element, livePreview.selected.node)}}</span>
             </div>
-            <span class="column-name">{{livePreview.getElementDisplayName(livePreview.selected.element, livePreview.selected.node)}}</span>
         </div>
+
+        <inline-text-editor></inline-text-editor>
     </div>
-</div>
-<iframe src="about:blank" #iframe previewDragAndDrop [dragHandle]="dragHandle" [dragOverlay]="dragOverlay" [dragHelper]="dragHelper"></iframe>
-<div class="drag-overlay" #dragOverlay></div>
-<drag-visual-helper class="drag-helper" #dragHelper></drag-visual-helper>
+    <iframe src="about:blank" #iframe></iframe>
+    <div class="drag-overlay" #dragOverlay></div>
+    <drag-visual-helper class="drag-helper" #dragHelper></drag-visual-helper>
+</ng-container>

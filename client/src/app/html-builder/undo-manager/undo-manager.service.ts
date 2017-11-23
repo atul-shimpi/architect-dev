@@ -63,9 +63,10 @@ export class UndoManager {
      * Add a new undo/redo command to the stack.
      */
     public add(name: string, params: commandParams) {
-
-        //invalidate commands higher on the stack then this one if any exist
-        this.commands.splice(this.pointer + 1, this.commands.length - this.pointer);
+        //limit number of commands to 100
+        if (this.commands.length > 100) {
+            this.commands.splice(this.commands.length - 1, 1);
+        }
 
         //make a new command
         const command = new UndoCommand(name, params);
@@ -79,17 +80,20 @@ export class UndoManager {
         return command;
     }
 
-    public wrapDomChanges(node: HTMLElement|Node, callback: Function) {
-        const original = node.cloneNode(true);
+    /**
+     * Wrap specified changes to dom in undo command.
+     */
+    public wrapDomChanges(parent: HTMLElement|Node, callback: Function|null, options: {before?: HTMLElement, after?: HTMLElement} = {}) {
+        const before = options.before || parent.cloneNode(true);
 
-        callback();
+        callback && callback();
 
-        const modified = node.cloneNode(true);
+        const after = options.after || parent.cloneNode(true);
 
         this.add('domChanges', {
-            oldNode: original,
-            newNode: modified,
-            node:  node,
+            oldNode: before,
+            newNode: after,
+            node: parent,
         });
     }
 }

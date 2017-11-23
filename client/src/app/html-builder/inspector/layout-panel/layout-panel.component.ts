@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {LivePreview} from "../../live-preview.service";
 import {LayoutPanel} from "./layout-panel.service";
 import {Container} from "./layout-panel-types";
@@ -10,9 +10,9 @@ import {Inspector} from "../inspector.service";
     styleUrls: ['./layout-panel.component.scss'],
     encapsulation: ViewEncapsulation.None,
 })
-export class LayoutPanelComponent implements AfterViewInit {
+export class LayoutPanelComponent implements OnInit {
 
-    private types = ['nodeAdded', 'nodeRemoved', 'nodeChildrenModified', 'contentReloaded'];
+    private types = ['nodeAdded', 'nodeRemoved', 'nodeChildrenModified', 'domReloaded'];
 
     /**
      * LayoutPanelComponent Constructor.
@@ -23,7 +23,7 @@ export class LayoutPanelComponent implements AfterViewInit {
         private inspector: Inspector
     ) {}
 
-    ngAfterViewInit() {
+    ngOnInit() {
         this.livePreview.contentChanged.subscribe(e => {
             if (this.types.indexOf(e.type) === -1) return;
             this.layoutPanel.loadContainers();

@@ -35,6 +35,7 @@ export class ActiveElement {
      * Check if specified property/style of this element can be modified.
      */
     public canModify(property: string) {
+        if ( ! this.element) return;
         return this.element.canModify.indexOf(property.toLowerCase()) > -1;
     }
 }

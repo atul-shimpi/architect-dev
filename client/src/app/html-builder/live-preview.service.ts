@@ -1,4 +1,4 @@
-import {ElementRef, EventEmitter, Injectable, NgZone, Renderer2} from '@angular/core';
+import {ElementRef, Injectable, NgZone, Renderer2} from '@angular/core';
 import {Template} from "../../types/models/Template";
 import {ParsedTemplate} from "../templates/parsed-template.service";
 import {Elements} from "./elements/elements.service";
@@ -8,6 +8,7 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Settings} from "vebto-client/core";
 import {UndoManager} from "./undo-manager/undo-manager.service";
 import {DragVisualHelperComponent} from "./live-preview/drag-and-drop/drag-visual-helper/drag-visual-helper.component";
+import {InlineTextEditorComponent} from "./live-preview/inline-text-editor/inline-text-editor.component";
 
 @Injectable()
 export class LivePreview {
@@ -34,6 +35,8 @@ export class LivePreview {
 
     public dragHelper: DragVisualHelperComponent;
 
+    private inlineTextEditor: InlineTextEditorComponent;
+
     /**
      * Fired when element is selected in the builder.
      */
@@ -42,7 +45,7 @@ export class LivePreview {
     /**
      * Fired when preview iframe contents change.
      */
-    public contentChanged = new EventEmitter();
+    public contentChanged = new BehaviorSubject<{type: string, elementName?: string, node?: HTMLElement}>({type: 'domReloaded'});
 
     constructor(
         private zone: NgZone,
@@ -52,7 +55,7 @@ export class LivePreview {
         private undoManager: UndoManager,
     ) {}
 
-    public init(renderer: Renderer2, iframe: ElementRef, container: ElementRef, hoverBox: ElementRef, selectedBox: ElementRef, dragHelper: DragVisualHelperComponent) {
+    public init(renderer: Renderer2, iframe: ElementRef, container: ElementRef, hoverBox: ElementRef, selectedBox: ElementRef, dragHelper: DragVisualHelperComponent, inlineTextEditor: InlineTextEditorComponent) {
         this.document = iframe.nativeElement.contentWindow.document;
         this.iframe = iframe.nativeElement;
         this.hoverBox = hoverBox.nativeElement;
@@ -60,6 +63,7 @@ export class LivePreview {
         this.renderer = renderer;
         this.container = container.nativeElement;
         this.dragHelper = dragHelper;
+        this.inlineTextEditor = inlineTextEditor;
 
         this.bindToIframeEvents();
 
@@ -71,8 +75,16 @@ export class LivePreview {
 
     private bindToIframeEvents() {
         this.zone.runOutsideAngular(() => {
+            const hammer = new Hammer.Manager(this.document.body),
+                singleTap = new Hammer.Tap({event: 'single_tap'}),
+                doubleTap = new Hammer.Tap({event: 'double_tap', taps: 2});
+
+            hammer.add([doubleTap, singleTap]);
+            doubleTap.recognizeWith(singleTap);
+
             this.listenForHover();
-            this.listenForClick();
+            this.listenForClick(hammer);
+            this.listenForDoubleClick(hammer);
 
             this.document.addEventListener('scroll', e => {
                 this.renderer.addClass(this.hoverBox, 'hidden');
@@ -82,7 +94,7 @@ export class LivePreview {
     }
 
     public emitContentChanged(type: string, element?: string, node?: HTMLElement) {
-        this.contentChanged.emit({type: type, elementName: element, node: node});
+        this.contentChanged.next({type: type, elementName: element, node: node});
     }
 
     public applyTemplate(template: Template) {
@@ -90,7 +102,7 @@ export class LivePreview {
 
         this.iframe.onload = e => {
             this.bindToIframeEvents();
-            this.emitContentChanged('contentReloaded');
+            this.emitContentChanged('domReloaded');
         };
 
         this.document.open();
@@ -174,10 +186,12 @@ export class LivePreview {
         });
     }
 
-    private listenForClick() {
-        //prevent navigation via links
-        this.renderer.listen(this.document.documentElement, 'click', e => {
-            if (e.type === 'click' && e.target.matches('a, a *')) {
+    private listenForClick(hammer: HammerManager) {
+        hammer.on('single_tap', e => {
+            console.log('single');
+
+            //prevent navigation via links
+            if (e.target.matches('a, a *')) {
                 e.preventDefault();
             }
 
@@ -219,6 +233,19 @@ export class LivePreview {
                 this.zone.run(() => this.selectNode(node));
             }
         })
+    }
+
+    private listenForDoubleClick(hammer: HammerManager) {
+        hammer.on('double_tap', e => {
+            console.log('double');
+            const node = this.getElementFromPoint(e.center.x, e.center.y - this.document.body.scrollTop);
+            const matched = this.elements.match(node);
+
+            if (matched.canModify.indexOf('text') > -1 && matched.showWysiwyg) {
+                this.hideBox('selected');
+                this.inlineTextEditor.position(this.selected.node);
+            }
+        });
     }
 
     /**

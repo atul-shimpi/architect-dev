@@ -1,8 +1,8 @@
 <div class="breadcrumbs">
-    <ng-container *ngFor="let item of livePreview.selected.path; last as last">
+    <span class="crumb-container" *ngFor="let item of livePreview.selected.path; last as last" (mouseenter)="livePreview.repositionBox('hover', item.node)" (mouseleave)="livePreview.hideBox('hover')">
         <button class="crumb no-style" [class.last]="last" (click)="livePreview.selectNode(item.node)">{{item.name}}</button>
         <svg-icon name="keyboard-arrow-right" *ngIf="!last"></svg-icon>
-    </ng-container>
+    </span>
 </div>
 
 <mat-accordion>

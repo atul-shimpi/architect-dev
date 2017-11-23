@@ -104,8 +104,8 @@ inspector {
           background-color: $inspector-bg-color-300;
         }
 
-        &:hover:not([disabled]) {
-          color: $inspector-text-color-100;
+        &:hover:not([disabled]):not(.active) {
+          background-color: $inspector-bg-color-200;
         }
 
         > svg-icon {

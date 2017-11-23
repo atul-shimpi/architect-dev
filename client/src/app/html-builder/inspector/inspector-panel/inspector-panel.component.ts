@@ -20,5 +20,4 @@ export class InspectorPanelComponent {
     public canModify(property: string) {
         return this.livePreview.selected.canModify(property);
     }
-
 }

@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {Templates} from "../../templates/templates.service";
 import {LivePreview} from "../live-preview.service";
 import {Elements} from "../elements/elements.service";

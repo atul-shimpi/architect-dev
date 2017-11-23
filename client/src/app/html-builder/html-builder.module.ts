@@ -36,6 +36,7 @@ import {LayoutPanel} from "./inspector/layout-panel/layout-panel.service";
 import {DomHelpers} from "./dom-helpers.service";
 import {ReorderLayoutItemsDirective} from "./inspector/layout-panel/reorder-layout-items.directive";
 import {DragElementsDirective} from "./live-preview/drag-and-drop/drag-elements.directive";
+import { InlineTextEditorComponent } from './live-preview/inline-text-editor/inline-text-editor.component';
 
 @NgModule({
     imports: [
@@ -68,6 +69,7 @@ import {DragElementsDirective} from "./live-preview/drag-and-drop/drag-elements.
         ColumnPresetsComponent,
         ReorderLayoutItemsDirective,
         DragElementsDirective,
+        InlineTextEditorComponent,
     ],
     entryComponents: [
         GradientBackgroundPanelComponent,
