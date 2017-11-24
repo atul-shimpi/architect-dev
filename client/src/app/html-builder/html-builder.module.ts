@@ -37,6 +37,7 @@ import {DomHelpers} from "./dom-helpers.service";
 import {ReorderLayoutItemsDirective} from "./inspector/layout-panel/reorder-layout-items.directive";
 import {DragElementsDirective} from "./live-preview/drag-and-drop/drag-elements.directive";
 import { InlineTextEditorComponent } from './live-preview/inline-text-editor/inline-text-editor.component';
+import {InlineTextEditor} from "./live-preview/inline-text-editor/inline-text-editor.service";
 
 @NgModule({
     imports: [
@@ -76,6 +77,7 @@ import { InlineTextEditorComponent } from './live-preview/inline-text-editor/inl
         ColorpickerPanelComponent,
         GoogleFontsPanelComponent,
         ImageBackgroundPanelComponent,
+        InlineTextEditorComponent,
     ],
     providers: [
         LivePreview,
@@ -88,6 +90,7 @@ import { InlineTextEditorComponent } from './live-preview/inline-text-editor/inl
         CustomElementsResolver,
         LayoutPanel,
         DomHelpers,
+        InlineTextEditor,
     ]
 })
 export class HtmlBuilderModule {

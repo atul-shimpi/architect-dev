@@ -12,12 +12,13 @@ inspector-panel {
     margin-bottom: 30px;
 
     > .crumb-container {
-      &:hover .crumb {
+      &:hover:not(.last) .crumb {
         text-decoration: underline;
       }
 
-      .last {
-        color: $inspector-text-color-100;
+      &.last .crumb {
+        color: $accent-color;
+        pointer-events: none;
       }
     }
 

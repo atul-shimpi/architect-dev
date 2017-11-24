@@ -1,5 +1,13 @@
 export class DomHelpers {
 
+    public static createLink(href: string, id?: string) {
+        const link = document.createElement('link') as HTMLLinkElement;
+        link.rel = 'stylesheet';
+        link.href = href;
+        if (id) link.id = id;
+        return link;
+    }
+
     public static nodeFromString(html: string): HTMLElement {
         const div = document.createElement('div');
         div.innerHTML = html;

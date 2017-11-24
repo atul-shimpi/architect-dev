@@ -8,7 +8,8 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Settings} from "vebto-client/core";
 import {UndoManager} from "./undo-manager/undo-manager.service";
 import {DragVisualHelperComponent} from "./live-preview/drag-and-drop/drag-visual-helper/drag-visual-helper.component";
-import {InlineTextEditorComponent} from "./live-preview/inline-text-editor/inline-text-editor.component";
+import {OverlayRef} from "@angular/cdk/overlay";
+import {InlineTextEditor} from "./live-preview/inline-text-editor/inline-text-editor.service";
 
 @Injectable()
 export class LivePreview {
@@ -35,12 +36,12 @@ export class LivePreview {
 
     public dragHelper: DragVisualHelperComponent;
 
-    private inlineTextEditor: InlineTextEditorComponent;
-
     /**
      * Fired when element is selected in the builder.
      */
     public elementSelected = new BehaviorSubject(null);
+
+    private overlayRef: OverlayRef;
 
     /**
      * Fired when preview iframe contents change.
@@ -53,9 +54,10 @@ export class LivePreview {
         private inspector: Inspector,
         private settings: Settings,
         private undoManager: UndoManager,
+        private inlineTextEditor: InlineTextEditor,
     ) {}
 
-    public init(renderer: Renderer2, iframe: ElementRef, container: ElementRef, hoverBox: ElementRef, selectedBox: ElementRef, dragHelper: DragVisualHelperComponent, inlineTextEditor: InlineTextEditorComponent) {
+    public init(renderer: Renderer2, iframe: ElementRef, container: ElementRef, hoverBox: ElementRef, selectedBox: ElementRef, dragHelper: DragVisualHelperComponent) {
         this.document = iframe.nativeElement.contentWindow.document;
         this.iframe = iframe.nativeElement;
         this.hoverBox = hoverBox.nativeElement;
@@ -63,7 +65,6 @@ export class LivePreview {
         this.renderer = renderer;
         this.container = container.nativeElement;
         this.dragHelper = dragHelper;
-        this.inlineTextEditor = inlineTextEditor;
 
         this.bindToIframeEvents();
 
@@ -87,8 +88,9 @@ export class LivePreview {
             this.listenForDoubleClick(hammer);
 
             this.document.addEventListener('scroll', e => {
-                this.renderer.addClass(this.hoverBox, 'hidden');
+                this.hideBox('hover');
                 if (this.selected.node) this.repositionBox('selected');
+                this.inlineTextEditor.close();
             }, true);
         });
     }
@@ -110,7 +112,7 @@ export class LivePreview {
         this.document.close();
     }
 
-    public getElementFromPoint(x: number, y: number) {
+    public getElementFromPoint(x: number, y: number): HTMLElement {
         let el = this.document.elementFromPoint(x, y);
 
         //firefox returns html if body is empty,
@@ -119,7 +121,7 @@ export class LivePreview {
             return this.document.body[0];
         }
 
-        return el;
+        return el as HTMLElement;
     };
 
     /**
@@ -204,30 +206,15 @@ export class LivePreview {
 
             let node = e.target;
 
-            if (node.hasAttribute('contenteditable') || node.parentNode.hasAttribute('contenteditable')) {
+            if (node.hasAttribute('contenteditable') || node.parentNode['hasAttribute']('contenteditable')) {
                 return;
             }
 
-            let editable = this.iframe.contentDocument.body.querySelectorAll('[contenteditable]');
-
-            for (let i = editable.length - 1; i >= 0; i--) {
-                editable[i].removeAttribute('contenteditable');
-                //editable[i].blur();
-            }
-
             //hide wysiwyg toolbar when clicked outside it
-            // if ( ! this.textToolbar.hasClass('hidden')) {
-            //     this.textToolbar.addClass('hidden');
-            //     this.$emit('builder.html.changed');
-            // }
+            this.inlineTextEditor.close();
 
             //hide linker
             //this.linker.addClass('hidden');
-
-            //hide colorpicker when clicked outside it and if it exists
-            // if (this.colorPickerCont) {
-            //     this.colorPickerCont.addClass('hidden');
-            // }
 
             if (node.nodeName !== 'HTML') {
                 this.zone.run(() => this.selectNode(node));
@@ -238,12 +225,11 @@ export class LivePreview {
     private listenForDoubleClick(hammer: HammerManager) {
         hammer.on('double_tap', e => {
             console.log('double');
-            const node = this.getElementFromPoint(e.center.x, e.center.y - this.document.body.scrollTop);
-            const matched = this.elements.match(node);
+            const matched = this.elements.match(e.target);
 
             if (matched.canModify.indexOf('text') > -1 && matched.showWysiwyg) {
                 this.hideBox('selected');
-                this.inlineTextEditor.position(this.selected.node);
+                this.zone.run(() => this.inlineTextEditor.open(e.target));
             }
         });
     }

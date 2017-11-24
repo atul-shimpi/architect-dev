@@ -26,7 +26,4 @@ export class HtmlBuilderComponent implements OnInit {
             this.livePreview.applyTemplate(templates[0]);
         });
     }
-
-
-
 }
