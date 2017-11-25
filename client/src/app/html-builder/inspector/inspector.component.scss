@@ -58,19 +58,6 @@ inspector {
       border-color: $inspector-bg-color-400;
       background-color: $inspector-bg-color-100;
       color: inherit;
-
-      ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-        color: inherit;
-      }
-      ::-moz-placeholder { /* Firefox 19+ */
-        color: inherit;
-      }
-      :-ms-input-placeholder { /* IE 10+ */
-        color: inherit;
-      }
-      :-moz-placeholder { /* Firefox 18- */
-        color: inherit;
-      }
     }
   }
 
@@ -79,7 +66,7 @@ inspector {
     width: 70px;
     flex: 0 0 70px;
     height: 100%;
-    background-color: #fff;
+    background-color: $inspector-bg-color-100;
     color: $inspector-text-color-200;
     text-align: center;
     padding: 20px 0;
@@ -94,6 +81,8 @@ inspector {
         text-align: center;
         margin-bottom: 10px;
         padding: 12px 0;
+        min-width: 0;
+        line-height: initial;
 
         &[disabled] {
           color: $inspector-text-color-100;
@@ -108,17 +97,22 @@ inspector {
           background-color: $inspector-bg-color-200;
         }
 
-        > svg-icon {
+        .mat-button-focus-overlay {
+          background-color: transparent;
+        }
+
+        svg-icon {
           display: inline-block;
           width: 30px;
           height: 30px;
         }
 
-        > .name {
+        .name {
           display: block;
           font-size: 1.1rem;
           font-weight: 700;
           letter-spacing: 0.5px;
+          margin-top: 5px;
         }
       }
     }

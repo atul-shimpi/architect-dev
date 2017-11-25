@@ -38,6 +38,9 @@ import {ReorderLayoutItemsDirective} from "./inspector/layout-panel/reorder-layo
 import {DragElementsDirective} from "./live-preview/drag-and-drop/drag-elements.directive";
 import { InlineTextEditorComponent } from './live-preview/inline-text-editor/inline-text-editor.component';
 import {InlineTextEditor} from "./live-preview/inline-text-editor/inline-text-editor.service";
+import { CodeEditorComponent } from './live-preview/code-editor/code-editor.component';
+import {CodeEditor} from "./live-preview/code-editor/code-editor.service";
+import {ParsedProject} from "./projects/parsed-project";
 
 @NgModule({
     imports: [
@@ -71,6 +74,7 @@ import {InlineTextEditor} from "./live-preview/inline-text-editor/inline-text-ed
         ReorderLayoutItemsDirective,
         DragElementsDirective,
         InlineTextEditorComponent,
+        CodeEditorComponent,
     ],
     entryComponents: [
         GradientBackgroundPanelComponent,
@@ -78,6 +82,7 @@ import {InlineTextEditor} from "./live-preview/inline-text-editor/inline-text-ed
         GoogleFontsPanelComponent,
         ImageBackgroundPanelComponent,
         InlineTextEditorComponent,
+        CodeEditorComponent,
     ],
     providers: [
         LivePreview,
@@ -91,6 +96,8 @@ import {InlineTextEditor} from "./live-preview/inline-text-editor/inline-text-ed
         LayoutPanel,
         DomHelpers,
         InlineTextEditor,
+        CodeEditor,
+        ParsedProject,
     ]
 })
 export class HtmlBuilderModule {

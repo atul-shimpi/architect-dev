@@ -129,8 +129,8 @@ export abstract class BaseDragAndDrop implements AfterContentInit {
         }
 
         this.livePreview.selectNode(this.dragEl.node);
-
         this.undoManager.wrapDomChanges(this.livePreview.document.body, null, {before: this.bodyBeforeDrag});
+        this.livePreview.emitContentChanged('nodeChanged');
     }
 
     /**

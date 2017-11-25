@@ -31,8 +31,14 @@ export class ParsedTemplate {
         this.addIconsLink();
 
         let style = this.doc.createElement('style');
-        style.innerHTML = this.getValidPageCss(number);
+        style.id = 'custom-css';
+        style.innerHTML = this.getPageCss(number);
         this.doc.head.appendChild(style);
+
+        let script = this.doc.createElement('script');
+        script.id = 'custom-js';
+        script.innerHTML = this.getPageJs(number);
+        this.doc.head.appendChild(script);
 
         return '<!DOCTYPE html>' + this.doc.documentElement.outerHTML;
     }
@@ -61,8 +67,15 @@ export class ParsedTemplate {
     /**
      * Get source css of specified page.
      */
-    private getValidPageCss(number: number) {
+    private getPageCss(number: number) {
         return this.template.pages[number].css.trim();
+    }
+
+    /**
+     * Get source js of specified page.
+     */
+    private getPageJs(number: number) {
+        return this.template.pages[number].js.trim();
     }
 
     private addIframeCss() {

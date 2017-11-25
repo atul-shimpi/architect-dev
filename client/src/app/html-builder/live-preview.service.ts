@@ -10,6 +10,7 @@ import {UndoManager} from "./undo-manager/undo-manager.service";
 import {DragVisualHelperComponent} from "./live-preview/drag-and-drop/drag-visual-helper/drag-visual-helper.component";
 import {OverlayRef} from "@angular/cdk/overlay";
 import {InlineTextEditor} from "./live-preview/inline-text-editor/inline-text-editor.service";
+import {ParsedProject} from "./projects/parsed-project";
 
 @Injectable()
 export class LivePreview {
@@ -41,12 +42,10 @@ export class LivePreview {
      */
     public elementSelected = new BehaviorSubject(null);
 
-    private overlayRef: OverlayRef;
-
     /**
      * Fired when preview iframe contents change.
      */
-    public contentChanged = new BehaviorSubject<{type: string, elementName?: string, node?: HTMLElement}>({type: 'domReloaded'});
+    public contentChanged = new BehaviorSubject<{type: string, elementName?: string, node?: HTMLElement, initiator?: 'string'}>({type: 'domReloaded'});
 
     constructor(
         private zone: NgZone,
@@ -55,6 +54,7 @@ export class LivePreview {
         private settings: Settings,
         private undoManager: UndoManager,
         private inlineTextEditor: InlineTextEditor,
+        private parsedProject: ParsedProject,
     ) {}
 
     public init(renderer: Renderer2, iframe: ElementRef, container: ElementRef, hoverBox: ElementRef, selectedBox: ElementRef, dragHelper: DragVisualHelperComponent) {
@@ -95,20 +95,27 @@ export class LivePreview {
         });
     }
 
-    public emitContentChanged(type: string, element?: string, node?: HTMLElement) {
-        this.contentChanged.next({type: type, elementName: element, node: node});
+    public emitContentChanged(type: string, element?: string, node?: HTMLElement, initiator: string = 'visual-builder') {
+        this.contentChanged.next({type: type, elementName: element, node: node, initiator: initiator});
+
+        if (type !== 'domReloaded') {
+            this.parsedProject.setHtml(this.document.documentElement.innerHTML);
+        }
     }
 
     public applyTemplate(template: Template) {
-        const parsedTemplate = new ParsedTemplate(template, this.settings.getBaseUrl(true));
+        this.parsedProject.applyTemplate(template);
+        this.reload();
+    }
 
-        this.iframe.onload = e => {
+    public reload(initiator: string = 'visual-builder') {
+        this.iframe.onload = () => {
             this.bindToIframeEvents();
-            this.emitContentChanged('domReloaded');
+            this.emitContentChanged('domReloaded', null, null, initiator);
         };
 
         this.document.open();
-        this.document.write(parsedTemplate.getPageHtml(0));
+        this.document.write(this.parsedProject.getHtml());
         this.document.close();
     }
 

@@ -8,6 +8,13 @@ export class DomHelpers {
         return link;
     }
 
+    public static createScript(src: string, id?: string) {
+        const script = document.createElement('script');
+        if(id) script.id = id;
+        script.src = src;
+        return script;
+    }
+
     public static nodeFromString(html: string): HTMLElement {
         const div = document.createElement('div');
         div.innerHTML = html;
