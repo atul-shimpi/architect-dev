@@ -1,0 +1,42 @@
+@import "../../../../scss/variables";
+
+live-preview-context-menu {
+  display: block;
+  position: fixed;
+  width: 0;
+  height: 0;
+  visibility: hidden;
+}
+
+.mat-menu-panel {
+  transition: none !important;
+  animation: none !important;
+}
+
+.context-menu {
+  width: 300px;
+
+  .mat-menu-item {
+    display: flex;
+    align-items: center;
+
+    > .alt-text {
+      margin-left: auto;
+      color: $text-color-secondary;
+      font-size: 14px;
+    }
+
+    > .indent {
+      margin-left: 40px;
+    }
+  }
+
+  .separator {
+    background-color: rgba(0,0,0,0.11);
+    margin: 8px 0;
+    height: 1px;
+    max-height: 1px;
+    min-height: 1px;
+    width: 100%;
+  }
+}

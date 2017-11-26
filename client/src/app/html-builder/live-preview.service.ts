@@ -1,6 +1,5 @@
-import {ElementRef, Injectable, NgZone, Renderer2} from '@angular/core';
+import {ComponentFactoryResolver, ElementRef, Injectable, Injector, NgZone, Renderer2} from '@angular/core';
 import {Template} from "../../types/models/Template";
-import {ParsedTemplate} from "../templates/parsed-template.service";
 import {Elements} from "./elements/elements.service";
 import {Inspector} from "./inspector/inspector.service";
 import {ActiveElement} from "./live-preview/active-element";
@@ -8,9 +7,10 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Settings} from "vebto-client/core";
 import {UndoManager} from "./undo-manager/undo-manager.service";
 import {DragVisualHelperComponent} from "./live-preview/drag-and-drop/drag-visual-helper/drag-visual-helper.component";
-import {OverlayRef} from "@angular/cdk/overlay";
 import {InlineTextEditor} from "./live-preview/inline-text-editor/inline-text-editor.service";
 import {ParsedProject} from "./projects/parsed-project";
+import {ContextMenu} from "vebto-client/core/ui/context-menu/context-menu.service";
+import {LivePreviewContextMenuComponent} from "./live-preview/live-preview-context-menu/live-preview-context-menu.component";
 
 @Injectable()
 export class LivePreview {
@@ -55,6 +55,8 @@ export class LivePreview {
         private undoManager: UndoManager,
         private inlineTextEditor: InlineTextEditor,
         private parsedProject: ParsedProject,
+        private contextMenu: ContextMenu,
+        private resolver: ComponentFactoryResolver,
     ) {}
 
     public init(renderer: Renderer2, iframe: ElementRef, container: ElementRef, hoverBox: ElementRef, selectedBox: ElementRef, dragHelper: DragVisualHelperComponent) {
@@ -86,6 +88,15 @@ export class LivePreview {
             this.listenForHover();
             this.listenForClick(hammer);
             this.listenForDoubleClick(hammer);
+
+            this.document.body.addEventListener('contextmenu', e => {
+                e.preventDefault();
+
+                this.zone.run(() => {
+                    this.selectNode(e.target as HTMLElement);
+                    this.contextMenu.open(LivePreviewContextMenuComponent, e, {offsetX: 380, resolver: this.resolver});
+                });
+            });
 
             this.document.addEventListener('scroll', e => {
                 this.hideBox('hover');
@@ -209,7 +220,7 @@ export class LivePreview {
 
             this.iframe.contentWindow.focus();
 
-            if (this.resizing || this.selected.node == e.target) return true;
+            if (this.selected.node == e.target) return true;
 
             let node = e.target;
 
@@ -226,7 +237,7 @@ export class LivePreview {
             if (node.nodeName !== 'HTML') {
                 this.zone.run(() => this.selectNode(node));
             }
-        })
+        });
     }
 
     private listenForDoubleClick(hammer: HammerManager) {

@@ -11,13 +11,15 @@ import {CodeEditor} from "../live-preview/code-editor/code-editor.service";
 })
 export class InspectorComponent {
 
+    /**
+     * InspectorComponent Constructor.
+     */
     constructor(
         public inspector: Inspector,
         public undoManager: UndoManager,
         private codeEditor: CodeEditor,
         private el: ElementRef,
-    ) {
-    }
+    ) {}
 
     public toggleCodeEditor() {
         this.codeEditor.toggle(this.el);

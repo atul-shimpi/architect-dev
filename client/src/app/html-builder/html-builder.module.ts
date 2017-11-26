@@ -41,6 +41,7 @@ import {InlineTextEditor} from "./live-preview/inline-text-editor/inline-text-ed
 import { CodeEditorComponent } from './live-preview/code-editor/code-editor.component';
 import {CodeEditor} from "./live-preview/code-editor/code-editor.service";
 import {ParsedProject} from "./projects/parsed-project";
+import { LivePreviewContextMenuComponent } from './live-preview/live-preview-context-menu/live-preview-context-menu.component';
 
 @NgModule({
     imports: [
@@ -75,6 +76,7 @@ import {ParsedProject} from "./projects/parsed-project";
         DragElementsDirective,
         InlineTextEditorComponent,
         CodeEditorComponent,
+        LivePreviewContextMenuComponent,
     ],
     entryComponents: [
         GradientBackgroundPanelComponent,
@@ -83,6 +85,7 @@ import {ParsedProject} from "./projects/parsed-project";
         ImageBackgroundPanelComponent,
         InlineTextEditorComponent,
         CodeEditorComponent,
+        LivePreviewContextMenuComponent,
     ],
     providers: [
         LivePreview,
