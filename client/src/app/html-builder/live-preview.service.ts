@@ -1,21 +1,21 @@
-import {ComponentFactoryResolver, ElementRef, Injectable, Injector, NgZone, Renderer2} from '@angular/core';
+import {ElementRef, Injectable, NgZone, Renderer2} from '@angular/core';
 import {Template} from "../../types/models/Template";
 import {Elements} from "./elements/elements.service";
 import {Inspector} from "./inspector/inspector.service";
 import {ActiveElement} from "./live-preview/active-element";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {Settings} from "vebto-client/core";
 import {UndoManager} from "./undo-manager/undo-manager.service";
 import {DragVisualHelperComponent} from "./live-preview/drag-and-drop/drag-visual-helper/drag-visual-helper.component";
 import {InlineTextEditor} from "./live-preview/inline-text-editor/inline-text-editor.service";
 import {ParsedProject} from "./projects/parsed-project";
 import {ContextMenu} from "vebto-client/core/ui/context-menu/context-menu.service";
 import {LivePreviewContextMenuComponent} from "./live-preview/live-preview-context-menu/live-preview-context-menu.component";
+import {Overlay} from "@angular/cdk/overlay";
+import {CodeEditor} from "./live-preview/code-editor/code-editor.service";
 
 @Injectable()
 export class LivePreview {
     public container: HTMLElement;
-    public isWebkit = true;
     dragging: any;
 
     public hover = new ActiveElement(this);
@@ -31,8 +31,6 @@ export class LivePreview {
 
     private iframe: HTMLIFrameElement;
 
-    private resizing = false;
-
     public selecting = false;
 
     public dragHelper: DragVisualHelperComponent;
@@ -45,18 +43,20 @@ export class LivePreview {
     /**
      * Fired when preview iframe contents change.
      */
-    public contentChanged = new BehaviorSubject<{type: string, elementName?: string, node?: HTMLElement, initiator?: 'string'}>({type: 'domReloaded'});
+    public contentChanged = new BehaviorSubject<{type: string, elementName?: string, node?: HTMLElement, initiator?: string}>({type: 'domReloaded'});
+
+    public copiedNode: HTMLElement;
 
     constructor(
         private zone: NgZone,
         private elements: Elements,
         private inspector: Inspector,
-        private settings: Settings,
+        private codeEditor: CodeEditor,
         private undoManager: UndoManager,
         private inlineTextEditor: InlineTextEditor,
         private parsedProject: ParsedProject,
         private contextMenu: ContextMenu,
-        private resolver: ComponentFactoryResolver,
+        private overlay: Overlay,
     ) {}
 
     public init(renderer: Renderer2, iframe: ElementRef, container: ElementRef, hoverBox: ElementRef, selectedBox: ElementRef, dragHelper: DragVisualHelperComponent) {
@@ -94,7 +94,7 @@ export class LivePreview {
 
                 this.zone.run(() => {
                     this.selectNode(e.target as HTMLElement);
-                    this.contextMenu.open(LivePreviewContextMenuComponent, e, {offsetX: 380, resolver: this.resolver});
+                    this.contextMenu.open(LivePreviewContextMenuComponent, e, {offsetX: 380, overlay: this.overlay});
                 });
             });
 
@@ -102,6 +102,7 @@ export class LivePreview {
                 this.hideBox('hover');
                 if (this.selected.node) this.repositionBox('selected');
                 this.inlineTextEditor.close();
+                this.contextMenu.close();
             }, true);
         });
     }
@@ -149,7 +150,7 @@ export class LivePreview {
         const cloned = node.cloneNode(true) as HTMLElement;
 
         this.undoManager.wrapDomChanges(node.parentNode, () => {
-            node.parentNode.insertBefore(cloned, node.nextSibling);
+            node.parentNode.insertBefore(cloned, node.nextElementSibling);
             this.emitContentChanged('nodeAdded', this.elements.match(cloned).name, cloned);
         });
 
@@ -161,12 +162,109 @@ export class LivePreview {
      */
     public removeNode(node: HTMLElement): HTMLElement {
         this.undoManager.wrapDomChanges(node.parentNode, () => {
+            if (this.selected.node === node) this.selected.selectParent();
             node.parentNode.removeChild(node);
-            this.hideBox('selected');
             this.emitContentChanged('nodeRemoved', this.elements.match(node).name, node);
         });
 
         return node;
+    }
+
+    /**
+     * Copy specified node for later use or pasting.
+     */
+    public copyNode(node: HTMLElement) {
+        if (node && node.nodeName != 'BODY') {
+            this.copiedNode = node.cloneNode(true) as HTMLElement;
+        }
+    }
+
+    /**
+     * Paste copied DOM node if it exists.
+     */
+    public pasteNode(ref: HTMLElement, copiedNode?: HTMLElement) {
+        if ( ! copiedNode) copiedNode = this.copiedNode;
+
+        if (ref && copiedNode) {
+            this.undoManager.wrapDomChanges(ref.parentNode, () => {
+                //make sure we don't paste refs after body
+                if (ref.nodeName == 'BODY') {
+                    ref.appendChild(copiedNode);
+                } else {
+                    ref.parentNode.insertBefore(copiedNode, ref.nextSibling);
+                }
+
+                this.hideBox('selected');
+            });
+
+            //add undo
+            this.emitContentChanged('nodeAdded');
+        }
+    }
+
+    /**
+     * Copy and remove the given node.
+     */
+    public cutNode(node: HTMLElement) {
+        if (node && node.nodeName != 'BODY') {
+            this.copyNode(node);
+            this.removeNode(node);
+        }
+    }
+
+    public duplicateNode(node: HTMLElement) {
+        const cloned = node.cloneNode(true) as HTMLElement;
+        this.pasteNode(this.selected.node, cloned);
+    }
+
+    public viewSelectedNodeSourceCode() {
+        this.codeEditor.open().subscribe(editor => {
+            editor.selectNodeSource(this.selected.node);
+        });
+    }
+
+    /**
+     * Move selected node by one element in the specified direction.
+     */
+    public moveSelected(dir: 'up'|'down') {
+        if (dir == 'down') {
+            const next = this.selected.node.nextElementSibling as HTMLElement;
+
+            if (next) {
+                //check if we can insert selected node into the next one
+                if (this.elements.canInsert(next, this.selected.element)) {
+                    next.insertBefore(this.selected.node, next.firstChild);
+                } else {
+                    next.parentNode.insertBefore(this.selected.node, next.nextElementSibling);
+                }
+
+            } else {
+                let parentParent = this.selected.node.parentNode.parentNode as HTMLElement;
+
+                if (this.elements.canInsert(parentParent, this.selected.element)) {
+                    parentParent.parentNode.insertBefore(this.selected.node, parentParent.nextElementSibling);
+                }
+            }
+        } else if (dir == 'up') {
+            const prev = this.selected.node.previousElementSibling as HTMLElement;
+
+            if (prev) {
+                //check if we can insert selected node into the prev one
+                if (this.elements.canInsert(prev, this.selected.element)) {
+                    prev.appendChild(this.selected.node);
+                } else {
+                    prev.parentNode.insertBefore(this.selected.node, prev);
+                }
+            } else {
+                let parentParent = this.selected.node.parentNode.parentNode as HTMLElement;
+
+                if (this.elements.canInsert(parentParent, this.selected.element)) {
+                    parentParent.insertBefore(this.selected.node, this.selected.parent);
+                }
+            }
+        }
+
+        this.repositionBox('selected');
     }
 
     public scrollIntoView(node?: HTMLElement) {
@@ -195,9 +293,7 @@ export class LivePreview {
 
                 this.hover.element = this.elements.match(this.hover.node, 'hover', true);
 
-                //only reposition hover box during drag on webkit browsers
-                //as it will cause fairly significant lag on IE and Firefox
-                if ( ! this.dragging || this.isWebkit) {
+                if ( ! this.dragging) {
                     this.repositionBox('hover', this.hover.node, this.hover.element);
                 }
 
@@ -216,7 +312,7 @@ export class LivePreview {
             }
 
             //hide context menu
-            //this.contextMenu.hide();
+            this.contextMenu.close();
 
             this.iframe.contentWindow.focus();
 

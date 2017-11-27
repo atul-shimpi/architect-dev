@@ -53,7 +53,7 @@ export class DomHelpers {
 
         // save the location of node2
         let parent2 = node2.parentNode;
-        let next2 = node2.nextSibling;
+        let next2 = node2.nextElementSibling;
 
         // special case for node1 is the next sibling of node2
         if (next2 === node1) {

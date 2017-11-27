@@ -1,7 +1,8 @@
-import {ElementRef, Injectable} from '@angular/core';
+import {ComponentRef, ElementRef, Injectable} from '@angular/core';
 import {Overlay, OverlayRef} from "@angular/cdk/overlay";
 import {CodeEditorComponent} from "./code-editor.component";
 import {ComponentPortal} from "@angular/cdk/portal";
+import {Observable} from "rxjs/Observable";
 
 @Injectable()
 export class CodeEditor {
@@ -11,22 +12,31 @@ export class CodeEditor {
      */
     public overlayRef: OverlayRef;
 
-    constructor(private overlay: Overlay) {
-    }
+    /**
+     * Origin element for code editor overlay.
+     */
+    private origin: ElementRef;
 
-    public toggle(ref: ElementRef) {
+    private componentRef: ComponentRef<CodeEditorComponent>;
+
+    /**
+     * CodeEditor Constructor.
+     */
+    constructor(private overlay: Overlay) {}
+
+    public toggle() {
         if (this.overlayRef) {
             this.close();
         } else {
-            this.open(ref);
+            this.open();
         }
     }
 
-    public open(ref: ElementRef) {
-        if (this.overlayRef) return;
+    public open(): Observable<CodeEditorComponent> {
+        if (this.overlayRef) return this.componentRef.instance.loaded;
 
         const strategy = this.overlay.position().connectedTo(
-            ref,
+            this.origin,
             {originX: 'end', originY: 'bottom'},
             {overlayX: 'start', overlayY: 'bottom'}
         ).withFallbackPosition(
@@ -36,13 +46,15 @@ export class CodeEditor {
 
         if (this.overlayRef) this.overlayRef.dispose();
 
-        this.overlayRef = this.overlay.create({positionStrategy: strategy, hasBackdrop: false});
-        const componentRef = this.overlayRef.attach(new ComponentPortal(CodeEditorComponent));
+        this.overlayRef = this.overlay.create({positionStrategy: strategy});
+        this.componentRef = this.overlayRef.attach(new ComponentPortal(CodeEditorComponent)) as ComponentRef<CodeEditorComponent>;
 
-        const sub = componentRef.instance.close.subscribe(() => {
+        const sub = this.componentRef.instance.close.subscribe(() => {
             this.close();
             sub.unsubscribe();
         });
+
+        return this.componentRef.instance.loaded;
     }
 
     public close() {
@@ -51,4 +63,7 @@ export class CodeEditor {
         this.overlayRef = null;
     }
 
+    public registerOrigin(origin: ElementRef) {
+        this.origin = origin;
+    }
 }

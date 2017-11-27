@@ -202,7 +202,7 @@ gulp.task('svgstore', function () {
 
     //compile, minify and store svg on disk.
     .pipe(svgmin({plugins: [{
-        removeAttrs: {attrs: ['color']}
+        removeAttrs: {attrs: ['color', 'fill']}
     }]}))
     .pipe(svgstore())
     .pipe(rename('icons.svg'))

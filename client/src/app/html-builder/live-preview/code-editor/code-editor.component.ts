@@ -39,7 +39,9 @@ export class CodeEditorComponent implements OnInit {
     /**
      * Fired when editor should be closed.
      */
-    private close = new EventEmitter();
+    public close = new EventEmitter();
+
+    public loaded = new Subject();
 
     constructor(private utils: utils, private livePreview: LivePreview, private parsedProject: ParsedProject) {
     }
@@ -50,12 +52,21 @@ export class CodeEditorComponent implements OnInit {
 
             //select node html in the code editor when new node is selected in the builder
             this.livePreview.elementSelected.subscribe(() => {
-                if (this.livePreview.selected.node) this.editor.find(this.livePreview.selected.node.outerHTML);
+                if (this.livePreview.selected.node) this.selectNodeSource(this.livePreview.selected.node);
             });
 
             this.bindToLivePreviewChangeEvent();
             this.bindToEditorChangeEvent();
+
+            setTimeout(() => this.loaded.next(this));
         });
+    }
+
+    /**
+     * Select source code of specified node in code editor.
+     */
+    public selectNodeSource(node: HTMLElement) {
+        this.editor.find(node.outerHTML);
     }
 
     public useTheme(name: string) {
@@ -115,7 +126,11 @@ export class CodeEditorComponent implements OnInit {
 
     private setEditorValue(value: string) {
         this.suppressChangeEvents = true;
-        this.editor.setValue(value, -1);
+
+        if (this.editor.getValue() !== value) {
+            this.editor.setValue(value, -1);
+        }
+
         this.suppressChangeEvents = false;
     }
 

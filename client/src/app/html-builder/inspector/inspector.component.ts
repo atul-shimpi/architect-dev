@@ -1,4 +1,4 @@
-import {Component, ElementRef, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewEncapsulation} from '@angular/core';
 import {Inspector} from "./inspector.service";
 import {UndoManager} from "../undo-manager/undo-manager.service";
 import {CodeEditor} from "../live-preview/code-editor/code-editor.service";
@@ -9,7 +9,7 @@ import {CodeEditor} from "../live-preview/code-editor/code-editor.service";
     styleUrls: ['./inspector.component.scss'],
     encapsulation: ViewEncapsulation.None,
 })
-export class InspectorComponent {
+export class InspectorComponent implements OnInit {
 
     /**
      * InspectorComponent Constructor.
@@ -21,7 +21,11 @@ export class InspectorComponent {
         private el: ElementRef,
     ) {}
 
+    ngOnInit() {
+        this.codeEditor.registerOrigin(this.el);
+    }
+
     public toggleCodeEditor() {
-        this.codeEditor.toggle(this.el);
+        this.codeEditor.toggle();
     }
 }
