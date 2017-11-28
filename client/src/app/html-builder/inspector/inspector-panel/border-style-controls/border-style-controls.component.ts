@@ -1,5 +1,6 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {LivePreview} from "../../../live-preview.service";
+import {SelectedElement} from "../../../live-preview/selected-element.service";
 
 @Component({
     selector: 'border-style-controls',
@@ -15,10 +16,10 @@ export class BorderStyleControlsComponent implements OnInit {
     /**
      * BorderStyleControlsComponent Constructor.
      */
-    constructor(private livePreview: LivePreview) {}
+    constructor(private selected: SelectedElement) {}
 
     ngOnInit() {
-        this.livePreview.elementSelected.subscribe(() => {
+        this.selected.changed.subscribe(() => {
             this.setInitialBorderStyles()
         });
     }
@@ -27,21 +28,21 @@ export class BorderStyleControlsComponent implements OnInit {
      * Apply border color to selected element.
      */
     public applyBorderColor() {
-        this.livePreview.selected.applyStyle('borderColor', this.borderColor);
+        this.selected.applyStyle('borderColor', this.borderColor);
     }
 
     /**
      * Apply border style to selected element.
      */
     public applyBorderStyle() {
-        this.livePreview.selected.applyStyle('borderStyle', this.borderStyle)
+        this.selected.applyStyle('borderStyle', this.borderStyle)
     }
 
     /**
      * Set styles of selected element on component.
      */
     private setInitialBorderStyles() {
-        this.borderStyle = this.livePreview.selected.getStyle('borderStyle');
-        this.borderColor = this.livePreview.selected.getStyle('borderColor');
+        this.borderStyle = this.selected.getStyle('borderStyle');
+        this.borderColor = this.selected.getStyle('borderColor');
     }
 }

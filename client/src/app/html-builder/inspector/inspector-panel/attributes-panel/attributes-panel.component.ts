@@ -2,6 +2,7 @@ import {Component, OnInit, Renderer2, ViewEncapsulation} from '@angular/core';
 import {LivePreview} from "../../../live-preview.service";
 import {UndoManager} from "../../../undo-manager/undo-manager.service";
 import {ActiveElement} from "../../../live-preview/active-element";
+import {SelectedElement} from "../../../live-preview/selected-element.service";
 
 @Component({
     selector: 'attributes-panel',
@@ -36,11 +37,12 @@ export class AttributesPanelComponent implements OnInit {
     constructor(
         private livePreview: LivePreview,
         private undoManager: UndoManager,
+        private selectedElement: SelectedElement,
         private renderer: Renderer2
     ) {}
 
     ngOnInit() {
-        this.livePreview.elementSelected.subscribe(() => {
+        this.selectedElement.changed.subscribe(() => {
             this.onElementSelected();
         });
     }
@@ -50,19 +52,19 @@ export class AttributesPanelComponent implements OnInit {
         this.classes = [];
         this.visibilityClasses = [];
 
-        this.callElementOnAssign(this.livePreview.selected);
+        this.callElementOnAssign(this.selectedElement);
 
         //set element classes
-        for (let i = 0; i < this.livePreview.selected.node.classList.length; i++) {
-            this.classes.push(this.livePreview.selected.node.classList[i]);
+        for (let i = 0; i < this.selectedElement.node.classList.length; i++) {
+            this.classes.push(this.selectedElement.node.classList[i]);
         }
 
         //set element id
-        this.id = this.livePreview.selected.node.id;
+        this.id = this.selectedElement.node.id;
 
         //set element position
         ['pull-left', 'pull-right', 'center-block'].forEach(float => {
-            if (this.livePreview.selected.node.className.indexOf(float) > -1) {
+            if (this.selectedElement.node.className.indexOf(float) > -1) {
                 this.position = float;
             } else {
                 this.position = 'none';
@@ -70,8 +72,8 @@ export class AttributesPanelComponent implements OnInit {
         });
 
         //set 'bootstrap' visibility
-        for (let i = 0; i < this.livePreview.selected.node.classList.length; i++) {
-            let className = this.livePreview.selected.node.classList[i];
+        for (let i = 0; i < this.selectedElement.node.classList.length; i++) {
+            let className = this.selectedElement.node.classList[i];
 
             if (['hidden-xs', 'hidden-sm', 'hidden-md', 'hidden-lg'].indexOf(className) > -1) {
                 this.visibilityClasses.push(className);
@@ -97,7 +99,7 @@ export class AttributesPanelComponent implements OnInit {
      * Change selected element ID to specifie one.
      */
     public changeElId(id: string) {
-        this.livePreview.selected.node.id = id;
+        this.selectedElement.node.id = id;
     }
 
     /**
@@ -108,10 +110,10 @@ export class AttributesPanelComponent implements OnInit {
               index = this.visibilityClasses.indexOf(className);
 
         if (index > -1) {
-            this.renderer.removeClass(this.livePreview.selected.node, className);
+            this.renderer.removeClass(this.selectedElement.node, className);
             this.visibilityClasses.splice(index, 1);
         } else {
-            this.renderer.addClass(this.livePreview.selected.node, className);
+            this.renderer.addClass(this.selectedElement.node, className);
             this.visibilityClasses.push(className);
         }
 
@@ -124,7 +126,7 @@ export class AttributesPanelComponent implements OnInit {
     public removeClass(classes: string[], addUndo = true) {
         classes.forEach(className => {
             this.classes.splice(this.classes.indexOf(className), 1);
-            this.renderer.removeClass(this.livePreview.selected.node, className);
+            this.renderer.removeClass(this.selectedElement.node, className);
         });
 
         if (addUndo) {
@@ -146,7 +148,7 @@ export class AttributesPanelComponent implements OnInit {
                 this.classes.push(className);
             }
 
-            this.renderer.addClass(this.livePreview.selected.node, className);
+            this.renderer.addClass(this.selectedElement.node, className);
         });
 
        if (addUndo) {
@@ -225,7 +227,7 @@ export class AttributesPanelComponent implements OnInit {
         for (let i = attr.list.length - 1; i >= 0; i--) {
             first = attr.list[i];
 
-            if (this.livePreview.selected.node.className.indexOf(attr.list[i].value) > -1) {
+            if (this.selectedElement.node.className.indexOf(attr.list[i].value) > -1) {
                 return attr.value = attr.list[i];
             }
         }
@@ -241,10 +243,10 @@ export class AttributesPanelComponent implements OnInit {
      */
     private defaultOnChange(attr: {list: any[], value: any}) {
         for (let i = attr.list.length - 1; i >= 0; i--) {
-            this.renderer.removeClass(this.livePreview.selected.node, attr.list[i].value);
+            this.renderer.removeClass(this.selectedElement.node, attr.list[i].value);
         }
 
-        this.renderer.addClass(this.livePreview.selected.node, attr.value);
+        this.renderer.addClass(this.selectedElement.node, attr.value);
 
         setTimeout(() => this.livePreview.repositionBox('selected'), 300);
     };

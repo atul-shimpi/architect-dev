@@ -1,8 +1,8 @@
 import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import {LivePreview} from "../../../live-preview.service";
 import {baseFonts, fontWeights} from "../../../text-style-values";
 import {InspectorFloatingPanel} from "../../inspector-floating-panel.service";
 import {GoogleFontsPanelComponent} from "./google-fonts-panel/google-fonts-panel.component";
+import {SelectedElement} from "../../../live-preview/selected-element.service";
 
 @Component({
     selector: 'text-style-panel',
@@ -22,16 +22,16 @@ export class TextStylePanelComponent implements OnInit {
     /**
      * TextStylePanelComponent Constructor.
      */
-    constructor(private livePreview: LivePreview, private panel: InspectorFloatingPanel) {}
+    constructor(private selectedElement: SelectedElement, private panel: InspectorFloatingPanel) {}
 
     ngOnInit() {
-        this.livePreview.elementSelected.subscribe(() => {
+        this.selectedElement.changed.subscribe(() => {
             this.getSelectedElementTextStyles();
         });
     }
 
     public applyTextStyle(name: string, addUndoCommand = true) {
-        this.livePreview.selected.applyStyle(name, this.styles[name], addUndoCommand);
+        this.selectedElement.applyStyle(name, this.styles[name], addUndoCommand);
     }
 
     /**
@@ -39,9 +39,9 @@ export class TextStylePanelComponent implements OnInit {
      */
     public toggleTextStyle(name: string, value: string) {
         if (this.textStyleIs(name, value)) {
-            this.livePreview.selected.applyStyle(name, 'initial');
+            this.selectedElement.applyStyle(name, 'initial');
         } else {
-            this.livePreview.selected.applyStyle(name, value);
+            this.selectedElement.applyStyle(name, value);
         }
     }
 
@@ -49,12 +49,12 @@ export class TextStylePanelComponent implements OnInit {
      * Check if selected element's specified style equals given value.
      */
     public textStyleIs(name: string, value: string) {
-        return this.livePreview.selected.getStyle(name).indexOf(value) > -1;
+        return this.selectedElement.getStyle(name).indexOf(value) > -1;
     }
 
     public openGoogleFontsPanel() {
         this.panel.open(GoogleFontsPanelComponent, this.googleFontsOrigin).selected.subscribe(fontFamily => {
-            this.livePreview.selected.applyStyle('fontFamily', fontFamily);
+            this.selectedElement.applyStyle('fontFamily', fontFamily);
         });
     }
 
@@ -63,14 +63,14 @@ export class TextStylePanelComponent implements OnInit {
      */
     private getSelectedElementTextStyles() {
         this.styles = {
-            color: this.livePreview.selected.getStyle('color'),
-            fontSize: this.livePreview.selected.getStyle('fontSize').replace('px', ''),
-            textAlign: this.livePreview.selected.getStyle('textAlign'),
-            fontStyle: this.livePreview.selected.getStyle('fontStyle'),
-            fontFamily: this.livePreview.selected.getStyle('fontFamily'),
-            lineHeight: this.livePreview.selected.getStyle('lineHeight'),
-            fontWeight: this.livePreview.selected.getStyle('fontWeight'),
-            textDecoration: this.livePreview.selected.getStyle('textDecoration')
+            color: this.selectedElement.getStyle('color'),
+            fontSize: this.selectedElement.getStyle('fontSize').replace('px', ''),
+            textAlign: this.selectedElement.getStyle('textAlign'),
+            fontStyle: this.selectedElement.getStyle('fontStyle'),
+            fontFamily: this.selectedElement.getStyle('fontFamily'),
+            lineHeight: this.selectedElement.getStyle('lineHeight'),
+            fontWeight: this.selectedElement.getStyle('fontWeight'),
+            textDecoration: this.selectedElement.getStyle('textDecoration')
         };
     }
 }

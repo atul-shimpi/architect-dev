@@ -2,6 +2,7 @@ import {Component, ViewChild, ViewEncapsulation} from '@angular/core';
 import {MatMenuTrigger} from "@angular/material";
 import {UndoManager} from "../../undo-manager/undo-manager.service";
 import {LivePreview} from "../../live-preview.service";
+import {SelectedElement} from "../selected-element.service";
 
 @Component({
     selector: 'live-preview-context-menu',
@@ -19,6 +20,7 @@ export class LivePreviewContextMenuComponent {
     constructor(
         public undoManager: UndoManager,
         public livePreview: LivePreview,
+        public selected: SelectedElement,
     ) {}
 
     ngOnInit() {
@@ -26,7 +28,7 @@ export class LivePreviewContextMenuComponent {
     }
 
     public remove() {
-        this.livePreview.removeNode(this.livePreview.selected.node);
+        this.livePreview.removeNode(this.selected.node);
     }
 
     public undo() {
@@ -38,15 +40,15 @@ export class LivePreviewContextMenuComponent {
     }
 
     public copy() {
-        this.livePreview.copyNode(this.livePreview.selected.node);
+        this.livePreview.copyNode(this.selected.node);
     }
 
     public cut() {
-        this.livePreview.cutNode(this.livePreview.selected.node);
+        this.livePreview.cutNode(this.selected.node);
     }
 
     public paste() {
-        this.livePreview.pasteNode(this.livePreview.selected.node);
+        this.livePreview.pasteNode(this.selected.node);
     }
 
     public canPaste() {
@@ -54,23 +56,23 @@ export class LivePreviewContextMenuComponent {
     }
 
     public duplicate() {
-        this.livePreview.duplicateNode(this.livePreview.selected.node);
+        this.livePreview.duplicateNode(this.selected.node);
     }
 
     public selectParent() {
-        this.livePreview.selected.selectParent();
+        this.selected.selectParent();
     }
 
     public canSelectParent() {
-        return this.livePreview.selected.canSelectParent();
+        return this.selected.canSelectParent();
     }
 
     public canSelectChild() {
-        return this.livePreview.selected.canSelectChild();
+        return this.selected.canSelectChild();
     }
 
     public selectChild() {
-        this.livePreview.selected.selectFirstChild();
+        this.selected.selectFirstChild();
     }
 
     public viewSourceCode() {

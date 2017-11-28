@@ -1,17 +1,33 @@
 import {Injectable} from '@angular/core';
+import {SelectedElement} from "../live-preview/selected-element.service";
 
-type panelNames = 'elements'|'inspector'|'pages'|'themes'|'settings'|'layout';
+type PanelNames = 'elements'|'inspector'|'pages'|'themes'|'settings'|'layout';
 
 @Injectable()
 export class Inspector {
 
-    private activePanel: panelNames = 'elements';
+    private activePanel: PanelNames = 'elements';
 
-    public togglePanel(name: panelNames) {
+    constructor(private selectedElement: SelectedElement) {
+        this.selectedElement.changed.subscribe(() => {
+            if (this.selectedElement.isLayout()) {
+                this.openPanel('layout');
+            } else {
+                this.openPanel('inspector');
+            }
+        });
+    }
+
+    public togglePanel(name: PanelNames) {
         this.activePanel = name;
     }
 
-    public activePanelIs(name: panelNames) {
+    public openPanel(name: PanelNames) {
+        if (this.activePanelIs(name)) return;
+        this.activePanel = name;
+    }
+
+    public activePanelIs(name: PanelNames) {
         return this.activePanel === name;
     }
 }

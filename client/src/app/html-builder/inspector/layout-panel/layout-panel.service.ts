@@ -3,6 +3,7 @@ import {Columns, Container} from "./layout-panel-types";
 import {LivePreview} from "../../live-preview.service";
 import {utils} from "vebto-client/core";
 import {UndoManager} from "../../undo-manager/undo-manager.service";
+import {SelectedElement} from "../../live-preview/selected-element.service";
 
 @Injectable()
 export class LayoutPanel {
@@ -22,7 +23,11 @@ export class LayoutPanel {
     /**
      * LayoutPanel Service Constructor.
      */
-    constructor(private livePreview: LivePreview, private undoManager: UndoManager) {}
+    constructor(private livePreview: LivePreview, private selected: SelectedElement, private undoManager: UndoManager) {
+        this.selected.changed.subscribe(() => {
+            this.selectRowAndContainerUsing(this.selected.node)
+        });
+    }
 
     /**
      * Load all containers from live preview.
@@ -78,28 +83,36 @@ export class LayoutPanel {
 
         this.livePreview.emitContentChanged('nodeAdded', 'container', container);
         this.selectContainer(container);
-        this.livePreview.selectNode(this.selectedContainer.node, false);
+        this.selected.selectNode(this.selectedContainer.node);
     }
 
-    public selectContainer(container: Container|HTMLElement) {
+    public selectContainer(container: Container|HTMLElement, selectRow = true) {
         if (container['nodeType']) {
             this.selectedContainer = this.containers.find(cont => cont.node === container);
         } else {
             this.selectedContainer = container as Container;
         }
 
-        if (this.selectedContainer) {
+        if (this.selectedContainer && selectRow) {
             this.selectRow(this.selectedContainer.rows[0]);
         }
+    }
+
+    public rowIsSelected(node: HTMLElement) {
+        return this.selectedRow && this.selectedRow.node === node;
+    }
+
+    public containerIsSelected(node: HTMLElement) {
+        return this.selectedContainer && this.selectedContainer.node === node;
     }
 
     /**
      * Select specified row.
      */
-    public selectRow(node: HTMLElement) {
+    public selectRow(node: HTMLElement, selectNode = true) {
         if ( ! node) return;
 
-        this.livePreview.selectNode(node, false);
+        if (selectNode) this.selected.selectNode(node);
 
         const columns = this.getColumns(node),
             preset  = columns.map(col => col.span);
@@ -120,7 +133,7 @@ export class LayoutPanel {
     }
 
     public selectColumn(node: HTMLElement) {
-        this.livePreview.selectNode(node, false);
+        this.selected.selectNode(node);
         this.livePreview.scrollIntoView();
     }
 
@@ -297,4 +310,35 @@ export class LayoutPanel {
         return array;
     }
 
+    /**
+     * Select row and container using specified node (column, row or container).
+     */
+    public selectRowAndContainerUsing(node: HTMLElement) {
+        let row, container;
+
+        if ( ! node || ! this.selected.isLayout()) return;
+
+        if (this.selected.isRow()) {
+            row = node;
+            container = row.closest('.container') as HTMLElement;
+        }
+
+        if (this.selected.isColumn()) {
+            row = node.closest('.row') as HTMLElement;
+            container = row.closest('.container') as HTMLElement;
+        }
+
+        if (this.selected.isContainer()) {
+            container = node;
+            row = container.querySelector('.row');
+        }
+
+        if ( ! this.rowIsSelected(row)) {
+            this.selectRow(row, false);
+        }
+
+        if ( ! this.containerIsSelected(container)) {
+            this.selectContainer(container, false);
+        }
+    }
 }

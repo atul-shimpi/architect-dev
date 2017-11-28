@@ -29,7 +29,12 @@ inspector-panel {
     }
   }
 
+  > .edit-layout-button {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
   .mat-expansion-panel .mat-expansion-panel-body {
-    margin: 10px 0;
+    margin: 15px;
   }
 }

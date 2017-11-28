@@ -33,7 +33,7 @@ export class CodeEditor {
     }
 
     public open(): Observable<CodeEditorComponent> {
-        if (this.overlayRef) return this.componentRef.instance.loaded;
+        if (this.overlayRef) return this.componentRef.instance.afterLoaded();
 
         const strategy = this.overlay.position().connectedTo(
             this.origin,
@@ -49,12 +49,11 @@ export class CodeEditor {
         this.overlayRef = this.overlay.create({positionStrategy: strategy});
         this.componentRef = this.overlayRef.attach(new ComponentPortal(CodeEditorComponent)) as ComponentRef<CodeEditorComponent>;
 
-        const sub = this.componentRef.instance.close.subscribe(() => {
+        this.componentRef.instance.onClose().subscribe(() => {
             this.close();
-            sub.unsubscribe();
         });
 
-        return this.componentRef.instance.loaded;
+        return this.componentRef.instance.afterLoaded();
     }
 
     public close() {

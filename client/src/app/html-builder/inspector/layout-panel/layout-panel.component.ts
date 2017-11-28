@@ -3,6 +3,8 @@ import {LivePreview} from "../../live-preview.service";
 import {LayoutPanel} from "./layout-panel.service";
 import {Container} from "./layout-panel-types";
 import {Inspector} from "../inspector.service";
+import {SelectedElement} from "../../live-preview/selected-element.service";
+import {ContextBoxes} from "../../live-preview/context-boxes.service";
 
 @Component({
     selector: 'layout-panel',
@@ -19,6 +21,8 @@ export class LayoutPanelComponent implements OnInit {
      */
     constructor(
         private livePreview: LivePreview,
+        private selectedElement: SelectedElement,
+        private contextBoxes: ContextBoxes,
         public layoutPanel: LayoutPanel,
         private inspector: Inspector
     ) {}
@@ -31,7 +35,7 @@ export class LayoutPanelComponent implements OnInit {
     }
 
     public openInspectorPanel(node: HTMLElement) {
-        this.livePreview.selectNode(node, false);
+        this.selectedElement.selectNode(node);
         this.inspector.togglePanel('inspector');
     }
 
@@ -45,11 +49,11 @@ export class LayoutPanelComponent implements OnInit {
     }
 
     public repositionHoverBox(node: HTMLElement) {
-        this.livePreview.repositionBox('hover', node);
+        this.contextBoxes.repositionBox('hover', node);
     }
 
     public hideHoverBox() {
-        this.livePreview.hideBox('hover');
+        this.contextBoxes.hideBox('hover');
     }
 
     public containerIsSelected(container: Container): boolean {
@@ -72,7 +76,7 @@ export class LayoutPanelComponent implements OnInit {
      * Check if specified node is selected in live preview.
      */
     public isSelected(node: HTMLElement) {
-        return this.livePreview.selected.node === node;
+        return this.selectedElement.node === node;
     }
 
     /**

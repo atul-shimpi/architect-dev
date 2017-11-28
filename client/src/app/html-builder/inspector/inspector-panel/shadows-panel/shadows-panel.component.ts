@@ -2,6 +2,7 @@ import {Component, ElementRef, OnInit, Renderer2, ViewChild, ViewEncapsulation} 
 import {LivePreview} from "../../../live-preview.service";
 import {InspectorFloatingPanel} from "../../inspector-floating-panel.service";
 import {ColorpickerPanelComponent} from "../colorpicker-panel/colorpicker-panel.component";
+import {SelectedElement} from "../../../live-preview/selected-element.service";
 
 @Component({
     selector: 'shadows-panel',
@@ -20,7 +21,7 @@ export class ShadowsPanelComponent implements OnInit {
      * ShadowsPanelComponent Constructor.
      */
     constructor(
-        private livePreview: LivePreview,
+        private selectedElement: SelectedElement,
         private panel: InspectorFloatingPanel,
         private renderer: Renderer2
     ) {
@@ -28,11 +29,11 @@ export class ShadowsPanelComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.livePreview.elementSelected.subscribe(() => {
+        this.selectedElement.changed.subscribe(() => {
             if (this.props.type == 'boxShadow') {
-                this.stringToProps(this.livePreview.selected.getStyle('boxShadow'));
+                this.stringToProps(this.selectedElement.getStyle('boxShadow'));
             } else {
-                this.stringToProps(this.livePreview.selected.getStyle('textShadow'));
+                this.stringToProps(this.selectedElement.getStyle('textShadow'));
             }
 
             this.setColorButtonColor();
@@ -41,12 +42,12 @@ export class ShadowsPanelComponent implements OnInit {
 
     public applyStyle(name: string, value: string, addUndoCommand = true) {
         this.props[name] = value;
-        this.livePreview.selected.applyStyle(this.props.type, this.propsToString(this.props), addUndoCommand);
+        this.selectedElement.applyStyle(this.props.type, this.propsToString(this.props), addUndoCommand);
         this.clearShadow(this.props.type === 'boxShadow' ? 'textShadow' : 'boxShadow');
     }
 
     public clearShadow(type: string) {
-        this.livePreview.selected.applyStyle(type, 'none', false);
+        this.selectedElement.applyStyle(type, 'none', false);
     }
 
     public openColorpickerPanel() {

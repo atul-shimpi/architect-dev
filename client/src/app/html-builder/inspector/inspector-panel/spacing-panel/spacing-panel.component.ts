@@ -1,5 +1,6 @@
 import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import {LivePreview} from "../../../live-preview.service";
+import {SelectedElement} from "../../../live-preview/selected-element.service";
 
 @Component({
     selector: 'spacing-panel',
@@ -42,12 +43,12 @@ export class SpacingPanelComponent implements OnInit {
     /**
      * SpacingPanelComponent Constructor.
      */
-    constructor(private livePreview: LivePreview) {
+    constructor(private selected: SelectedElement) {
         this.resetSpacing();
     }
 
     ngOnInit() {
-        this.livePreview.elementSelected.subscribe(() => {
+        this.selected.changed.subscribe(() => {
             this.setSelectedElementSpacingValues();
         });
     }
@@ -89,8 +90,7 @@ export class SpacingPanelComponent implements OnInit {
         this.resetDisabledSideValues();
 
         const spacing = this.generateSpacingCssValue();
-        this.livePreview.selected.applyStyle(this.type, spacing);
-        this.livePreview.repositionBox('selected');
+        this.selected.applyStyle(this.type, spacing);
         this.sliderValue = side ? this.spacing[side] : 0;
     }
 
@@ -140,7 +140,7 @@ export class SpacingPanelComponent implements OnInit {
      */
     private setSelectedElementSpacingValues() {
         this.availableSides.forEach(side => {
-            this.spacing[side] = this.livePreview.selected.getStyle(this.generateCssRuleName(side)).replace('px', '');
+            this.spacing[side] = this.selected.getStyle(this.generateCssRuleName(side)).replace('px', '');
         });
 
         this.spacing.all = this.allSpacingValuesEqual() ? this.spacing.top : 0;

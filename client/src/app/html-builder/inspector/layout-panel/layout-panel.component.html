@@ -11,7 +11,7 @@
                     <button class="no-style add-item-button" (click)="layoutPanel.createRow(container.node, container.rows[0], 'start')"><span trans>+ ADD ROW</span></button>
 
                     <div class="row-drag-wrapper" *ngFor="let row of container.rows; index as index">
-                        <div class="row" (click)="layoutPanel.selectRow(row)" [class.selected]="isSelected(row)" (mouseenter)="repositionHoverBox(row)" (mouseleave)="hideHoverBox()">
+                        <div class="row" (click)="layoutPanel.selectRow(row)" [class.selected]="layoutPanel.rowIsSelected(row)" (mouseenter)="repositionHoverBox(row)" (mouseleave)="hideHoverBox()">
                             <div class="row-name"><span trans>Row</span> {{index + 1}}</div>
                             <div class="row-actions">
                                 <button class="no-style" matTooltip="Modify" (click)="openInspectorPanel(row)">

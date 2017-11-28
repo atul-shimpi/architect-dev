@@ -4,6 +4,7 @@ import {LivePreview} from "../../live-preview.service";
 import {Subject} from "rxjs/Subject";
 import {ParsedProject} from "../../projects/parsed-project";
 import {aceThemes} from "./ace-themes";
+import {Observable} from "rxjs/Observable";
 
 declare let ace: any;
 
@@ -37,11 +38,14 @@ export class CodeEditorComponent implements OnInit {
     private contentsChange = new Subject();
 
     /**
-     * Fired when editor should be closed.
+     * Subject for notifying the user that code editor should be closed.
      */
-    public close = new EventEmitter();
+    private close = new Subject();
 
-    public loaded = new Subject();
+    /**
+     * Subject for notifying the user that code editor has finished loading.
+     */
+    private loaded = new Subject();
 
     constructor(private utils: utils, private livePreview: LivePreview, private parsedProject: ParsedProject) {
     }
@@ -51,15 +55,32 @@ export class CodeEditorComponent implements OnInit {
             this.updateEditorContents(this.activeEditor);
 
             //select node html in the code editor when new node is selected in the builder
-            this.livePreview.elementSelected.subscribe(() => {
+            this.selectedElement.subscribe(() => {
                 if (this.livePreview.selected.node) this.selectNodeSource(this.livePreview.selected.node);
             });
 
             this.bindToLivePreviewChangeEvent();
             this.bindToEditorChangeEvent();
 
-            setTimeout(() => this.loaded.next(this));
+            setTimeout(() => {
+                this.loaded.next(this);
+                this.loaded.complete();
+            });
         });
+    }
+
+    /**
+     * Gets an observable that emits when code editor has finished loading.
+     */
+    public afterLoaded(): Observable<any> {
+        return this.loaded.asObservable();
+    }
+
+    /**
+     * Gets an observable that emits when code editor should be closed.
+     */
+    public onClose(): Observable<any> {
+        return this.close.asObservable();
     }
 
     /**
@@ -139,7 +160,8 @@ export class CodeEditorComponent implements OnInit {
     }
 
     public closeEditor() {
-        this.close.emit();
+        this.close.next();
+        this.close.complete();
     }
 
     /**

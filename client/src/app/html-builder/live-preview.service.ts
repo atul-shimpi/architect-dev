@@ -12,33 +12,24 @@ import {ContextMenu} from "vebto-client/core/ui/context-menu/context-menu.servic
 import {LivePreviewContextMenuComponent} from "./live-preview/live-preview-context-menu/live-preview-context-menu.component";
 import {Overlay} from "@angular/cdk/overlay";
 import {CodeEditor} from "./live-preview/code-editor/code-editor.service";
+import {Keybinds} from "vebto-client/core/keybinds/keybinds.service";
+import {SelectedElement} from "./live-preview/selected-element.service";
+import {ContextBoxes} from "./live-preview/context-boxes.service";
 
 @Injectable()
 export class LivePreview {
     public container: HTMLElement;
     dragging: any;
 
-    public hover = new ActiveElement(this);
-
-    public selected = new ActiveElement(this);
+    public hover = new ActiveElement();
 
     private renderer: Renderer2;
-
-    private hoverBox: HTMLElement;
-    private selectedBox: HTMLElement;
 
     public document: Document;
 
     private iframe: HTMLIFrameElement;
 
-    public selecting = false;
-
     public dragHelper: DragVisualHelperComponent;
-
-    /**
-     * Fired when element is selected in the builder.
-     */
-    public elementSelected = new BehaviorSubject(null);
 
     /**
      * Fired when preview iframe contents change.
@@ -50,24 +41,26 @@ export class LivePreview {
     constructor(
         private zone: NgZone,
         private elements: Elements,
-        private inspector: Inspector,
         private codeEditor: CodeEditor,
         private undoManager: UndoManager,
         private inlineTextEditor: InlineTextEditor,
         private parsedProject: ParsedProject,
         private contextMenu: ContextMenu,
         private overlay: Overlay,
+        private keybinds: Keybinds,
+        public selected: SelectedElement,
+        private contextBoxes: ContextBoxes,
     ) {}
 
     public init(renderer: Renderer2, iframe: ElementRef, container: ElementRef, hoverBox: ElementRef, selectedBox: ElementRef, dragHelper: DragVisualHelperComponent) {
         this.document = iframe.nativeElement.contentWindow.document;
         this.iframe = iframe.nativeElement;
-        this.hoverBox = hoverBox.nativeElement;
-        this.selectedBox = selectedBox.nativeElement;
+        this.contextBoxes.set(hoverBox.nativeElement, selectedBox.nativeElement);
         this.renderer = renderer;
         this.container = container.nativeElement;
         this.dragHelper = dragHelper;
 
+        this.registerKeybinds();
         this.bindToIframeEvents();
 
         this.undoManager.executedCommand.subscribe(() => {
@@ -88,23 +81,35 @@ export class LivePreview {
             this.listenForHover();
             this.listenForClick(hammer);
             this.listenForDoubleClick(hammer);
+            this.keybinds.listenOn(this.document);
 
             this.document.body.addEventListener('contextmenu', e => {
                 e.preventDefault();
 
                 this.zone.run(() => {
-                    this.selectNode(e.target as HTMLElement);
+                    this.selected.selectNode(e.target as HTMLElement);
                     this.contextMenu.open(LivePreviewContextMenuComponent, e, {offsetX: 380, overlay: this.overlay});
                 });
             });
 
             this.document.addEventListener('scroll', e => {
-                this.hideBox('hover');
+                this.contextBoxes.hideBox('hover');
                 if (this.selected.node) this.repositionBox('selected');
                 this.inlineTextEditor.close();
                 this.contextMenu.close();
             }, true);
         });
+    }
+
+    private registerKeybinds() {
+        this.keybinds.add('ctrl+shift+x', () => this.cutNode(this.selected.node));
+        this.keybinds.add('ctrl+shift+c', () => this.copyNode(this.selected.node));
+        this.keybinds.add('ctrl+shift+v', () => this.pasteNode(this.selected.node));
+        this.keybinds.add('delete', () => this.removeNode(this.selected.node));
+        this.keybinds.add('ctrl+z', () => this.undoManager.undo());
+        this.keybinds.add('ctrl+y', () => this.undoManager.redo());
+        this.keybinds.addWithPreventDefault('arrow_up', () => this.moveSelected('up'));
+        this.keybinds.addWithPreventDefault('arrow_down', () => this.moveSelected('down'));
     }
 
     public emitContentChanged(type: string, element?: string, node?: HTMLElement, initiator: string = 'visual-builder') {
@@ -161,6 +166,8 @@ export class LivePreview {
      * Delete specified node from the project.
      */
     public removeNode(node: HTMLElement): HTMLElement {
+        if ( ! node) return;
+
         this.undoManager.wrapDomChanges(node.parentNode, () => {
             if (this.selected.node === node) this.selected.selectParent();
             node.parentNode.removeChild(node);
@@ -227,6 +234,8 @@ export class LivePreview {
      * Move selected node by one element in the specified direction.
      */
     public moveSelected(dir: 'up'|'down') {
+        if ( ! this.selected.node) return;
+
         if (dir == 'down') {
             const next = this.selected.node.nextElementSibling as HTMLElement;
 
@@ -259,7 +268,7 @@ export class LivePreview {
                 let parentParent = this.selected.node.parentNode.parentNode as HTMLElement;
 
                 if (this.elements.canInsert(parentParent, this.selected.element)) {
-                    parentParent.insertBefore(this.selected.node, this.selected.parent);
+                    parentParent.insertBefore(this.selected.node, this.selected.node.parentNode);
                 }
             }
         }
@@ -284,7 +293,7 @@ export class LivePreview {
 
             //hide hover box and bail if we're hovering over a selected node
             if (this.selected.node && this.selected.node == node) {
-                return this.renderer.addClass(this.hoverBox, 'hidden');
+                return this.contextBoxes.hideBox('hover');
             }
 
             //make sure we don't select resize handles
@@ -331,7 +340,7 @@ export class LivePreview {
             //this.linker.addClass('hidden');
 
             if (node.nodeName !== 'HTML') {
-                this.zone.run(() => this.selectNode(node));
+                this.zone.run(() => this.selected.selectNode(node));
             }
         });
     }
@@ -348,121 +357,18 @@ export class LivePreview {
         });
     }
 
-    /**
-     * Select specified node as active one in the builder.
-     */
-    public selectNode(node: HTMLElement|number, openInspector = true) {
-        this.selecting = true;
-
-        this.selected.previous = this.selected.node;
-
-        //if we get passed an integer instead of a dom node we'll
-        //select a node at that index in the currently stored path
-        if (typeof node === 'number') {
-            node = this.selected.path[node].node;
-        }
-
-        //if we haven't already stored a reference to passed in node, do it now
-        if (node && this.selected.node !== node) {
-            this.selected.node = node as HTMLElement;
-        }
-
-        //cache some more references about the node for later use
-        this.selected.element = this.elements.match(this.selected.node, 'select', true);
-        this.selected.parent = this.selected.node.parentNode as HTMLElement;
-        this.selected.parentContents = this.selected.parent.childNodes;
-
-        //position select box on top of the newly selected node
-        this.repositionBox('selected');
-
-        //whether or not the new node is locked
-        this.selected.locked = this.selected.node.className.indexOf('locked') > -1;
-        this.selected.isImage = this.selected.node.nodeName == 'IMG' &&
-            this.selected.node.className.indexOf('preview-node') === -1;
-
-        //create an array from all parents of this node
-        let el = this.selected.node;
-        this.selected.path = [];
-        while (el.nodeType === Node.ELEMENT_NODE && el.nodeName.toLowerCase() !== 'body') {
-            this.selected.path.unshift({node: el, name: this.getElementDisplayName(this.elements.match(el), el)});
-            el = el.parentNode as HTMLElement;
-        }
-
-        //whether or not this node is a column
-        //this.selected.isColumn = grid.isColumn(this.selected.node);
-
-        this.selected.hasInlineStyles = this.selected.node.style[0] !== null;
-
-        if (openInspector) {
-            this.inspector.togglePanel('inspector');
-        }
-
-        setTimeout(() => {
-            this.selecting = false;
-        }, 200);
-
-        this.elementSelected.next(this.selected);
-    };
-
-    public repositionBox(name: 'hover'|'selected', node?, el?) {
-
-        //hide context boxes depending on user settings
-        // if (! settings.get('enable'+name.ucFirst()+'Box')) {
-        //     return $scope[name+'Box'].hide();
-        // }
-
-        if ( ! node) node = this[name].node;
-
-        if (node && node.nodeName == 'BODY') {
-            return this.hideBox(name);
-        }
-
-        if ( ! el) el = this.elements.match(node, name);
-
-        if ( ! el) return true;
-
-        this[name].element = el;
-
-        if (name === 'selected') {
-            this.hideBox('hover');
-        }
-
-        const rect = node.getBoundingClientRect();
-
-        if ( ! rect.width || ! rect.height) {
-            this.hideBox(name);
-        } else {
-            this.renderer.setStyle(this[name+'Box'], 'top', rect.top+'px');
-            this.renderer.setStyle(this[name+'Box'], 'left', rect.left+'px');
-            this.renderer.setStyle(this[name+'Box'], 'height', rect.height+'px');
-            this.renderer.setStyle(this[name+'Box'], 'width', rect.width+'px');
-
-            //this[name+'BoxTag'].textContent = $translate.instant(el.name);
-
-            this.renderer.removeClass(this[name+'Box'], 'hidden');
-        }
+    public repositionBox(name: 'hover'|'selected') {
+        this.contextBoxes.repositionBox(name, this[name].node, this[name].element);
     };
 
     /**
      * Hide specified context box.
      */
     public hideBox(name: 'hover'|'selected') {
-        this.renderer.addClass(this[name+'Box'], 'hidden');
+        this.contextBoxes.hideBox(name);
     }
 
-    public getElementDisplayName(el: any, node: HTMLElement) {
-        if ( ! el) return;
-
-        if (el.name === 'div container') {
-            if (node.id) {
-                return node.id
-            } else if (node.classList[0]) {
-                return node.classList[0];
-            } else {
-                return el.name
-            }
-        } else {
-            return el.name;
-        }
+    public getElementDisplayName(el: any, node: HTMLElement): string {
+        return this.elements.getDisplayName(el, node);
     }
 }

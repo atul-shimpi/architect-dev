@@ -59,6 +59,22 @@ export class Elements {
         return this.elements.find(el => el.name === name);
     }
 
+    public getDisplayName(el: any, node: HTMLElement) {
+        if ( ! el) return;
+
+        if (el.name === 'div container') {
+            if (node.id) {
+                return node.id
+            } else if (node.classList[0]) {
+                return node.classList[0];
+            } else {
+                return el.name
+            }
+        } else {
+            return el.name;
+        }
+    }
+
     public checkForSpecialCases(node: HTMLElement): HTMLElement|boolean {
         if ( ! node ) return false;
 

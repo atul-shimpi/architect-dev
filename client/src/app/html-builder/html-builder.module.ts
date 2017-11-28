@@ -42,6 +42,8 @@ import { CodeEditorComponent } from './live-preview/code-editor/code-editor.comp
 import {CodeEditor} from "./live-preview/code-editor/code-editor.service";
 import {ParsedProject} from "./projects/parsed-project";
 import { LivePreviewContextMenuComponent } from './live-preview/live-preview-context-menu/live-preview-context-menu.component';
+import {ContextBoxes} from "./live-preview/context-boxes.service";
+import {SelectedElement} from "./live-preview/selected-element.service";
 
 @NgModule({
     imports: [
@@ -101,6 +103,8 @@ import { LivePreviewContextMenuComponent } from './live-preview/live-preview-con
         InlineTextEditor,
         CodeEditor,
         ParsedProject,
+        ContextBoxes,
+        SelectedElement,
     ]
 })
 export class HtmlBuilderModule {
