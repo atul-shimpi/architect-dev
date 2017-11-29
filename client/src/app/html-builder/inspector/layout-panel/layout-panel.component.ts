@@ -5,6 +5,7 @@ import {Container} from "./layout-panel-types";
 import {Inspector} from "../inspector.service";
 import {SelectedElement} from "../../live-preview/selected-element.service";
 import {ContextBoxes} from "../../live-preview/context-boxes.service";
+import {BuilderDocument} from "../../builder-document.service";
 
 @Component({
     selector: 'layout-panel',
@@ -21,6 +22,7 @@ export class LayoutPanelComponent implements OnInit {
      */
     constructor(
         private livePreview: LivePreview,
+        private document: BuilderDocument,
         private selectedElement: SelectedElement,
         private contextBoxes: ContextBoxes,
         public layoutPanel: LayoutPanel,
@@ -28,7 +30,7 @@ export class LayoutPanelComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.livePreview.contentChanged.subscribe(e => {
+        this.document.contentChanged.subscribe(e => {
             if (this.types.indexOf(e.type) === -1) return;
             this.layoutPanel.loadContainers();
         });

@@ -44,6 +44,9 @@ import {ParsedProject} from "./projects/parsed-project";
 import { LivePreviewContextMenuComponent } from './live-preview/live-preview-context-menu/live-preview-context-menu.component';
 import {ContextBoxes} from "./live-preview/context-boxes.service";
 import {SelectedElement} from "./live-preview/selected-element.service";
+import {BuilderDocument} from "./builder-document.service";
+import {Projects} from "./projects/projects.service";
+import { PagesPanelComponent } from './inspector/pages-panel/pages-panel.component';
 
 @NgModule({
     imports: [
@@ -79,6 +82,7 @@ import {SelectedElement} from "./live-preview/selected-element.service";
         InlineTextEditorComponent,
         CodeEditorComponent,
         LivePreviewContextMenuComponent,
+        PagesPanelComponent,
     ],
     entryComponents: [
         GradientBackgroundPanelComponent,
@@ -105,6 +109,8 @@ import {SelectedElement} from "./live-preview/selected-element.service";
         ParsedProject,
         ContextBoxes,
         SelectedElement,
+        BuilderDocument,
+        Projects,
     ]
 })
 export class HtmlBuilderModule {

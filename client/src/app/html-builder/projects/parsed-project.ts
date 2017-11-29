@@ -4,6 +4,7 @@ import {Settings} from "vebto-client/core";
 import {Template} from "../../../types/models/Template";
 import {Page} from "../../../types/models/Page";
 import {DomHelpers} from "../dom-helpers.service";
+import {Project} from "../../../types/models/Project";
 
 
 @Injectable()
@@ -23,10 +24,37 @@ export class ParsedProject {
     private activePage = 0;
 
     /**
+     * Project model.
+     */
+    private project: Project;
+
+    /**
      * ParsedProject Constructor.
      */
     constructor(private settings: Settings) {
         this.baseUrl = this.settings.getBaseUrl(true)+'storage/';
+    }
+
+    public get(): Project {
+        return this.project;
+    }
+
+    public getPages() {
+        return this.pages;
+    }
+
+    public addPage(page: Page) {
+        this.pages.push(page);
+        this.activePage = this.pages.length - 1;
+        this.generatePageDocument(this.activePage);
+    }
+
+    public setProject(project: Project) {
+        this.project = project;
+        this.activePage = 0;
+        this.pages = project.pages;
+
+        this.generatePageDocument(this.activePage);
     }
 
     public applyTemplate(template: Template) {
@@ -43,12 +71,12 @@ export class ParsedProject {
     }
 
     public setCss(css: string) {
-        this.doc.documentElement.querySelector('#custom-css').innerHTML = css.trim();
+        this.doc.documentElement.querySelector('#custom-css').innerHTML = this.trim(css);
         this.pages[this.activePage].css = css.trim();
     }
 
     public setJs(js: string) {
-        this.doc.documentElement.querySelector('#custom-js').innerHTML = js.trim();
+        this.doc.documentElement.querySelector('#custom-js').innerHTML = this.trim(js);
         this.pages[this.activePage].js = js.trim();
     }
 
@@ -57,10 +85,12 @@ export class ParsedProject {
     }
 
     public getCustomCss() {
+        if ( ! this.pages[this.activePage]) return;
         return this.pages[this.activePage].css;
     }
 
     public getCustomJs() {
+        if ( ! this.pages[this.activePage]) return;
         return this.pages[this.activePage].js;
     }
 
@@ -124,21 +154,25 @@ export class ParsedProject {
      * Get source html of specified page.
      */
     private getPageHtml(number: number) {
-        return this.pages[number].html.trim();
+        return this.trim(this.pages[number].html);
     }
 
     /**
      * Get source css of specified page.
      */
     private getPageCss(number: number) {
-        return this.pages[number].css.trim();
+        return this.trim(this.pages[number].css);
     }
 
     /**
      * Get source js of specified page.
      */
     private getPageJs(number: number) {
-        return this.pages[number].js.trim();
+        return this.trim(this.pages[number].js);
+    }
+
+    private trim(string: string) {
+        return string && string.trim();
     }
 
     private addIframeCss() {

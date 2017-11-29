@@ -1,9 +1,7 @@
-import {ElementRef, Injectable, NgZone, Renderer2} from '@angular/core';
+import {ElementRef, Injectable, NgZone} from '@angular/core';
 import {Template} from "../../types/models/Template";
 import {Elements} from "./elements/elements.service";
-import {Inspector} from "./inspector/inspector.service";
 import {ActiveElement} from "./live-preview/active-element";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {UndoManager} from "./undo-manager/undo-manager.service";
 import {DragVisualHelperComponent} from "./live-preview/drag-and-drop/drag-visual-helper/drag-visual-helper.component";
 import {InlineTextEditor} from "./live-preview/inline-text-editor/inline-text-editor.service";
@@ -15,6 +13,7 @@ import {CodeEditor} from "./live-preview/code-editor/code-editor.service";
 import {Keybinds} from "vebto-client/core/keybinds/keybinds.service";
 import {SelectedElement} from "./live-preview/selected-element.service";
 import {ContextBoxes} from "./live-preview/context-boxes.service";
+import {BuilderDocument} from "./builder-document.service";
 
 @Injectable()
 export class LivePreview {
@@ -23,18 +22,7 @@ export class LivePreview {
 
     public hover = new ActiveElement();
 
-    private renderer: Renderer2;
-
-    public document: Document;
-
-    private iframe: HTMLIFrameElement;
-
     public dragHelper: DragVisualHelperComponent;
-
-    /**
-     * Fired when preview iframe contents change.
-     */
-    public contentChanged = new BehaviorSubject<{type: string, elementName?: string, node?: HTMLElement, initiator?: string}>({type: 'domReloaded'});
 
     public copiedNode: HTMLElement;
 
@@ -50,18 +38,22 @@ export class LivePreview {
         private keybinds: Keybinds,
         public selected: SelectedElement,
         private contextBoxes: ContextBoxes,
+        private document: BuilderDocument,
     ) {}
 
-    public init(renderer: Renderer2, iframe: ElementRef, container: ElementRef, hoverBox: ElementRef, selectedBox: ElementRef, dragHelper: DragVisualHelperComponent) {
-        this.document = iframe.nativeElement.contentWindow.document;
-        this.iframe = iframe.nativeElement;
+    public init(container: ElementRef, hoverBox: ElementRef, selectedBox: ElementRef, dragHelper: DragVisualHelperComponent) {
         this.contextBoxes.set(hoverBox.nativeElement, selectedBox.nativeElement);
-        this.renderer = renderer;
         this.container = container.nativeElement;
         this.dragHelper = dragHelper;
 
         this.registerKeybinds();
         this.bindToIframeEvents();
+
+        this.document.contentChanged.subscribe(params => {
+            if (params.type !== 'domReloaded') {
+                this.parsedProject.setHtml(this.document.getInnerHtml());
+            }
+        });
 
         this.undoManager.executedCommand.subscribe(() => {
             this.repositionBox('selected');
@@ -71,7 +63,7 @@ export class LivePreview {
 
     private bindToIframeEvents() {
         this.zone.runOutsideAngular(() => {
-            const hammer = new Hammer.Manager(this.document.body),
+            const hammer = new Hammer.Manager(this.document.getBody()),
                 singleTap = new Hammer.Tap({event: 'single_tap'}),
                 doubleTap = new Hammer.Tap({event: 'double_tap', taps: 2});
 
@@ -81,9 +73,9 @@ export class LivePreview {
             this.listenForHover();
             this.listenForClick(hammer);
             this.listenForDoubleClick(hammer);
-            this.keybinds.listenOn(this.document);
+            this.keybinds.listenOn(this.document.get());
 
-            this.document.body.addEventListener('contextmenu', e => {
+            this.document.on('contextmenu', e => {
                 e.preventDefault();
 
                 this.zone.run(() => {
@@ -92,7 +84,7 @@ export class LivePreview {
                 });
             });
 
-            this.document.addEventListener('scroll', e => {
+            this.document.on('scroll', e => {
                 this.contextBoxes.hideBox('hover');
                 if (this.selected.node) this.repositionBox('selected');
                 this.inlineTextEditor.close();
@@ -112,41 +104,19 @@ export class LivePreview {
         this.keybinds.addWithPreventDefault('arrow_down', () => this.moveSelected('down'));
     }
 
-    public emitContentChanged(type: string, element?: string, node?: HTMLElement, initiator: string = 'visual-builder') {
-        this.contentChanged.next({type: type, elementName: element, node: node, initiator: initiator});
-
-        if (type !== 'domReloaded') {
-            this.parsedProject.setHtml(this.document.documentElement.innerHTML);
-        }
-    }
-
     public applyTemplate(template: Template) {
         this.parsedProject.applyTemplate(template);
         this.reload();
     }
 
     public reload(initiator: string = 'visual-builder') {
-        this.iframe.onload = () => {
+        this.document.on('load', () => {
             this.bindToIframeEvents();
-            this.emitContentChanged('domReloaded', null, null, initiator);
-        };
+            this.document.emitContentChanged('domReloaded', null, null, initiator);
+        });
 
-        this.document.open();
         this.document.write(this.parsedProject.getHtml());
-        this.document.close();
     }
-
-    public getElementFromPoint(x: number, y: number): HTMLElement {
-        let el = this.document.elementFromPoint(x, y);
-
-        //firefox returns html if body is empty,
-        //IE doesn't work at all sometimes.
-        if ( ! el || el.nodeName === 'HTML') {
-            return this.document.body[0];
-        }
-
-        return el as HTMLElement;
-    };
 
     /**
      * Clone specified node inside the project.
@@ -156,7 +126,7 @@ export class LivePreview {
 
         this.undoManager.wrapDomChanges(node.parentNode, () => {
             node.parentNode.insertBefore(cloned, node.nextElementSibling);
-            this.emitContentChanged('nodeAdded', this.elements.match(cloned).name, cloned);
+            this.document.emitContentChanged('nodeAdded', this.elements.match(cloned).name, cloned);
         });
 
         return cloned as HTMLElement;
@@ -171,7 +141,7 @@ export class LivePreview {
         this.undoManager.wrapDomChanges(node.parentNode, () => {
             if (this.selected.node === node) this.selected.selectParent();
             node.parentNode.removeChild(node);
-            this.emitContentChanged('nodeRemoved', this.elements.match(node).name, node);
+            this.document.emitContentChanged('nodeRemoved', this.elements.match(node).name, node);
         });
 
         return node;
@@ -205,7 +175,7 @@ export class LivePreview {
             });
 
             //add undo
-            this.emitContentChanged('nodeAdded');
+            this.document.emitContentChanged('nodeAdded');
         }
     }
 
@@ -283,10 +253,11 @@ export class LivePreview {
     }
 
     private listenForHover() {
-        this.renderer.listen(this.document.body, 'mousemove', e => {
+        this.document.on('mousemove', e => {
             if (this.dragging) return;
 
-            const node = this.getElementFromPoint(e.pageX, e.pageY - this.document.documentElement.scrollTop);
+            const node = this.document.elementFromPoint(e.pageX, e.pageY - this.document.getScrollTop());
+
             if ( ! node || node === this.hover.node) return;
 
             this.hover.previous = this.hover.node;
@@ -303,7 +274,7 @@ export class LivePreview {
                 this.hover.element = this.elements.match(this.hover.node, 'hover', true);
 
                 if ( ! this.dragging) {
-                    this.repositionBox('hover', this.hover.node, this.hover.element);
+                    this.repositionBox('hover');
                 }
 
                 this.zone.run(() => {});
@@ -323,7 +294,7 @@ export class LivePreview {
             //hide context menu
             this.contextMenu.close();
 
-            this.iframe.contentWindow.focus();
+            this.document.focus();
 
             if (this.selected.node == e.target) return true;
 

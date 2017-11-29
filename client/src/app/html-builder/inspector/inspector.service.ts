@@ -6,10 +6,12 @@ type PanelNames = 'elements'|'inspector'|'pages'|'themes'|'settings'|'layout';
 @Injectable()
 export class Inspector {
 
-    private activePanel: PanelNames = 'elements';
+    private activePanel: PanelNames = 'pages';
 
     constructor(private selectedElement: SelectedElement) {
         this.selectedElement.changed.subscribe(() => {
+            if ( ! this.selectedElement.node) return;
+
             if (this.selectedElement.isLayout()) {
                 this.openPanel('layout');
             } else {

@@ -1,0 +1,11 @@
+@import "../../../../scss/variables";
+
+pages-panel {
+  display: block;
+
+  > .page-options {
+    margin-top: 10px;
+    padding-top: 15px;
+    border-top: 1px solid $border-color;
+  }
+}

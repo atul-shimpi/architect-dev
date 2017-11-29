@@ -6,6 +6,7 @@ import {Settings} from "vebto-client/core";
 import {DomHelpers} from "../../dom-helpers.service";
 import {UndoManager} from "../../undo-manager/undo-manager.service";
 import {InlineTextEditor} from "./inline-text-editor.service";
+import {BuilderDocument} from "../../builder-document.service";
 
 @Component({
     selector: 'inline-text-editor',
@@ -59,14 +60,14 @@ export class InlineTextEditorComponent implements OnInit, OnDestroy {
      * InlineTextEditorComponent Constructor.
      */
     constructor(
-        private livePreview: LivePreview,
+        private document: BuilderDocument,
         private settings: Settings,
         private undoManager: UndoManager,
         private inlineTextEditor: InlineTextEditor,
     ) {}
 
     ngOnInit() {
-        this.editedNode = this.livePreview.document.querySelector('[contenteditable]') as HTMLElement;
+        this.editedNode = this.document.find('[contenteditable]');
         this.beforeDomNode = this.editedNode.parentNode.cloneNode(true) as HTMLElement;
     }
 
@@ -75,7 +76,7 @@ export class InlineTextEditorComponent implements OnInit, OnDestroy {
 
         if ( ! this.madeChanges) return;
         this.undoManager.wrapDomChanges(this.editedNode.parentNode, null, {before: this.beforeDomNode});
-        this.livePreview.emitContentChanged('domChanged');
+        this.document.emitContentChanged('domChanged');
     }
 
     /**
@@ -83,14 +84,14 @@ export class InlineTextEditorComponent implements OnInit, OnDestroy {
      */
     public execCommand(command: string, value?: string) {
         this.madeChanges = true;
-        this.livePreview.document.execCommand(command, null, value);
+        this.document.execCommand(command, value);
     }
 
     /**
      * Check if specified command is active on current text selection.
      */
     public commandIsActive(command: string) {
-        return this.livePreview.document.queryCommandState(command);
+        return this.document.queryCommandState(command);
     }
 
     /**
@@ -123,7 +124,7 @@ export class InlineTextEditorComponent implements OnInit, OnDestroy {
      * Remove "contenteditable" attribute from all nodes.
      */
     private makeNodesNotEditable() {
-        let editable = this.livePreview.document.body.querySelectorAll('[contenteditable]');
+        let editable = this.document.findAll('[contenteditable]');
 
         for (let i = editable.length - 1; i >= 0; i--) {
             editable[i].removeAttribute('contenteditable');

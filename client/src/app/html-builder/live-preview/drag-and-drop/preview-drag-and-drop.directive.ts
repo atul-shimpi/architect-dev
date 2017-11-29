@@ -3,6 +3,8 @@ import {LivePreview} from "../../live-preview.service";
 import {UndoManager} from "../../undo-manager/undo-manager.service";
 import {Elements} from "../../elements/elements.service";
 import {BaseDragAndDrop} from "./base-drag-and-drop";
+import {SelectedElement} from "../selected-element.service";
+import {BuilderDocument} from "../../builder-document.service";
 
 @Directive({
     selector: '[previewDragAndDrop]'
@@ -19,6 +21,8 @@ export class PreviewDragAndDropDirective extends BaseDragAndDrop {
         protected undoManager: UndoManager,
         protected elements: Elements,
         protected zone: NgZone,
+        protected selectedElement: SelectedElement,
+        protected builderDocument: BuilderDocument,
     ) {
         super();
     }

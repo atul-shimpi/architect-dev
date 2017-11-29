@@ -4,6 +4,7 @@ import {LivePreview} from "../../live-preview.service";
 import {utils} from "vebto-client/core";
 import {UndoManager} from "../../undo-manager/undo-manager.service";
 import {SelectedElement} from "../../live-preview/selected-element.service";
+import {BuilderDocument} from "../../builder-document.service";
 
 @Injectable()
 export class LayoutPanel {
@@ -23,7 +24,12 @@ export class LayoutPanel {
     /**
      * LayoutPanel Service Constructor.
      */
-    constructor(private livePreview: LivePreview, private selected: SelectedElement, private undoManager: UndoManager) {
+    constructor(
+        private document: BuilderDocument,
+        private livePreview: LivePreview,
+        private selected: SelectedElement,
+        private undoManager: UndoManager
+    ) {
         this.selected.changed.subscribe(() => {
             this.selectRowAndContainerUsing(this.selected.node)
         });
@@ -34,7 +40,7 @@ export class LayoutPanel {
      */
     public loadContainers() {
         this.containers = [];
-        this.nodeListToArray(this.livePreview.document.querySelectorAll('.container')).forEach(node => {
+        this.nodeListToArray(this.document.findAll('.container')).forEach(node => {
             const rows = this.nodeListToArray(node.querySelectorAll('.row'));
             this.containers.push({node: node as HTMLElement, rows: rows, id: utils.randomString()});
             if (this.selectedContainer) this.selectContainer(this.selectedContainer.node);
@@ -45,7 +51,7 @@ export class LayoutPanel {
      * Add a row before or after specified reference element.
      */
     public createRow(container: HTMLElement, ref: HTMLElement, dir: 'before'|'after'|'start') {
-        const row = this.livePreview.document.createElement('div');
+        const row = this.document.createElement('div');
         row.appendChild(this.createColumnNode(12));
         row.classList.add('row');
 
@@ -60,28 +66,28 @@ export class LayoutPanel {
         }
 
         this.selectRow(row);
-        this.livePreview.emitContentChanged('nodeAdded', 'row', row);
+        this.document.emitContentChanged('nodeAdded', 'row', row);
     }
 
     /**
      * Create new container node and add it to the container's list.
      */
     public createContainer(ref: HTMLElement, dir: 'before'|'after'|'start') {
-        const row = this.livePreview.document.createElement('div');
+        const row = this.document.createElement('div');
         row.appendChild(this.createColumnNode(12));
         row.classList.add('row');
 
-        const container = this.livePreview.document.createElement('div');
+        const container = this.document.createElement('div');
         container.classList.add('container');
         container.appendChild(row);
 
         if (dir === 'start') {
-            this.livePreview.document.body.appendChild(container);
+            this.document.getBody().appendChild(container);
         } else {
             ref[dir](container);
         }
 
-        this.livePreview.emitContentChanged('nodeAdded', 'container', container);
+        this.document.emitContentChanged('nodeAdded', 'container', container);
         this.selectContainer(container);
         this.selected.selectNode(this.selectedContainer.node);
     }
@@ -169,7 +175,7 @@ export class LayoutPanel {
         });
 
         this.selectRow(this.selectedRow.node);
-        this.livePreview.emitContentChanged('nodeChildrenModified', 'row', this.selectedRow.node);
+        this.document.emitContentChanged('nodeChildrenModified', 'row', this.selectedRow.node);
         this.livePreview.repositionBox('selected');
     }
 
@@ -247,7 +253,7 @@ export class LayoutPanel {
      * Create new column node of specified span.
      */
     private createColumnNode(span: number): HTMLElement {
-        let col = this.livePreview.document.createElement('div');
+        let col = this.document.createElement('div');
         col.innerText = 'New Column';
         col.className = 'col-sm-'+span;
         return col;
