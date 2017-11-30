@@ -1,7 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
 
-@import "~quill/dist/quill.snow.css";
-
 @import "~normalize.css";
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 @import "~vebto-client/scss/_variables";
@@ -9,5 +7,6 @@
 @import "~vebto-client/scss/buttons";
 @import "~vebto-client/scss/input";
 @import "~vebto-client/scss/modal";
+@import "~vebto-client/scss/auth-page";
 @import "~vebto-client/scss/perfect-scrollbar-theme";
 @import "scss/_variables";

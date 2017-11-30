@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
-class Page extends Eloquent {
+class BuilderPage extends Eloquent {
 
     protected $guarded = ['id'];
 

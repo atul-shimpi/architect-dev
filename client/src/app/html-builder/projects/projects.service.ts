@@ -32,4 +32,18 @@ export class Projects {
     public createPage(projectId: number, params: object): Observable<{page: Page}> {
         return this.http.post('projects/'+projectId+'/pages', params);
     }
+
+    /**
+     * Delete specified page.
+     */
+    public deletePage(projectId: number, pageId: number): Observable<any> {
+        return this.http.delete('projects/'+projectId+'/pages/'+pageId);
+    }
+
+    /**
+     * Update specified page.
+     */
+    public updatePage(projectId: number, pageId: number, params: object): Observable<{page: Page}> {
+        return this.http.put('projects/'+projectId+'/pages/'+pageId, params);
+    }
 }

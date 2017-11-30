@@ -28,9 +28,9 @@ export class BuilderDocument {
 
     public on(name: string, callback: Function, useCapture?: boolean) {
         if (name === 'load') {
-            this.iframe.onload = callback;
+            this.iframe.onload = callback as any;
         } else {
-            this.document.body.addEventListener(name as any, callback, useCapture);
+            this.document.body.addEventListener(name as any, callback as any, useCapture);
         }
     }
 
@@ -82,6 +82,10 @@ export class BuilderDocument {
 
     public getBody(): HTMLBodyElement {
         return this.document.body as HTMLBodyElement;
+    }
+
+    public getHead(): HTMLHeadElement {
+        return this.document.head as HTMLHeadElement;
     }
 
     public getInnerHtml(): string {

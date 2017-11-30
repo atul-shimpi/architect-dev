@@ -1,5 +1,5 @@
 import {
-    Component, ComponentFactoryResolver, Injector, OnInit, ViewChild, ViewContainerRef,
+    Component, OnInit, ViewChild, ViewContainerRef,
     ViewEncapsulation
 } from '@angular/core';
 import {ContextMenu} from "vebto-client/core/ui/context-menu/context-menu.service";
@@ -18,6 +18,7 @@ import "rxjs/add/operator/finally";
 import "rxjs/add/observable/throw";
 import "rxjs/add/observable/forkJoin";
 import "rxjs/add/operator/startWith";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-root',
@@ -28,9 +29,10 @@ import "rxjs/add/operator/startWith";
 export class AppComponent implements OnInit {
     @ViewChild('contextMenuViewRef', {read: ViewContainerRef}) contextMenuViewRef;
 
-    constructor(private contextMenu: ContextMenu, private resolver: ComponentFactoryResolver, private injector: Injector) {}
+    constructor(private contextMenu: ContextMenu, private router: Router) {}
 
     ngOnInit() {
+        console.log(this.router);
         this.contextMenu.registerViewContainerRef(this.contextMenuViewRef);
     }
 }

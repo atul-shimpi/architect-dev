@@ -1,6 +1,4 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {Templates} from "../../templates/templates.service";
-import {LivePreview} from "../live-preview.service";
 import {Elements} from "../elements/elements.service";
 import {ActivatedRoute} from "@angular/router";
 import {Projects} from "../projects/projects.service";
@@ -23,9 +21,5 @@ export class HtmlBuilderComponent implements OnInit {
 
     ngOnInit() {
         this.elements.init(this.route.snapshot.data['customElements']);
-
-        this.projects.all().subscribe(projects => {
-            this.project.setProject(projects[0]);
-        });
     }
 }

@@ -1,4 +1,3 @@
-
 import {Injectable} from "@angular/core";
 import {Settings} from "vebto-client/core";
 import {Template} from "../../../types/models/Template";
@@ -43,10 +42,26 @@ export class ParsedProject {
         return this.pages;
     }
 
+    /**
+     * Remove specified page to pages array.
+     */
     public addPage(page: Page) {
         this.pages.push(page);
         this.activePage = this.pages.length - 1;
         this.generatePageDocument(this.activePage);
+    }
+
+    public updatePage(updatedPage: Page) {
+        const i = this.pages.findIndex(page => page.id === updatedPage.id);
+        this.pages[i] = updatedPage;
+    }
+
+    /**
+     * Remove specified page from pages array.
+     */
+    public removePage(id: number) {
+        const i = this.pages.findIndex(page => page.id === id);
+        this.pages.splice(i, 1);
     }
 
     public setProject(project: Project) {

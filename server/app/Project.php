@@ -8,7 +8,7 @@ class Project extends Eloquent {
 
 	public function pages()
     {
-        return $this->morphMany(Page::class, 'pageable');
+        return $this->morphMany(BuilderPage::class, 'pageable');
     }
 
     public function users()

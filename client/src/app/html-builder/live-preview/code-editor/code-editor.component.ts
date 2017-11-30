@@ -1,10 +1,12 @@
-import {Component, ElementRef, EventEmitter, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {utils} from 'vebto-client/core';
 import {LivePreview} from "../../live-preview.service";
 import {Subject} from "rxjs/Subject";
 import {ParsedProject} from "../../projects/parsed-project";
 import {aceThemes} from "./ace-themes";
 import {Observable} from "rxjs/Observable";
+import {SelectedElement} from "../selected-element.service";
+import {BuilderDocument} from "../../builder-document.service";
 
 declare let ace: any;
 
@@ -47,16 +49,21 @@ export class CodeEditorComponent implements OnInit {
      */
     private loaded = new Subject();
 
-    constructor(private utils: utils, private livePreview: LivePreview, private parsedProject: ParsedProject) {
-    }
+    constructor(
+        private utils: utils,
+        private livePreview: LivePreview,
+        private parsedProject: ParsedProject,
+        private selectedElement: SelectedElement,
+        private builderDocument: BuilderDocument,
+    ) {}
 
     ngOnInit() {
         this.initEditor().then(() => {
             this.updateEditorContents(this.activeEditor);
 
             //select node html in the code editor when new node is selected in the builder
-            this.selectedElement.subscribe(() => {
-                if (this.livePreview.selected.node) this.selectNodeSource(this.livePreview.selected.node);
+            this.selectedElement.changed.subscribe(() => {
+                if (this.selectedElement.node) this.selectNodeSource(this.selectedElement.node);
             });
 
             this.bindToLivePreviewChangeEvent();
@@ -98,7 +105,7 @@ export class CodeEditorComponent implements OnInit {
      * Update code editor contents when live preview html is changed.
      */
     private bindToLivePreviewChangeEvent() {
-        this.livePreview.contentChanged
+        this.builderDocument.contentChanged
             .debounceTime(500)
             .distinctUntilChanged()
             .subscribe(e => {

@@ -47,6 +47,7 @@ import {SelectedElement} from "./live-preview/selected-element.service";
 import {BuilderDocument} from "./builder-document.service";
 import {Projects} from "./projects/projects.service";
 import { PagesPanelComponent } from './inspector/pages-panel/pages-panel.component';
+import {ProjectResolver} from "./project-resolver.service";
 
 @NgModule({
     imports: [
@@ -111,6 +112,7 @@ import { PagesPanelComponent } from './inspector/pages-panel/pages-panel.compone
         SelectedElement,
         BuilderDocument,
         Projects,
+        ProjectResolver,
     ]
 })
 export class HtmlBuilderModule {

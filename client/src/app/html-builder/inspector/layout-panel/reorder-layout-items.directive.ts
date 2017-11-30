@@ -5,6 +5,7 @@ import {LayoutPanel} from "./layout-panel.service";
 import * as Sortable from "sortablejs";
 import {utils} from "vebto-client/core";
 import {DomHelpers} from "../../dom-helpers.service";
+import {BuilderDocument} from "../../builder-document.service";
 
 @Directive({
     selector: '[reorderLayoutItems]'
@@ -19,6 +20,7 @@ export class ReorderLayoutItemsDirective implements AfterContentInit {
         private undoManager: UndoManager,
         private livePreview: LivePreview,
         private layoutPanel: LayoutPanel,
+        private builderDocument: BuilderDocument,
         private el: ElementRef,
     ) {}
 
@@ -33,7 +35,7 @@ export class ReorderLayoutItemsDirective implements AfterContentInit {
                 utils.moveArrayElement(newOrder, e['oldIndex'], e['newIndex']);
                 DomHelpers.reorderDom(newOrder, oldOrder);
                 this.livePreview.repositionBox('selected');
-                this.livePreview.emitContentChanged('domChanged', this.type, this.el.nativeElement);
+                this.builderDocument.emitContentChanged('domChanged', this.type, this.el.nativeElement);
 
                 this.createUndoCommand(oldOrder, newOrder);
             }
