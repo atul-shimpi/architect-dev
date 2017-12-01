@@ -1,7 +1,7 @@
 <nav class="inspector-nav mat-elevation-z1">
-    <button class="no-style back-button" matTooltip="Dashboard">
+    <a class="back-button" matTooltip="Dashboard" routerLink="/dashboard">
         <svg-icon name="keyboard-arrow-left"></svg-icon>
-    </button>
+    </a>
 
     <div class="panel-nav">
         <button mat-button class="panel-nav-item" [class.active]="inspector.activePanelIs('layout')" (click)="inspector.togglePanel('layout')">
@@ -46,9 +46,19 @@
     </div>
 </nav>
 
-<div class="inspector-content" customScrollbar>
-    <elements-panel [class.hidden]="!inspector.activePanelIs('elements')"></elements-panel>
-    <inspector-panel [class.hidden]="!inspector.activePanelIs('inspector')"></inspector-panel>
-    <layout-panel [class.hidden]="!inspector.activePanelIs('layout')"></layout-panel>
-    <pages-panel [class.hidden]="!inspector.activePanelIs('pages')"></pages-panel>
+<div class="inspector-content">
+    <div class="panel-container" customScrollbar>
+        <elements-panel [class.hidden]="!inspector.activePanelIs('elements')"></elements-panel>
+        <inspector-panel [class.hidden]="!inspector.activePanelIs('inspector')"></inspector-panel>
+        <layout-panel [class.hidden]="!inspector.activePanelIs('layout')"></layout-panel>
+        <pages-panel [class.hidden]="!inspector.activePanelIs('pages')"></pages-panel>
+    </div>
+
+    <div class="actions">
+        <button (click)="saveProject()" mat-button matTooltip="Preview"><svg-icon name="visibility"></svg-icon></button>
+        <button (click)="saveProject()" mat-button matTooltip="Download"><svg-icon name="file-download"></svg-icon></button>
+        <button (click)="saveProject()" mat-button matTooltip="Publish"><svg-icon name="publish"></svg-icon></button>
+        <button (click)="saveProject()" mat-button matTooltip="Change device"><svg-icon name="phone-android"></svg-icon></button>
+        <button (click)="saveProject()" mat-button matTooltip="Save project"><svg-icon name="save"></svg-icon></button>
+    </div>
 </div>

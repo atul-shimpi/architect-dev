@@ -1,8 +1,6 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {Elements} from "../elements/elements.service";
 import {ActivatedRoute} from "@angular/router";
-import {Projects} from "../projects/projects.service";
-import {ParsedProject} from "../projects/parsed-project";
 
 @Component({
     selector: 'html-builder',
@@ -13,8 +11,6 @@ import {ParsedProject} from "../projects/parsed-project";
 export class HtmlBuilderComponent implements OnInit {
 
     constructor(
-        private projects: Projects,
-        private project: ParsedProject,
         private elements: Elements,
         private route: ActivatedRoute,
     ) {}

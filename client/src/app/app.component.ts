@@ -1,7 +1,4 @@
-import {
-    Component, OnInit, ViewChild, ViewContainerRef,
-    ViewEncapsulation
-} from '@angular/core';
+import {Component, OnInit, ViewChild, ViewContainerRef, ViewEncapsulation} from '@angular/core';
 import {ContextMenu} from "vebto-client/core/ui/context-menu/context-menu.service";
 
 import 'rxjs/add/operator/debounceTime';
@@ -18,7 +15,6 @@ import "rxjs/add/operator/finally";
 import "rxjs/add/observable/throw";
 import "rxjs/add/observable/forkJoin";
 import "rxjs/add/operator/startWith";
-import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-root',
@@ -29,10 +25,9 @@ import {Router} from "@angular/router";
 export class AppComponent implements OnInit {
     @ViewChild('contextMenuViewRef', {read: ViewContainerRef}) contextMenuViewRef;
 
-    constructor(private contextMenu: ContextMenu, private router: Router) {}
+    constructor(private contextMenu: ContextMenu) {}
 
     ngOnInit() {
-        console.log(this.router);
         this.contextMenu.registerViewContainerRef(this.contextMenuViewRef);
     }
 }

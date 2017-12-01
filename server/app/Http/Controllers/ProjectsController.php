@@ -1,8 +1,10 @@
 <?php namespace App\Http\Controllers;
 
+use App\BuilderPage;
 use App\Project;
 use Illuminate\Http\Request;
 use Vebto\Bootstrap\Controller;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProjectsController extends Controller {
 
@@ -40,9 +42,68 @@ class ProjectsController extends Controller {
         $this->project = $project;
     }
 
+    /**
+     * Get all projects or projects belonging to specified user.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
 	public function index()
     {
-        return $this->project->with('pages')->get();
+        $this->authorize('index', [Project::class, $this->request->get('user_id')]);
+
+        $query = $this->project->with('pages');
+
+        if ($this->request->has('user_id')) {
+            $query->whereHas('users', function(Builder $q) {
+                return $q->where('users.id', $this->request->get('user_id'));
+            });
+        }
+
+        return $query->get();
+    }
+
+    /**
+     * Find a project by id.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function show($id)
+    {
+        $project = $this->project->with('pages', 'users')->find($id);
+
+        $this->authorize('show', $project);
+
+        return $this->success(['project' => $project]);
+    }
+
+    /**
+     * Update an existing project.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function update($id)
+    {
+        $project = $this->project->with('users', 'pages')->find($id);
+
+        $this->authorize('update', $project);
+
+        $this->validate($this->request, [
+            'name' => 'string|min:1|max:255',
+            'pages' => 'required|array',
+            'pages.*' => 'required|array',
+        ]);
+
+        collect($this->request->get('pages'))->each(function($page) use($project) {
+            $project->pages()->delete();
+            $project->pages()->create(array_except($page, ['id', 'updated_at', 'libraries']));
+        });
+
+        return $this->success(['project' => $project]);
     }
 
 	/**
@@ -72,7 +133,7 @@ class ProjectsController extends Controller {
 
 	/**
 	 * Create a new project.
-	 * 
+	 *
 	 * @return Response
 	 */
 	public function store()
@@ -87,21 +148,6 @@ class ProjectsController extends Controller {
 		}
 
 		return new Response($this->creator->create($this->input->all()), 201);
-	}
-
-	/**
-	 * Update an existing project.
-	 * 
-	 * @param  sting/int $id
-	 * @return Response
-	 */
-	public function update($id)
-	{
-	    $data = $this->request->all();
-
-
-
-		return $this->success();
 	}
 
 	/**
@@ -134,34 +180,6 @@ class ProjectsController extends Controller {
 		}
 
 		return new Response($this->app['translator']->trans('projectUnpublishSuccess'), 200);
-	}
-
-	public function saveImage($id)
-	{	
-		$this->app['imagesSaver']->saveFromString(
-			$this->request->getContent(), 
-			'assets/images/projects/project-'.$id.'.png', 
-			false
-		);
-
-		return new Response($this->app['base_url'].'/assets/images/projects/project-'.$id.'.png', 200);
-	}
-
-	/**
-	 * Find a project by name or id.
-	 * 
-	 * @param  int/string $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-		$project = $this->repo->find($id);
-
-		if ($project) {
-			return new Response($project, 200);
-		}
-	
-		return new Response($this->app['translator']->trans('noProjectWithName'), 400);
 	}
 
 	/**

@@ -4,6 +4,7 @@ import {Template} from "../../../types/models/Template";
 import {Page} from "../../../types/models/Page";
 import {DomHelpers} from "../dom-helpers.service";
 import {Project} from "../../../types/models/Project";
+import {Subject} from "rxjs/Subject";
 
 
 @Injectable()
@@ -27,11 +28,17 @@ export class ParsedProject {
      */
     private project: Project;
 
+    public changed = new Subject();
+
     /**
      * ParsedProject Constructor.
      */
     constructor(private settings: Settings) {
         this.baseUrl = this.settings.getBaseUrl(true)+'storage/';
+    }
+
+    public getDoc(): Document {
+        return this.doc;
     }
 
     public get(): Project {
@@ -40,6 +47,27 @@ export class ParsedProject {
 
     public getPages() {
         return this.pages;
+    }
+
+    /**
+     * Get payload for updating project on the server.
+     */
+    public getPayload() {
+        return {
+            name: this.project.name,
+            pages: this.project.pages.map(page => {
+                return {
+                    name: page.name,
+                    tags: page.tags,
+                    title: page.title,
+                    description: page.description,
+                    html: page.html,
+                    css: page.css,
+                    js: page.js,
+                    theme: page.theme,
+                }
+            })
+        }
     }
 
     /**
@@ -70,6 +98,7 @@ export class ParsedProject {
         this.pages = project.pages;
 
         this.generatePageDocument(this.activePage);
+        this.changed.next();
     }
 
     public applyTemplate(template: Template) {
@@ -83,16 +112,19 @@ export class ParsedProject {
     public setHtml(html: string) {
         this.doc.documentElement.innerHTML = html.trim();
         this.pages[this.activePage].html = html.trim();
+        this.changed.next();
     }
 
     public setCss(css: string) {
         this.doc.documentElement.querySelector('#custom-css').innerHTML = this.trim(css);
         this.pages[this.activePage].css = css.trim();
+        this.changed.next();
     }
 
     public setJs(js: string) {
         this.doc.documentElement.querySelector('#custom-js').innerHTML = this.trim(js);
         this.pages[this.activePage].js = js.trim();
+        this.changed.next();
     }
 
     public getHtml() {

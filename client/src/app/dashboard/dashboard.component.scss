@@ -1,0 +1,77 @@
+@import "../../scss/variables";
+
+dashboard {
+  display: block;
+  height: 100%;
+
+  > .navbar {
+    height: 50px;
+    background: $accent-color;
+  }
+
+  > .header {
+    height: 80px;
+    background-color: $gray-bg-color;
+  }
+
+  > .projects {
+    display: flex;
+    padding: 15px;
+
+    > .project {
+      width: 25%;
+      box-shadow: $box-shadow-1;
+      cursor: pointer;
+
+      &:hover {
+        box-shadow: $box-shadow-2;
+      }
+
+      > img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      > .footer {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-top: 1px solid $border-color-light;
+
+        .name {
+          font-size: 1.6rem;
+          font-weight: bold;
+          margin-bottom: 2px;
+        }
+
+        .updated {
+          font-size: 1rem;
+          color: $text-color-secondary;
+        }
+
+        .actions {
+          margin-left: auto;
+        }
+      }
+    }
+  }
+
+  .container {
+    margin: 0 auto;
+    padding-left: 15px;
+    padding-right: 15px;
+
+    @media screen and (min-width: 768px) {
+      max-width: 750px;
+    }
+
+    @media screen and (min-width: 992px) {
+      max-width: 970px;
+    }
+
+    @media screen and (min-width: 1200px) {
+      max-width: 1170px;
+    }
+  }
+}

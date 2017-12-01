@@ -5,7 +5,7 @@ import {CustomElementsResolver} from "./elements/custom-elements-resolver.servic
 import {ProjectResolver} from "./project-resolver.service";
 
 const routes: Routes = [
-    {path: '', component: HtmlBuilderComponent, resolve: {customElements: CustomElementsResolver, project: ProjectResolver}}
+    {path: ':id', component: HtmlBuilderComponent, resolve: {customElements: CustomElementsResolver, project: ProjectResolver}}
 ];
 
 @NgModule({

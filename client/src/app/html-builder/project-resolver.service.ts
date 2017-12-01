@@ -13,9 +13,11 @@ export class ProjectResolver implements Resolve<ParsedProject> {
     ) {}
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<ParsedProject> {
+
+
         return new Promise(resolve => {
-            this.projects.all().subscribe(projects => {
-                this.activeProject.setProject(projects[0]);
+            this.projects.get(route.params.id).subscribe(response => {
+                this.activeProject.setProject(response.project);
                 resolve(this.activeProject);
             }, () => {
                 this.router.navigate(['dashboard']);

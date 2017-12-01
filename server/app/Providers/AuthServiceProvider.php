@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\BuilderPage;
 use App\Policies\BuilderPagePolicy;
+use App\Policies\ProjectPolicy;
+use App\Project;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -16,6 +18,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         'App\Model' => 'App\Policies\ModelPolicy',
         BuilderPage::class => BuilderPagePolicy::class,
+        Project::class => ProjectPolicy::class,
     ];
 
     /**

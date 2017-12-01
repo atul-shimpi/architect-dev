@@ -1,6 +1,5 @@
 import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {utils} from 'vebto-client/core';
-import {LivePreview} from "../../live-preview.service";
 import {Subject} from "rxjs/Subject";
 import {ParsedProject} from "../../projects/parsed-project";
 import {aceThemes} from "./ace-themes";
@@ -51,7 +50,6 @@ export class CodeEditorComponent implements OnInit {
 
     constructor(
         private utils: utils,
-        private livePreview: LivePreview,
         private parsedProject: ParsedProject,
         private selectedElement: SelectedElement,
         private builderDocument: BuilderDocument,
@@ -128,8 +126,6 @@ export class CodeEditorComponent implements OnInit {
             } else if (this.activeEditor === 'js') {
                 this.parsedProject.setJs(this.editor.getValue());
             }
-
-            this.livePreview.reload('code-editor');
         });
     }
 

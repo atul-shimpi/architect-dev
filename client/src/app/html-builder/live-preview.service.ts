@@ -46,8 +46,10 @@ export class LivePreview {
         this.container = container.nativeElement;
         this.dragHelper = dragHelper;
 
+        this.reload();
         this.registerKeybinds();
         this.bindToIframeEvents();
+
 
         this.document.contentChanged.subscribe(params => {
             if (params.type !== 'domReloaded') {
@@ -55,10 +57,15 @@ export class LivePreview {
             }
         });
 
+        this.parsedProject.changed.subscribe(() => {
+            console.log('on reload');
+            this.reload();
+        });
+
         this.undoManager.executedCommand.subscribe(() => {
             this.repositionBox('selected');
             this.hideBox('hover');
-        })
+        });
     }
 
     private bindToIframeEvents() {

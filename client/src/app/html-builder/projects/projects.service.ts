@@ -15,15 +15,29 @@ export class Projects {
     /**
      * Get all available projects.
      */
-    public all(params?: {user_id?: number}): Observable<Project[]> {
+    public all(params?: {user_id?: number}): Observable<{projects: Project[]}> {
         return this.http.get('projects', params);
     }
 
     /**
      * Get project matching specified id.
      */
-    public get(id: number): Observable<Project> {
+    public get(id: number): Observable<{project: Project}> {
         return this.http.get('projects/'+id);
+    }
+
+    /**
+     * Update project matching specified id.
+     */
+    public update(id: number, params: object): Observable<{project: Project}> {
+        return this.http.put('projects/'+id, params);
+    }
+
+    /**
+     * Create or update specified project's thumbnail image.
+     */
+    public generateThumbnail(projectId: number, dataUrl: string): Observable<any> {
+        return this.http.post('projects/'+projectId+'/generate-thumbnail', {dataUrl});
     }
 
     /**

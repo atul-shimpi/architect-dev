@@ -1,0 +1,24 @@
+<div class="navbar">
+
+</div>
+
+<div class="header">
+
+</div>
+
+<div class="projects container">
+    <div class="project" *ngFor="let project of projects" (click)="openBuilder(project)">
+        <img [src]="getProjectImage(project)">
+        <div class="footer">
+            <div class="title">
+                <div class="name">{{project.name}}</div>
+                <div class="updated">20 minutes ago</div>
+            </div>
+            <div class="actions">
+                <button mat-icon-button color="accent" (click)="openBuilder(project)" matTooltip="Open in builder"><svg-icon name="brush"></svg-icon></button>
+                <button mat-icon-button color="accent"><svg-icon name="publish" matTooltip="Publish"></svg-icon></button>
+                <button mat-icon-button color="accent"><svg-icon name="delete" matTooltip="Delete"></svg-icon></button>
+            </div>
+        </div>
+    </div>
+</div>

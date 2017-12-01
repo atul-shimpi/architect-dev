@@ -18,6 +18,9 @@ Route::group(['prefix' => 'secure'], function () {
 
     //projects
     Route::get('projects', 'ProjectsController@index');
+    Route::get('projects/{id}', 'ProjectsController@show');
+    Route::put('projects/{id}', 'ProjectsController@update');
+    Route::post('projects/{id}/generate-thumbnail', 'ProjectThumbnailController@store');
 
     //pages
     Route::post('projects/{projectId}/pages', 'ProjectPagesController@store');
