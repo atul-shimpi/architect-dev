@@ -29,31 +29,58 @@ class ProjectPagesController extends Controller
         $this->request = $request;
     }
 
+    /**
+     * Create a new page for specified project.
+     *
+     * @param int $projectId
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
     public function store($projectId)
     {
         $project = $this->project->findOrFail($projectId);
 
-        //$this->authorize('store', $project);
+        $this->authorize('store', $project);
 
         $this->validate($this->request, [
             'name' => [
                 'required', 'string', 'max:255',
                 Rule::unique('builder_pages')->where('pageable_id', $project->id)
-            ]
+            ],
+            'tags' => 'nullable|string|min:1|max:255',
+            'title' => 'nullable|string|min:1|max:255',
+            'description' => 'nullable|string|min:1|max:255',
+            'css' => 'nullable|string',
+            'js' => 'nullable|string',
+            'html' => 'nullable|string',
         ]);
 
         $page = $project->pages()->create([
             'name' => $this->request->get('name'),
+            'tags' => $this->request->get('tags'),
+            'title' => $this->request->get('title'),
+            'description' => $this->request->get('description'),
+            'html' => $this->request->get('html'),
+            'css' => $this->request->get('css'),
+            'js' => $this->request->get('js'),
         ]);
 
         return $this->success(['page' => $page]);
     }
 
+    /**
+     * Update specified page.
+     *
+     * @param $projectId
+     * @param $pageId
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
     public function update($projectId, $pageId)
     {
         $project = $this->project->findOrFail($projectId);
 
-        //$this->authorize('update', $project);
+        $this->authorize('update', $project);
 
         $this->validate($this->request, [
             'name' => [
@@ -63,6 +90,9 @@ class ProjectPagesController extends Controller
             'tags' => 'nullable|string|min:1|max:255',
             'title' => 'nullable|string|min:1|max:255',
             'description' => 'nullable|string|min:1|max:255',
+            'css' => 'nullable|string',
+            'js' => 'nullable|string',
+            'html' => 'nullable|string',
         ]);
 
         $page = $project->pages()->findOrFail($pageId);
@@ -83,6 +113,7 @@ class ProjectPagesController extends Controller
      * @param int $projectId
      * @param int $pageId
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function destroy($projectId, $pageId)
     {
@@ -91,7 +122,7 @@ class ProjectPagesController extends Controller
         //project should have at least one page
         if ($project->pages()->count() === 1) return $this->error();
 
-        //$this->authorize('destroy', $project);
+        $this->authorize('destroy', $project);
 
         $project->pages()->findOrFail($pageId)->delete();
 

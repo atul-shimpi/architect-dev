@@ -1,5 +1,4 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {LivePreview} from "../../live-preview.service";
 import {LayoutPanel} from "./layout-panel.service";
 import {Container} from "./layout-panel-types";
 import {Inspector} from "../inspector.service";
@@ -15,14 +14,11 @@ import {BuilderDocument} from "../../builder-document.service";
 })
 export class LayoutPanelComponent implements OnInit {
 
-    private types = ['nodeAdded', 'nodeRemoved', 'nodeChildrenModified', 'domReloaded'];
-
     /**
      * LayoutPanelComponent Constructor.
      */
     constructor(
-        private livePreview: LivePreview,
-        private document: BuilderDocument,
+        private builderDocument: BuilderDocument,
         private selectedElement: SelectedElement,
         private contextBoxes: ContextBoxes,
         public layoutPanel: LayoutPanel,
@@ -30,8 +26,8 @@ export class LayoutPanelComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.document.contentChanged.subscribe(e => {
-            if (this.types.indexOf(e.type) === -1) return;
+        this.builderDocument.contentChanged.subscribe(e => {
+            if ( ! this.inspector.activePanelIs('layout')) return;
             this.layoutPanel.loadContainers();
         });
     }
@@ -42,12 +38,12 @@ export class LayoutPanelComponent implements OnInit {
     }
 
     public cloneContainer(container: Container) {
-        const cloned = this.livePreview.cloneNode(container.node);
+        const cloned = this.builderDocument.actions.cloneNode(container.node);
         this.layoutPanel.selectContainer(cloned);
     }
 
     public removeItem(node: HTMLElement) {
-        this.livePreview.removeNode(node);
+        this.builderDocument.actions.removeNode(node);
     }
 
     public repositionHoverBox(node: HTMLElement) {

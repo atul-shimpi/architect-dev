@@ -2,18 +2,12 @@ import {Injectable} from "@angular/core";
 import {Settings} from "vebto-client/core";
 import {Template} from "../../../types/models/Template";
 import {Page} from "../../../types/models/Page";
-import {DomHelpers} from "../dom-helpers.service";
 import {Project} from "../../../types/models/Project";
-import {Subject} from "rxjs/Subject";
+import {BuilderDocument} from "../builder-document.service";
 
 
 @Injectable()
 export class ParsedProject {
-
-    /**
-     * Document of active page.
-     */
-    private doc: Document;
 
     private baseUrl: string;
 
@@ -28,17 +22,18 @@ export class ParsedProject {
      */
     private project: Project;
 
-    public changed = new Subject();
-
     /**
      * ParsedProject Constructor.
      */
-    constructor(private settings: Settings) {
+    constructor(private settings: Settings, private builderDocument: BuilderDocument) {
         this.baseUrl = this.settings.getBaseUrl(true)+'storage/';
-    }
 
-    public getDoc(): Document {
-        return this.doc;
+        this.builderDocument.contentChanged.subscribe(source => {
+            if (source === 'activeProject') return;
+            this.pages[this.activePage].html = this.builderDocument.getOuterHtml();
+            this.pages[this.activePage].css = this.builderDocument.getCustomCss();
+            this.pages[this.activePage].js = this.builderDocument.getCustomJs();
+        });
     }
 
     public get(): Project {
@@ -47,6 +42,10 @@ export class ParsedProject {
 
     public getPages() {
         return this.pages;
+    }
+
+    public getActivePage(): Page {
+        return this.pages[this.activePage];
     }
 
     /**
@@ -71,17 +70,28 @@ export class ParsedProject {
     }
 
     /**
-     * Remove specified page to pages array.
+     * Add specified page to pages array.
      */
     public addPage(page: Page) {
         this.pages.push(page);
         this.activePage = this.pages.length - 1;
-        this.generatePageDocument(this.activePage);
+        this.updateBuilderDocument();
     }
 
+    /**
+     * Update specified page.
+     */
     public updatePage(updatedPage: Page) {
         const i = this.pages.findIndex(page => page.id === updatedPage.id);
         this.pages[i] = updatedPage;
+    }
+
+    /**
+     * Set specified page as active.
+     */
+    public setActivePage(page: Page) {
+        this.activePage = this.pages.findIndex(curr => curr.id === page.id);
+        this.updateBuilderDocument();
     }
 
     /**
@@ -90,6 +100,9 @@ export class ParsedProject {
     public removePage(id: number) {
         const i = this.pages.findIndex(page => page.id === id);
         this.pages.splice(i, 1);
+        this.activePage = i - 1;
+
+        this.updateBuilderDocument();
     }
 
     public setProject(project: Project) {
@@ -97,8 +110,7 @@ export class ParsedProject {
         this.activePage = 0;
         this.pages = project.pages;
 
-        this.generatePageDocument(this.activePage);
-        this.changed.next();
+        this.updateBuilderDocument();
     }
 
     public applyTemplate(template: Template) {
@@ -106,126 +118,15 @@ export class ParsedProject {
         this.pages = template.pages.slice();
         this.activePage = 0;
 
-        this.generatePageDocument(this.activePage);
+        this.updateBuilderDocument();
     }
 
-    public setHtml(html: string) {
-        this.doc.documentElement.innerHTML = html.trim();
-        this.pages[this.activePage].html = html.trim();
-        this.changed.next();
-    }
-
-    public setCss(css: string) {
-        this.doc.documentElement.querySelector('#custom-css').innerHTML = this.trim(css);
-        this.pages[this.activePage].css = css.trim();
-        this.changed.next();
-    }
-
-    public setJs(js: string) {
-        this.doc.documentElement.querySelector('#custom-js').innerHTML = this.trim(js);
-        this.pages[this.activePage].js = js.trim();
-        this.changed.next();
-    }
-
-    public getHtml() {
-        return '<!DOCTYPE html>' + this.doc.documentElement.outerHTML;
-    }
-
-    public getCustomCss() {
-        if ( ! this.pages[this.activePage]) return;
-        return this.pages[this.activePage].css;
-    }
-
-    public getCustomJs() {
-        if ( ! this.pages[this.activePage]) return;
-        return this.pages[this.activePage].js;
-    }
-
-    /**
-     * Get source html of specified page with added css and base tag.
-     */
-    public generatePageDocument(number: number) {
-        this.doc = new DOMParser().parseFromString(this.getPageHtml(number), 'text/html');
-
-        this.addBaseElement();
-
-        this.useFramework('bootstrap-3');
-        this.addIframeCss();
-        this.addIconsLink();
-
-        this.addCustomCss(number);
-        this.addCustomJs(number);
-    }
-
-    private addBaseElement() {
-        let base = this.doc.createElement('base');
-        base.href = this.baseUrl;
-        this.doc.head.insertBefore(base, this.doc.head.firstChild);
-    }
-
-    private addCustomJs(number: number) {
-        let script = this.doc.createElement('script');
-        script.id = 'custom-js';
-        script.innerHTML = this.getPageJs(number);
-        this.doc.body.appendChild(script);
-    }
-
-    private addCustomCss(number: number) {
-        let style = this.doc.createElement('style');
-        style.id = 'custom-css';
-        style.innerHTML = this.getPageCss(number);
-        this.doc.head.appendChild(style);
-    }
-
-    private useFramework(name: string) {
-        const base = this.baseUrl+'frameworks/'+name+'/';
-
-        const link = DomHelpers.createLink(base+'styles.min.css', 'framework-css');
-        this.doc.head.appendChild(link);
-
-        const jquery = DomHelpers.createScript(this.baseUrl+'frameworks/jquery.min.js', 'jquery');
-        this.doc.body.appendChild(jquery);
-
-        const script = DomHelpers.createScript(base+'scripts.min.js', 'framework-js');
-        this.doc.body.appendChild(script);
-    }
-
-    private addIconsLink() {
-        let link = this.doc.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = 'http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css';
-        this.doc.head.appendChild(link);
-    }
-
-    /**
-     * Get source html of specified page.
-     */
-    private getPageHtml(number: number) {
-        return this.trim(this.pages[number].html);
-    }
-
-    /**
-     * Get source css of specified page.
-     */
-    private getPageCss(number: number) {
-        return this.trim(this.pages[number].css);
-    }
-
-    /**
-     * Get source js of specified page.
-     */
-    private getPageJs(number: number) {
-        return this.trim(this.pages[number].js);
-    }
-
-    private trim(string: string) {
-        return string && string.trim();
-    }
-
-    private addIframeCss() {
-        let link = this.doc.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = this.baseUrl+'css/iframe.css';
-        this.doc.head.appendChild(link);
+    private updateBuilderDocument() {
+        this.builderDocument.update(
+            this.pages[this.activePage].html,
+            this.pages[this.activePage].js,
+            this.pages[this.activePage].css,
+            'activeProject'
+        );
     }
 }

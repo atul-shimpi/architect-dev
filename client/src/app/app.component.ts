@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, ViewContainerRef, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild, ViewContainerRef, ViewEncapsulation} from '@angular/core';
 import {ContextMenu} from "vebto-client/core/ui/context-menu/context-menu.service";
 
 import 'rxjs/add/operator/debounceTime';
@@ -24,10 +24,11 @@ import "rxjs/add/operator/startWith";
 })
 export class AppComponent implements OnInit {
     @ViewChild('contextMenuViewRef', {read: ViewContainerRef}) contextMenuViewRef;
+    @ViewChild('contextMenuOrigin') contextMenuOrigin: ElementRef;
 
     constructor(private contextMenu: ContextMenu) {}
 
     ngOnInit() {
-        this.contextMenu.registerViewContainerRef(this.contextMenuViewRef);
+        this.contextMenu.registerViewContainerRef(this.contextMenuViewRef, this.contextMenuOrigin);
     }
 }

@@ -6,6 +6,7 @@ import {aceThemes} from "./ace-themes";
 import {Observable} from "rxjs/Observable";
 import {SelectedElement} from "../selected-element.service";
 import {BuilderDocument} from "../../builder-document.service";
+import htmlBeautify from 'html-beautify'
 
 declare let ace: any;
 
@@ -64,7 +65,7 @@ export class CodeEditorComponent implements OnInit {
                 if (this.selectedElement.node) this.selectNodeSource(this.selectedElement.node);
             });
 
-            this.bindToLivePreviewChangeEvent();
+            this.bindToBuilderDocumentChangeEvent();
             this.bindToEditorChangeEvent();
 
             setTimeout(() => {
@@ -99,36 +100,6 @@ export class CodeEditorComponent implements OnInit {
         this.editor.setTheme('ace/theme/'+name);
     }
 
-    /**
-     * Update code editor contents when live preview html is changed.
-     */
-    private bindToLivePreviewChangeEvent() {
-        this.builderDocument.contentChanged
-            .debounceTime(500)
-            .distinctUntilChanged()
-            .subscribe(e => {
-                //if dom change was initiated by code editor, bail to avoid infinite loops
-                if (e.initiator === 'code-editor') return;
-                this.updateEditorContents(this.activeEditor);
-            });
-    }
-
-    /**
-     * Update project html when code editor contents are changed by user.
-     */
-    private bindToEditorChangeEvent() {
-        this.contentsChange.debounceTime(500).subscribe(() => {
-
-            if (this.activeEditor === 'html') {
-                this.parsedProject.setHtml(this.editor.getValue());
-            } else if (this.activeEditor === 'css') {
-                this.parsedProject.setCss(this.editor.getValue());
-            } else if (this.activeEditor === 'js') {
-                this.parsedProject.setJs(this.editor.getValue());
-            }
-        });
-    }
-
     public switchType(name: 'html'|'css'|'js') {
         this.activeEditor = name;
         this.changeEditorMode(name);
@@ -138,14 +109,42 @@ export class CodeEditorComponent implements OnInit {
     /**
      * Update editor contents with specified content type.
      */
-    private updateEditorContents(type: "html" | "css" | "js") {
+    private updateEditorContents(type: "html"|"css"|"js") {
         if (type === 'html') {
-            this.setEditorValue(this.parsedProject.getHtml());
+            this.setEditorValue(htmlBeautify(this.builderDocument.getOuterHtml()));
         } else if (type === 'css') {
-            this.setEditorValue(this.parsedProject.getCustomCss())
+            this.setEditorValue(this.builderDocument.getCustomCss())
         } else if (type === 'js') {
-            this.setEditorValue(this.parsedProject.getCustomJs())
+            this.setEditorValue(this.builderDocument.getCustomJs())
         }
+    }
+
+    /**
+     * Update project html when code editor contents are changed by user.
+     */
+    private bindToEditorChangeEvent() {
+        this.contentsChange.debounceTime(500).subscribe(() => {
+            if (this.activeEditor === 'html') {
+                this.builderDocument.setHtml(this.editor.getValue(), 'codeEditor');
+            } else if (this.activeEditor === 'css') {
+                this.builderDocument.setCustomCss(this.editor.getValue());
+            } else if (this.activeEditor === 'js') {
+                this.builderDocument.setCustomJs(this.editor.getValue());
+            }
+        });
+    }
+
+    /**
+     * Update code editor contents when live preview html is changed.
+     */
+    private bindToBuilderDocumentChangeEvent() {
+        this.builderDocument.contentChanged
+            .debounceTime(500)
+            .subscribe(source => {
+                //if dom change was initiated by code editor, bail to avoid infinite loops
+                if (source === 'codeEditor') return;
+                this.updateEditorContents(this.activeEditor);
+            });
     }
 
     private setEditorValue(value: string) {

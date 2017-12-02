@@ -3,6 +3,7 @@ import {MatMenuTrigger} from "@angular/material";
 import {UndoManager} from "../../undo-manager/undo-manager.service";
 import {LivePreview} from "../../live-preview.service";
 import {SelectedElement} from "../selected-element.service";
+import {BuilderDocument} from "../../builder-document.service";
 
 @Component({
     selector: 'live-preview-context-menu',
@@ -20,15 +21,12 @@ export class LivePreviewContextMenuComponent {
     constructor(
         public undoManager: UndoManager,
         public livePreview: LivePreview,
+        private builderDocument: BuilderDocument,
         public selected: SelectedElement,
     ) {}
 
-    ngOnInit() {
-      //
-    }
-
     public remove() {
-        this.livePreview.removeNode(this.selected.node);
+        this.builderDocument.actions.removeNode(this.selected.node);
     }
 
     public undo() {
@@ -40,23 +38,23 @@ export class LivePreviewContextMenuComponent {
     }
 
     public copy() {
-        this.livePreview.copyNode(this.selected.node);
+        this.builderDocument.actions.copyNode(this.selected.node);
     }
 
     public cut() {
-        this.livePreview.cutNode(this.selected.node);
+        this.builderDocument.actions.cutNode(this.selected.node);
     }
 
     public paste() {
-        this.livePreview.pasteNode(this.selected.node);
+        this.builderDocument.actions.pasteNode(this.selected.node);
     }
 
     public canPaste() {
-        return this.livePreview.copiedNode;
+        return this.builderDocument.actions.copiedNode;
     }
 
     public duplicate() {
-        this.livePreview.duplicateNode(this.selected.node);
+        this.builderDocument.actions.duplicateNode(this.selected.node);
     }
 
     public selectParent() {
@@ -80,6 +78,6 @@ export class LivePreviewContextMenuComponent {
     }
 
     public move(direction: 'up'|'down') {
-        this.livePreview.moveSelected(direction);
+        this.builderDocument.actions.moveSelected(direction);
     }
 }

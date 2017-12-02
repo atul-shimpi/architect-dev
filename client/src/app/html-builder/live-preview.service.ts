@@ -14,17 +14,15 @@ import {Keybinds} from "vebto-client/core/keybinds/keybinds.service";
 import {SelectedElement} from "./live-preview/selected-element.service";
 import {ContextBoxes} from "./live-preview/context-boxes.service";
 import {BuilderDocument} from "./builder-document.service";
+import {LivePreviewDocument} from "./live-preview/live-preview-document.service";
 
 @Injectable()
 export class LivePreview {
-    public container: HTMLElement;
     dragging: any;
 
     public hover = new ActiveElement();
 
     public dragHelper: DragVisualHelperComponent;
-
-    public copiedNode: HTMLElement;
 
     constructor(
         private zone: NgZone,
@@ -38,30 +36,26 @@ export class LivePreview {
         private keybinds: Keybinds,
         public selected: SelectedElement,
         private contextBoxes: ContextBoxes,
-        private document: BuilderDocument,
+        private builderDocument: BuilderDocument,
+        private previewDocument: LivePreviewDocument,
     ) {}
 
-    public init(container: ElementRef, hoverBox: ElementRef, selectedBox: ElementRef, dragHelper: DragVisualHelperComponent) {
+    public init(hoverBox: ElementRef, selectedBox: ElementRef, dragHelper: DragVisualHelperComponent) {
         this.contextBoxes.set(hoverBox.nativeElement, selectedBox.nativeElement);
-        this.container = container.nativeElement;
         this.dragHelper = dragHelper;
 
-        this.reload();
         this.registerKeybinds();
         this.bindToIframeEvents();
+        this.bindToUndoCommandExecuted();
+        this.reload();
 
-
-        this.document.contentChanged.subscribe(params => {
-            if (params.type !== 'domReloaded') {
-                this.parsedProject.setHtml(this.document.getInnerHtml());
-            }
+        //make sure we only update live preview, if the changes did not originate from here
+        this.builderDocument.contentChanged.subscribe(source => {
+            if (source !== 'livePreview') this.reload();
         });
+    }
 
-        this.parsedProject.changed.subscribe(() => {
-            console.log('on reload');
-            this.reload();
-        });
-
+    private bindToUndoCommandExecuted() {
         this.undoManager.executedCommand.subscribe(() => {
             this.repositionBox('selected');
             this.hideBox('hover');
@@ -70,7 +64,7 @@ export class LivePreview {
 
     private bindToIframeEvents() {
         this.zone.runOutsideAngular(() => {
-            const hammer = new Hammer.Manager(this.document.getBody()),
+            const hammer = new Hammer.Manager(this.previewDocument.get()),
                 singleTap = new Hammer.Tap({event: 'single_tap'}),
                 doubleTap = new Hammer.Tap({event: 'double_tap', taps: 2});
 
@@ -80,9 +74,9 @@ export class LivePreview {
             this.listenForHover();
             this.listenForClick(hammer);
             this.listenForDoubleClick(hammer);
-            this.keybinds.listenOn(this.document.get());
+            this.keybinds.listenOn(this.previewDocument.get());
 
-            this.document.on('contextmenu', e => {
+            this.previewDocument.on('contextmenu', e => {
                 e.preventDefault();
 
                 this.zone.run(() => {
@@ -91,7 +85,7 @@ export class LivePreview {
                 });
             });
 
-            this.document.on('scroll', e => {
+            this.previewDocument.on('scroll', e => {
                 this.contextBoxes.hideBox('hover');
                 if (this.selected.node) this.repositionBox('selected');
                 this.inlineTextEditor.close();
@@ -101,104 +95,18 @@ export class LivePreview {
     }
 
     private registerKeybinds() {
-        this.keybinds.add('ctrl+shift+x', () => this.cutNode(this.selected.node));
-        this.keybinds.add('ctrl+shift+c', () => this.copyNode(this.selected.node));
-        this.keybinds.add('ctrl+shift+v', () => this.pasteNode(this.selected.node));
-        this.keybinds.add('delete', () => this.removeNode(this.selected.node));
+        this.keybinds.add('ctrl+shift+x', () => this.builderDocument.actions.cutNode(this.selected.node));
+        this.keybinds.add('ctrl+shift+c', () => this.builderDocument.actions.copyNode(this.selected.node));
+        this.keybinds.add('ctrl+shift+v', () => this.builderDocument.actions.pasteNode(this.selected.node));
+        this.keybinds.add('delete', () => this.builderDocument.actions.removeNode(this.selected.node));
         this.keybinds.add('ctrl+z', () => this.undoManager.undo());
         this.keybinds.add('ctrl+y', () => this.undoManager.redo());
-        this.keybinds.addWithPreventDefault('arrow_up', () => this.moveSelected('up'));
-        this.keybinds.addWithPreventDefault('arrow_down', () => this.moveSelected('down'));
+        this.keybinds.addWithPreventDefault('arrow_up', () => this.builderDocument.actions.moveSelected('up'));
+        this.keybinds.addWithPreventDefault('arrow_down', () => this.builderDocument.actions.moveSelected('down'));
     }
 
-    public applyTemplate(template: Template) {
-        this.parsedProject.applyTemplate(template);
-        this.reload();
-    }
-
-    public reload(initiator: string = 'visual-builder') {
-        this.document.on('load', () => {
-            this.bindToIframeEvents();
-            this.document.emitContentChanged('domReloaded', null, null, initiator);
-        });
-
-        this.document.write(this.parsedProject.getHtml());
-    }
-
-    /**
-     * Clone specified node inside the project.
-     */
-    public cloneNode(node: HTMLElement): HTMLElement {
-        const cloned = node.cloneNode(true) as HTMLElement;
-
-        this.undoManager.wrapDomChanges(node.parentNode, () => {
-            node.parentNode.insertBefore(cloned, node.nextElementSibling);
-            this.document.emitContentChanged('nodeAdded', this.elements.match(cloned).name, cloned);
-        });
-
-        return cloned as HTMLElement;
-    }
-
-    /**
-     * Delete specified node from the project.
-     */
-    public removeNode(node: HTMLElement): HTMLElement {
-        if ( ! node) return;
-
-        this.undoManager.wrapDomChanges(node.parentNode, () => {
-            if (this.selected.node === node) this.selected.selectParent();
-            node.parentNode.removeChild(node);
-            this.document.emitContentChanged('nodeRemoved', this.elements.match(node).name, node);
-        });
-
-        return node;
-    }
-
-    /**
-     * Copy specified node for later use or pasting.
-     */
-    public copyNode(node: HTMLElement) {
-        if (node && node.nodeName != 'BODY') {
-            this.copiedNode = node.cloneNode(true) as HTMLElement;
-        }
-    }
-
-    /**
-     * Paste copied DOM node if it exists.
-     */
-    public pasteNode(ref: HTMLElement, copiedNode?: HTMLElement) {
-        if ( ! copiedNode) copiedNode = this.copiedNode;
-
-        if (ref && copiedNode) {
-            this.undoManager.wrapDomChanges(ref.parentNode, () => {
-                //make sure we don't paste refs after body
-                if (ref.nodeName == 'BODY') {
-                    ref.appendChild(copiedNode);
-                } else {
-                    ref.parentNode.insertBefore(copiedNode, ref.nextSibling);
-                }
-
-                this.hideBox('selected');
-            });
-
-            //add undo
-            this.document.emitContentChanged('nodeAdded');
-        }
-    }
-
-    /**
-     * Copy and remove the given node.
-     */
-    public cutNode(node: HTMLElement) {
-        if (node && node.nodeName != 'BODY') {
-            this.copyNode(node);
-            this.removeNode(node);
-        }
-    }
-
-    public duplicateNode(node: HTMLElement) {
-        const cloned = node.cloneNode(true) as HTMLElement;
-        this.pasteNode(this.selected.node, cloned);
+    public reload() {
+        this.previewDocument.setInnerHtml(this.builderDocument.getInnerHtml());
     }
 
     public viewSelectedNodeSourceCode() {
@@ -207,63 +115,11 @@ export class LivePreview {
         });
     }
 
-    /**
-     * Move selected node by one element in the specified direction.
-     */
-    public moveSelected(dir: 'up'|'down') {
-        if ( ! this.selected.node) return;
-
-        if (dir == 'down') {
-            const next = this.selected.node.nextElementSibling as HTMLElement;
-
-            if (next) {
-                //check if we can insert selected node into the next one
-                if (this.elements.canInsert(next, this.selected.element)) {
-                    next.insertBefore(this.selected.node, next.firstChild);
-                } else {
-                    next.parentNode.insertBefore(this.selected.node, next.nextElementSibling);
-                }
-
-            } else {
-                let parentParent = this.selected.node.parentNode.parentNode as HTMLElement;
-
-                if (this.elements.canInsert(parentParent, this.selected.element)) {
-                    parentParent.parentNode.insertBefore(this.selected.node, parentParent.nextElementSibling);
-                }
-            }
-        } else if (dir == 'up') {
-            const prev = this.selected.node.previousElementSibling as HTMLElement;
-
-            if (prev) {
-                //check if we can insert selected node into the prev one
-                if (this.elements.canInsert(prev, this.selected.element)) {
-                    prev.appendChild(this.selected.node);
-                } else {
-                    prev.parentNode.insertBefore(this.selected.node, prev);
-                }
-            } else {
-                let parentParent = this.selected.node.parentNode.parentNode as HTMLElement;
-
-                if (this.elements.canInsert(parentParent, this.selected.element)) {
-                    parentParent.insertBefore(this.selected.node, this.selected.node.parentNode);
-                }
-            }
-        }
-
-        this.repositionBox('selected');
-    }
-
-    public scrollIntoView(node?: HTMLElement) {
-        if ( ! node) node = this.selected.node;
-        if ( ! node) return;
-        node.scrollIntoView({behavior: "smooth", block: "center", inline: "center"});
-    }
-
     private listenForHover() {
-        this.document.on('mousemove', e => {
+        this.previewDocument.on('mousemove', e => {
             if (this.dragging) return;
 
-            const node = this.document.elementFromPoint(e.pageX, e.pageY - this.document.getScrollTop());
+            const node = this.previewDocument.elementFromPoint(e.pageX, e.pageY - this.previewDocument.getScrollTop());
 
             if ( ! node || node === this.hover.node) return;
 
@@ -301,7 +157,7 @@ export class LivePreview {
             //hide context menu
             this.contextMenu.close();
 
-            this.document.focus();
+            this.previewDocument.focus();
 
             if (this.selected.node == e.target) return true;
 

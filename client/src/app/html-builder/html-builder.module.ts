@@ -48,6 +48,8 @@ import {BuilderDocument} from "./builder-document.service";
 import {Projects} from "./projects/projects.service";
 import { PagesPanelComponent } from './inspector/pages-panel/pages-panel.component';
 import {ProjectResolver} from "./project-resolver.service";
+import {BuilderDocumentActions} from "./builder-document-actions.service";
+import {LivePreviewDocument} from "./live-preview/live-preview-document.service";
 
 @NgModule({
     imports: [
@@ -96,6 +98,7 @@ import {ProjectResolver} from "./project-resolver.service";
     ],
     providers: [
         LivePreview,
+        LivePreviewDocument,
         Templates,
         Elements,
         Inspector,
@@ -111,6 +114,7 @@ import {ProjectResolver} from "./project-resolver.service";
         ContextBoxes,
         SelectedElement,
         BuilderDocument,
+        BuilderDocumentActions,
         Projects,
         ProjectResolver,
     ]

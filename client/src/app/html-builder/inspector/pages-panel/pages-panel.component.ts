@@ -43,14 +43,18 @@ export class PagesPanelComponent implements OnInit {
 
     ngOnInit() {
         this.selectedPage = this.activeProject.getPages()[0];
-        console.log(this.activeProject.getPages());
     }
 
     public createNewPage() {
-        const name = 'Page '+(this.activeProject.getPages().length + 1);
+        let name = 'Page '+(this.activeProject.getPages().length + 1);
+
+        if (this.activeProject.getPages().find(page => page.name === name)) {
+            name += ' Copy';
+        }
 
         this.projects.createPage(this.activeProject.get().id, {name}).subscribe(response => {
             this.activeProject.addPage(response.page);
+            this.selectedPage = response.page;
             this.toast.open('Page created');
         });
     }
@@ -72,11 +76,14 @@ export class PagesPanelComponent implements OnInit {
             description: this.selectedPage.description,
             tags: this.selectedPage.tags,
         };
+
+        this.activeProject.setActivePage(this.selectedPage);
     }
 
     public updateSelectedPage() {
         this.projects.updatePage(this.activeProject.get().id, this.selectedPage.id, this.updateModel).subscribe(response => {
             this.toast.open('Page updated');
+            this.selectedPage = response.page;
             this.activeProject.updatePage(response.page)
         }, errors => this.errors = errors.messages);
     }
@@ -87,7 +94,28 @@ export class PagesPanelComponent implements OnInit {
     public deleteSelectedPage() {
         this.projects.deletePage(this.activeProject.get().id, this.selectedPage.id).subscribe(() => {
             this.activeProject.removePage(this.selectedPage.id);
+            this.selectedPage = this.activeProject.getActivePage();
             this.toast.open('Page deleted');
+        });
+    }
+
+    /**
+     * Duplicate selected page.
+     */
+    public duplicateSelectedPage() {
+        this.projects.createPage(this.activeProject.get().id, {
+            name: this.selectedPage.name + ' Copy',
+            html: this.selectedPage.html,
+            css: this.selectedPage.css,
+            js: this.selectedPage.js,
+            theme: this.selectedPage.theme,
+            tags: this.selectedPage.tags,
+            title: this.selectedPage.title,
+            description: this.selectedPage.description,
+        }).subscribe(response => {
+            this.activeProject.addPage(response.page);
+            this.selectedPage = this.activeProject.getActivePage();
+            this.toast.open('Page duplicated');
         });
     }
 }

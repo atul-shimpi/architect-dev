@@ -7,6 +7,7 @@ import {LivePreviewScroller} from "./live-preview-scroller";
 import {DomHelpers} from "../../dom-helpers.service";
 import {BuilderDocument} from "../../builder-document.service";
 import {SelectedElement} from "../selected-element.service";
+import {LivePreviewDocument} from "../live-preview-document.service";
 
 export abstract class BaseDragAndDrop implements AfterContentInit {
 
@@ -35,6 +36,8 @@ export abstract class BaseDragAndDrop implements AfterContentInit {
 
     protected abstract livePreview: LivePreview;
 
+    protected abstract previewDocument: LivePreviewDocument;
+
     protected abstract builderDocument: BuilderDocument;
 
     protected abstract selectedElement: SelectedElement;
@@ -49,8 +52,9 @@ export abstract class BaseDragAndDrop implements AfterContentInit {
 
     ngAfterContentInit() {
         this.dragOverlay = document.querySelector('.drag-overlay') as HTMLElement;
+        let container  = document.querySelector('live-preview') as HTMLElement;
         this.dragHelper = this.livePreview.dragHelper;
-        this.scroller = new LivePreviewScroller(this.builderDocument.get(), this.livePreview.container);
+        this.scroller = new LivePreviewScroller(this.previewDocument.get(), container);
 
         this.zone.runOutsideAngular(() => {
             this.initHammer(this.dragElements.toArray());
@@ -77,7 +81,7 @@ export abstract class BaseDragAndDrop implements AfterContentInit {
     }
 
     protected handleDragStart(e: HammerInput) {
-        this.bodyBeforeDrag = this.builderDocument.getBody().cloneNode(true) as HTMLBodyElement;
+        this.bodyBeforeDrag = this.previewDocument.getBody().cloneNode(true) as HTMLBodyElement;
 
         this.livePreview.dragging = true;
         this.livePreview.hideBox('selected');
@@ -97,7 +101,7 @@ export abstract class BaseDragAndDrop implements AfterContentInit {
     }
 
     protected handleDrag(e: HammerInput) {
-        const scrollTop = this.builderDocument.getScrollTop(),
+        const scrollTop = this.previewDocument.getBody().scrollTop,
             x = e.center.x,
             y = e.center.y + scrollTop;
 
@@ -106,7 +110,7 @@ export abstract class BaseDragAndDrop implements AfterContentInit {
         //if we're not dragging over live preview yet, bail
         if (x <= 380) return;
 
-        let under = this.builderDocument.elementFromPoint(x - 380, y);
+        let under = this.previewDocument.elementFromPoint(x - 380, y) as HTMLElement;
 
         this.scroller.scroll(y);
 
@@ -135,8 +139,8 @@ export abstract class BaseDragAndDrop implements AfterContentInit {
         }
 
         this.selectedElement.selectNode(this.dragEl.node);
-        this.undoManager.wrapDomChanges(this.builderDocument.getBody(), null, {before: this.bodyBeforeDrag});
-        this.builderDocument.emitContentChanged('nodeChanged');
+        this.undoManager.wrapDomChanges(this.previewDocument.getBody(), null, {before: this.bodyBeforeDrag});
+        this.builderDocument.setHtml(this.previewDocument.getOuterHtml(), 'livePreview');
     }
 
     /**
@@ -174,7 +178,7 @@ export abstract class BaseDragAndDrop implements AfterContentInit {
     }
 
     protected createDropPlaceholder() {
-        this.dropPlaceholder = this.builderDocument.createElement('div');
+        this.dropPlaceholder = this.previewDocument.createElement('div');
         this.renderer.setStyle(this.dropPlaceholder, 'display', this.dragEl.node.getAttribute('data-display'));
         this.renderer.setStyle(this.dropPlaceholder, 'pointer-events', 'none');
         this.renderer.setStyle(this.dropPlaceholder, 'height', '50px');

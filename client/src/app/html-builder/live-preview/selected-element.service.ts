@@ -80,8 +80,12 @@ export class SelectedElement extends ActiveElement {
     /**
      * Select specified node as active one in the builder.
      */
-    public selectNode(node: HTMLElement|number) {
+    public selectNode(node: HTMLElement) {
         if ( ! node || this.node === node) return;
+
+        if (node.nodeName.toLowerCase() === 'html') {
+            node = node.firstChild as HTMLElement;
+        }
 
         this.previous = this.node;
 

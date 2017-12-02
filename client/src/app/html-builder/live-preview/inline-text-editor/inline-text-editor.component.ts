@@ -1,12 +1,12 @@
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {baseFonts, fontWeights} from "../../text-style-values";
-import {LivePreview} from "../../live-preview.service";
 import {fontAwesomeIconsList} from "../../font-awesome-icons-list";
 import {Settings} from "vebto-client/core";
 import {DomHelpers} from "../../dom-helpers.service";
 import {UndoManager} from "../../undo-manager/undo-manager.service";
 import {InlineTextEditor} from "./inline-text-editor.service";
 import {BuilderDocument} from "../../builder-document.service";
+import {LivePreviewDocument} from "../live-preview-document.service";
 
 @Component({
     selector: 'inline-text-editor',
@@ -47,11 +47,6 @@ export class InlineTextEditorComponent implements OnInit, OnDestroy {
     private beforeDomNode: HTMLElement;
 
     /**
-     * Whether any changes have been made with inline text editor.
-     */
-    private madeChanges: boolean = false;
-
-    /**
      * Node that is being edited by the inline text editor.
      */
     private editedNode: HTMLElement;
@@ -60,38 +55,37 @@ export class InlineTextEditorComponent implements OnInit, OnDestroy {
      * InlineTextEditorComponent Constructor.
      */
     constructor(
-        private document: BuilderDocument,
+        private builderDocument: BuilderDocument,
         private settings: Settings,
         private undoManager: UndoManager,
         private inlineTextEditor: InlineTextEditor,
+        private previewDocument: LivePreviewDocument
     ) {}
 
     ngOnInit() {
-        this.editedNode = this.document.find('[contenteditable]');
+        this.editedNode = this.previewDocument.find('[contenteditable]');
         this.beforeDomNode = this.editedNode.parentNode.cloneNode(true) as HTMLElement;
     }
 
     ngOnDestroy() {
         this.makeNodesNotEditable();
 
-        if ( ! this.madeChanges) return;
         this.undoManager.wrapDomChanges(this.editedNode.parentNode, null, {before: this.beforeDomNode});
-        this.document.emitContentChanged('domChanged');
+        this.builderDocument.setHtml(this.previewDocument.getOuterHtml(), 'textEditor');
     }
 
     /**
      * Execute specified command on current text selection.
      */
     public execCommand(command: string, value?: string) {
-        this.madeChanges = true;
-        this.document.execCommand(command, value);
+        this.previewDocument.execCommand(command, value);
     }
 
     /**
      * Check if specified command is active on current text selection.
      */
     public commandIsActive(command: string) {
-        return this.document.queryCommandState(command);
+        return this.previewDocument.queryCommandState(command);
     }
 
     /**
@@ -124,7 +118,7 @@ export class InlineTextEditorComponent implements OnInit, OnDestroy {
      * Remove "contenteditable" attribute from all nodes.
      */
     private makeNodesNotEditable() {
-        let editable = this.document.findAll('[contenteditable]');
+        let editable = this.previewDocument.findAll('[contenteditable]');
 
         for (let i = editable.length - 1; i >= 0; i--) {
             editable[i].removeAttribute('contenteditable');
