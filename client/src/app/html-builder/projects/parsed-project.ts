@@ -129,4 +129,12 @@ export class ParsedProject {
             'activeProject'
         );
     }
+
+    public getTemplate(): Template {
+        return this.activeTemplate;
+    }
+
+    public hasTemplate(): boolean {
+        return this.activeTemplate !== undefined;
+    }
 }

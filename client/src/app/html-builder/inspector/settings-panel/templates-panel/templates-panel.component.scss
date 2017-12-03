@@ -1,0 +1,37 @@
+@import "../../../../../scss/variables";
+
+templates-panel {
+  display: block;
+  background-color: $inspector-bg-color-200;
+  box-shadow: $box-shadow-4;
+  height: 100%;
+  width: 300px;
+  box-sizing: inherit;
+
+  .templates {
+    padding: 20px;
+
+    > .template {
+      margin-bottom: 10px;
+      cursor: pointer;
+      box-shadow: $box-shadow-3;
+      background-color: $inspector-bg-color-100;
+      transition: box-shadow 280ms cubic-bezier(.4,0,.2,1);
+
+      &:hover {
+        box-shadow: $box-shadow-4;
+      }
+
+      > .name {
+        padding: 10px 0;
+        text-align: center;
+      }
+
+      > img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+    }
+  }
+}

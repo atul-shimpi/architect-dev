@@ -109,12 +109,6 @@ export class LivePreview {
         this.previewDocument.setInnerHtml(this.builderDocument.getInnerHtml());
     }
 
-    public viewSelectedNodeSourceCode() {
-        this.codeEditor.open().subscribe(editor => {
-            editor.selectNodeSource(this.selected.node);
-        });
-    }
-
     private listenForHover() {
         this.previewDocument.on('mousemove', e => {
             if (this.dragging) return;

@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {ElementRef, Injectable} from '@angular/core';
 import {SelectedElement} from "../live-preview/selected-element.service";
 
 type PanelNames = 'elements'|'inspector'|'pages'|'themes'|'settings'|'layout';
@@ -7,6 +7,11 @@ type PanelNames = 'elements'|'inspector'|'pages'|'themes'|'settings'|'layout';
 export class Inspector {
 
     private activePanel: PanelNames = 'pages';
+
+    /**
+     * Inspector sidebar host element.
+     */
+    public elementRef: ElementRef;
 
     constructor(private selectedElement: SelectedElement) {
         this.selectedElement.changed.subscribe(() => {

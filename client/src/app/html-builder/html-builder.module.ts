@@ -50,6 +50,10 @@ import { PagesPanelComponent } from './inspector/pages-panel/pages-panel.compone
 import {ProjectResolver} from "./project-resolver.service";
 import {BuilderDocumentActions} from "./builder-document-actions.service";
 import {LivePreviewDocument} from "./live-preview/live-preview-document.service";
+import { SettingsPanelComponent } from './inspector/settings-panel/settings-panel.component';
+import { TemplatesPanelComponent } from './inspector/settings-panel/templates-panel/templates-panel.component';
+import { ThemesPanelComponent } from './inspector/settings-panel/themes-panel/themes-panel.component';
+import {Modal} from "../shared/modal.service";
 
 @NgModule({
     imports: [
@@ -86,6 +90,9 @@ import {LivePreviewDocument} from "./live-preview/live-preview-document.service"
         CodeEditorComponent,
         LivePreviewContextMenuComponent,
         PagesPanelComponent,
+        SettingsPanelComponent,
+        TemplatesPanelComponent,
+        ThemesPanelComponent,
     ],
     entryComponents: [
         GradientBackgroundPanelComponent,
@@ -95,6 +102,8 @@ import {LivePreviewDocument} from "./live-preview/live-preview-document.service"
         InlineTextEditorComponent,
         CodeEditorComponent,
         LivePreviewContextMenuComponent,
+        TemplatesPanelComponent,
+        ThemesPanelComponent,
     ],
     providers: [
         LivePreview,
@@ -117,6 +126,7 @@ import {LivePreviewDocument} from "./live-preview/live-preview-document.service"
         BuilderDocumentActions,
         Projects,
         ProjectResolver,
+        Modal,
     ]
 })
 export class HtmlBuilderModule {

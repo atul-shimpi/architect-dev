@@ -7,6 +7,7 @@ import {UndoManager} from "../../undo-manager/undo-manager.service";
 import {InlineTextEditor} from "./inline-text-editor.service";
 import {BuilderDocument} from "../../builder-document.service";
 import {LivePreviewDocument} from "../live-preview-document.service";
+import {OverlayRef} from "@angular/cdk/overlay";
 
 @Component({
     selector: 'inline-text-editor',
@@ -52,14 +53,18 @@ export class InlineTextEditorComponent implements OnInit, OnDestroy {
     private editedNode: HTMLElement;
 
     /**
+     * Reference to this editor's overlay.
+     */
+    private overlayRef: OverlayRef;
+
+    /**
      * InlineTextEditorComponent Constructor.
      */
     constructor(
         private builderDocument: BuilderDocument,
         private settings: Settings,
         private undoManager: UndoManager,
-        private inlineTextEditor: InlineTextEditor,
-        private previewDocument: LivePreviewDocument
+        private previewDocument: LivePreviewDocument,
     ) {}
 
     ngOnInit() {
@@ -111,7 +116,7 @@ export class InlineTextEditorComponent implements OnInit, OnDestroy {
     public togglePanel(name: 'icons'|'link') {
         this[name+'PanelIsOpen']= !this[name+'PanelIsOpen'];
         if (name === 'icons') this.loadFontAwesome();
-        setTimeout(() => this.inlineTextEditor.overlayRef.updatePosition());
+        setTimeout(() => this.overlayRef.updatePosition());
     }
 
     /**
@@ -135,5 +140,9 @@ export class InlineTextEditorComponent implements OnInit, OnDestroy {
         document.head.appendChild(
             DomHelpers.createLink(this.settings.getBaseUrl(true)+'storage/css/font-awesome.min.css', 'font-awesome')
         );
+    }
+
+    public setOverlayRef(overlayRef: OverlayRef) {
+        this.overlayRef = overlayRef;
     }
 }

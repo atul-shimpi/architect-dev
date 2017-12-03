@@ -13,6 +13,12 @@ export class DashboardComponent implements OnInit {
 
     public projects: Project[] = [];
 
+    public models = {
+        query: '',
+        order: 'newest',
+        status: 'all',
+    };
+
     /**
      * DashboardComponent Constructor.
      */
@@ -30,5 +36,9 @@ export class DashboardComponent implements OnInit {
 
     public getProjectImage(project: Project) {
         return this.settings.getBaseUrl(true) + 'storage/project-thumbnails/' + project.id + '.png';
+    }
+
+    public getLogoUrl() {
+        return this.settings.getBaseUrl(true) + 'assets/images/logo.png';
     }
 }

@@ -14,7 +14,7 @@ export class Templates {
     /**
      * Get all available templates.
      */
-    public all(): Observable<Template[]> {
+    public all(): Observable<{templates: Template[]}> {
         return this.http.get('templates');
     }
 }

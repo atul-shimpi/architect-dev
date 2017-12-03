@@ -1,9 +1,39 @@
-<div class="navbar">
-
-</div>
-
 <div class="header">
+    <div class="container">
+        <div class="navbar">
+            <img [src]="getLogoUrl()" class="logo">
+        </div>
 
+        <div class="header-body">
+            <div class="inputs">
+                <div class="input-container">
+                    <label for="search-query" trans>Search</label>
+                    <input type="search" name="search-query" id="search-query" [(ngModel)]="models.query">
+                </div>
+
+                <div class="input-container">
+                    <label for="project-status" trans>Status</label>
+                    <select name="project-status" id="project-status" [(ngModel)]="models.status">
+                        <option value="all" trans>All</option>
+                        <option value="published" trans>Published</option>
+                        <option value="unpublished" trans>Unpublished</option>
+                    </select>
+                </div>
+
+                <div class="input-container">
+                    <label for="project-order" trans>Sort</label>
+                    <select name="project-order" id="project-order" [(ngModel)]="models.order">
+                        <option value="newest" trans>Newest</option>
+                        <option value="oldest" trans>Oldest</option>
+                        <option value="a-z" trans>A-Z</option>
+                        <option value="z-a" trans>Z-A</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="new-project-button" mat-raised-button color="accent" trans>New Project</button>
+        </div>
+    </div>
 </div>
 
 <div class="projects container">

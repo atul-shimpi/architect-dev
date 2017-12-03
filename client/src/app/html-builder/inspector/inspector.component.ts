@@ -33,6 +33,7 @@ export class InspectorComponent implements OnInit {
 
     ngOnInit() {
         this.codeEditor.registerOrigin(this.el);
+        this.inspector.elementRef = this.el;
     }
 
     /**
@@ -46,9 +47,8 @@ export class InspectorComponent implements OnInit {
      * Save project on the server.
      */
     public saveProject() {
-        html2canvas(this.previewDocument.getBody()).then(canvas => {
+        html2canvas(this.previewDocument.getBody(), {height: 320, width: 200, svgRendering: true}).then(canvas => {
             this.projects.generateThumbnail(this.activeProject.get().id, canvas.toDataURL('image/png')).subscribe();
-
         });
 
         this.projects.update(this.activeProject.get().id, this.activeProject.getPayload()).subscribe(() => {

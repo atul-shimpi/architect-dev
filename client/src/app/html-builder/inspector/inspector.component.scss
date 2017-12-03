@@ -117,6 +117,19 @@ inspector {
           margin-top: 5px;
         }
       }
+
+      @media screen and (max-height: 600px) {
+        margin-top: 10px;
+
+        > .panel-nav-item {
+          padding: 8px 0;
+        }
+
+        > svg-icon {
+          width: 20px;
+          height: 20px;
+        }
+      }
     }
 
     > .undo-nav {

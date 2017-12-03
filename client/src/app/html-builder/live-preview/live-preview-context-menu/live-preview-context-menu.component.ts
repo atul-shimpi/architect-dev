@@ -1,9 +1,9 @@
 import {Component, ViewChild, ViewEncapsulation} from '@angular/core';
 import {MatMenuTrigger} from "@angular/material";
 import {UndoManager} from "../../undo-manager/undo-manager.service";
-import {LivePreview} from "../../live-preview.service";
 import {SelectedElement} from "../selected-element.service";
 import {BuilderDocument} from "../../builder-document.service";
+import {CodeEditor} from "../code-editor/code-editor.service";
 
 @Component({
     selector: 'live-preview-context-menu',
@@ -20,7 +20,7 @@ export class LivePreviewContextMenuComponent {
      */
     constructor(
         public undoManager: UndoManager,
-        public livePreview: LivePreview,
+        private codeEditor: CodeEditor,
         private builderDocument: BuilderDocument,
         public selected: SelectedElement,
     ) {}
@@ -74,7 +74,9 @@ export class LivePreviewContextMenuComponent {
     }
 
     public viewSourceCode() {
-        this.livePreview.viewSelectedNodeSourceCode()
+        this.codeEditor.open().subscribe(editor => {
+            editor.selectNodeSource(this.selected.node);
+        });
     }
 
     public move(direction: 'up'|'down') {

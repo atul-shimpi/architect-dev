@@ -1,4 +1,4 @@
-import {ElementRef, Injectable} from '@angular/core';
+import {ComponentRef, ElementRef, Injectable} from '@angular/core';
 import {Overlay, OverlayRef} from "@angular/cdk/overlay";
 import {InlineTextEditorComponent} from "./inline-text-editor.component";
 import {ComponentPortal} from "@angular/cdk/portal";
@@ -32,7 +32,10 @@ export class InlineTextEditor {
         if (this.overlayRef) this.overlayRef.dispose();
 
         this.overlayRef = this.overlay.create({positionStrategy: strategy, hasBackdrop: false});
-        this.overlayRef.attach(new ComponentPortal(InlineTextEditorComponent));
+        const componentRef = this.overlayRef
+            .attach(new ComponentPortal(InlineTextEditorComponent)) as ComponentRef<InlineTextEditorComponent>;
+
+        componentRef.instance.setOverlayRef(this.overlayRef);
 
         node.setAttribute('contenteditable', 'true');
         node.focus();
@@ -44,5 +47,4 @@ export class InlineTextEditor {
     public close() {
         this.overlayRef && this.overlayRef.dispose();
     }
-
 }

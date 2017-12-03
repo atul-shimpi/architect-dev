@@ -1,0 +1,30 @@
+@import "../../../../scss/variables";
+
+settings-panel {
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  .input-container {
+    > .fake-label {
+      color: inherit;
+      padding-bottom: 5px;
+    }
+
+    > .box {
+      display: flex;
+
+      > .fake-input {
+        flex: 1 1 auto;
+        margin-right: 5px;
+        height: 38px;
+        background-color: $inspector-bg-color-100;
+        border: 1px solid $input-border-color;
+        padding: 0 10px;
+        color: inherit;
+        line-height: 38px;
+        cursor: pointer;
+      }
+    }
+  }
+}
