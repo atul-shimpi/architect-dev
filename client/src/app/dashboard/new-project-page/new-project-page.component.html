@@ -1,0 +1,38 @@
+<dashboard-navbar></dashboard-navbar>
+
+<div class="content scroll-container" customScrollbar>
+    <div class="container">
+        <aside class="sidebar">
+            <button mat-raised-button color="accent" class="blank-page-button" trans>Start with Blank Page</button>
+
+            <div class="panel">
+                <div class="panel-header" trans>Colors</div>
+                <div class="panel-body colors">
+                    <div class="color empty-color" title="none" [class.active]="!selectedColor" (click)="filterByColor(null)">
+                        <svg style="width: 32px; height: 32px;">
+                            <line x1="0" y1="26" x2="26" y2="0" style="stroke:rgb(255,0,0);stroke-width:1"></line>
+                        </svg>
+                    </div>
+                    <div class="color" *ngFor="let color of colors" (click)="filterByColor(color.name)" [class.active]="selectedColor === color.name" [style.background]="color.color" [title]="color.name"></div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header" trans>Categories</div>
+                <mat-list class="panel-body categories">
+                    <mat-list-item class="category" [class.active]="!selectedCategory" (click)="filterByCategory(null)" trans>All Categories</mat-list-item>
+                    <mat-list-item class="category" [class.active]="selectedCategory === 'landing page'" (click)="filterByCategory('landing page')" trans>Landing Page</mat-list-item>
+                    <mat-list-item class="category" [class.active]="selectedCategory === 'blog'" (click)="filterByCategory('blog')" trans>Blog</mat-list-item>
+                    <mat-list-item class="category" [class.active]="selectedCategory === 'portfolio'" (click)="filterByCategory('portfolio')" trans>Portfolio</mat-list-item>
+                </mat-list>
+            </div>
+        </aside>
+
+        <div class="templates">
+            <figure class="template" *ngFor="let template of filteredTemplates">
+                <img [src]="getTemplateThumbnail(template)">
+                <figcaption>{{template.name}}</figcaption>
+            </figure>
+        </div>
+    </div>
+</div>

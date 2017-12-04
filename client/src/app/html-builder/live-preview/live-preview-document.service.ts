@@ -46,10 +46,6 @@ export class LivePreviewDocument {
         this.document.documentElement.innerHTML = html.trim();
     }
 
-    public createElement(name: string): HTMLElement {
-        return this.document.createElement(name);
-    }
-
     public on(name: string, callback: Function, useCapture?: boolean) {
         this.document.addEventListener(name as any, callback as any, useCapture);
     }

@@ -238,13 +238,15 @@ function normalizeIconName(path) {
  * compiled svg file from project .html files.
  */
 function getIconNames() {
-    var htmlFiles = getFilesInPath('./src/app', '.html'),
-        names     = extractIconNamesFromHtmlFiles(htmlFiles);
+    var htmlFiles = getFilesInPath('./src/app', '.html');
+    htmlFiles = htmlFiles.concat(getFilesInPath('./node_modules/vebto-client', '.html'));
 
-        var tsFiles = getFilesInPath('./src/app/html-builder/elements/definitions', '.ts');
-        tsFiles = tsFiles.concat(getFilesInPath('./../server/storage/app/public/elements', '.html'));
+    var names = extractIconNamesFromHtmlFiles(htmlFiles);
 
-        names = names.concat(extractIconNamesFromTsFiles(tsFiles));
+    var tsFiles = getFilesInPath('./src/app/html-builder/elements/definitions', '.ts');
+    tsFiles = tsFiles.concat(getFilesInPath('./../server/storage/app/public/elements', '.html'));
+
+    names = names.concat(extractIconNamesFromTsFiles(tsFiles));
 
     //add icons that are not in html files, but should be included
     names = names.concat([]);

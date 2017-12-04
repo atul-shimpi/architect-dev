@@ -5,7 +5,7 @@ import {Settings} from "vebto-client/core/services/settings.service";
 import {BuilderDocumentActions} from "./builder-document-actions.service";
 import {Template} from "../../types/models/Template";
 
-type changeSources = 'builderDocument' | 'livePreview' | 'textEditor' | 'codeEditor' | 'activeProject';
+export type changeSources = 'builderDocument' | 'livePreview' | 'textEditor' | 'codeEditor' | 'activeProject';
 
 @Injectable()
 export class BuilderDocument {

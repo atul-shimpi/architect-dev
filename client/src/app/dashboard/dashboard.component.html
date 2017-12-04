@@ -1,8 +1,6 @@
 <div class="header">
     <div class="container">
-        <div class="navbar">
-            <img [src]="getLogoUrl()" class="logo">
-        </div>
+        <dashboard-navbar></dashboard-navbar>
 
         <div class="header-body">
             <div class="inputs">
@@ -31,7 +29,7 @@
                 </div>
             </div>
 
-            <button class="new-project-button" mat-raised-button color="accent" trans>New Project</button>
+            <a class="new-project-button" mat-raised-button color="accent" routerLink="/dashboard/projects/new" trans>New Project</a>
         </div>
     </div>
 </div>

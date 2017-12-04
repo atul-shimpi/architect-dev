@@ -16,6 +16,6 @@ export class ProjectResolver implements Resolve<Project> {
             return response.project;
         }).catch(() => {
             this.router.navigate(['dashboard']);
-        });
+        }) as Promise<Project>;
     }
 }

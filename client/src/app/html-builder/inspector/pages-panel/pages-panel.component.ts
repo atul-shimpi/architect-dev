@@ -21,10 +21,10 @@ export class PagesPanelComponent implements OnInit {
      * Model for binding page update inputs.
      */
     public updateModel: {
-        name: string,
-        title: string,
-        description: string,
-        tags: string,
+        name?: string,
+        title?: string,
+        description?: string,
+        tags?: string,
     } = {};
 
     /**

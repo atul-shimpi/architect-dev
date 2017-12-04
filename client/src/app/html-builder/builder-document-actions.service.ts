@@ -4,6 +4,7 @@ import {Subject} from "rxjs/Subject";
 import {SelectedElement} from "./live-preview/selected-element.service";
 import {Elements} from "./elements/elements.service";
 import {ContextBoxes} from "./live-preview/context-boxes.service";
+import {changeSources} from "./builder-document.service";
 
 @Injectable()
 export class BuilderDocumentActions {
@@ -101,7 +102,7 @@ export class BuilderDocumentActions {
         this.pasteNode(this.selected.node, cloned);
     }
 
-    public setChangedSubject(subject: Subject) {
+    public setChangedSubject(subject: Subject<changeSources>) {
         this.contentChanged = subject;
     }
 

@@ -89,12 +89,6 @@ export class SelectedElement extends ActiveElement {
 
         this.previous = this.node;
 
-        //if we get passed an integer instead of a dom node we'll
-        //select a node at that index in the currently stored path
-        if (typeof node === 'number') {
-            node = this.path[node].node;
-        }
-
         //if we haven't already stored a reference to passed in node, do it now
         if (node && this.node !== node) {
             this.node = node as HTMLElement;

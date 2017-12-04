@@ -35,7 +35,7 @@ export class ReorderLayoutItemsDirective implements AfterContentInit {
                 utils.moveArrayElement(newOrder, e['oldIndex'], e['newIndex']);
                 DomHelpers.reorderDom(newOrder, oldOrder);
                 this.livePreview.repositionBox('selected');
-                this.builderDocument.emitContentChanged('domChanged', this.type, this.el.nativeElement);
+                this.builderDocument.contentChanged.next('builderDocument');
 
                 this.createUndoCommand(oldOrder, newOrder);
             }

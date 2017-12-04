@@ -1,0 +1,24 @@
+@import "../../../scss/variables";
+
+dashboard-navbar {
+  display: block;
+  background-color: #2166d1;
+  color: #fff;
+  padding: 15px 0;
+  box-shadow: $box-shadow-3;
+
+  .container {
+    display: flex;
+    align-items: center;
+  }
+
+  .logo {
+    display: block;
+    height: 32px;
+    width: auto;
+  }
+
+  logged-in-user-widget {
+    margin-left: auto;
+  }
+}
