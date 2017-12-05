@@ -3,7 +3,7 @@ import {Templates} from "../../../../templates/templates.service";
 import {Template} from "../../../../../types/models/Template";
 import {Settings} from "vebto-client/core/services/settings.service";
 import {ParsedProject} from "../../../projects/parsed-project";
-import {Modal} from "../../../../shared/modal.service";
+import {Modal} from "vebto-client/core/ui/modal.service";
 import {ConfirmModalComponent} from "vebto-client/core/ui/confirm-modal/confirm-modal.component";
 
 @Component({

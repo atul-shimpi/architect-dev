@@ -1,36 +1,34 @@
 <div class="header">
-    <div class="container">
-        <dashboard-navbar></dashboard-navbar>
+    <dashboard-navbar></dashboard-navbar>
 
-        <div class="header-body">
-            <div class="inputs">
-                <div class="input-container">
-                    <label for="search-query" trans>Search</label>
-                    <input type="search" name="search-query" id="search-query" [(ngModel)]="models.query">
-                </div>
-
-                <div class="input-container">
-                    <label for="project-status" trans>Status</label>
-                    <select name="project-status" id="project-status" [(ngModel)]="models.status">
-                        <option value="all" trans>All</option>
-                        <option value="published" trans>Published</option>
-                        <option value="unpublished" trans>Unpublished</option>
-                    </select>
-                </div>
-
-                <div class="input-container">
-                    <label for="project-order" trans>Sort</label>
-                    <select name="project-order" id="project-order" [(ngModel)]="models.order">
-                        <option value="newest" trans>Newest</option>
-                        <option value="oldest" trans>Oldest</option>
-                        <option value="a-z" trans>A-Z</option>
-                        <option value="z-a" trans>Z-A</option>
-                    </select>
-                </div>
+    <div class="header-body container">
+        <div class="inputs">
+            <div class="input-container">
+                <label for="search-query" trans>Search</label>
+                <input type="search" name="search-query" id="search-query" [(ngModel)]="models.query">
             </div>
 
-            <a class="new-project-button" mat-raised-button color="accent" routerLink="/dashboard/projects/new" trans>New Project</a>
+            <div class="input-container">
+                <label for="project-status" trans>Status</label>
+                <select name="project-status" id="project-status" [(ngModel)]="models.status">
+                    <option value="all" trans>All</option>
+                    <option value="published" trans>Published</option>
+                    <option value="unpublished" trans>Unpublished</option>
+                </select>
+            </div>
+
+            <div class="input-container">
+                <label for="project-order" trans>Sort</label>
+                <select name="project-order" id="project-order" [(ngModel)]="models.order">
+                    <option value="newest" trans>Newest</option>
+                    <option value="oldest" trans>Oldest</option>
+                    <option value="a-z" trans>A-Z</option>
+                    <option value="z-a" trans>Z-A</option>
+                </select>
+            </div>
         </div>
+
+        <a class="new-project-button" mat-raised-button color="accent" routerLink="/dashboard/projects/new" trans>New Project</a>
     </div>
 </div>
 

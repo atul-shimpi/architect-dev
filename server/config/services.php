@@ -35,4 +35,25 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
+    /**
+     * Socialite login credentials
+     */
+
+    'google' => [
+        'client_id' => env('GOOGLE_ID'),
+        'client_secret' => env('GOOGLE_SECRET'),
+        'redirect' =>   env('APP_URL').'/secure/auth/social/google/callback'
+    ],
+
+    'twitter' => [
+        'client_id' => env('TWITTER_ID'),
+        'client_secret' => env('TWITTER_SECRET'),
+        'redirect' =>   env('APP_URL').'/secure/auth/social/twitter/callback'
+    ],
+
+    'facebook' => [
+        'client_id' => env('FACEBOOK_ID'),
+        'client_secret' => env('FACEBOOK_SECRET'),
+        'redirect' =>   env('APP_URL').'/secure/auth/social/facebook/callback'
+    ],
 ];

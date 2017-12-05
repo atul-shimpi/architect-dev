@@ -29,10 +29,12 @@
         </aside>
 
         <div class="templates">
-            <figure class="template" *ngFor="let template of filteredTemplates">
-                <img [src]="getTemplateThumbnail(template)">
-                <figcaption>{{template.name}}</figcaption>
-            </figure>
+            <div class="grid-container">
+                <figure class="template grid-item" *ngFor="let template of filteredTemplates">
+                    <img [src]="getTemplateThumbnail(template)">
+                    <figcaption>{{template.name}}</figcaption>
+                </figure>
+            </div>
         </div>
     </div>
 </div>

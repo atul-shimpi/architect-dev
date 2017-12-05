@@ -53,7 +53,6 @@ import {LivePreviewDocument} from "./live-preview/live-preview-document.service"
 import { SettingsPanelComponent } from './inspector/settings-panel/settings-panel.component';
 import { TemplatesPanelComponent } from './inspector/settings-panel/templates-panel/templates-panel.component';
 import { ThemesPanelComponent } from './inspector/settings-panel/themes-panel/themes-panel.component';
-import {Modal} from "../shared/modal.service";
 
 @NgModule({
     imports: [
@@ -126,7 +125,6 @@ import {Modal} from "../shared/modal.service";
         BuilderDocumentActions,
         Projects,
         ProjectResolver,
-        Modal,
     ]
 })
 export class HtmlBuilderModule {

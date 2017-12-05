@@ -1,6 +1,6 @@
 import {Component, EventEmitter, OnInit, Output, ViewEncapsulation} from '@angular/core';
 import {LivePreview} from "../../../../live-preview.service";
-import {Modal} from "../../../../../shared/modal.service";
+import {Modal} from "vebto-client/core/ui/modal.service";
 import {UploadFileModalComponent} from "vebto-client/core";
 import {Settings} from "vebto-client/core";
 
