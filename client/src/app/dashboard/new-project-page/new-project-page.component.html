@@ -3,7 +3,7 @@
 <div class="content scroll-container" customScrollbar>
     <div class="container">
         <aside class="sidebar">
-            <button mat-raised-button color="accent" class="blank-page-button" trans>Start with Blank Page</button>
+            <button mat-raised-button color="accent" class="blank-page-button" (click)="openNewProjectModal()" trans>Start with Blank Page</button>
 
             <div class="panel">
                 <div class="panel-header" trans>Colors</div>
@@ -30,7 +30,7 @@
 
         <div class="templates">
             <div class="grid-container">
-                <figure class="template grid-item" *ngFor="let template of filteredTemplates">
+                <figure class="template grid-item" *ngFor="let template of filteredTemplates" (click)="openNewProjectModal(template.id)">
                     <img [src]="getTemplateThumbnail(template)">
                     <figcaption>{{template.name}}</figcaption>
                 </figure>

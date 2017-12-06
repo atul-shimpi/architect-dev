@@ -126,6 +126,7 @@ export class ParsedProject {
             this.pages[this.activePage].html,
             this.pages[this.activePage].js,
             this.pages[this.activePage].css,
+            {css: this.project.templateCss, js: this.project.templateJs},
             'activeProject'
         );
     }

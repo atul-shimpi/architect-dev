@@ -15,9 +15,11 @@ Route::group(['prefix' => 'secure'], function () {
 
     //templates
     Route::get('templates', 'TemplatesController@index');
+    Route::get('templates/{id}', 'TemplatesController@show');
 
     //projects
     Route::get('projects', 'ProjectsController@index');
+    Route::post('projects', 'ProjectsController@store');
     Route::get('projects/{id}', 'ProjectsController@show');
     Route::put('projects/{id}', 'ProjectsController@update');
     Route::post('projects/{id}/generate-thumbnail', 'ProjectThumbnailController@store');

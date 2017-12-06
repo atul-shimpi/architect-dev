@@ -20,9 +20,9 @@ class ProjectPolicy
         return $project->users->contains($user) || $user->hasPermission('projects.view');
     }
 
-    public function store(User $user, Project $project)
+    public function store(User $user)
     {
-        return $project->users->contains($user) || $user->hasPermission('projects.create');
+        return $user->hasPermission('projects.create');
     }
 
     public function update(User $user, Project $project)

@@ -6,6 +6,7 @@ import {BuilderDocumentActions} from "./builder-document-actions.service";
 import {Template} from "../../types/models/Template";
 
 export type changeSources = 'builderDocument' | 'livePreview' | 'textEditor' | 'codeEditor' | 'activeProject';
+export type Template = {css: string, js: string};
 
 @Injectable()
 export class BuilderDocument {
@@ -21,13 +22,24 @@ export class BuilderDocument {
     /**
      * Ids of dom elements that are created by the builder and are not part of the project.
      */
-    private internalIds = ['base', 'jquery', 'custom-css', 'custom-js', 'framework-css', 'framework-js', 'preview-css', 'font-awesome'];
+    private internalIds = [
+        'base', 'jquery', 'customCss', 'customJs', 'templateJs',
+        'templateCss', 'framework-css', 'framework-js', 'preview-css', 'font-awesome'
+    ];
 
     /**
      * Fired when preview iframe contents change.
      */
     public contentChanged = new Subject<changeSources>();
 
+    /**
+     * Template applied to project.
+     */
+    private template: Template;
+
+    /**
+     * BuilderDocument Constructor.
+     */
     constructor(private settings: Settings, public actions: BuilderDocumentActions) {
         this.baseUrl = this.settings.getBaseUrl(true) + 'storage/';
         this.actions.setChangedSubject(this.contentChanged);
@@ -50,7 +62,7 @@ export class BuilderDocument {
     }
 
     public setHtml(html: string, source: changeSources = 'builderDocument') {
-        this.update(html, this.getCustomJs(), this.getCustomCss(), source);
+        this.update(html, this.getCustomJs(), this.getCustomCss(), this.template, source);
     }
 
     public setCustomJs(js: string, source: changeSources = 'builderDocument') {
@@ -74,22 +86,25 @@ export class BuilderDocument {
     /**
      * Get source html of specified page with added css and base tag.
      */
-    public update(html: string, js: string, css: string, source: changeSources = 'builderDocument') {
+    public update(html: string, js: string, css: string, template: Template, source: changeSources = 'builderDocument') {
         this.document = new DOMParser().parseFromString(this.trim(html), 'text/html');
+        this.template = template;
 
         this.internalIds.forEach(id => {
             const node = this.document.getElementById(id);
             node && node.remove();
         });
 
+        //TODO: add these when creating new project/page instead of re-doing it here on every reload
         this.addBaseElement();
-
         this.useFramework('bootstrap-3');
-        this.addIframeCss();
         this.addIconsLink();
+        this.createCssNode('templateCss', this.trim(template.css));
+        this.createJsNode('templateJs', this.trim(template.js));
 
-        this.createCustomCssNode(this.trim(css));
-        this.createCustomJsNode(this.trim(js));
+        this.createCssNode('customCss', this.trim(css));
+        this.createJsNode('customJs', this.trim(js));
+        this.addIframeCss();
 
         this.contentChanged.next(source);
     }
@@ -124,18 +139,18 @@ export class BuilderDocument {
         this.document.head.appendChild(link);
     }
 
-    private createCustomCssNode(css: string) {
-        this.customCssNode = this.document.createElement('style') as HTMLStyleElement;
-        this.customCssNode.id = 'custom-css';
-        this.customCssNode.innerHTML = css;
-        this.document.head.appendChild(this.customCssNode);
+    private createCssNode(name: 'customCss'|'templateCss', css: string) {
+        this[name+'Node'] = this.document.createElement('style') as HTMLStyleElement;
+        this[name+'Node'].id = name;
+        this[name+'Node'].innerHTML = css;
+        this.document.head.appendChild(this[name+'Node']);
     }
 
-    private createCustomJsNode(js: string) {
-        this.customJsNode = this.document.createElement('script') as HTMLScriptElement;
-        this.customJsNode.id = 'custom-js';
-        this.customJsNode.innerHTML = js;
-        this.document.body.appendChild(this.customJsNode);
+    private createJsNode(name: 'customJs'|'templateJs', js: string) {
+        this[name+'Node'] = this.document.createElement('script') as HTMLScriptElement;
+        this[name+'Node'].id = 'custom-js';
+        this[name+'Node'].innerHTML = js;
+        this.document.body.appendChild(this[name+'Node']);
     }
 
     private trim(string: string) {

@@ -2,6 +2,27 @@
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
+/**
+ * App\Project
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $uuid
+ * @property int $published
+ * @property int $public
+ * @property string $framework
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\BuilderPage[] $pages
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $users
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Project whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Project whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Project whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Project wherePublic($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Project wherePublished($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Project whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Project extends Eloquent {
 
 	protected $guarded = ['id'];
@@ -14,5 +35,11 @@ class Project extends Eloquent {
     public function users()
     {
         return $this->belongsToMany(User::class, 'users_projects', 'project_id', 'user_id');
+    }
+
+    public function save(array $options = array())
+    {
+        $this->attributes['uuid'] = str_random(36);
+        return parent::save($options);
     }
 }

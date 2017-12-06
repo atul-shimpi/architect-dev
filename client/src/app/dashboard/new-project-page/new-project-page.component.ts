@@ -1,8 +1,10 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Template} from "../../../types/models/Template";
 import {Settings} from "vebto-client/core/services/settings.service";
 import {TemplateColors} from "./template-colors";
+import {Modal} from "vebto-client/core/ui/modal.service";
+import {NewProjectModalComponent} from "./new-project-modal/new-project-modal.component";
 
 @Component({
     selector: 'new-project-page',
@@ -37,12 +39,27 @@ export class NewProjectPageComponent implements OnInit {
     /**
      * NewProjectPageComponent Constructor.
      */
-    constructor(private route: ActivatedRoute, private settings: Settings) {}
+    constructor(
+        private route: ActivatedRoute,
+        private settings: Settings,
+        private modal: Modal,
+        private router: Router,
+    ) {}
 
     ngOnInit() {
         this.route.data.subscribe(data => {
             this.templates = data.templates;
             this.filteredTemplates = data.templates;
+        });
+    }
+
+    /**
+     * Open new prject modal with specified template.
+     */
+    public openNewProjectModal(templateId?: number) {
+        this.modal.open(NewProjectModalComponent, {templateId}).afterClosed().subscribe(project => {
+            if ( ! project) return;
+            this.router.navigate(['/builder', project.id]);
         });
     }
 

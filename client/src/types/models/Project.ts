@@ -5,6 +5,7 @@ export class Project {
     name: string;
     published: number = 1;
     public: number = 0;
+    uuid?: string;
     pages?: Page[];
 
     constructor(params: Object = {}) {

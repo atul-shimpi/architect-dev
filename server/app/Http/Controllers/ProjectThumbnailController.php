@@ -45,7 +45,7 @@ class ProjectThumbnailController extends Controller
 
         $this->authorize('update', $project);
 
-        $path = "project-thumbnails/$projectId.png";
+        $path = "projects/".\Auth::user()->id."/$project->uuid/thumbnail.png";
         $thumbnail = $this->generateThumbnail();
 
         Storage::disk('public')->put($path, $thumbnail);

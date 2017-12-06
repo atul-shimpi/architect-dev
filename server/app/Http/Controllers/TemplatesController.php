@@ -35,8 +35,21 @@ class TemplatesController extends Controller {
      */
 	public function index()
 	{
-	    $templates = $this->model->with('pages')->orderBy('name', 'desc')->get();
+	    $templates = $this->model->orderBy('name', 'desc')->get();
 
 	    return $this->success(['templates' => $templates]);
 	}
+
+    /**
+     * Get template by specified id.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show($id)
+    {
+        $template = $this->model->with('pages')->findOrFail($id);
+
+        return $this->success(['template' => $template]);
+    }
 }

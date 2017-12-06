@@ -2,6 +2,7 @@ import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {Project} from "../../types/models/Project";
 import {Settings} from "vebto-client/core/services/settings.service";
+import {CurrentUser} from "vebto-client/auth/current-user";
 
 @Component({
     selector: 'dashboard',
@@ -22,7 +23,12 @@ export class DashboardComponent implements OnInit {
     /**
      * DashboardComponent Constructor.
      */
-    constructor(private route: ActivatedRoute, private router: Router, private settings: Settings) {}
+    constructor(
+        private route: ActivatedRoute,
+        private router: Router,
+        private settings: Settings,
+        private currentUser: CurrentUser,
+    ) {}
 
     ngOnInit() {
         this.route.data.subscribe(data => {
@@ -35,6 +41,6 @@ export class DashboardComponent implements OnInit {
     }
 
     public getProjectImage(project: Project) {
-        return this.settings.getBaseUrl(true) + 'storage/project-thumbnails/' + project.id + '.png';
+        return this.settings.getBaseUrl(true) + 'storage/projects/'+this.currentUser.get('id')+'/'+project.uuid+'/thumbnail.png';
     }
 }

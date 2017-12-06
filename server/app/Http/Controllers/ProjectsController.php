@@ -2,16 +2,15 @@
 
 use App\BuilderPage;
 use App\Project;
+use App\Services\ProjectRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use Vebto\Bootstrap\Controller;
 use Illuminate\Database\Eloquent\Builder;
 
 class ProjectsController extends Controller {
-
-	/**
-	 * Exporter instance.
-	 */
-	private $exporter;
 
 	/**
 	 * Request instance.
@@ -20,26 +19,28 @@ class ProjectsController extends Controller {
 	 */
 	private $request;
 
-	/**
-	 * ProjectCreator instance.
-	 */
-	private $creator;
-
     /**
      * @var Project
      */
     private $project;
 
     /**
+     * @var ProjectRepository
+     */
+    private $repository;
+
+    /**
      * Create new ProjectsController instance.
      *
      * @param Request $request
      * @param Project $project
+     * @param ProjectRepository $repository
      */
-	public function __construct(Request $request, Project $project)
+	public function __construct(Request $request, Project $project, ProjectRepository $repository)
 	{
 		$this->request = $request;
         $this->project = $project;
+        $this->repository = $repository;
     }
 
     /**
@@ -60,7 +61,7 @@ class ProjectsController extends Controller {
             });
         }
 
-        return $query->get();
+        return $query->orderBy('updated_at', 'desc')->get();
     }
 
     /**
@@ -72,9 +73,11 @@ class ProjectsController extends Controller {
      */
     public function show($id)
     {
-        $project = $this->project->with('pages', 'users')->find($id);
+        $project = $this->project->with('pages', 'users')->findOrFail($id);
 
         $this->authorize('show', $project);
+
+        $project = $this->repository->load($project);
 
         return $this->success(['project' => $project]);
     }
@@ -98,130 +101,32 @@ class ProjectsController extends Controller {
             'pages.*' => 'required|array',
         ]);
 
+        $project->pages()->delete();
+
         collect($this->request->get('pages'))->each(function($page) use($project) {
-            $project->pages()->delete();
             $project->pages()->create(array_except($page, ['id', 'updated_at', 'libraries']));
         });
 
         return $this->success(['project' => $project]);
     }
 
-	/**
-	 * Render and display project assets as a site.
-	 * 
-	 * @param  int|string $id
-	 * @return Response
-	 */
-	public function render($id, $name)
-	{
-        $project = $this->repo->find((int)$id);
-
-		if ( ! $project || ! $project->published) {
-			return $this->app['twig']->render('404.twig.html');
-		}
-
-		$path = $this->exporter->project((int) $id, false);
-
-		if ( ! $path) {
-            return $this->app['twig']->render('404.twig.html');
-		}
-		
-		$base = str_replace($this->app['base_dir'], $this->app['base_url'], $path);
-
-		return $this->app->redirect($base.$name.'.html');
-	}
-
-	/**
-	 * Create a new project.
-	 *
-	 * @return Response
-	 */
+    /**
+     * Create a new project.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
 	public function store()
 	{
+        $this->authorize('store', Project::class);
 
-		if ( ! $this->input->has('name')) {
-			return new Response($this->app['translator']->trans('projectNameRequired'), 400);
-		}
+        $this->validate($this->request, [
+            'name' => 'required|string|min:1|max:255',
+            'templateId' => 'integer|min:1|max:255|exists:templates,id',
+        ]);
 
-		if ($this->repo->find($this->input->get('name'))) {
-			return new Response($this->app['translator']->trans('projectWithNameExists'), 400);
-		}
+        $project = $this->repository->create($this->request->all());
 
-		return new Response($this->creator->create($this->input->all()), 201);
-	}
-
-	/**
-	 * Publish project with given id.
-	 * 
-	 * @param  string|int $id
-	 * @return Response
-	 */
-	public function publish($id)
-	{
-		if ($project = $this->repo->find((int)$id)) {
-			$project->published = 1;
-			$project->save();
-		}
-
-		return new Response($this->app['translator']->trans('projectPublishSuccess'), 200);
-	}
-
-	/**
-	 * Unpublish project with given id.
-	 * 
-	 * @param  string|int $id
-	 * @return Response
-	 */
-	public function unpublish($id)
-	{
-		if ($project = $this->repo->find((int)$id)) {
-			$project->published = 0;
-			$project->save();
-		}
-
-		return new Response($this->app['translator']->trans('projectUnpublishSuccess'), 200);
-	}
-
-	/**
-	 * Delete project with given id.
-	 * 
-	 * @param  int|string $id
-	 * @return Response
-	 */
-	public function delete($id)
-	{
-		if ($this->app['is_demo'] && $this->app['sentry']->getUser()->email == 'demo@demo.com') {
-			return new Response('You can\'t delete projects on demo account.', 403); 
-		}
-
-		if ( ! $this->app['sentry']->getUser()->hasAccess('projects.delete')) {
-			return new Response($this->app['translator']->trans('noPermProjectDelete'), 403);
-		}
-
-		$project = $this->repo->find((int)$id);
-
-		if ($project->public) {
-			return new Response($this->app['translator']->trans('noPermissionsToDeleteProject'), 403);
-		}
-
-		if ($project && $project->pages()->delete() && $project->delete()) {
-			return new Response($this->app['translator']->trans('projectDeleteSuccess'), 204);
-		}
-	}
-
-	/**
-	 * Delete a page with given id.
-	 * 
-	 * @param  string/int $id
-	 * @return Response
-	 */
-	public function deletePage($id)
-	{
-		return new Response($this->repo->deletePage($id), 204);
-	}
-
-	public function deleteAllPages($id)
-	{
-		return new Response($this->repo->deleteAllPages($id), 200);
+        return $this->success(['project' => $project]);
 	}
 }

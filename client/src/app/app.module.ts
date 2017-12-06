@@ -6,7 +6,6 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {CoreModule} from "vebto-client/core";
 import { DashboardComponent } from './dashboard/dashboard.component';
 import {AuthModule} from "vebto-client/auth/auth.module";
-import {RouterModule} from "@angular/router";
 import {ProjectsResolver} from "./dashboard/projects-resolver.service";
 import {Projects} from "./html-builder/projects/projects.service";
 import {MaterialModule} from "./shared/material.module";
@@ -14,13 +13,15 @@ import { NewProjectPageComponent } from './dashboard/new-project-page/new-projec
 import {TemplatesResolver} from "./dashboard/new-project-page/templates-resolver.service";
 import {Templates} from "./templates/templates.service";
 import { DashboardNavbarComponent } from './dashboard/dashboard-navbar/dashboard-navbar.component';
+import { NewProjectModalComponent } from './dashboard/new-project-page/new-project-modal/new-project-modal.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         DashboardComponent,
         NewProjectPageComponent,
-        DashboardNavbarComponent
+        DashboardNavbarComponent,
+        NewProjectModalComponent
     ],
     imports: [
         BrowserModule,
@@ -29,6 +30,9 @@ import { DashboardNavbarComponent } from './dashboard/dashboard-navbar/dashboard
         CoreModule.forRoot(),
         AuthModule,
         MaterialModule,
+    ],
+    entryComponents: [
+        NewProjectModalComponent,
     ],
     providers: [
         Projects,

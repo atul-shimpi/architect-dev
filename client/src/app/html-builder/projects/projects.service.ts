@@ -27,6 +27,13 @@ export class Projects {
     }
 
     /**
+     * Create a new project.
+     */
+    public create(params: object): Observable<{project: Project}> {
+        return this.http.post('projects', params);
+    }
+
+    /**
      * Update project matching specified id.
      */
     public update(id: number, params: object): Observable<{project: Project}> {
