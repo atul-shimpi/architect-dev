@@ -5,6 +5,7 @@ export class Template {
 	name: string;
 	html?: string;
 	css?: string;
+	js?: string;
 	theme?: string;
 	user_id?: number;
 	thumbnail: string;

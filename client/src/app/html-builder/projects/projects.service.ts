@@ -3,6 +3,7 @@ import {AppHttpClient} from "vebto-client/core";
 import {Observable} from "rxjs/Observable";
 import {Project} from "../../../types/models/Project";
 import {Page} from "../../../types/models/Page";
+import {BuilderPage, BuilderProject} from "../builder-types";
 
 @Injectable()
 export class Projects {
@@ -22,7 +23,7 @@ export class Projects {
     /**
      * Get project matching specified id.
      */
-    public get(id: number): Observable<{project: Project}> {
+    public get(id: number): Observable<{project: BuilderProject}> {
         return this.http.get('projects/'+id);
     }
 
@@ -45,26 +46,5 @@ export class Projects {
      */
     public generateThumbnail(projectId: number, dataUrl: string): Observable<any> {
         return this.http.post('projects/'+projectId+'/generate-thumbnail', {dataUrl});
-    }
-
-    /**
-     * Create a new page for specified project.
-     */
-    public createPage(projectId: number, params: object): Observable<{page: Page}> {
-        return this.http.post('projects/'+projectId+'/pages', params);
-    }
-
-    /**
-     * Delete specified page.
-     */
-    public deletePage(projectId: number, pageId: number): Observable<any> {
-        return this.http.delete('projects/'+projectId+'/pages/'+pageId);
-    }
-
-    /**
-     * Update specified page.
-     */
-    public updatePage(projectId: number, pageId: number, params: object): Observable<{page: Page}> {
-        return this.http.put('projects/'+projectId+'/pages/'+pageId, params);
     }
 }

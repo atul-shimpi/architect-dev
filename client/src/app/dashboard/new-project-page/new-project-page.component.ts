@@ -5,6 +5,7 @@ import {Settings} from "vebto-client/core/services/settings.service";
 import {TemplateColors} from "./template-colors";
 import {Modal} from "vebto-client/core/ui/modal.service";
 import {NewProjectModalComponent} from "./new-project-modal/new-project-modal.component";
+import {BuilderProject} from "../../html-builder/builder-types";
 
 @Component({
     selector: 'new-project-page',
@@ -54,12 +55,12 @@ export class NewProjectPageComponent implements OnInit {
     }
 
     /**
-     * Open new prject modal with specified template.
+     * Open new project modal with specified template.
      */
     public openNewProjectModal(templateId?: number) {
-        this.modal.open(NewProjectModalComponent, {templateId}).afterClosed().subscribe(project => {
+        this.modal.open(NewProjectModalComponent, {templateId}).afterClosed().subscribe((project: BuilderProject) => {
             if ( ! project) return;
-            this.router.navigate(['/builder', project.id]);
+            this.router.navigate(['/builder', project.model.id]);
         });
     }
 

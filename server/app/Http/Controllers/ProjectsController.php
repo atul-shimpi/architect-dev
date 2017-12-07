@@ -91,23 +91,21 @@ class ProjectsController extends Controller {
      */
     public function update($id)
     {
-        $project = $this->project->with('users', 'pages')->find($id);
+        $project = $this->project->with('users')->find($id);
 
         $this->authorize('update', $project);
 
         $this->validate($this->request, [
             'name' => 'string|min:1|max:255',
+            'css' => 'nullable|string|min:1|max:255',
+            'js' => 'nullable|string|min:1|max:255',
             'pages' => 'required|array',
             'pages.*' => 'required|array',
         ]);
 
-        $project->pages()->delete();
+        $this->repository->update($project, $this->request->all());
 
-        collect($this->request->get('pages'))->each(function($page) use($project) {
-            $project->pages()->create(array_except($page, ['id', 'updated_at', 'libraries']));
-        });
-
-        return $this->success(['project' => $project]);
+        return $this->success(['project' => $this->repository->load($project)]);
     }
 
     /**
@@ -118,15 +116,21 @@ class ProjectsController extends Controller {
      */
 	public function store()
 	{
-        $this->authorize('store', Project::class);
+	    $this->authorize('store', Project::class);
 
         $this->validate($this->request, [
             'name' => 'required|string|min:1|max:255',
-            'templateId' => 'integer|min:1|max:255|exists:templates,id',
+            'css' => 'nullable|string|min:1|max:255',
+            'js' => 'nullable|string|min:1|max:255',
+            'template' => 'nullable|array',
+            'template.id' => 'integer',
+            'template.css' => 'string|min:1',
+            'template.js' => 'string|min:1',
+            'uuid' => 'string|size:36'
         ]);
 
         $project = $this->repository->create($this->request->all());
 
-        return $this->success(['project' => $project]);
+        return $this->success(['project' => $this->repository->load($project)]);
 	}
 }

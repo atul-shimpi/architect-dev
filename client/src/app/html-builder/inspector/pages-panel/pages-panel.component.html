@@ -30,10 +30,10 @@
     </div>
 
     <div class="input-container">
-        <label for="selected-page-tags" trans>Page Tags</label>
-        <input type="text" name="selected-page-tags" id="selected-page-tags" [(ngModel)]="updateModel.tags">
+        <label for="selected-page-keywords" trans>Page Keywords</label>
+        <input type="text" name="selected-page-keywords" id="selected-page-keywords" [(ngModel)]="updateModel.keywords">
         <p trans>Separate each one with a comma.</p>
-        <p class="error" *ngIf="errors.tags">{{errors.tags}}</p>
+        <p class="error" *ngIf="errors.keywords">{{errors.keywords}}</p>
     </div>
 
     <button type="submit" mat-raised-button color="accent" trans>Update</button>

@@ -3,6 +3,9 @@ import {ParsedProject} from "../../projects/parsed-project";
 import {Page} from "../../../../types/models/Page";
 import {Projects} from "../../projects/projects.service";
 import {Toast} from "vebto-client/core";
+import {BuilderPage} from "../../builder-types";
+import {BuilderDocument} from "../../builder-document.service";
+import {ContextBoxes} from "../../live-preview/context-boxes.service";
 
 @Component({
     selector: 'pages-panel',
@@ -15,7 +18,7 @@ export class PagesPanelComponent implements OnInit {
     /**
      * Currently selected page.
      */
-    public selectedPage: Page;
+    public selectedPage: BuilderPage;
 
     /**
      * Model for binding page update inputs.
@@ -24,13 +27,13 @@ export class PagesPanelComponent implements OnInit {
         name?: string,
         title?: string,
         description?: string,
-        tags?: string,
+        keywords?: string,
     } = {};
 
     /**
      * Errors returned from the backend.
      */
-    public errors = {};
+    public errors: {name?: string, title?: string, keywords?: string, description?: string} = {};
 
     /**
      * PagesPanelComponent Constructor.
@@ -39,10 +42,13 @@ export class PagesPanelComponent implements OnInit {
         public activeProject: ParsedProject,
         private projects: Projects,
         private toast: Toast,
+        private builderDocument: BuilderDocument,
+        private contextBoxes: ContextBoxes,
     ) {}
 
     ngOnInit() {
         this.selectedPage = this.activeProject.getPages()[0];
+        this.hydrateUpdateModel();
     }
 
     public createNewPage() {
@@ -52,9 +58,9 @@ export class PagesPanelComponent implements OnInit {
             name += ' Copy';
         }
 
-        this.projects.createPage(this.activeProject.get().id, {name}).subscribe(response => {
-            this.activeProject.addPage(response.page);
-            this.selectedPage = response.page;
+        this.selectedPage = this.activeProject.addPage({name: name, html: ''});
+
+        this.activeProject.save().subscribe(() => {
             this.toast.open('Page created');
         });
     }
@@ -70,31 +76,32 @@ export class PagesPanelComponent implements OnInit {
      * Called when selected page changes.
      */
     public onPageSelected() {
-        this.updateModel = {
-            name: this.selectedPage.name,
-            title: this.selectedPage.title,
-            description: this.selectedPage.description,
-            tags: this.selectedPage.tags,
-        };
-
+        this.hydrateUpdateModel();
         this.activeProject.setActivePage(this.selectedPage);
+        this.contextBoxes.hideBoxes();
     }
 
     public updateSelectedPage() {
-        this.projects.updatePage(this.activeProject.get().id, this.selectedPage.id, this.updateModel).subscribe(response => {
+        this.builderDocument.setMetaTagValue('keywords', this.updateModel.keywords);
+        this.builderDocument.setTitleValue(this.updateModel.title);
+        this.builderDocument.setMetaTagValue('description', this.updateModel.description);
+        this.builderDocument.contentChanged.next('builderDocument');
+
+        const page = {name: this.updateModel.name, html: this.builderDocument.getOuterHtml()};
+
+        this.activeProject.updatePage(page).save({thumbnail: false}).subscribe(() => {
             this.toast.open('Page updated');
-            this.selectedPage = response.page;
-            this.activeProject.updatePage(response.page)
-        }, errors => this.errors = errors.messages);
+        });
     }
 
     /**
      * Delete currently selected page.
      */
     public deleteSelectedPage() {
-        this.projects.deletePage(this.activeProject.get().id, this.selectedPage.id).subscribe(() => {
-            this.activeProject.removePage(this.selectedPage.id);
-            this.selectedPage = this.activeProject.getActivePage();
+        this.activeProject.removePage(this.selectedPage.name);
+        this.selectedPage = this.activeProject.getActivePage();
+
+        this.activeProject.save({thumbnail: false}).subscribe(() => {
             this.toast.open('Page deleted');
         });
     }
@@ -103,19 +110,24 @@ export class PagesPanelComponent implements OnInit {
      * Duplicate selected page.
      */
     public duplicateSelectedPage() {
-        this.projects.createPage(this.activeProject.get().id, {
+        this.activeProject.addPage({
             name: this.selectedPage.name + ' Copy',
             html: this.selectedPage.html,
-            css: this.selectedPage.css,
-            js: this.selectedPage.js,
-            theme: this.selectedPage.theme,
-            tags: this.selectedPage.tags,
-            title: this.selectedPage.title,
-            description: this.selectedPage.description,
-        }).subscribe(response => {
-            this.activeProject.addPage(response.page);
-            this.selectedPage = this.activeProject.getActivePage();
+        });
+
+        this.selectedPage = this.activeProject.getActivePage();
+
+        this.activeProject.save({thumbnail: false}).subscribe(() => {
             this.toast.open('Page duplicated');
         });
+    }
+
+    private hydrateUpdateModel() {
+        this.updateModel = {
+            name: this.selectedPage.name,
+            title: this.builderDocument.getTitleValue(),
+            description: this.builderDocument.getMetaTagValue('description'),
+            keywords: this.builderDocument.getMetaTagValue('keywords'),
+        };
     }
 }

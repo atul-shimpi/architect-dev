@@ -26,8 +26,8 @@ Route::group(['prefix' => 'secure'], function () {
 
     //pages
     Route::post('projects/{projectId}/pages', 'ProjectPagesController@store');
-    Route::put('projects/{projectId}/pages/{pageId}', 'ProjectPagesController@update');
-    Route::delete('projects/{projectId}/pages/{pageId}', 'ProjectPagesController@destroy');
+    Route::put('projects/{projectId}/pages/{pageName}', 'ProjectPagesController@update');
+    Route::delete('projects/{projectId}/pages/{pageName}', 'ProjectPagesController@destroy');
 
     //elements
     Route::get('elements/custom', 'ElementsController@custom');

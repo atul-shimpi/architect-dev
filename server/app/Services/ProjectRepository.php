@@ -8,6 +8,7 @@ use File;
 use Storage;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use Vebto\Settings\Settings;
 
 class ProjectRepository
 {
@@ -21,7 +22,15 @@ class ProjectRepository
      */
     private $project;
 
+    /**
+     * @var string
+     */
     private $templatesPath;
+
+    /**
+     * @var \Illuminate\Filesystem\FilesystemAdapter
+     */
+    private $storage;
 
     /**
      * ProjectRepository Constructor.
@@ -33,6 +42,7 @@ class ProjectRepository
     {
         $this->template = $template;
         $this->project = $project;
+        $this->storage = Storage::disk('public');
 
         $this->templatesPath = config('filesystems.disks.public.root').'/templates';
     }
@@ -41,20 +51,37 @@ class ProjectRepository
     {
         $path = $this->getProjectPath($project);
 
-        $pages = collect(Storage::disk('public')->files($path))->filter(function($path) {
+        $pages = collect($this->storage->files($path))->filter(function($path) {
             return str_contains($path, '.html');
         })->map(function($path) {
-            return ['name' => basename($path, '.html'), 'html' => Storage::disk('public')->get($path)];
+            return ['name' => basename($path, '.html'), 'html' => $this->storage->get($path)];
         })->values();
 
-        return [
+        $loaded = [
             'model' => $project->toArray(),
             'pages' => $pages,
-            'template' => [
-                'css' => Storage::disk('public')->get("$path/css/template.css"),
-                'js' => Storage::disk('public')->get("$path/js/template.js"),
-            ]
         ];
+
+        //load custom css
+        if ($this->storage->exists("$path/css/styles.css")) {
+            $loaded['css'] = $this->storage->get("$path/css/styles.css");
+        }
+
+        //load custom js
+        if ($this->storage->exists("$path/js/scripts.js")) {
+            $loaded['js'] = $this->storage->get("$path/js/scripts.js");
+        }
+
+        //load template
+        if ($project->template_id) {
+            $loaded['template'] = [
+                'model' => $this->template->find($project->template_id)->toArray(),
+                'css' => $this->storage->get("$path/css/template.css"),
+                'js' => $this->storage->get("$path/js/template.js"),
+            ];
+        }
+
+        return $loaded;
     }
 
     /**
@@ -68,90 +95,130 @@ class ProjectRepository
         return 'projects/' . Auth::user()->id . '/' . $project->uuid;
     }
 
+    public function update(Project $project, $data)
+    {
+        $projectPath = $this->getProjectPath($project);
+
+        $this->updatePages($project, $data['pages']);
+
+        //custom css
+        $this->storage->put("$projectPath/css/styles.css", $data['css']);
+
+        //custom js
+        $this->storage->put("$projectPath/js/scripts.css", $data['js']);
+    }
+
     public function create($data)
     {
-        $project = $this->project->create(['name' => $data['name']])->fresh();
+        $project = $this->project->create(['name' => $data['name'], 'template_id' => $data['template']['id']])->fresh();
         $projectPath = $this->getProjectPath($project);
 
         //apply template
-        if ($data['templateId']) {
-            $this->applyTemplate($data['templateId'], $projectPath, $project, $data);
+        if ($data['template']) {
+            $this->applyTemplate($data['template'], $projectPath);
         }
+
+        $this->applyFramework($projectPath, $project->framework);
+
+        //create pages
+        $this->updatePages($project, $data['pages']);
 
         //attach to user
         $project->users()->attach(Auth::user()->id);
 
-        $project = $project->load('pages')->toArray();
-
-        foreach ($project['pages'] as $key => $page) {
-            $project['pages'][$key]['html'] = Storage::get($projectPath . '/' . $page['name'] . '.html');
-        }
-
-        return $project;
+        return $this->load($project);
     }
 
-    private function applyTemplate($templateId, $projectPath, Project $project, $data)
+    /**
+     * Update project pages.
+     *
+     * @param Project $project
+     * @param array $pages
+     */
+    public function updatePages(Project $project, $pages)
     {
-        $template = $this->template->with('pages')->findOrFail($templateId);
+        $projectPath = $this->getProjectPath($project);
 
-        $this->copyImages($template, $projectPath);
+        //delete old pages
+        collect($this->storage->files($projectPath))->filter(function($path) {
+            return str_contains($path, '.html');
+        })->each(function($path) {
+            $this->storage->delete($path);
+        });
 
-        //copy template css and js
-        Storage::disk('public')->put("$projectPath/css/template.css", $data['template']['css']);
-        Storage::disk('public')->put("$projectPath/js/template.js", $data['template']['js']);
+        //store new pages
+        collect($pages)->each(function($page) use ($projectPath) {
+            $this->storage->put("$projectPath/{$page['name']}.html", $page['html']);
+        });
+    }
 
+    private function applyFramework($projectPath, $framework)
+    {
         //add framework
-        Storage::disk('public')->put(
+        $this->storage->put(
             "$projectPath/css/framework.css",
-            File::get(resource_path("builder/frameworks/$project->framework/styles.min.css"))
+            File::get(resource_path("builder/frameworks/$framework/styles.min.css"))
         );
 
-        Storage::disk('public')->put(
+        $this->storage->put(
             "$projectPath/js/framework.js",
-            File::get(resource_path("builder/frameworks/$project->framework/scripts.min.js"))
+            File::get(resource_path("builder/frameworks/$framework/scripts.min.js"))
         );
 
         //font awesome
-        Storage::disk('public')->put(
+        $this->storage->put(
             "$projectPath/css/font-awesome.css",
             File::get(resource_path("builder/css/font-awesome.min.css"))
         );
 
         //fonts
         collect(File::files(resource_path("builder/fonts")))->each(function($path) use($projectPath) {
-            Storage::disk('public')->put(
+            $this->storage->put(
                 "$projectPath/fonts/".basename($path),
                 File::get($path)
             );
         });
 
         //jquery
-        Storage::disk('public')->put(
+        $this->storage->put(
             "$projectPath/js/jquery.min.js",
             File::get(resource_path("builder/js/jquery.min.js"))
         );
 
         //thumbnail
-        $templatePath = "$this->templatesPath/".strtolower($template->name)."/thumbnail.png";
-        Storage::disk('public')->put(
+        $this->storage->put(
+            "$projectPath/thumbnail.png",
+            File::get(public_path('assets/images/default_project_thumbnail.png'))
+        );
+    }
+
+    private function applyTemplate($templateData, $projectPath)
+    {
+        $template = $this->template->find($templateData['id']);
+        $templateName = strtolower($template->name);
+
+        $this->copyImages($templateName, $projectPath);
+
+        //copy template css and js
+        $this->storage->put("$projectPath/css/template.css", $templateData['css']);
+        $this->storage->put("$projectPath/js/template.js", $templateData['js']);
+
+        //thumbnail
+        $templatePath = "$this->templatesPath/$templateName/thumbnail.png";
+        $this->storage->put(
             "$projectPath/thumbnail.png",
             File::get($templatePath)
         );
-
-        //create pages on disk
-        collect($data['pages'])->each(function ($page) use ($projectPath) {
-            Storage::disk('public')->put("$projectPath/{$page['name']}.html", $page['html']);
-        });
     }
 
     /**
-     * @param $template
+     * @param string $templateName
      * @param $projectPath
      * @param null $imagesPath
      */
-    public function copyImages($template, $projectPath, $imagesPath = null)
+    public function copyImages($templateName, $projectPath, $imagesPath = null)
     {
-        $templatePath = "$this->templatesPath/".strtolower($template->name);
+        $templatePath = "$this->templatesPath/$templateName";
 
         if ( ! $imagesPath) {
             $imagesPath = "$templatePath/images";
@@ -159,12 +226,12 @@ class ProjectRepository
 
         $files = Finder::create()->ignoreDotFiles(true)->in($imagesPath);
 
-        collect($files)->each(function (SplFileInfo $file) use ($projectPath, $templatePath, $template) {
+        collect($files)->each(function (SplFileInfo $file) use ($projectPath, $templatePath, $templateName) {
             if ($file->isFile()) {
                 $imagePath = str_replace($templatePath.'/', '', $file->getPathname());
-                Storage::disk('public')->put("$projectPath/$imagePath", File::get($file->getRealPath()));
+                $this->storage->put("$projectPath/$imagePath", File::get($file->getRealPath()));
             } else if ($file->isDir()) {
-                $this->copyImages($template, $projectPath, $file->getRealPath());
+                $this->copyImages($templateName, $projectPath, $file->getRealPath());
             }
         });
     }

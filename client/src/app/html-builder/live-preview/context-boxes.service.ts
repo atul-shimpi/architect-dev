@@ -47,6 +47,14 @@ export class ContextBoxes {
         this.getBox(name).classList.add('hidden');
     }
 
+    /**
+     * Hide all context boxes.
+     */
+    public hideBoxes() {
+        this.hideBox('selected');
+        this.hideBox('hover');
+    }
+
     public showBox(name: 'hover'|'selected') {
         this.getBox(name).classList.remove('hidden');
     }

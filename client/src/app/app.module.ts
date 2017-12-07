@@ -14,6 +14,7 @@ import {TemplatesResolver} from "./dashboard/new-project-page/templates-resolver
 import {Templates} from "./templates/templates.service";
 import { DashboardNavbarComponent } from './dashboard/dashboard-navbar/dashboard-navbar.component';
 import { NewProjectModalComponent } from './dashboard/new-project-page/new-project-modal/new-project-modal.component';
+import {ProjectBaseUrl} from "./html-builder/projects/project-base-url.service";
 
 @NgModule({
     declarations: [
@@ -39,6 +40,7 @@ import { NewProjectModalComponent } from './dashboard/new-project-page/new-proje
         Templates,
         ProjectsResolver,
         TemplatesResolver,
+        ProjectBaseUrl,
     ],
     bootstrap: [AppComponent]
 })

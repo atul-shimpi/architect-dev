@@ -127,9 +127,9 @@ export class CodeEditorComponent implements OnInit {
             if (this.activeEditor === 'html') {
                 this.builderDocument.setHtml(this.editor.getValue(), 'codeEditor');
             } else if (this.activeEditor === 'css') {
-                this.builderDocument.setCustomCss(this.editor.getValue());
+                this.builderDocument.setCustomCss(this.editor.getValue(), 'codeEditor');
             } else if (this.activeEditor === 'js') {
-                this.builderDocument.setCustomJs(this.editor.getValue());
+                this.builderDocument.setCustomJs(this.editor.getValue(), 'codeEditor');
             }
         });
     }

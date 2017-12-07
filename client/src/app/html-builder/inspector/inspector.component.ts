@@ -5,9 +5,6 @@ import {CodeEditor} from "../live-preview/code-editor/code-editor.service";
 import {Projects} from "../projects/projects.service";
 import {ParsedProject} from "../projects/parsed-project";
 import {Toast} from "vebto-client/core/ui/toast.service";
-import * as html2canvas from "html2canvas";
-import {LivePreview} from "../live-preview.service";
-import {LivePreviewDocument} from "../live-preview/live-preview-document.service";
 
 @Component({
     selector: 'inspector',
@@ -28,7 +25,6 @@ export class InspectorComponent implements OnInit {
         private activeProject: ParsedProject,
         private toast: Toast,
         private el: ElementRef,
-        private previewDocument: LivePreviewDocument,
     ) {}
 
     ngOnInit() {
@@ -47,11 +43,7 @@ export class InspectorComponent implements OnInit {
      * Save project on the server.
      */
     public saveProject() {
-        html2canvas(this.previewDocument.getBody(), {height: 320, width: 200, svgRendering: true}).then(canvas => {
-            this.projects.generateThumbnail(this.activeProject.get().id, canvas.toDataURL('image/png')).subscribe();
-        });
-
-        this.projects.update(this.activeProject.get().id, this.activeProject.getPayload()).subscribe(() => {
+        this.activeProject.save().subscribe(() => {
             this.toast.open('Project saved');
         });
     }
