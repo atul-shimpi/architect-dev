@@ -8,11 +8,5 @@ export type BuilderProject = {
     pages: BuilderPage[],
     css: string,
     js: string,
-    template: BuilderTemplate,
+    template: Template,
 };
-
-export type BuilderTemplate = {
-    model: Template,
-    css: string,
-    js: string,
-}

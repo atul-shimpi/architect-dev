@@ -40,7 +40,7 @@ import { InlineTextEditorComponent } from './live-preview/inline-text-editor/inl
 import {InlineTextEditor} from "./live-preview/inline-text-editor/inline-text-editor.service";
 import { CodeEditorComponent } from './live-preview/code-editor/code-editor.component';
 import {CodeEditor} from "./live-preview/code-editor/code-editor.service";
-import {ParsedProject} from "./projects/parsed-project";
+import {ActiveProject} from "./projects/active-project";
 import { LivePreviewContextMenuComponent } from './live-preview/live-preview-context-menu/live-preview-context-menu.component';
 import {ContextBoxes} from "./live-preview/context-boxes.service";
 import {SelectedElement} from "./live-preview/selected-element.service";
@@ -118,7 +118,7 @@ import { ThemesPanelComponent } from './inspector/settings-panel/themes-panel/th
         DomHelpers,
         InlineTextEditor,
         CodeEditor,
-        ParsedProject,
+        ActiveProject,
         ContextBoxes,
         SelectedElement,
         BuilderDocument,

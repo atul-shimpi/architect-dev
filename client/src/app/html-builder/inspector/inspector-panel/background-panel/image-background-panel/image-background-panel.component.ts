@@ -3,6 +3,7 @@ import {LivePreview} from "../../../../live-preview.service";
 import {Modal} from "vebto-client/core/ui/modal.service";
 import {UploadFileModalComponent} from "vebto-client/core";
 import {Settings} from "vebto-client/core";
+import {ActiveProject} from "../../../../projects/active-project";
 
 @Component({
     selector: 'image-background-panel',
@@ -34,6 +35,7 @@ export class ImageBackgroundPanelComponent implements OnInit {
         private livePreview: LivePreview,
         private modal: Modal,
         private settings: Settings,
+        private activeProject: ActiveProject,
     ) {}
 
     /**
@@ -69,7 +71,7 @@ export class ImageBackgroundPanelComponent implements OnInit {
      * Get absolute url for specified texture image.
      */
     public getTextureUrl(index: number): string {
-        return this.settings.getBaseUrl(true)+'storage/textures/'+index+'.png';
+        return this.settings.getBaseUrl(true)+'assets/images/textures/'+index+'.png';
     }
 
     /**
@@ -81,11 +83,9 @@ export class ImageBackgroundPanelComponent implements OnInit {
     }
 
     public uploadImage() {
-        const data =  {uri: 'uploads/images', httpParams: {type: 'builder'}};
+        const data =  {uri: 'uploads/images', httpParams: {path: this.activeProject.getBaseUrl(true)+'images'}};
         this.modal.open(UploadFileModalComponent, data).afterClosed().subscribe(url => {
             this.emitSelectedEvent(url);
         });
     }
-
-
 }

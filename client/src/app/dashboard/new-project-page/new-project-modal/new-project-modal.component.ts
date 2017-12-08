@@ -19,7 +19,7 @@ export class NewProjectModalComponent {
     /**
      * New project model.
      */
-    private newProject: {name?: string, uuid: string} = {};
+    private newProject: {name?: string, uuid?: string} = {};
 
     /**
      * Errors from backend.
@@ -87,7 +87,7 @@ export class NewProjectModalComponent {
 
         params.pages.push({
             name: 'index',
-            html: this.pageDocument.generate('', '', '').getOuterHtml()
+            html: this.pageDocument.generate().getOuterHtml()
         });
 
         return params;
@@ -97,12 +97,10 @@ export class NewProjectModalComponent {
      * Transform template pages into project pages.
      */
     private transformTemplatePages(template: Template) {
-        const templateMarkup = {css: template.pages[0].css, js: template.pages[0].js};
-
         return template.pages.map(page => {
             return {
                 name: page.name,
-                html: this.pageDocument.generate(page.html, '', '', templateMarkup).getOuterHtml()
+                html: this.pageDocument.generate(page.html, template).getOuterHtml()
             }
         });
     }

@@ -1,5 +1,3 @@
-import {LivePreview} from "../live-preview.service";
-
 export class ActiveElement {
     public element: any;
 
@@ -15,5 +13,5 @@ export class ActiveElement {
 
     public locked?: boolean;
 
-    public isImage?: boolean;
+    public isImage: boolean = false;
 }

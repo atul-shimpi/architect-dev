@@ -17,7 +17,7 @@ class ProjectPolicy
 
     public function show(User $user, Project $project)
     {
-        return $project->users->contains($user) || $user->hasPermission('projects.view');
+        return $project->published || $project->users->contains($user) || $user->hasPermission('projects.view');
     }
 
     public function store(User $user)

@@ -74,11 +74,7 @@ class ProjectRepository
 
         //load template
         if ($project->template_id) {
-            $loaded['template'] = [
-                'model' => $this->template->find($project->template_id)->toArray(),
-                'css' => $this->storage->get("$path/css/template.css"),
-                'js' => $this->storage->get("$path/js/template.js"),
-            ];
+            $loaded['template'] = $this->template->find($project->template_id)->toArray();
         }
 
         return $loaded;
@@ -95,6 +91,23 @@ class ProjectRepository
         return 'projects/' . Auth::user()->id . '/' . $project->uuid;
     }
 
+    /**
+     * Get html of specified project's page.
+     *
+     * @param Project $project
+     * @param string$name
+     * @return string
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    public function getPageHtml(Project $project, $name)
+    {
+        if ( ! $name) $name = 'index';
+
+        $path = $this->getProjectPath($project);
+
+        return $this->storage->get("$path/$name.html");
+    }
+
     public function update(Project $project, $data)
     {
         $projectPath = $this->getProjectPath($project);
@@ -105,20 +118,31 @@ class ProjectRepository
         $this->storage->put("$projectPath/css/styles.css", $data['css']);
 
         //custom js
-        $this->storage->put("$projectPath/js/scripts.css", $data['js']);
+        $this->storage->put("$projectPath/js/scripts.js", $data['js']);
     }
 
+    /**
+     * Create a new project.
+     *
+     * @param array $data
+     * @return Project
+     */
     public function create($data)
     {
-        $project = $this->project->create(['name' => $data['name'], 'template_id' => $data['template']['id']])->fresh();
+        $project = $this->project->create([
+            'name' => $data['name'],
+            'template_id' => $data['template']['id'],
+            'uuid' => $data['uuid']
+        ])->fresh();
+
         $projectPath = $this->getProjectPath($project);
+
+        $this->applyFramework($projectPath, $project->framework);
 
         //apply template
         if ($data['template']) {
             $this->applyTemplate($data['template'], $projectPath);
         }
-
-        $this->applyFramework($projectPath, $project->framework);
 
         //create pages
         $this->updatePages($project, $data['pages']);
@@ -126,7 +150,22 @@ class ProjectRepository
         //attach to user
         $project->users()->attach(Auth::user()->id);
 
-        return $this->load($project);
+        return $project;
+    }
+
+    /**
+     * Delete specified project.
+     *
+     * @param Project $project
+     * @return bool|null
+     * @throws \Exception
+     */
+    public function delete(Project $project)
+    {
+        $path = $this->getProjectPath($project);
+
+        $this->storage->deleteDirectory($path);
+        return $project->delete();
     }
 
     /**
@@ -190,12 +229,18 @@ class ProjectRepository
             "$projectPath/thumbnail.png",
             File::get(public_path('assets/images/default_project_thumbnail.png'))
         );
+
+        //custom css
+        $this->storage->put("$projectPath/css/styles.css", '');
+
+        //custom js
+        $this->storage->put("$projectPath/js/scripts.js", '');
     }
 
     private function applyTemplate($templateData, $projectPath)
     {
         $template = $this->template->find($templateData['id']);
-        $templateName = strtolower($template->name);
+        $templateName = strtolower(kebab_case($template->name));
 
         $this->copyImages($templateName, $projectPath);
 

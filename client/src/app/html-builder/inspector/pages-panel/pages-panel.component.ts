@@ -1,11 +1,12 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {ParsedProject} from "../../projects/parsed-project";
+import {ActiveProject} from "../../projects/active-project";
 import {Page} from "../../../../types/models/Page";
 import {Projects} from "../../projects/projects.service";
 import {Toast} from "vebto-client/core";
 import {BuilderPage} from "../../builder-types";
 import {BuilderDocument} from "../../builder-document.service";
 import {ContextBoxes} from "../../live-preview/context-boxes.service";
+import {PageDocument} from "../../page-document";
 
 @Component({
     selector: 'pages-panel',
@@ -14,6 +15,11 @@ import {ContextBoxes} from "../../live-preview/context-boxes.service";
     encapsulation: ViewEncapsulation.None
 })
 export class PagesPanelComponent implements OnInit {
+
+    /**
+     * Whether something is being saved to backend.
+     */
+    public loading = false;
 
     /**
      * Currently selected page.
@@ -39,7 +45,7 @@ export class PagesPanelComponent implements OnInit {
      * PagesPanelComponent Constructor.
      */
     constructor(
-        public activeProject: ParsedProject,
+        public activeProject: ActiveProject,
         private projects: Projects,
         private toast: Toast,
         private builderDocument: BuilderDocument,
@@ -51,16 +57,26 @@ export class PagesPanelComponent implements OnInit {
         this.hydrateUpdateModel();
     }
 
+    /**
+     * Create a new page.
+     */
     public createNewPage() {
+        this.loading = true;
+
         let name = 'Page '+(this.activeProject.getPages().length + 1);
 
+        //make sure we don't duplicate page names
         if (this.activeProject.getPages().find(page => page.name === name)) {
             name += ' Copy';
         }
 
-        this.selectedPage = this.activeProject.addPage({name: name, html: ''});
+        const html = new PageDocument().setBaseUrl(this.activeProject.getBaseUrl()).generate().getOuterHtml();
+        this.selectedPage = this.activeProject.addPage({name: name, html: html});
+
+        console.log(this.activeProject.getPages());
 
         this.activeProject.save().subscribe(() => {
+            this.loading = false;
             this.toast.open('Page created');
         });
     }
@@ -82,6 +98,8 @@ export class PagesPanelComponent implements OnInit {
     }
 
     public updateSelectedPage() {
+        this.loading = true;
+
         this.builderDocument.setMetaTagValue('keywords', this.updateModel.keywords);
         this.builderDocument.setTitleValue(this.updateModel.title);
         this.builderDocument.setMetaTagValue('description', this.updateModel.description);
@@ -90,6 +108,7 @@ export class PagesPanelComponent implements OnInit {
         const page = {name: this.updateModel.name, html: this.builderDocument.getOuterHtml()};
 
         this.activeProject.updatePage(page).save({thumbnail: false}).subscribe(() => {
+            this.loading = false;
             this.toast.open('Page updated');
         });
     }
@@ -98,10 +117,13 @@ export class PagesPanelComponent implements OnInit {
      * Delete currently selected page.
      */
     public deleteSelectedPage() {
+        this.loading = true;
+
         this.activeProject.removePage(this.selectedPage.name);
         this.selectedPage = this.activeProject.getActivePage();
 
         this.activeProject.save({thumbnail: false}).subscribe(() => {
+            this.loading = false;
             this.toast.open('Page deleted');
         });
     }
@@ -110,6 +132,8 @@ export class PagesPanelComponent implements OnInit {
      * Duplicate selected page.
      */
     public duplicateSelectedPage() {
+        this.loading = true;
+
         this.activeProject.addPage({
             name: this.selectedPage.name + ' Copy',
             html: this.selectedPage.html,
@@ -118,6 +142,7 @@ export class PagesPanelComponent implements OnInit {
         this.selectedPage = this.activeProject.getActivePage();
 
         this.activeProject.save({thumbnail: false}).subscribe(() => {
+            this.loading = false;
             this.toast.open('Page duplicated');
         });
     }

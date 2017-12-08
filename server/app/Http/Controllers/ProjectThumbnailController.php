@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use Storage;
 use App\Project;
 use Illuminate\Http\Request;
@@ -45,7 +46,8 @@ class ProjectThumbnailController extends Controller
 
         $this->authorize('update', $project);
 
-        $path = "projects/".\Auth::user()->id."/$project->uuid/thumbnail.png";
+        $userId = $this->request->user()->id;
+        $path = "projects/$userId/$project->uuid/thumbnail.png";
         $thumbnail = $this->generateThumbnail();
 
         Storage::disk('public')->put($path, $thumbnail);

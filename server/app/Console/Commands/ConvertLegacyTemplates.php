@@ -102,7 +102,7 @@ class ConvertLegacyTemplates extends Command
      */
     public function fixCssImagePaths($css)
     {
-        return preg_replace("/url\(templates\/.+?\/(images\/.+?)\)/i", "$1", $css);
+        return preg_replace("/url\(templates\/.+?\/(images\/.+?)\)/i", 'url("../$1")', $css);
     }
 
 }

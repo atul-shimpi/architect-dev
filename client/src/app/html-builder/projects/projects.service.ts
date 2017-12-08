@@ -42,6 +42,13 @@ export class Projects {
     }
 
     /**
+     * Delete project matching specified id.
+     */
+    public delete(id: number): Observable<any> {
+        return this.http.delete('projects/'+id);
+    }
+
+    /**
      * Create or update specified project's thumbnail image.
      */
     public generateThumbnail(projectId: number, dataUrl: string): Observable<any> {

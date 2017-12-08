@@ -22,6 +22,7 @@ Route::group(['prefix' => 'secure'], function () {
     Route::post('projects', 'ProjectsController@store');
     Route::get('projects/{id}', 'ProjectsController@show');
     Route::put('projects/{id}', 'ProjectsController@update');
+    Route::delete('projects/{id}', 'ProjectsController@destroy');
     Route::post('projects/{id}/generate-thumbnail', 'ProjectThumbnailController@store');
 
     //pages
@@ -31,7 +32,8 @@ Route::group(['prefix' => 'secure'], function () {
 
     //elements
     Route::get('elements/custom', 'ElementsController@custom');
-
 });
+
+Route::get('sites/{name}/{page?}', 'UserSiteController@show');
 
 Route::get('{all}', '\Vebto\Bootstrap\HomeController@index')->where('all', '.*');

@@ -104,8 +104,8 @@ export class SelectedElement extends ActiveElement {
 
         //whether or not the new node is locked
         this.locked = this.node.className.indexOf('locked') > -1;
-        this.isImage = this.node.nodeName == 'IMG' &&
-            this.node.className.indexOf('preview-node') === -1;
+
+        this.isImage = this.node.nodeName.toLowerCase() === 'img';
 
         //create an array from all parents of this node
         let el = this.node;

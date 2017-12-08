@@ -3,7 +3,7 @@ import {Overlay, OverlayRef} from "@angular/cdk/overlay";
 import {ComponentPortal} from "@angular/cdk/portal";
 import {TemplatesPanelComponent} from "./templates-panel/templates-panel.component";
 import {Inspector} from "../inspector.service";
-import {ParsedProject} from "../../projects/parsed-project";
+import {ActiveProject} from "../../projects/active-project";
 
 @Component({
     selector: 'settings-panel',
@@ -18,7 +18,7 @@ export class SettingsPanelComponent implements OnInit {
     constructor(
         private overlay: Overlay,
         private inspector: Inspector,
-        public activeProject: ParsedProject,
+        public activeProject: ActiveProject,
     ) {}
 
     ngOnInit() {

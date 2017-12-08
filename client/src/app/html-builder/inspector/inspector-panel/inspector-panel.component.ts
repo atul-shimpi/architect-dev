@@ -2,6 +2,10 @@ import {Component, ViewEncapsulation} from '@angular/core';
 import {LivePreview} from "../../live-preview.service";
 import {LayoutPanel} from "../layout-panel/layout-panel.service";
 import {Inspector} from "../inspector.service";
+import {UploadFileModalComponent} from "vebto-client/core/index";
+import {Modal} from "vebto-client/core/ui/modal.service";
+import {ProjectBaseUrl} from "../../projects/project-base-url.service";
+import {ActiveProject} from "../../projects/active-project";
 
 @Component({
     selector: 'inspector-panel',
@@ -17,7 +21,9 @@ export class InspectorPanelComponent {
     constructor(
         public livePreview: LivePreview,
         private layout: LayoutPanel,
-        private inspector: Inspector
+        private inspector: Inspector,
+        private modal: Modal,
+        private activeProject: ActiveProject,
     ) {}
 
     /**
@@ -35,10 +41,24 @@ export class InspectorPanelComponent {
         this.inspector.openPanel('layout');
     }
 
+    public openUploadImageModal() {
+        const data = {uri: 'uploads/images', httpParams: {path: this.activeProject.getBaseUrl(true)+'images'}};
+        this.modal.open(UploadFileModalComponent, data).afterClosed().subscribe(url => {
+            this.livePreview.selected.node['src'] = url;
+        });
+    }
+
     /**
      * Check if currently selected node is column, row or container.
      */
     public selectedIsLayout() {
         return this.livePreview.selected.isLayout();
+    }
+
+    /**
+     * Check if currently selected node is an image.
+     */
+    public selectedIsImage() {
+        return this.livePreview.selected.isImage;
     }
 }

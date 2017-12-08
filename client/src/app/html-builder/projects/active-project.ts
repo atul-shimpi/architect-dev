@@ -1,22 +1,30 @@
 import {Injectable} from "@angular/core";
 import {Settings} from "vebto-client/core";
-import {Page} from "../../../types/models/Page";
-import {Project} from "../../../types/models/Project";
 import {BuilderDocument} from "../builder-document.service";
 import {ProjectBaseUrl} from "./project-base-url.service";
-import {BuilderPage, BuilderProject, BuilderTemplate} from "../builder-types";
+import {BuilderPage, BuilderProject} from "../builder-types";
 import {LivePreviewDocument} from "../live-preview/live-preview-document.service";
 import {Projects} from "./projects.service";
 import {Observable} from "rxjs/Observable";
 import * as html2canvas from "html2canvas";
+import {Template} from "../../../types/models/Template";
 
 @Injectable()
-export class ParsedProject {
+export class ActiveProject {
 
-    private activeTemplate: BuilderTemplate;
+    /**
+     * Template applied to the project.
+     */
+    private activeTemplate: Template;
 
+    /**
+     * Pages of the project.
+     */
     private pages: BuilderPage[] = [];
 
+    /**
+     * Index of currently active page.
+     */
     private activePage = 0;
 
     /**
@@ -25,7 +33,12 @@ export class ParsedProject {
     private project: BuilderProject;
 
     /**
-     * ParsedProject Constructor.
+     * Whether project is being saved currently.
+     */
+    public saving = false;
+
+    /**
+     * ActiveProject Constructor.
      */
     constructor(
         private settings: Settings,
@@ -37,24 +50,36 @@ export class ParsedProject {
         this.builderDocument.contentChanged.subscribe(source => {
             if (source === 'activeProject') return;
             this.pages[this.activePage].html = this.builderDocument.getOuterHtml();
-            this.project.css = this.builderDocument.getCustomCss();
-            this.project.js = this.builderDocument.getCustomJs();
         });
     }
 
-    public get(): Project {
-        return this.project.model;
+    /**
+     * Get project model.
+     */
+    public get(): BuilderProject {
+        return this.project;
     }
 
+    /**
+     * Get all project pages.
+     */
     public getPages() {
         return this.pages;
     }
 
+    /**
+     * Get active project page.
+     */
     public getActivePage(): BuilderPage {
         return this.pages[this.activePage];
     }
 
+    /**
+     * Save project to the backend.
+     */
     public save(options = {thumbnail: true}): Observable<{project: BuilderProject}> {
+        this.saving = true;
+
         if (options.thumbnail) {
             html2canvas(this.previewDocument.getBody(), {height: 320, width: 200, svgRendering: true}).then(canvas => {
                 this.projects.generateThumbnail(this.project.model.id, canvas.toDataURL('image/png')).subscribe();
@@ -63,9 +88,9 @@ export class ParsedProject {
 
         const payload = {
             name: this.project.model.name,
-            css: this.builderDocument.getCustomCss(),
-            js: this.builderDocument.getCustomJs(),
-            pages: this.project.pages.map(page => {
+            css: this.project.css,
+            js: this.project.js,
+            pages: this.pages.map(page => {
                 return {name: page.name, html: page.html}
             })
         };
@@ -74,6 +99,7 @@ export class ParsedProject {
 
         request.subscribe(response => {
             this.project = response.project;
+            this.saving = false;
         });
 
         return request;
@@ -92,7 +118,7 @@ export class ParsedProject {
     /**
      * Update specified page.
      */
-    public updatePage(updatedPage: BuilderPage): ParsedProject {
+    public updatePage(updatedPage: BuilderPage): ActiveProject {
         const i = this.pages.findIndex(page => page.name === updatedPage.name);
         this.pages[i] = updatedPage;
         return this;
@@ -127,25 +153,27 @@ export class ParsedProject {
         this.updateBuilderDocument();
     }
 
-    public applyTemplate(template: BuilderTemplate) {
+    public applyTemplate(template: Template) {
         this.activeTemplate = template;
-        this.pages = template.model.pages.slice();
+        this.pages = template.pages.slice();
         this.activePage = 0;
 
         this.updateBuilderDocument();
     }
 
+    public getBaseUrl(relative: boolean = false) {
+        return this.projectUrl.generate(this.project.model.uuid, relative);
+    }
+
     private updateBuilderDocument() {
         this.builderDocument.update(
             this.pages[this.activePage].html,
-            this.project.js,
-            this.project.css,
             this.activeTemplate,
             'activeProject'
         );
     }
 
-    public getTemplate(): BuilderTemplate {
+    public getTemplate(): Template {
         return this.activeTemplate;
     }
 

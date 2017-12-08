@@ -1,16 +1,8 @@
 import {DomHelpers} from "./dom-helpers.service";
+import {utils} from "vebto-client/core/services/utils";
+import {Template} from "../../types/models/Template";
 
 export class PageDocument {
-
-    /**
-     * Reference to custom css node in the document.
-     */
-    protected customCssNode: HTMLStyleElement;
-
-    /**
-     * Reference to custom js node in the document.
-     */
-    protected customJsNode: HTMLScriptElement;
 
     /**
      * Page document object.
@@ -26,8 +18,8 @@ export class PageDocument {
      * Ids of dom elements that are created by the builder and are not part of the project.
      */
     protected internalIds = [
-        'base', 'jquery', 'customCss', 'customJs', 'templateJs',
-        'templateCss', 'framework-css', 'framework-js', 'preview-css', 'font-awesome'
+        'base', 'jquery', 'custom-css', 'custom-js', 'template-js',
+        'template-css', 'framework-css', 'framework-js', 'preview-css', 'font-awesome'
     ];
 
     public getOuterHtml(): string {
@@ -39,12 +31,12 @@ export class PageDocument {
     }
 
     public getMetaTagValue(name: string) {
-        const node = this.document.querySelector('meta[name='+name+']');
+        const node = this.document.querySelector(`meta[name=${name}]`);
         return node && node.getAttribute('content');
     }
 
     public setMetaTagValue(name: string, value: string) {
-        let node = this.document.querySelector('meta[name='+name+']');
+        let node = this.document.querySelector(`meta[name=${name}]`);
         if ( ! node) {
             node = this.document.createElement('meta');
             this.document.head.appendChild(node);
@@ -72,16 +64,18 @@ export class PageDocument {
     /**
      * Set url for document "base" tag.
      */
-    public setBaseUrl(url: string) {
+    public setBaseUrl(url: string): PageDocument {
         this.baseUrl = url;
+        return this;
     }
 
     /**
      * Generate page document from specified markup.
      */
-    public generate(html: string, js: string, css: string, template?: {css: string, js: string}): PageDocument {
+    public generate(html: string = '', template?: Template): PageDocument {
         this.document = new DOMParser().parseFromString(this.trim(html), 'text/html');
 
+        //remove old link/script nodes to frameworks, icons, templates etc.
         this.internalIds.forEach(id => {
             const node = this.document.getElementById(id);
             node && node.remove();
@@ -92,14 +86,27 @@ export class PageDocument {
         this.addIconsLink();
 
         if (template) {
-            this.createCssNode('templateCss', this.trim(template.css));
-            this.createJsNode('templateJs', this.trim(template.js));
+            this.createLink('link', 'css/template.css', 'template-css');
+            this.createLink('script', 'js/template.js', 'template-js');
         }
 
-        this.createCssNode('customCss', this.trim(css));
-        this.createJsNode('customJs', this.trim(js));
+        this.createLink('link', 'css/styles.css', 'custom-css');
+        this.createLink('script', 'js/scripts.js', 'template-js');
 
         return this;
+    }
+
+    /**
+     * Create a stylesheet or scripts link from specified uri.
+     */
+    private createLink(type: 'link'|'script', uri: string, id: string) {
+        const query  = utils.randomString(8),
+              parent = type === 'link' ? this.document.head : this.document.body;
+
+        type = utils.ucFirst(type);
+        const link = DomHelpers['create'+type](this.baseUrl+uri+'?='+query, id);
+
+        parent.appendChild(link);
     }
 
     /**
@@ -132,26 +139,6 @@ export class PageDocument {
     protected addIconsLink() {
         const link = DomHelpers.createLink('http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css', 'font-awesome');
         this.document.head.appendChild(link);
-    }
-
-    /**
-     * Create and add custom or template css style tag to document.
-     */
-    protected createCssNode(name: 'customCss'|'templateCss', css: string) {
-        this[name+'Node'] = this.document.createElement('style') as HTMLStyleElement;
-        this[name+'Node'].id = name;
-        this[name+'Node'].innerHTML = css;
-        this.document.head.appendChild(this[name+'Node']);
-    }
-
-    /**
-     * Create and add custom or template js style tag to document.
-     */
-    protected createJsNode(name: 'customJs'|'templateJs', js: string) {
-        this[name+'Node'] = this.document.createElement('script') as HTMLScriptElement;
-        this[name+'Node'].id = 'custom-js';
-        this[name+'Node'].innerHTML = js;
-        this.document.body.appendChild(this[name+'Node']);
     }
 
     /**

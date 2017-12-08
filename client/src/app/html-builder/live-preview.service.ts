@@ -5,7 +5,7 @@ import {ActiveElement} from "./live-preview/active-element";
 import {UndoManager} from "./undo-manager/undo-manager.service";
 import {DragVisualHelperComponent} from "./live-preview/drag-and-drop/drag-visual-helper/drag-visual-helper.component";
 import {InlineTextEditor} from "./live-preview/inline-text-editor/inline-text-editor.service";
-import {ParsedProject} from "./projects/parsed-project";
+import {ActiveProject} from "./projects/active-project";
 import {ContextMenu} from "vebto-client/core/ui/context-menu/context-menu.service";
 import {LivePreviewContextMenuComponent} from "./live-preview/live-preview-context-menu/live-preview-context-menu.component";
 import {Overlay} from "@angular/cdk/overlay";
@@ -30,7 +30,7 @@ export class LivePreview {
         private codeEditor: CodeEditor,
         private undoManager: UndoManager,
         private inlineTextEditor: InlineTextEditor,
-        private parsedProject: ParsedProject,
+        private parsedProject: ActiveProject,
         private contextMenu: ContextMenu,
         private overlay: Overlay,
         private keybinds: Keybinds,

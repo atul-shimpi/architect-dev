@@ -5,10 +5,8 @@ import {Template} from "../../types/models/Template";
 import {PageDocument} from "./page-document";
 import {DomHelpers} from "./dom-helpers.service";
 import {Settings} from "vebto-client/core/services/settings.service";
-import {BuilderTemplate} from "./builder-types";
 
 export type changeSources = 'builderDocument' | 'livePreview' | 'textEditor' | 'codeEditor' | 'activeProject';
-export type Template = {css: string, js: string};
 
 @Injectable()
 export class BuilderDocument extends PageDocument {
@@ -21,7 +19,7 @@ export class BuilderDocument extends PageDocument {
     /**
      * Template that should be applied to the document.
      */
-    private template: BuilderTemplate;
+    private template: Template;
 
     /**
      * BuilderDocument Constructor.
@@ -40,40 +38,17 @@ export class BuilderDocument extends PageDocument {
     }
 
     public setHtml(html: string, source: changeSources = 'builderDocument') {
-        this.update(html, this.getCustomJs(), this.getCustomCss(), this.template, source);
-    }
-
-    public setCustomJs(js: string, source: changeSources = 'builderDocument') {
-        this.customJsNode.innerHTML = js.trim();
-        this.contentChanged.next(source);
-    }
-
-    public setCustomCss(css: string, source: changeSources = 'builderDocument') {
-        this.customCssNode.innerHTML = css.trim();
-        this.contentChanged.next(source);
-    }
-
-    public getCustomCss() {
-        return this.customCssNode.innerHTML;
-    }
-
-    public getCustomJs() {
-        return this.customJsNode.innerHTML;
+        this.update(html, this.template, source);
     }
 
     /**
      * Update builder document using specified markup.
      */
-    public update(html: string, js: string, css: string, template: BuilderTemplate, source: changeSources = 'builderDocument') {
+    public update(html: string, template: Template, source: changeSources = 'builderDocument') {
         this.template = template;
-        this.generate(html, js, css, this.getTemplateMarkup());
+        this.generate(html, template);
         this.addIframeCss();
         this.contentChanged.next(source);
-    }
-
-    private getTemplateMarkup() {
-        if ( ! this.template) return;
-        return {css: this.template.css, js: this.template.js};
     }
 
     /**

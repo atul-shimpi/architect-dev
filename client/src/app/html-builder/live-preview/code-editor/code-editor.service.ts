@@ -62,7 +62,7 @@ export class CodeEditor {
         this.overlayRef = null;
     }
 
-    public registerOrigin(origin: ElementRef) {
+    public setOrigin(origin: ElementRef) {
         this.origin = origin;
     }
 }

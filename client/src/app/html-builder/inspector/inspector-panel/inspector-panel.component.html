@@ -7,6 +7,8 @@
 
 <button class="edit-layout-button" mat-raised-button (click)="openLayoutPanel()" *ngIf="selectedIsLayout()" color="accent" trans>Edit Layout</button>
 
+<button class="edit-layout-button" mat-raised-button (click)="openUploadImageModal()" *ngIf="selectedIsImage()" color="accent" trans>Change Image</button>
+
 <mat-accordion>
     <mat-expansion-panel class="category mat-elevation-z" *ngIf="canModify('attributes')">
         <mat-expansion-panel-header>

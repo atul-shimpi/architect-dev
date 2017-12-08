@@ -3,7 +3,7 @@ import {Inspector} from "./inspector.service";
 import {UndoManager} from "../undo-manager/undo-manager.service";
 import {CodeEditor} from "../live-preview/code-editor/code-editor.service";
 import {Projects} from "../projects/projects.service";
-import {ParsedProject} from "../projects/parsed-project";
+import {ActiveProject} from "../projects/active-project";
 import {Toast} from "vebto-client/core/ui/toast.service";
 
 @Component({
@@ -22,13 +22,13 @@ export class InspectorComponent implements OnInit {
         public undoManager: UndoManager,
         private codeEditor: CodeEditor,
         private projects: Projects,
-        private activeProject: ParsedProject,
+        public activeProject: ActiveProject,
         private toast: Toast,
         private el: ElementRef,
     ) {}
 
     ngOnInit() {
-        this.codeEditor.registerOrigin(this.el);
+        this.codeEditor.setOrigin(this.el);
         this.inspector.elementRef = this.el;
     }
 

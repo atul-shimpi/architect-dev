@@ -10,7 +10,11 @@ export class ProjectBaseUrl {
      */
     constructor(private settings: Settings, private currentUser: CurrentUser) {}
 
-    public generate(uuid: string): string {
-        return this.settings.getBaseUrl(true)+'storage/projects/'+this.currentUser.get('id')+'/'+uuid+'/';
+    public generate(uuid: string, relative: boolean = false): string {
+        const uri = 'projects/'+this.currentUser.get('id')+'/'+uuid+'/';
+
+        if (relative) return uri;
+
+        return this.settings.getBaseUrl(true)+'storage/' + uri;
     }
 }

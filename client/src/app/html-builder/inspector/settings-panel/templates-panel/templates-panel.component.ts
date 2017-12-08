@@ -2,7 +2,7 @@ import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {Templates} from "../../../../templates/templates.service";
 import {Template} from "../../../../../types/models/Template";
 import {Settings} from "vebto-client/core/services/settings.service";
-import {ParsedProject} from "../../../projects/parsed-project";
+import {ActiveProject} from "../../../projects/active-project";
 import {Modal} from "vebto-client/core/ui/modal.service";
 import {ConfirmModalComponent} from "vebto-client/core/ui/confirm-modal/confirm-modal.component";
 
@@ -22,7 +22,7 @@ export class TemplatesPanelComponent implements OnInit {
     constructor(
         private templatesApi: Templates,
         private settings: Settings,
-        private activeProject: ParsedProject,
+        private activeProject: ActiveProject,
         private modal: Modal,
     ) {}
 

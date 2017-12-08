@@ -36,10 +36,4 @@ class Project extends Eloquent {
     {
         return $this->belongsToMany(User::class, 'users_projects', 'project_id', 'user_id');
     }
-
-    public function save(array $options = array())
-    {
-        $this->attributes['uuid'] = str_random(36);
-        return parent::save($options);
-    }
 }

@@ -1,8 +1,7 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {Elements} from "../elements/elements.service";
 import {ActivatedRoute} from "@angular/router";
-import {ParsedProject} from "../projects/parsed-project";
-import {BuilderDocument} from "../builder-document.service";
+import {ActiveProject} from "../projects/active-project";
 
 @Component({
     selector: 'html-builder',
@@ -18,7 +17,7 @@ export class HtmlBuilderComponent implements OnInit {
     constructor(
         private elements: Elements,
         private route: ActivatedRoute,
-        private activeProject: ParsedProject,
+        private activeProject: ActiveProject,
     ) {}
 
     ngOnInit() {

@@ -5,9 +5,9 @@
 </div>
 
 <div class="active-page-actions">
-    <button mat-icon-button (click)="createNewPage()" matTooltip="New page"><svg-icon name="note-add"></svg-icon></button>
-    <button mat-icon-button [disabled]="!canDeleteSelectedPage()" (click)="deleteSelectedPage()" matTooltip="Delete"><svg-icon name="delete"></svg-icon></button>
-    <button mat-icon-button (click)="duplicateSelectedPage()" matTooltip="Duplicate"><svg-icon name="content-copy"></svg-icon></button>
+    <button mat-icon-button [disabled]="loading" (click)="createNewPage()" matTooltip="New page"><svg-icon name="note-add"></svg-icon></button>
+    <button mat-icon-button [disabled]="!canDeleteSelectedPage() || loading" (click)="deleteSelectedPage()" matTooltip="Delete"><svg-icon name="delete"></svg-icon></button>
+    <button mat-icon-button [disabled]="loading" (click)="duplicateSelectedPage()" matTooltip="Duplicate"><svg-icon name="content-copy"></svg-icon></button>
 </div>
 
 <form class="page-options many-inputs" *ngIf="selectedPage" (ngSubmit)="updateSelectedPage()" ngNativeValidate>

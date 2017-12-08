@@ -1,7 +1,7 @@
 import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {utils} from 'vebto-client/core';
 import {Subject} from "rxjs/Subject";
-import {ParsedProject} from "../../projects/parsed-project";
+import {ActiveProject} from "../../projects/active-project";
 import {aceThemes} from "./ace-themes";
 import {Observable} from "rxjs/Observable";
 import {SelectedElement} from "../selected-element.service";
@@ -51,7 +51,7 @@ export class CodeEditorComponent implements OnInit {
 
     constructor(
         private utils: utils,
-        private parsedProject: ParsedProject,
+        private activeProject: ActiveProject,
         private selectedElement: SelectedElement,
         private builderDocument: BuilderDocument,
     ) {}
@@ -113,9 +113,9 @@ export class CodeEditorComponent implements OnInit {
         if (type === 'html') {
             this.setEditorValue(htmlBeautify(this.builderDocument.getOuterHtml()));
         } else if (type === 'css') {
-            this.setEditorValue(this.builderDocument.getCustomCss())
+            this.setEditorValue(this.activeProject.get().css);
         } else if (type === 'js') {
-            this.setEditorValue(this.builderDocument.getCustomJs())
+            this.setEditorValue(this.activeProject.get().js);
         }
     }
 
@@ -124,13 +124,24 @@ export class CodeEditorComponent implements OnInit {
      */
     private bindToEditorChangeEvent() {
         this.contentsChange.debounceTime(500).subscribe(() => {
+            let shouldReload = false;
+
             if (this.activeEditor === 'html') {
                 this.builderDocument.setHtml(this.editor.getValue(), 'codeEditor');
             } else if (this.activeEditor === 'css') {
-                this.builderDocument.setCustomCss(this.editor.getValue(), 'codeEditor');
+                this.activeProject.get().css = this.editor.getValue();
+                shouldReload = true;
             } else if (this.activeEditor === 'js') {
-                this.builderDocument.setCustomJs(this.editor.getValue(), 'codeEditor');
+                this.activeProject.get().js = this.editor.getValue();
+                shouldReload = true;
             }
+
+            if ( ! shouldReload) return;
+
+            //reload custom css and js links, so changes are reflected in preview
+            this.activeProject.save({thumbnail: false}).subscribe(() => {
+                this.builderDocument.contentChanged.next('codeEditor');
+            });
         });
     }
 

@@ -29,7 +29,10 @@ export class InspectorFloatingPanel {
             origin,
             {originX: 'end', originY: 'center'},
             {overlayX: 'start', overlayY: 'center'}
-        ).withOffsetX(25);
+        ).withFallbackPosition(
+            {originX: 'end', originY: 'center'},
+            {overlayX: 'start', overlayY: 'top'}
+        ).withOffsetX(35);
 
         this.overlayRef = this.overlay.create({positionStrategy: strategy, hasBackdrop: true});
 
