@@ -155,7 +155,7 @@ export class ActiveProject {
 
     public applyTemplate(template: Template) {
         this.activeTemplate = template;
-        this.pages = template.pages.slice();
+        this.pages = template.pages.slice() as BuilderPage[];
         this.activePage = 0;
 
         this.updateBuilderDocument();

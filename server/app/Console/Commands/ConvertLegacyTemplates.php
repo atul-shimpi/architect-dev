@@ -51,7 +51,7 @@ class ConvertLegacyTemplates extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function handle()
     {
@@ -82,6 +82,12 @@ class ConvertLegacyTemplates extends Command
             })->each(function($path) {
                 File::put($path, $this->fixCssImagePaths(File::get($path)));
             });
+
+            //convert config file from php to json
+            $config = \File::getRequire("$templatePath/config.php");
+            $json = json_encode($config, JSON_PRETTY_PRINT);
+            File::put("$templatePath/config.json", $json);
+            File::delete("$templatePath/config.php");
         }
 
         $this->info('Fixed legacy templates.');
@@ -104,5 +110,4 @@ class ConvertLegacyTemplates extends Command
     {
         return preg_replace("/url\(templates\/.+?\/(images\/.+?)\)/i", 'url("../$1")', $css);
     }
-
 }

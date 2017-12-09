@@ -29,11 +29,16 @@ export class NewProjectModalComponent {
     private pageDocument = new PageDocument();
 
     /**
+     * Whether backend request is currently in progress.
+     */
+    public loading = false;
+
+    /**
      * NewProjectModalComponent Constructor.
      */
     constructor(
         private dialogRef: MatDialogRef<NewProjectModalComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: {templateId?: number},
+        @Inject(MAT_DIALOG_DATA) public data: {templateName?: string},
         private projects: Projects,
         private templates: Templates,
         private projectUrl: ProjectBaseUrl,
@@ -46,17 +51,30 @@ export class NewProjectModalComponent {
      * Create a new project.
      */
     public async confirm() {
+        this.loading = true;
+
         let params;
 
-        if (this.data.templateId) {
+        if (this.data.templateName) {
             params = await this.createProjectFromTemplate();
         } else {
             params = this.createBlankProject();
         }
 
         this.projects.create(params).subscribe(response => {
+            this.loading = false;
             this.dialogRef.close(response.project);
-        }, response => this.errors = response.messages);
+        }, response => {
+            this.loading = false;
+            this.errors = response.messages;
+        });
+    }
+
+    /**
+     * Close the modal.
+     */
+    public close() {
+        this.dialogRef.close();
     }
 
     /**
@@ -66,14 +84,9 @@ export class NewProjectModalComponent {
         return new Promise(resolve => {
             const params = this.getBasePayload();
 
-            this.templates.get(this.data.templateId).subscribe(response => {
+            this.templates.get(this.data.templateName).subscribe(response => {
+                params.template = response.template;
                 params.pages = this.transformTemplatePages(response.template);
-                params.template = {
-                    id: response.template.id,
-                    css: response.template.pages[0].css,
-                    js: response.template.pages[0].js
-                };
-
                 resolve(params);
             });
         });

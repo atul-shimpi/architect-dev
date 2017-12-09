@@ -123,7 +123,7 @@ export class CodeEditorComponent implements OnInit {
      * Update project html when code editor contents are changed by user.
      */
     private bindToEditorChangeEvent() {
-        this.contentsChange.debounceTime(500).subscribe(() => {
+        this.contentsChange.debounceTime(800).subscribe(() => {
             let shouldReload = false;
 
             if (this.activeEditor === 'html') {

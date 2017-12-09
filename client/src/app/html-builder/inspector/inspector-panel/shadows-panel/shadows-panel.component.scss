@@ -7,7 +7,7 @@ shadows-panel {
     > .slider-container {
 
       > .title {
-        color: $inspector-text-color-200;
+        color: $inspector-text-color-300;
         text-transform: capitalize;
       }
 
@@ -29,7 +29,7 @@ shadows-panel {
           > input {
             width: 100%;
             height: 100%;
-            border: 1px solid $inspector-bg-color-100;
+            border: 2px solid $inspector-bg-color-400;
           }
         }
       }
@@ -42,7 +42,7 @@ shadows-panel {
     margin-top: 10px;
 
     > .color-button {
-      background-color: #fff;
+      background-color: $inspector-bg-color-100;
       border-radius: 2px;
       height: 38px;
       text-align: center;

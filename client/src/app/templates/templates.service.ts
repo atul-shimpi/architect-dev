@@ -21,7 +21,7 @@ export class Templates {
     /**
      * Get template by specified id.
      */
-    public get(id: number): Observable<{template: Template}> {
-        return this.http.get('templates/'+id);
+    public get(name: string): Observable<{template: Template}> {
+        return this.http.get('templates/'+name);
     }
 }

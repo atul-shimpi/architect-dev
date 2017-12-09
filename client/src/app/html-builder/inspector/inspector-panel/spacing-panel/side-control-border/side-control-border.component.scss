@@ -1,3 +1,5 @@
+@import "../../../../../../scss/variables";
+
 side-control-border {
   display: block;
   pointer-events: none;
@@ -10,7 +12,7 @@ side-control-border {
     height: 100%;
 
     &.active:before, &.active:after {
-      background-color: #fff;
+      background-color: $inspector-bg-color-400;
     }
 
     &.enable:before, &.enable:after {
@@ -29,7 +31,7 @@ side-control-border {
       content: '';
       display: none;
       position: absolute;
-      background-color: #9b9c9e;
+      background-color: $accent-color;
     }
   }
 

@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
  * @property int $published
  * @property int $public
  * @property string $framework
+ * @property string $template
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\BuilderPage[] $pages

@@ -5,6 +5,7 @@ use Auth;
 use App\Project;
 use App\Template;
 use File;
+use Illuminate\Support\Collection;
 use Storage;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -12,11 +13,6 @@ use Vebto\Settings\Settings;
 
 class ProjectRepository
 {
-    /**
-     * @var Template
-     */
-    private $template;
-
     /**
      * @var Project
      */
@@ -33,16 +29,21 @@ class ProjectRepository
     private $storage;
 
     /**
+     * @var TemplateLoader
+     */
+    private $templateLoader;
+
+    /**
      * ProjectRepository Constructor.
      *
-     * @param Template $template
+     * @param TemplateLoader $templateLoader
      * @param Project $project
      */
-    public function __construct(Template $template, Project $project)
+    public function __construct(TemplateLoader $templateLoader, Project $project)
     {
-        $this->template = $template;
         $this->project = $project;
         $this->storage = Storage::disk('public');
+        $this->templateLoader = $templateLoader;
 
         $this->templatesPath = config('filesystems.disks.public.root').'/templates';
     }
@@ -51,11 +52,7 @@ class ProjectRepository
     {
         $path = $this->getProjectPath($project);
 
-        $pages = collect($this->storage->files($path))->filter(function($path) {
-            return str_contains($path, '.html');
-        })->map(function($path) {
-            return ['name' => basename($path, '.html'), 'html' => $this->storage->get($path)];
-        })->values();
+        $pages = $this->loadProjectPages($path);
 
         $loaded = [
             'model' => $project->toArray(),
@@ -73,8 +70,8 @@ class ProjectRepository
         }
 
         //load template
-        if ($project->template_id) {
-            $loaded['template'] = $this->template->find($project->template_id)->toArray();
+        if ($project->template) {
+            $loaded['template'] = $this->templateLoader->load($project->template);
         }
 
         return $loaded;
@@ -103,9 +100,18 @@ class ProjectRepository
     {
         if ( ! $name) $name = 'index';
 
-        $path = $this->getProjectPath($project);
+        $projectPath = $this->getProjectPath($project);
 
-        return $this->storage->get("$path/$name.html");
+        $name = str_contains($name, '.html') ? $name : "$name.html";
+        $pagePath = "$projectPath/$name";
+
+        //if "index.html" does not exist, load first available page
+        if ( ! $this->storage->exists($pagePath)) {
+            $name = $this->loadProjectPages($projectPath)->first()['name'];
+            $pagePath = "$projectPath/$name.html";
+        }
+
+        return $this->storage->get($pagePath);
     }
 
     public function update(Project $project, $data)
@@ -131,7 +137,7 @@ class ProjectRepository
     {
         $project = $this->project->create([
             'name' => $data['name'],
-            'template_id' => $data['template']['id'],
+            'template' => $data['template']['name'],
             'uuid' => $data['uuid']
         ])->fresh();
 
@@ -239,8 +245,7 @@ class ProjectRepository
 
     private function applyTemplate($templateData, $projectPath)
     {
-        $template = $this->template->find($templateData['id']);
-        $templateName = strtolower(kebab_case($template->name));
+        $templateName = strtolower(kebab_case($templateData['name']));
 
         $this->copyImages($templateName, $projectPath);
 
@@ -249,11 +254,7 @@ class ProjectRepository
         $this->storage->put("$projectPath/js/template.js", $templateData['js']);
 
         //thumbnail
-        $templatePath = "$this->templatesPath/$templateName/thumbnail.png";
-        $this->storage->put(
-            "$projectPath/thumbnail.png",
-            File::get($templatePath)
-        );
+        $this->storage->put("$projectPath/thumbnail.png", File::get($templateData['thumbnail']));
     }
 
     /**
@@ -279,5 +280,20 @@ class ProjectRepository
                 $this->copyImages($templateName, $projectPath, $file->getRealPath());
             }
         });
+    }
+
+    /**
+     * Load all pages for specified project.
+     *
+     * @param string $path
+     * @return Collection
+     */
+    private function loadProjectPages($path)
+    {
+        return collect($this->storage->files($path))->filter(function ($path) {
+            return str_contains($path, '.html');
+        })->map(function ($path) {
+            return ['name' => basename($path, '.html'), 'html' => $this->storage->get($path)];
+        })->values();
     }
 }

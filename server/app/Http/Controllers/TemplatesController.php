@@ -1,15 +1,11 @@
 <?php namespace App\Http\Controllers;
 
-use App\Template;
 use Illuminate\Http\Request;
 use Vebto\Bootstrap\Controller;
+use App\Services\TemplateLoader;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class TemplatesController extends Controller {
-
-	/**
-	 * @var Template
-	 */
-	private $model;
 
     /**
      * @var Request
@@ -17,16 +13,21 @@ class TemplatesController extends Controller {
     private $request;
 
     /**
+     * @var TemplateLoader
+     */
+    private $templateLoader;
+
+    /**
      * Create new ProjectsController instance.
      *
      * @param Request $request
-     * @param Template $model
+     * @param TemplateLoader $templateLoader
      */
-	public function __construct(Request $request, Template $model)
+	public function __construct(Request $request, TemplateLoader $templateLoader)
 	{
-		$this->model = $model;
 		$this->request = $request;
-	}
+        $this->templateLoader = $templateLoader;
+    }
 
     /**
      * Return all available templates.
@@ -35,7 +36,7 @@ class TemplatesController extends Controller {
      */
 	public function index()
 	{
-	    $templates = $this->model->orderBy('name', 'desc')->get();
+	    $templates = $this->templateLoader->loadAll();
 
 	    return $this->success(['templates' => $templates]);
 	}
@@ -43,12 +44,16 @@ class TemplatesController extends Controller {
     /**
      * Get template by specified id.
      *
-     * @param int $id
+     * @param string $name
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id)
+    public function show($name)
     {
-        $template = $this->model->with('pages')->findOrFail($id);
+        try {
+            $template = $this->templateLoader->load($name);
+        } catch (FileNotFoundException $exception) {
+            return abort(404);
+        }
 
         return $this->success(['template' => $template]);
     }

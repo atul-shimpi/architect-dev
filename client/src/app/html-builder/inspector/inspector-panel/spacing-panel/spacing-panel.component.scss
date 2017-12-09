@@ -11,49 +11,49 @@ spacing-panel {
     > .side-control {
       width: 25px;
       height: 25px;
-      //border: 2px solid transparent;
+      border: 1px solid $inspector-bg-color-400;
       background-color: $inspector-bg-color-200;
       margin-right: 5px;
       position: relative;
 
       &.all-control {
-        border-color: #9b9c9e;
+        border-color: $inspector-bg-color-400;
         margin-right: auto;
 
         &.active {
-          border-color: #fff;
+          border-color: $inspector-bg-color-100;
         }
       }
 
       &.top-control {
-        border-top-color: #9b9c9e;
+        border-top-color: $inspector-bg-color-400;
 
         &.active {
-          border-top-color: #fff;
+          border-top-color: $inspector-bg-color-100;
         }
       }
 
       &.right-control {
-        border-right-color: #9b9c9e;
+        border-right-color: $inspector-bg-color-400;
 
         &.active {
-          border-right-color: #fff;
+          border-right-color: $inspector-bg-color-100;
         }
       }
 
       &.bottom-control {
-        border-bottom-color: #9b9c9e;
+        border-bottom-color: $inspector-bg-color-400;
 
         &.active {
-          border-bottom-color: #fff;
+          border-bottom-color: $inspector-bg-color-100;
         }
       }
 
       &.left-control {
-        border-left-color: #9b9c9e;
+        border-left-color: $inspector-bg-color-400;
 
         &.active {
-          border-left-color: #fff;
+          border-left-color: $inspector-bg-color-100;
         }
       }
     }
@@ -66,7 +66,8 @@ spacing-panel {
     height: 115px;
 
     input {
-      border: 1px solid $inspector-bg-color-100;
+      border: 2px solid $inspector-bg-color-400;
+      background-color: $inspector-bg-color-100;
       height: 100%;
       text-align: center;
     }
@@ -98,36 +99,17 @@ spacing-panel {
 
       > .right-input {
         width: 49%;
+        margin: 5px 0;
       }
 
       > .left-input {
         width: 49%;
+        margin: 5px 0;
       }
     }
-    
   }
 
   .mat-slider {
-    width: 98%;
-
-    &.mat-slider-min-value:not(.mat-slider-thumb-label-showing) .mat-slider-thumb {
-      border-color: $inspector-bg-color-100;
-    }
-
-    &.cdk-focused .mat-slider-track-background, &.mat-slider:hover .mat-slider-track-background {
-      background-color: lighten($inspector-bg-color-100, 5%);
-    }
-
-    .mat-slider-track-background {
-      background-color: $inspector-bg-color-100;
-    }
-
-    .mat-slider-track-fill {
-      background-color: lighten($inspector-bg-color-100, 30%);
-    }
-
-    .mat-slider-thumb {
-      background-color: lighten($inspector-bg-color-100, 30%);
-    }
+    width: 100%;
   }
 }

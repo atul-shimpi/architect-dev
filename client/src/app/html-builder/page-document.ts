@@ -77,8 +77,9 @@ export class PageDocument {
 
         //remove old link/script nodes to frameworks, icons, templates etc.
         this.internalIds.forEach(id => {
-            const node = this.document.getElementById(id);
-            node && node.remove();
+            this.document.querySelectorAll('#'+id).forEach((node: HTMLElement) => {
+                node.parentNode.removeChild(node);
+            });
         });
 
         this.addBaseElement();

@@ -115,7 +115,7 @@ class ProjectsController extends Controller {
 	    $this->authorize('store', Project::class);
 
         $this->validate($this->request, [
-            'name' => 'required|string|min:1|max:255',
+            'name' => 'required|string|min:1|max:255|unique:projects',
             'css' => 'nullable|string|min:1|max:255',
             'js' => 'nullable|string|min:1|max:255',
             'template' => 'nullable|array',

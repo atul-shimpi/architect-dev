@@ -30,7 +30,7 @@
 
         <div class="templates">
             <div class="grid-container">
-                <figure class="template grid-item" *ngFor="let template of filteredTemplates" (click)="openNewProjectModal(template.id)">
+                <figure class="template grid-item" *ngFor="let template of filteredTemplates" (click)="openNewProjectModal(template.name)">
                     <img [src]="getTemplateThumbnail(template)">
                     <figcaption>{{template.name}}</figcaption>
                 </figure>

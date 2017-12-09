@@ -15,7 +15,7 @@ Route::group(['prefix' => 'secure'], function () {
 
     //templates
     Route::get('templates', 'TemplatesController@index');
-    Route::get('templates/{id}', 'TemplatesController@show');
+    Route::get('templates/{name}', 'TemplatesController@show');
 
     //projects
     Route::get('projects', 'ProjectsController@index');
