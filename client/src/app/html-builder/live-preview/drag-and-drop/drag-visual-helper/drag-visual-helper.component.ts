@@ -27,8 +27,8 @@ export class DragVisualHelperComponent {
 
     public reposition(y: number, x: number) {
         //offset drag helper a bit, so it's in top right corner of cursor
-        this.renderer.setStyle(this.el.nativeElement, 'top', y - 8 + 'px');
-        this.renderer.setStyle(this.el.nativeElement, 'left', x + 20 + 'px');
+        this.renderer.setStyle(this.el.nativeElement, 'top', y - 14 + 'px');
+        this.renderer.setStyle(this.el.nativeElement, 'left', x + 21 + 'px');
     }
 
     public show(element: any) {

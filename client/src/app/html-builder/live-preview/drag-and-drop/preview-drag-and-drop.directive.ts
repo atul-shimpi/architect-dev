@@ -29,6 +29,10 @@ export class PreviewDragAndDropDirective extends BaseDragAndDrop {
         super();
     }
 
+    protected getDragHandles() {
+        return document.querySelectorAll('.context-box-drag-handle');
+    }
+
     protected setDragElement(e: HammerInput) {
         if (e.target.closest('.selected-box')) {
             this.dragEl = this.livePreview.selected;

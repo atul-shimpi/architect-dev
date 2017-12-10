@@ -88,7 +88,7 @@ spacing-panel {
          width: 48%;
          height: 55px;
 
-        &.top-input {
+        &.top-input, &.left-input {
           margin-bottom: 5px;
         }
       }
@@ -99,12 +99,10 @@ spacing-panel {
 
       > .right-input {
         width: 49%;
-        margin: 5px 0;
       }
 
       > .left-input {
         width: 49%;
-        margin: 5px 0;
       }
     }
   }

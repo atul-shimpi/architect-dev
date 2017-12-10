@@ -7,13 +7,13 @@ drag-visual-helper {
   left: -100px;
   pointer-events: none;
   background-color: $inspector-bg-color-100;
-  color: $inspector-text-color-100;
-  width: 90px;
-  height: 35px;
+  color: $inspector-text-color-300;
+  max-height: 40px;
+  border-radius: 2px;
+  padding: 10px;
   text-align: center;
-  box-shadow: 1px 0 2px rgba(0, 0, 0, 0.5);
+  box-shadow: $box-shadow-4;
   font-size: 1.5rem;
   text-transform: capitalize;
-  padding: 8px 0;
   z-index: 10;
 }

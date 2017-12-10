@@ -53,6 +53,7 @@ import {LivePreviewDocument} from "./live-preview/live-preview-document.service"
 import { SettingsPanelComponent } from './inspector/settings-panel/settings-panel.component';
 import { TemplatesPanelComponent } from './inspector/settings-panel/templates-panel/templates-panel.component';
 import { ThemesPanelComponent } from './inspector/settings-panel/themes-panel/themes-panel.component';
+import { ContextBoxComponent } from './live-preview/context-box/context-box.component';
 
 @NgModule({
     imports: [
@@ -92,6 +93,7 @@ import { ThemesPanelComponent } from './inspector/settings-panel/themes-panel/th
         SettingsPanelComponent,
         TemplatesPanelComponent,
         ThemesPanelComponent,
+        ContextBoxComponent,
     ],
     entryComponents: [
         GradientBackgroundPanelComponent,

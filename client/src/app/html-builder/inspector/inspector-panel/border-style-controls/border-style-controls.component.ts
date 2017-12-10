@@ -1,6 +1,7 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {LivePreview} from "../../../live-preview.service";
+import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {SelectedElement} from "../../../live-preview/selected-element.service";
+import {ColorpickerPanelComponent} from "../colorpicker-panel/colorpicker-panel.component";
+import {InspectorFloatingPanel} from "../../inspector-floating-panel.service";
 
 @Component({
     selector: 'border-style-controls',
@@ -9,6 +10,7 @@ import {SelectedElement} from "../../../live-preview/selected-element.service";
     encapsulation: ViewEncapsulation.None,
 })
 export class BorderStyleControlsComponent implements OnInit {
+    @ViewChild('colorButton') colorButton: ElementRef;
 
     public borderStyle = 'none';
     public borderColor = '#eee';
@@ -16,7 +18,10 @@ export class BorderStyleControlsComponent implements OnInit {
     /**
      * BorderStyleControlsComponent Constructor.
      */
-    constructor(private selected: SelectedElement) {}
+    constructor(
+        private selected: SelectedElement,
+        private panel: InspectorFloatingPanel,
+    ) {}
 
     ngOnInit() {
         this.selected.changed.subscribe(() => {
@@ -27,8 +32,9 @@ export class BorderStyleControlsComponent implements OnInit {
     /**
      * Apply border color to selected element.
      */
-    public applyBorderColor() {
-        this.selected.applyStyle('borderColor', this.borderColor);
+    public applyBorderColor(color: string) {
+        this.borderColor = color;
+        this.selected.applyStyle('borderColor', color);
     }
 
     /**
@@ -36,6 +42,15 @@ export class BorderStyleControlsComponent implements OnInit {
      */
     public applyBorderStyle() {
         this.selected.applyStyle('borderStyle', this.borderStyle)
+    }
+
+    /**
+     * Open color picker panel and update border color.
+     */
+    public openColorpickerPanel() {
+        this.panel.open(ColorpickerPanelComponent, this.colorButton, {closeOnSelected: false}).selected.subscribe(color => {
+            this.applyBorderColor(color);
+        });
     }
 
     /**

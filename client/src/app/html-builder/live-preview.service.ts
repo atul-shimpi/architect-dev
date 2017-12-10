@@ -40,8 +40,7 @@ export class LivePreview {
         private previewDocument: LivePreviewDocument,
     ) {}
 
-    public init(hoverBox: ElementRef, selectedBox: ElementRef, dragHelper: DragVisualHelperComponent) {
-        this.contextBoxes.set(hoverBox.nativeElement, selectedBox.nativeElement);
+    public init(dragHelper: DragVisualHelperComponent) {
         this.dragHelper = dragHelper;
 
         this.registerKeybinds();

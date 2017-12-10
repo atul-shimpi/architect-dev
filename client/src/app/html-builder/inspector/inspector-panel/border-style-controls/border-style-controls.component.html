@@ -1,9 +1,9 @@
 <button type="button"
         class="no-style border-color"
-        [(colorPicker)]="borderColor"
         [style.borderColor]="borderColor"
-        (colorPickerChange)="applyBorderColor()"
+        (click)="openColorpickerPanel()"
         matTooltip="Border Color"
+        #colorButton
 ></button>
 
 <div class="input-container">

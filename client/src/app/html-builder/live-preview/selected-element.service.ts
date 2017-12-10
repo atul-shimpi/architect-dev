@@ -41,6 +41,13 @@ export class SelectedElement extends ActiveElement {
         return this.node.className.indexOf('col-') > -1
     }
 
+    /**
+     * Check if text contents of selected element can be modified.
+     */
+    public canModifyText(): boolean {
+        return this.canModify('text') && this.element.showWysiwyg;
+    }
+
     public selectParent() {
         this.selectNode(this.node.parentNode as HTMLElement);
     }

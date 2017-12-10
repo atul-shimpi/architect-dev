@@ -1,22 +1,7 @@
-<ng-container previewDragAndDrop [dragOverlay]="dragOverlay">
+<ng-container previewDragAndDrop>
     <div class="highlights">
-        <div class="hover-box context-box" #hoverBox>
-            <div class="context-box-actions">
-                <div class="drag-handle" #dragHandle>
-                    <svg-icon name="drag-handle"></svg-icon>
-                </div>
-                <span class="column-name">{{livePreview.getElementDisplayName(livePreview.hover.element, livePreview.hover.node)}}</span>
-            </div>
-        </div>
-
-        <div class="selected-box context-box" #selectedBox>
-            <div class="context-box-actions">
-                <div class="drag-handle" #dragHandle>
-                    <svg-icon name="drag-handle"></svg-icon>
-                </div>
-                <span class="column-name">{{livePreview.getElementDisplayName(livePreview.selected.element, livePreview.selected.node)}}</span>
-            </div>
-        </div>
+        <context-box class="hidden" type="hover" #hoverBox></context-box>
+        <context-box class="hidden" type="selected" #selectedBox></context-box>
     </div>
     <iframe src="about:blank" #iframe></iframe>
     <div class="drag-overlay" #dragOverlay></div>

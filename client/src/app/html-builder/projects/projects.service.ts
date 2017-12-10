@@ -30,14 +30,14 @@ export class Projects {
     /**
      * Create a new project.
      */
-    public create(params: object): Observable<{project: Project}> {
+    public create(params: object): Observable<{project: BuilderProject}> {
         return this.http.post('projects', params);
     }
 
     /**
      * Update project matching specified id.
      */
-    public update(id: number, params: object): Observable<{project: Project}> {
+    public update(id: number, params: object): Observable<{project: BuilderProject}> {
         return this.http.put('projects/'+id, params);
     }
 

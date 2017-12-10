@@ -30,6 +30,10 @@ export class DragElementsDirective extends BaseDragAndDrop {
         super();
     }
 
+    protected getDragHandles() {
+        return document.querySelectorAll('.element-drag-handle');
+    }
+
     protected setDragElement(e: HammerInput) {
         const el = this.elements.findByName(e.target.closest('.element')['dataset'].name);
         const node = DomHelpers.nodeFromString(el.html);

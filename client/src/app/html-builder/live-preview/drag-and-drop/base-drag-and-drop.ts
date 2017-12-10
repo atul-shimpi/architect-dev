@@ -11,7 +11,7 @@ import {LivePreviewDocument} from "../live-preview-document.service";
 
 export abstract class BaseDragAndDrop implements AfterContentInit {
 
-    @Input() protected dragOverlay: HTMLElement;
+    protected dragOverlay: HTMLElement;
 
     protected dragHelper: DragVisualHelperComponent;
 
@@ -31,8 +31,6 @@ export abstract class BaseDragAndDrop implements AfterContentInit {
     protected dragEl: {element: any, node: HTMLElement};
 
     protected bodyBeforeDrag: HTMLBodyElement;
-
-    protected abstract dragElements: QueryList<ElementRef>;
 
     protected abstract livePreview: LivePreview;
 
@@ -54,10 +52,10 @@ export abstract class BaseDragAndDrop implements AfterContentInit {
         this.dragOverlay = document.querySelector('.drag-overlay') as HTMLElement;
         let container  = document.querySelector('live-preview') as HTMLElement;
         this.dragHelper = this.livePreview.dragHelper;
-        this.scroller = new LivePreviewScroller(this.previewDocument.get(), container);
+        this.scroller = new LivePreviewScroller(this.previewDocument, container);
 
         this.zone.runOutsideAngular(() => {
-            this.initHammer(this.dragElements.toArray());
+            this.initHammer(this.getDragHandles());
         });
     }
 
@@ -65,19 +63,21 @@ export abstract class BaseDragAndDrop implements AfterContentInit {
 
     protected abstract setDragElement(e: HammerInput);
 
+    protected abstract getDragHandles(): NodeListOf<Element>;
+
     /**
      * Init hammer manager for specified elements.
      */
-    protected initHammer(elements: ElementRef[]) {
-        elements.forEach(ref => {
-            let hammer = new Hammer.Manager(ref.nativeElement);
+    protected initHammer(elements: NodeListOf<Element>) {
+        for (let i = elements.length - 1; i >= 0; i--) {
+            let hammer = new Hammer.Manager(elements[i]);
             let pan = new Hammer.Pan({direction: Hammer.DIRECTION_ALL, threshold: 0});
             hammer.add([pan]);
 
             hammer.on('panstart', e => this.handleDragStart(e));
             hammer.on('panmove', e => this.handleDrag(e));
             hammer.on('panend', e => this.handleDragEnd(e));
-        });
+        }
     }
 
     protected handleDragStart(e: HammerInput) {
@@ -101,9 +101,8 @@ export abstract class BaseDragAndDrop implements AfterContentInit {
     }
 
     protected handleDrag(e: HammerInput) {
-        const scrollTop = this.previewDocument.getBody().scrollTop,
-            x = e.center.x,
-            y = e.center.y + scrollTop;
+        const x = e.center.x,
+              y = e.center.y;
 
         this.repositionDragMirror(y, x);
 
@@ -131,7 +130,7 @@ export abstract class BaseDragAndDrop implements AfterContentInit {
         this.renderer.setStyle(this.dragOverlay, 'display', 'none');
 
         if (this.dragEl.element.name !== 'column') {
-            this.dropPlaceholder.parentNode.replaceChild(this.dragEl.node, this.dropPlaceholder);
+            this.dropPlaceholder.parentNode && this.dropPlaceholder.parentNode.replaceChild(this.dragEl.node, this.dropPlaceholder);
             this.renderer.setStyle(this.dragEl.node, 'display', this.dragEl.node.getAttribute('data-display'));
             this.renderer.removeAttribute(this.dragEl.node, 'data-display');
             this.dropPlaceholder.remove();

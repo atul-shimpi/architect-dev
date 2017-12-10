@@ -6,7 +6,7 @@
            </mat-expansion-panel-header>
 
            <div class="elements-grid" dragElements>
-               <div class="element" *ngFor="let element of getElementsForCategory(category)" #dragElement [attr.data-name]="element.name">
+               <div class="element element-drag-handle" *ngFor="let element of getElementsForCategory(category)" [attr.data-name]="element.name">
                    <svg-icon [name]="element.icon"></svg-icon>
                    <div class="name">{{element.name}}</div>
                </div>

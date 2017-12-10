@@ -9,6 +9,10 @@ export class ContextBoxes {
     private hoverBox: HTMLElement;
     private selectedBox: HTMLElement;
 
+    private minHeight = 50;
+    private spacing = 10;
+    private minWidth = 100;
+
     public repositionBox(name: 'hover'|'selected', node: HTMLElement, el?: any) {
 
         //hide context boxes depending on user settings
@@ -32,13 +36,33 @@ export class ContextBoxes {
         if ( ! rect.width || ! rect.height) {
             this.hideBox(name);
         } else {
-            this.getBox(name).style.top = rect.top+'px';
-            this.getBox(name).style.left = rect.left+'px';
-            this.getBox(name).style.height = rect.height+'px';
-            this.getBox(name).style.width = rect.width+'px';
+            this.getBox(name).style.top = this.getBoxTop(rect) + 'px';
+            this.getBox(name).style.left = this.getBoxLeft(rect) + 'px';
+            this.getBox(name).style.height = this.getBoxHeight(rect) + 'px';
+            this.getBox(name).style.width = this.getBoxWidth(rect) + 'px';
             this.showBox(name);
         }
     };
+
+    private getBoxHeight(rect: ClientRect) {
+        const height = rect.height < this.minHeight ? this.minHeight : rect.height;
+        return height + this.spacing;
+    }
+
+    private getBoxWidth(rect: ClientRect) {
+        const width = rect.width < this.minWidth ? this.minWidth : rect.width;
+        return width + this.spacing;
+    }
+
+    private getBoxTop(rect: ClientRect) {
+        const offset = rect.height < this.minHeight ? this.minHeight - rect.height : 0;
+        return rect.top - (offset /2) - (this.spacing / 2);
+    }
+
+    private getBoxLeft(rect: ClientRect) {
+        const offset = rect.width < this.minWidth ? this.minWidth - rect.width : 0;
+        return rect.left - (offset /2) - (this.spacing / 2);
+    }
 
     /**
      * Hide specified context box.
