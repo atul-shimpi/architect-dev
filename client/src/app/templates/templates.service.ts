@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {AppHttpClient} from "vebto-client/core";
 import {Observable} from "rxjs/Observable";
 import {Template} from "../../types/models/Template";
+import {BuilderTemplate} from "../html-builder/builder-types";
 
 @Injectable()
 export class Templates {
@@ -21,7 +22,7 @@ export class Templates {
     /**
      * Get template by specified id.
      */
-    public get(name: string): Observable<{template: Template}> {
+    public get(name: string): Observable<{template: BuilderTemplate}> {
         return this.http.get('templates/'+name);
     }
 }

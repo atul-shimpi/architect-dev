@@ -54,6 +54,8 @@ import { SettingsPanelComponent } from './inspector/settings-panel/settings-pane
 import { TemplatesPanelComponent } from './inspector/settings-panel/templates-panel/templates-panel.component';
 import { ThemesPanelComponent } from './inspector/settings-panel/themes-panel/themes-panel.component';
 import { ContextBoxComponent } from './live-preview/context-box/context-box.component';
+import { LinkEditorComponent } from './live-preview/link-editor/link-editor.component';
+import {LinkEditor} from "./live-preview/link-editor/link-editor.service";
 
 @NgModule({
     imports: [
@@ -94,6 +96,7 @@ import { ContextBoxComponent } from './live-preview/context-box/context-box.comp
         TemplatesPanelComponent,
         ThemesPanelComponent,
         ContextBoxComponent,
+        LinkEditorComponent,
     ],
     entryComponents: [
         GradientBackgroundPanelComponent,
@@ -105,6 +108,7 @@ import { ContextBoxComponent } from './live-preview/context-box/context-box.comp
         LivePreviewContextMenuComponent,
         TemplatesPanelComponent,
         ThemesPanelComponent,
+        LinkEditorComponent,
     ],
     providers: [
         LivePreview,
@@ -127,6 +131,7 @@ import { ContextBoxComponent } from './live-preview/context-box/context-box.comp
         BuilderDocumentActions,
         Projects,
         ProjectResolver,
+        LinkEditor,
     ]
 })
 export class HtmlBuilderModule {

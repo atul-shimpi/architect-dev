@@ -1,6 +1,7 @@
 import {DomHelpers} from "./dom-helpers.service";
 import {utils} from "vebto-client/core/services/utils";
 import {Template} from "../../types/models/Template";
+import {BuilderTemplate} from "./builder-types";
 
 export class PageDocument {
 
@@ -18,8 +19,8 @@ export class PageDocument {
      * Ids of dom elements that are created by the builder and are not part of the project.
      */
     protected internalIds = [
-        'base', 'jquery', 'custom-css', 'custom-js', 'template-js',
-        'template-css', 'framework-css', 'framework-js', 'preview-css', 'font-awesome'
+        '#base', '#jquery', '#custom-css', '#custom-js', '#template-js', '[id^=library]',
+        '#template-css', '#framework-css', '#framework-js', '#preview-css', '#font-awesome'
     ];
 
     public getOuterHtml(): string {
@@ -72,12 +73,12 @@ export class PageDocument {
     /**
      * Generate page document from specified markup.
      */
-    public generate(html: string = '', template?: Template): PageDocument {
+    public generate(html: string = '', template?: BuilderTemplate): PageDocument {
         this.document = new DOMParser().parseFromString(this.trim(html), 'text/html');
 
         //remove old link/script nodes to frameworks, icons, templates etc.
         this.internalIds.forEach(id => {
-            const els = this.document.querySelectorAll('#'+id);
+            const els = this.document.querySelectorAll(id);
             for (let i = 0; i < els.length; i++) {
                 els[i].parentNode.removeChild(els[i]);
             }
@@ -88,14 +89,28 @@ export class PageDocument {
         this.addIconsLink();
 
         if (template) {
-            this.createLink('link', 'css/template.css', 'template-css');
-            this.createLink('script', 'js/template.js', 'template-js');
+            this.addTemplate(template);
         }
 
         this.createLink('link', 'css/styles.css', 'custom-css');
         this.createLink('script', 'js/scripts.js', 'template-js');
 
         return this;
+    }
+
+    /**
+     * Add specified template to page.
+     */
+    private addTemplate(template: BuilderTemplate) {
+        this.createLink('link', 'css/template.css', 'template-css');
+        this.createLink('script', 'js/template.js', 'template-js');
+
+        if ( ! template.config.libraries) return;
+
+        //legacy libraries
+        template.config.libraries.forEach(library => {
+            this.createLink('script', `js/${library}.js`, `library-${library}`);
+        });
     }
 
     /**

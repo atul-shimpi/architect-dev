@@ -253,6 +253,13 @@ class ProjectRepository
         $this->storage->put("$projectPath/css/template.css", $templateData['css']);
         $this->storage->put("$projectPath/js/template.js", $templateData['js']);
 
+        //libraries
+        collect($templateData['config']['libraries'])->each(function($library) use($projectPath) {
+            $name = strtolower(kebab_case($library));
+            $content = File::get(resource_path("builder/js/libraries/$name.js"));
+            $this->storage->put("$projectPath/js/$name.js", $content);
+        });
+
         //thumbnail
         $this->storage->put("$projectPath/thumbnail.png", File::get($templateData['thumbnail']));
     }

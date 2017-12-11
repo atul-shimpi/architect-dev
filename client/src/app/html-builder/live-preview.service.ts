@@ -1,5 +1,4 @@
 import {ElementRef, Injectable, NgZone} from '@angular/core';
-import {Template} from "../../types/models/Template";
 import {Elements} from "./elements/elements.service";
 import {ActiveElement} from "./live-preview/active-element";
 import {UndoManager} from "./undo-manager/undo-manager.service";
@@ -24,6 +23,8 @@ export class LivePreview {
 
     public dragHelper: DragVisualHelperComponent;
 
+    private iframe: HTMLIFrameElement;
+
     constructor(
         private zone: NgZone,
         private elements: Elements,
@@ -35,13 +36,14 @@ export class LivePreview {
         private overlay: Overlay,
         private keybinds: Keybinds,
         public selected: SelectedElement,
-        private contextBoxes: ContextBoxes,
+        public contextBoxes: ContextBoxes,
         private builderDocument: BuilderDocument,
         private previewDocument: LivePreviewDocument,
     ) {}
 
-    public init(dragHelper: DragVisualHelperComponent) {
+    public init(dragHelper: DragVisualHelperComponent, iframe: ElementRef) {
         this.dragHelper = dragHelper;
+        this.iframe = iframe.nativeElement;
 
         this.registerKeybinds();
         this.bindToIframeEvents();
@@ -51,6 +53,12 @@ export class LivePreview {
         //make sure we only update live preview, if the changes did not originate from here
         this.builderDocument.contentChanged.subscribe(source => {
             if (source !== 'livePreview') this.reload();
+        });
+
+        this.iframe.addEventListener('load', (e) => {
+            this.previewDocument.init(new ElementRef(this.iframe));
+            this.bindToIframeEvents();
+            this.contextBoxes.hideBoxes();
         });
     }
 
@@ -140,11 +148,11 @@ export class LivePreview {
 
     private listenForClick(hammer: HammerManager) {
         hammer.on('single_tap', e => {
-            console.log('single');
+            console.log('single', e.target, e.target.matches('a, a *'));
 
             //prevent navigation via links
             if (e.target.matches('a, a *')) {
-                e.preventDefault();
+                e.srcEvent.preventDefault();
             }
 
             //hide context menu

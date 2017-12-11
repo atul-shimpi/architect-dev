@@ -8,6 +8,8 @@ import {Modal} from "vebto-client/core/ui/modal.service";
 import {Inspector} from "../../inspector/inspector.service";
 import {ActiveProject} from "../../projects/active-project";
 import {LivePreview} from "../../live-preview.service";
+import {Elements} from "../../elements/elements.service";
+import {LinkEditor} from "../link-editor/link-editor.service";
 
 @Component({
     selector: 'context-box',
@@ -40,6 +42,8 @@ export class ContextBoxComponent {
         private contextBoxes: ContextBoxes,
         private inlineTextEditor: InlineTextEditor,
         public el: ElementRef,
+        private elements: Elements,
+        private linkEditor: LinkEditor,
     ) {}
 
     /**
@@ -63,12 +67,14 @@ export class ContextBoxComponent {
     public editNode() {
         const node = this.livePreview[this.type].node;
 
-        if (this.selectedElement.isLayout()) {
+        if (this.elements.isLayout(node)) {
             this.inspector.openPanel('layout');
-        } else if (this.selectedElement.isImage) {
+        } else if (this.elements.isImage(node)) {
             this.openUploadImageModal();
+        } else if (this.elements.isLink(node)) {
+            this.linkEditor.open(node);
         } else {
-            if (this.selectedElement.canModifyText()) {
+            if (this.elements.canModifyText(this.elements.match(node))) {
                 this.contextBoxes.hideBoxes();
                 this.inlineTextEditor.open(node);
             }
@@ -78,6 +84,7 @@ export class ContextBoxComponent {
     private openUploadImageModal() {
         const data = {uri: 'uploads/images', httpParams: {path: this.activeProject.getBaseUrl(true)+'images'}};
         this.modal.open(UploadFileModalComponent, data).afterClosed().subscribe(url => {
+            if ( ! url) return;
             this.livePreview[this.type].node['src'] = url;
         });
     }

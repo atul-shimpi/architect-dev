@@ -75,6 +75,54 @@ export class Elements {
         }
     }
 
+    public canModifyText(element: any) {
+        return this.canModify('text', element) && element.showWysiwyg;
+    }
+
+    /**
+     * Check if specified property/style of this element can be modified.
+     */
+    public canModify(property: string, element: any) {
+        if ( ! element) return;
+        return element.canModify.indexOf(property.toLowerCase()) > -1;
+    }
+
+    /**
+     * Check if specified node is an image.
+     */
+    public isImage(node: HTMLElement): boolean {
+        return node.nodeName.toLowerCase() === 'img';
+    }
+
+    /**
+     * Check if specified node is a link.
+     */
+    public isLink(node: HTMLElement): boolean {
+        return node.nodeName.toLowerCase() === 'a';
+    }
+
+    /**
+     * Check if node is column, row, or container.
+     */
+    public isLayout(node: HTMLElement): boolean {
+        return this.isColumn(node) || this.isRow(node) || this.isContainer(node);
+    }
+
+    public isContainer(node: HTMLElement): boolean {
+        if ( ! node) return false;
+        return node.classList.contains('container');
+    }
+
+    public isRow(node: HTMLElement): boolean {
+        if ( ! node) return false;
+        return node.classList.contains('row');
+    }
+
+    public isColumn(node: HTMLElement): boolean {
+        if ( ! node) return false;
+        return node.className.indexOf('col-') > -1
+    }
+
     public checkForSpecialCases(node: HTMLElement): HTMLElement|boolean {
         if ( ! node ) return false;
 

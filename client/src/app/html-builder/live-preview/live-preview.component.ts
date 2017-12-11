@@ -35,6 +35,6 @@ export class LivePreviewComponent implements OnInit {
     ngOnInit() {
         this.previewDocument.init(this.iframe);
         this.contextBoxes.set(this.hoverBox.el.nativeElement, this.selectedBox.el.nativeElement);
-        this.livePreview.init(this.dragHelper);
+        this.livePreview.init(this.dragHelper, this.iframe);
     }
 }

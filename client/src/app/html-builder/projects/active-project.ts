@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {Settings} from "vebto-client/core";
 import {BuilderDocument} from "../builder-document.service";
 import {ProjectBaseUrl} from "./project-base-url.service";
-import {BuilderPage, BuilderProject} from "../builder-types";
+import {BuilderPage, BuilderProject, BuilderTemplate} from "../builder-types";
 import {LivePreviewDocument} from "../live-preview/live-preview-document.service";
 import {Projects} from "./projects.service";
 import {Observable} from "rxjs/Observable";
@@ -15,7 +15,7 @@ export class ActiveProject {
     /**
      * Template applied to the project.
      */
-    private activeTemplate: Template;
+    private activeTemplate: BuilderTemplate;
 
     /**
      * Pages of the project.
@@ -153,7 +153,7 @@ export class ActiveProject {
         this.updateBuilderDocument();
     }
 
-    public applyTemplate(template: Template) {
+    public applyTemplate(template: BuilderTemplate) {
         this.activeTemplate = template;
         this.pages = template.pages.slice() as BuilderPage[];
         this.activePage = 0;
@@ -161,8 +161,18 @@ export class ActiveProject {
         this.updateBuilderDocument();
     }
 
+    /**
+     * Get project's base static files url.
+     */
     public getBaseUrl(relative: boolean = false) {
         return this.projectUrl.generate(this.project.model.uuid, relative);
+    }
+
+    /**
+     * Get project's site pretty url that is routed via architect.
+     */
+    public getSiteUrl() {
+        return this.settings.getBaseUrl(true) + 'sites/' + this.project.model.name;
     }
 
     private updateBuilderDocument() {
@@ -173,7 +183,7 @@ export class ActiveProject {
         );
     }
 
-    public getTemplate(): Template {
+    public getTemplate(): BuilderTemplate {
         return this.activeTemplate;
     }
 

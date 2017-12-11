@@ -23,29 +23,14 @@ export class SelectedElement extends ActiveElement {
      * Check if this node is column, row, or container.
      */
     public isLayout(): boolean {
-        return this.isColumn() || this.isRow() || this.isContainer();
-    }
-
-    public isContainer(): boolean {
-        if ( ! this.node) return false;
-        return this.node.classList.contains('container');
-    }
-
-    public isRow(): boolean {
-        if ( ! this.node) return false;
-        return this.node.classList.contains('row');
-    }
-
-    public isColumn(): boolean {
-        if ( ! this.node) return false;
-        return this.node.className.indexOf('col-') > -1
+        return this.elements.isLayout(this.node);
     }
 
     /**
      * Check if text contents of selected element can be modified.
      */
     public canModifyText(): boolean {
-        return this.canModify('text') && this.element.showWysiwyg;
+        return this.elements.canModifyText(this.element);
     }
 
     public selectParent() {
@@ -80,8 +65,7 @@ export class SelectedElement extends ActiveElement {
      * Check if specified property/style of this element can be modified.
      */
     public canModify(property: string) {
-        if ( ! this.element) return;
-        return this.element.canModify.indexOf(property.toLowerCase()) > -1;
+        return this.elements.canModify(property, this.element);
     }
 
     /**

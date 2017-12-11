@@ -15,6 +15,6 @@ export class ProjectBaseUrl {
 
         if (relative) return uri;
 
-        return this.settings.getBaseUrl(true)+'storage/' + uri;
+        return this.settings.getBaseUrl()+'storage/' + uri;
     }
 }

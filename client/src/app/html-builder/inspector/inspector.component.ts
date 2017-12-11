@@ -47,4 +47,13 @@ export class InspectorComponent implements OnInit {
             this.toast.open('Project saved');
         });
     }
+
+    /**
+     * Open active project preview in new window.
+     */
+    public openPreview() {
+        this.activeProject.save().subscribe(() => {
+            window.open(this.activeProject.getSiteUrl(), '_blank');
+        });
+    }
 }

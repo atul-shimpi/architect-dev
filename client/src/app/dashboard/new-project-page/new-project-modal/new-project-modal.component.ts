@@ -7,6 +7,7 @@ import {utils} from "vebto-client/core/services/utils";
 import {ProjectBaseUrl} from "../../../html-builder/projects/project-base-url.service";
 import {Template} from "../../../../types/models/Template";
 import {Page} from "../../../../types/models/Page";
+import {BuilderTemplate} from "../../../html-builder/builder-types";
 
 @Component({
     selector: 'new-project-modal',
@@ -109,11 +110,11 @@ export class NewProjectModalComponent {
     /**
      * Transform template pages into project pages.
      */
-    private transformTemplatePages(template: Template) {
+    private transformTemplatePages(template: BuilderTemplate) {
         return template.pages.map(page => {
             return {
                 name: page.name,
-                html: this.pageDocument.generate(page.html, template).getOuterHtml()
+                html: this.pageDocument.generate(page.html, template).getOuterHtml(),
             }
         });
     }

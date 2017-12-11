@@ -84,8 +84,7 @@ export abstract class BaseDragAndDrop implements AfterContentInit {
         this.bodyBeforeDrag = this.previewDocument.getBody().cloneNode(true) as HTMLBodyElement;
 
         this.livePreview.dragging = true;
-        this.livePreview.hideBox('selected');
-        this.livePreview.hideBox('hover');
+        this.livePreview.contextBoxes.hideBoxes();
 
         this.setDragElement(e);
 

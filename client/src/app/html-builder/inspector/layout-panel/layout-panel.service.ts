@@ -6,6 +6,7 @@ import {SelectedElement} from "../../live-preview/selected-element.service";
 import {BuilderDocument} from "../../builder-document.service";
 import {LivePreviewDocument} from "../../live-preview/live-preview-document.service";
 import {ContextBoxes} from "../../live-preview/context-boxes.service";
+import {Elements} from "../../elements/elements.service";
 
 @Injectable()
 export class LayoutPanel {
@@ -31,6 +32,7 @@ export class LayoutPanel {
         private selected: SelectedElement,
         private undoManager: UndoManager,
         private contextBoxes: ContextBoxes,
+        private elements: Elements,
     ) {
         this.selected.changed.subscribe(() => {
             this.selectRowAndContainerUsing(this.selected.node)
@@ -326,17 +328,17 @@ export class LayoutPanel {
 
         if ( ! node || ! this.selected.isLayout()) return;
 
-        if (this.selected.isRow()) {
+        if (this.elements.isRow(this.selected.node)) {
             row = node;
             container = row.closest('.container') as HTMLElement;
         }
 
-        if (this.selected.isColumn()) {
+        if (this.elements.isColumn(this.selected.node)) {
             row = node.closest('.row') as HTMLElement;
             container = row.closest('.container') as HTMLElement;
         }
 
-        if (this.selected.isContainer()) {
+        if (this.elements.isContainer(this.selected.node)) {
             container = node;
             row = container.querySelector('.row');
         }

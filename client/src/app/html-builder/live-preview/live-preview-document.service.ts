@@ -22,7 +22,7 @@ export class LivePreviewDocument {
     }
 
     public getScrollTop(): number {
-        return this.getBody().scrollTop;
+        return this.document.documentElement.scrollTop || this.getBody().scrollTop;
     }
 
     public scrollIntoView(node: HTMLElement) {

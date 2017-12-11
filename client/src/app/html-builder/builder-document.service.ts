@@ -5,6 +5,7 @@ import {Template} from "../../types/models/Template";
 import {PageDocument} from "./page-document";
 import {DomHelpers} from "./dom-helpers.service";
 import {Settings} from "vebto-client/core/services/settings.service";
+import {BuilderTemplate} from "./builder-types";
 
 export type changeSources = 'builderDocument' | 'livePreview' | 'textEditor' | 'codeEditor' | 'activeProject';
 
@@ -19,7 +20,7 @@ export class BuilderDocument extends PageDocument {
     /**
      * Template that should be applied to the document.
      */
-    private template: Template;
+    private template: BuilderTemplate;
 
     /**
      * BuilderDocument Constructor.
@@ -44,7 +45,7 @@ export class BuilderDocument extends PageDocument {
     /**
      * Update builder document using specified markup.
      */
-    public update(html: string, template: Template, source: changeSources = 'builderDocument') {
+    public update(html: string, template: BuilderTemplate, source: changeSources = 'builderDocument') {
         this.template = template;
         this.generate(html, template);
         this.addIframeCss();
