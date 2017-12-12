@@ -49,7 +49,6 @@ import {Projects} from "./projects/projects.service";
 import { PagesPanelComponent } from './inspector/pages-panel/pages-panel.component';
 import {ProjectResolver} from "./project-resolver.service";
 import {BuilderDocumentActions} from "./builder-document-actions.service";
-import {LivePreviewDocument} from "./live-preview/live-preview-document.service";
 import { SettingsPanelComponent } from './inspector/settings-panel/settings-panel.component';
 import { TemplatesPanelComponent } from './inspector/settings-panel/templates-panel/templates-panel.component';
 import { ThemesPanelComponent } from './inspector/settings-panel/themes-panel/themes-panel.component';
@@ -112,7 +111,6 @@ import {LinkEditor} from "./live-preview/link-editor/link-editor.service";
     ],
     providers: [
         LivePreview,
-        LivePreviewDocument,
         Templates,
         Elements,
         Inspector,

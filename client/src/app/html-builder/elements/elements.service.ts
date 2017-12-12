@@ -91,6 +91,7 @@ export class Elements {
      * Check if specified node is an image.
      */
     public isImage(node: HTMLElement): boolean {
+        if ( ! node) return false;
         return node.nodeName.toLowerCase() === 'img';
     }
 
@@ -98,6 +99,7 @@ export class Elements {
      * Check if specified node is a link.
      */
     public isLink(node: HTMLElement): boolean {
+        if ( ! node) return false;
         return node.nodeName.toLowerCase() === 'a';
     }
 
@@ -105,6 +107,7 @@ export class Elements {
      * Check if node is column, row, or container.
      */
     public isLayout(node: HTMLElement): boolean {
+        if ( ! node) return false;
         return this.isColumn(node) || this.isRow(node) || this.isContainer(node);
     }
 

@@ -19,7 +19,7 @@ export class LinkEditor {
     /**
      * Open link editor for specified node.
      */
-    public open(node: HTMLElement) {
+    public open(node: HTMLLinkElement) {
         const strategy = this.overlay.position().connectedTo(
             new ElementRef(node),
             {originX: 'center', originY: 'top'},

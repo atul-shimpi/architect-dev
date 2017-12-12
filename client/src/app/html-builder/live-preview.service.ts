@@ -13,7 +13,6 @@ import {Keybinds} from "vebto-client/core/keybinds/keybinds.service";
 import {SelectedElement} from "./live-preview/selected-element.service";
 import {ContextBoxes} from "./live-preview/context-boxes.service";
 import {BuilderDocument} from "./builder-document.service";
-import {LivePreviewDocument} from "./live-preview/live-preview-document.service";
 
 @Injectable()
 export class LivePreview {
@@ -38,28 +37,47 @@ export class LivePreview {
         public selected: SelectedElement,
         public contextBoxes: ContextBoxes,
         private builderDocument: BuilderDocument,
-        private previewDocument: LivePreviewDocument,
+        private activeProject: ActiveProject,
     ) {}
 
     public init(dragHelper: DragVisualHelperComponent, iframe: ElementRef) {
         this.dragHelper = dragHelper;
         this.iframe = iframe.nativeElement;
 
-        this.registerKeybinds();
-        this.bindToIframeEvents();
-        this.bindToUndoCommandExecuted();
-        this.reload();
+        this.iframe.src = this.activeProject.getBaseUrl();
 
-        //make sure we only update live preview, if the changes did not originate from here
-        this.builderDocument.contentChanged.subscribe(source => {
-            if (source !== 'livePreview') this.reload();
-        });
-
-        this.iframe.addEventListener('load', (e) => {
-            this.previewDocument.init(new ElementRef(this.iframe));
+        this.iframe.onload = () => {
+            console.log('iframe loaded');
+            this.builderDocument.setBaseUrl(this.activeProject.getBaseUrl());
+            this.builderDocument.init(this.iframe.contentDocument);
+            this.registerKeybinds();
             this.bindToIframeEvents();
-            this.contextBoxes.hideBoxes();
-        });
+            this.bindToUndoCommandExecuted();
+
+            this.builderDocument.get().addEventListener('click', e => {
+                const node = e.target as HTMLElement;
+
+                //clicked node is not a link
+                if ( ! node.matches('a, a *')) return;
+
+                e.preventDefault();
+                e.stopPropagation();
+
+                //get relative url of for the link
+                const link = node as HTMLLinkElement,
+                    href = link.href.replace(this.activeProject.getBaseUrl(), '');
+
+                //link just scrolls to a node on the page, bail
+                if (href.indexOf('#') === 0) return;
+
+                //link navigates to an external site, bail
+                if (href.indexOf('//') > -1) return;
+
+                //link navigates to a different page
+                const pageName = href.replace('.html', '');
+                this.activeProject.setActivePage(this.activeProject.getPage(pageName));
+            }, true);
+        };
     }
 
     private bindToUndoCommandExecuted() {
@@ -71,7 +89,7 @@ export class LivePreview {
 
     private bindToIframeEvents() {
         this.zone.runOutsideAngular(() => {
-            const hammer = new Hammer.Manager(this.previewDocument.get()),
+            const hammer = new Hammer.Manager(this.builderDocument.get()),
                 singleTap = new Hammer.Tap({event: 'single_tap'}),
                 doubleTap = new Hammer.Tap({event: 'double_tap', taps: 2});
 
@@ -81,9 +99,9 @@ export class LivePreview {
             this.listenForHover();
             this.listenForClick(hammer);
             this.listenForDoubleClick(hammer);
-            this.keybinds.listenOn(this.previewDocument.get());
+            this.keybinds.listenOn(this.builderDocument.get());
 
-            this.previewDocument.on('contextmenu', e => {
+            this.builderDocument.on('contextmenu', e => {
                 e.preventDefault();
 
                 this.zone.run(() => {
@@ -92,7 +110,7 @@ export class LivePreview {
                 });
             });
 
-            this.previewDocument.on('scroll', e => {
+            this.builderDocument.on('scroll', e => {
                 this.contextBoxes.hideBox('hover');
                 if (this.selected.node) this.repositionBox('selected');
                 this.inlineTextEditor.close();
@@ -112,15 +130,11 @@ export class LivePreview {
         this.keybinds.addWithPreventDefault('arrow_down', () => this.builderDocument.actions.moveSelected('down'));
     }
 
-    public reload() {
-        this.previewDocument.setInnerHtml(this.builderDocument.getInnerHtml());
-    }
-
     private listenForHover() {
-        this.previewDocument.on('mousemove', e => {
+        this.builderDocument.on('mousemove', e => {
             if (this.dragging) return;
 
-            const node = this.previewDocument.elementFromPoint(e.pageX, e.pageY - this.previewDocument.getScrollTop());
+            const node = this.builderDocument.elementFromPoint(e.pageX, e.pageY - this.builderDocument.getScrollTop());
 
             if ( ! node || node === this.hover.node) return;
 
@@ -148,17 +162,10 @@ export class LivePreview {
 
     private listenForClick(hammer: HammerManager) {
         hammer.on('single_tap', e => {
-            console.log('single', e.target, e.target.matches('a, a *'));
-
-            //prevent navigation via links
-            if (e.target.matches('a, a *')) {
-                e.srcEvent.preventDefault();
-            }
-
             //hide context menu
             this.contextMenu.close();
 
-            this.previewDocument.focus();
+            this.builderDocument.focus();
 
             if (this.selected.node == e.target) return true;
 

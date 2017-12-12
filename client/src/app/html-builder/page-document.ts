@@ -8,7 +8,7 @@ export class PageDocument {
     /**
      * Page document object.
      */
-    protected document: Document;
+    protected pageDocument: Document;
 
     /**
      * Url for "base" tag of the document.
@@ -24,42 +24,11 @@ export class PageDocument {
     ];
 
     public getOuterHtml(): string {
-        return '<!DOCTYPE html>' + this.document.documentElement.outerHTML;
+        return '<!DOCTYPE html>' + this.pageDocument.documentElement.outerHTML;
     }
 
     public getInnerHtml(): string {
-        return this.document.documentElement.innerHTML;
-    }
-
-    public getMetaTagValue(name: string) {
-        const node = this.document.querySelector(`meta[name=${name}]`);
-        return node && node.getAttribute('content');
-    }
-
-    public setMetaTagValue(name: string, value: string) {
-        let node = this.document.querySelector(`meta[name=${name}]`);
-        if ( ! node) {
-            node = this.document.createElement('meta');
-            this.document.head.appendChild(node);
-        }
-
-        node.setAttribute('name', name);
-        node.setAttribute('content', value);
-    }
-
-    public getTitleValue() {
-        const node = this.document.querySelector('title');
-        return node && node.innerText;
-    }
-
-    public setTitleValue(value: string) {
-       let node = this.document.querySelector('title');
-       if ( ! node) {
-           node = this.document.createElement('title');
-           this.document.head.appendChild(node);
-       }
-
-       node.innerText = value;
+        return this.pageDocument.documentElement.innerHTML;
     }
 
     /**
@@ -74,11 +43,11 @@ export class PageDocument {
      * Generate page document from specified markup.
      */
     public generate(html: string = '', template?: BuilderTemplate): PageDocument {
-        this.document = new DOMParser().parseFromString(this.trim(html), 'text/html');
+        this.pageDocument = new DOMParser().parseFromString(this.trim(html), 'text/html');
 
         //remove old link/script nodes to frameworks, icons, templates etc.
         this.internalIds.forEach(id => {
-            const els = this.document.querySelectorAll(id);
+            const els = this.pageDocument.querySelectorAll(id);
             for (let i = 0; i < els.length; i++) {
                 els[i].parentNode.removeChild(els[i]);
             }
@@ -118,7 +87,7 @@ export class PageDocument {
      */
     private createLink(type: 'link'|'script', uri: string, id: string) {
         const query  = utils.randomString(8),
-              parent = type === 'link' ? this.document.head : this.document.body;
+              parent = type === 'link' ? this.pageDocument.head : this.pageDocument.body;
 
         type = utils.ucFirst(type);
         const link = DomHelpers['create'+type](this.baseUrl+uri+'?='+query, id);
@@ -130,10 +99,10 @@ export class PageDocument {
      * Add base html element to document.
      */
     protected addBaseElement() {
-        let base = this.document.createElement('base') as HTMLBaseElement;
+        let base = this.pageDocument.createElement('base') as HTMLBaseElement;
         base.id = 'base';
         base.href = this.baseUrl;
-        this.document.head.insertBefore(base, this.document.head.firstChild);
+        this.pageDocument.head.insertBefore(base, this.pageDocument.head.firstChild);
     }
 
     /**
@@ -141,13 +110,13 @@ export class PageDocument {
      */
     protected useFramework(name: string) {
         const link = DomHelpers.createLink(this.baseUrl+'css/framework.css', 'framework-css');
-        this.document.head.appendChild(link);
+        this.pageDocument.head.appendChild(link);
 
         const jquery = DomHelpers.createScript(this.baseUrl+'js/jquery.min.js', 'jquery');
-        this.document.body.appendChild(jquery);
+        this.pageDocument.body.appendChild(jquery);
 
         const script = DomHelpers.createScript(this.baseUrl+'js/framework.js', 'framework-js');
-        this.document.body.appendChild(script);
+        this.pageDocument.body.appendChild(script);
     }
 
     /**
@@ -155,7 +124,7 @@ export class PageDocument {
      */
     protected addIconsLink() {
         const link = DomHelpers.createLink('http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css', 'font-awesome');
-        this.document.head.appendChild(link);
+        this.pageDocument.head.appendChild(link);
     }
 
     /**

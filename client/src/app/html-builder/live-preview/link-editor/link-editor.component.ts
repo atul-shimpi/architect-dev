@@ -1,6 +1,7 @@
 import {Component, ViewEncapsulation} from '@angular/core';
 import {OverlayRef} from "@angular/cdk/overlay";
 import {ActiveProject} from "../../projects/active-project";
+import {BuilderDocument} from "../../builder-document.service";
 
 @Component({
     selector: 'link-editor',
@@ -33,27 +34,35 @@ export class LinkEditorComponent {
     /**
      * LinkEditorComponent Constructor.
      */
-    constructor(public activeProject: ActiveProject) {}
+    constructor(
+        public activeProject: ActiveProject,
+        private builderDocument: BuilderDocument,
+    ) {}
 
     public setEmail() {
         this.node.href = 'mailto:' + this.hrefModel;
-        this.close();
+        this.closeAndEmitChanges();
     }
 
     public setDownload() {
         this.node.href = this.hrefModel;
         this.node.setAttribute('download', this.downloadName);
-        this.close();
+        this.closeAndEmitChanges();
     }
 
     public setPageLink() {
         this.node.href = this.hrefModel + '.html';
-        this.close();
+        this.closeAndEmitChanges();
     }
 
     public setUrl() {
         this.node.href = this.hrefModel;
+        this.closeAndEmitChanges();
+    }
+
+    public closeAndEmitChanges() {
         this.close();
+        this.builderDocument.contentChanged.next('livePreview');
     }
 
     public close() {

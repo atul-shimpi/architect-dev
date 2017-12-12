@@ -2,7 +2,6 @@ import {Component, EventEmitter, OnInit, Output, ViewEncapsulation} from '@angul
 import {HttpCacheClient} from "vebto-client/core";
 import {FormControl} from "@angular/forms";
 import {BuilderDocument} from "../../../../builder-document.service";
-import {LivePreviewDocument} from "../../../../live-preview/live-preview-document.service";
 
 @Component({
     selector: 'google-fonts-panel',
@@ -37,7 +36,7 @@ export class GoogleFontsPanelComponent implements OnInit {
     /**
      * GoogleFontsPanelComponent Constructor.
      */
-    constructor(private http: HttpCacheClient, private previewDocument: LivePreviewDocument) {}
+    constructor(private http: HttpCacheClient, private builderDocument: BuilderDocument) {}
 
     ngOnInit() {
         this.getAll();
@@ -83,7 +82,7 @@ export class GoogleFontsPanelComponent implements OnInit {
     }
 
     public applyFont(fontFamily: string) {
-        this.loadIntoDom([fontFamily], this.previewDocument.get().head);
+        this.loadIntoDom([fontFamily], this.builderDocument.get().head);
         this.emitSelectedEvent(fontFamily);
     }
 

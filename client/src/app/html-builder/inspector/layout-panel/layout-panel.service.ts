@@ -4,7 +4,6 @@ import {utils} from "vebto-client/core";
 import {UndoManager} from "../../undo-manager/undo-manager.service";
 import {SelectedElement} from "../../live-preview/selected-element.service";
 import {BuilderDocument} from "../../builder-document.service";
-import {LivePreviewDocument} from "../../live-preview/live-preview-document.service";
 import {ContextBoxes} from "../../live-preview/context-boxes.service";
 import {Elements} from "../../elements/elements.service";
 
@@ -27,7 +26,6 @@ export class LayoutPanel {
      * LayoutPanel Service Constructor.
      */
     constructor(
-        private previewDocument: LivePreviewDocument,
         private builderDocument: BuilderDocument,
         private selected: SelectedElement,
         private undoManager: UndoManager,
@@ -44,7 +42,7 @@ export class LayoutPanel {
      */
     public loadContainers() {
         this.containers = [];
-        this.nodeListToArray(this.previewDocument.findAll('.container')).forEach(node => {
+        this.nodeListToArray(this.builderDocument.findAll('.container')).forEach(node => {
             const rows = this.nodeListToArray(node.querySelectorAll('.row'));
             this.containers.push({node: node as HTMLElement, rows: rows, id: utils.randomString()});
             if (this.selectedContainer) this.selectContainer(this.selectedContainer.node);
@@ -55,7 +53,7 @@ export class LayoutPanel {
      * Add a row before or after specified reference element.
      */
     public createRow(container: HTMLElement, ref: HTMLElement, dir: 'before'|'after'|'start') {
-        const row = this.previewDocument.createElement('div');
+        const row = this.builderDocument.createElement('div');
         row.appendChild(this.createColumnNode(12));
         row.classList.add('row');
 
@@ -70,28 +68,28 @@ export class LayoutPanel {
         }
 
         this.selectRow(row);
-        this.builderDocument.setHtml(this.previewDocument.getOuterHtml(), 'livePreview');
+        this.builderDocument.contentChanged.next('livePreview');
     }
 
     /**
      * Create new container node and add it to the container's list.
      */
     public createContainer(ref: HTMLElement, dir: 'before'|'after'|'start') {
-        const row = this.previewDocument.createElement('div');
+        const row = this.builderDocument.createElement('div');
         row.appendChild(this.createColumnNode(12));
         row.classList.add('row');
 
-        const container = this.previewDocument.createElement('div');
+        const container = this.builderDocument.createElement('div');
         container.classList.add('container');
         container.appendChild(row);
 
         if (dir === 'start') {
-            this.previewDocument.getBody().appendChild(container);
+            this.builderDocument.getBody().appendChild(container);
         } else {
             ref[dir](container);
         }
 
-        this.builderDocument.setHtml(this.previewDocument.getOuterHtml(), 'livePreview');
+        this.builderDocument.contentChanged.next('livePreview');
         this.selectContainer(container);
         this.selected.selectNode(this.selectedContainer.node);
     }
@@ -127,7 +125,7 @@ export class LayoutPanel {
         const columns = this.getColumns(node),
             preset  = columns.map(col => col.span);
 
-        this.previewDocument.scrollIntoView(node);
+        this.builderDocument.scrollIntoView(node);
 
         this.selectedRow = {node, columns, preset};
     }
@@ -144,7 +142,7 @@ export class LayoutPanel {
 
     public selectColumn(node: HTMLElement) {
         this.selected.selectNode(node);
-        this.previewDocument.scrollIntoView(node);
+        this.builderDocument.scrollIntoView(node);
     }
 
     public applyPreset(preset: number[]) {
@@ -179,7 +177,7 @@ export class LayoutPanel {
         });
 
         this.selectRow(this.selectedRow.node);
-        this.builderDocument.setHtml(this.previewDocument.getOuterHtml(), 'livePreview');
+        this.builderDocument.contentChanged.next('livePreview');
         this.contextBoxes.repositionBox('selected', this.selected.node);
     }
 
@@ -257,7 +255,7 @@ export class LayoutPanel {
      * Create new column node of specified span.
      */
     private createColumnNode(span: number): HTMLElement {
-        let col = this.previewDocument.createElement('div');
+        let col = this.builderDocument.createElement('div');
         col.innerText = 'New Column';
         col.className = 'col-sm-'+span;
         return col;

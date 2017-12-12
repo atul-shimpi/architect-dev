@@ -9,8 +9,13 @@ export class ContextBoxes {
     private hoverBox: HTMLElement;
     private selectedBox: HTMLElement;
 
-    private minHeight = 50;
+    private minHeight = 40;
+
+    /**
+     * Spacing between context box and selected element.
+     */
     private spacing = 10;
+
     private minWidth = 100;
 
     public repositionBox(name: 'hover'|'selected', node: HTMLElement, el?: any) {
@@ -46,22 +51,22 @@ export class ContextBoxes {
 
     private getBoxHeight(rect: ClientRect) {
         const height = rect.height < this.minHeight ? this.minHeight : rect.height;
-        return height + this.spacing;
+        return height + (this.spacing * 2);
     }
 
     private getBoxWidth(rect: ClientRect) {
         const width = rect.width < this.minWidth ? this.minWidth : rect.width;
-        return width + this.spacing;
+        return width + (this.spacing * 2);
     }
 
     private getBoxTop(rect: ClientRect) {
         const offset = rect.height < this.minHeight ? this.minHeight - rect.height : 0;
-        return rect.top - (offset /2) - (this.spacing / 2);
+        return rect.top - (offset /2) - this.spacing;
     }
 
     private getBoxLeft(rect: ClientRect) {
         const offset = rect.width < this.minWidth ? this.minWidth - rect.width : 0;
-        return rect.left - (offset /2) - (this.spacing / 2);
+        return rect.left - (offset /2) - this.spacing;
     }
 
     /**

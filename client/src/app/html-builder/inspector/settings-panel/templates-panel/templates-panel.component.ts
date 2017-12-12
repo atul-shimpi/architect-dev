@@ -5,6 +5,7 @@ import {Settings} from "vebto-client/core/services/settings.service";
 import {ActiveProject} from "../../../projects/active-project";
 import {Modal} from "vebto-client/core/ui/modal.service";
 import {ConfirmModalComponent} from "vebto-client/core/ui/confirm-modal/confirm-modal.component";
+import {BuilderTemplate} from "../../../builder-types";
 
 @Component({
     selector: 'templates-panel',
@@ -35,7 +36,7 @@ export class TemplatesPanelComponent implements OnInit {
     /**
      * Apply specified template to the active project.
      */
-    public applyTemplate(template: Template) {
+    public applyTemplate(template: BuilderTemplate) {
         console.log('x');
         this.modal.open(ConfirmModalComponent, {
             title: 'Are you sure you want to apply this template?',
@@ -51,7 +52,7 @@ export class TemplatesPanelComponent implements OnInit {
     /**
      * Get absolute url for specified template's thumbnail.
      */
-    public getThumbnailUrl(template: Template) {
+    public getThumbnailUrl(template: BuilderTemplate) {
         return this.settings.getBaseUrl(true) + 'storage/' + template.thumbnail;
     }
 }

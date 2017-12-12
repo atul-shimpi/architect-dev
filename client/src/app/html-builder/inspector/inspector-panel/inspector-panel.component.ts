@@ -4,8 +4,9 @@ import {LayoutPanel} from "../layout-panel/layout-panel.service";
 import {Inspector} from "../inspector.service";
 import {UploadFileModalComponent} from "vebto-client/core/index";
 import {Modal} from "vebto-client/core/ui/modal.service";
-import {ProjectBaseUrl} from "../../projects/project-base-url.service";
 import {ActiveProject} from "../../projects/active-project";
+import {LinkEditor} from "../../live-preview/link-editor/link-editor.service";
+import {Elements} from "../../elements/elements.service";
 
 @Component({
     selector: 'inspector-panel',
@@ -24,6 +25,8 @@ export class InspectorPanelComponent {
         private inspector: Inspector,
         private modal: Modal,
         private activeProject: ActiveProject,
+        private linkEditor: LinkEditor,
+        private elements: Elements,
     ) {}
 
     /**
@@ -50,16 +53,30 @@ export class InspectorPanelComponent {
     }
 
     /**
+     * Open link editor modal.
+     */
+    public openLinkEditorModal() {
+        this.linkEditor.open(this.livePreview.selected.node as HTMLLinkElement);
+    }
+
+    /**
      * Check if currently selected node is column, row or container.
      */
-    public selectedIsLayout() {
+    public selectedIsLayout(): boolean {
         return this.livePreview.selected.isLayout();
     }
 
     /**
      * Check if currently selected node is an image.
      */
-    public selectedIsImage() {
+    public selectedIsImage(): boolean {
         return this.livePreview.selected.isImage;
+    }
+
+    /**
+     * Check if currently selected node is a link.
+     */
+    public selectedIsLink(): boolean {
+        return this.elements.isLink(this.livePreview.selected.node);
     }
 }

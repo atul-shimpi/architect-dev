@@ -40,13 +40,13 @@ context-box {
 
   > .left-spacing, .right-spacing {
     height: 100%;
-    width: $context-box-spacing + 10;
+    width: $context-box-spacing;
     top: 0;
-    left: -10px;
+    left: 0;
   }
 
   > .right-spacing {
-    right: -10px;
+    right: 0;
     left: auto;
   }
 

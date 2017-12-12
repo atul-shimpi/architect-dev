@@ -1,21 +1,33 @@
 import {Injectable} from '@angular/core';
 import {Subject} from "rxjs/Subject";
 import {BuilderDocumentActions} from "./builder-document-actions.service";
-import {Template} from "../../types/models/Template";
 import {PageDocument} from "./page-document";
 import {DomHelpers} from "./dom-helpers.service";
 import {Settings} from "vebto-client/core/services/settings.service";
 import {BuilderTemplate} from "./builder-types";
+import {ContextBoxes} from "./live-preview/context-boxes.service";
 
 export type changeSources = 'builderDocument' | 'livePreview' | 'textEditor' | 'codeEditor' | 'activeProject';
 
 @Injectable()
-export class BuilderDocument extends PageDocument {
+export class BuilderDocument {
+
+    private document: Document;
+
+    /**
+     * Url for "base" tag of the document.
+     */
+    protected baseUrl: string;
 
     /**
      * Fired when preview iframe contents change.
      */
     public contentChanged = new Subject<changeSources>();
+
+    /**
+     * Fired when builder document is fully loaded.
+     */
+    public loaded = new Subject();
 
     /**
      * Template that should be applied to the document.
@@ -25,9 +37,26 @@ export class BuilderDocument extends PageDocument {
     /**
      * BuilderDocument Constructor.
      */
-    constructor(public actions: BuilderDocumentActions, private settings: Settings) {
-        super();
+    constructor(
+        public actions: BuilderDocumentActions,
+        private settings: Settings,
+        private contextBoxes: ContextBoxes,
+    ) {
         this.actions.setChangedSubject(this.contentChanged);
+    }
+
+    public init(document: Document) {
+        this.document = document;
+        this.loaded.next();
+        this.loaded.complete();
+    }
+
+    public getInnerHtml(): string {
+        return this.document.documentElement.innerHTML;
+    }
+
+    public getOuterHtml(): string {
+        return this.document.documentElement.outerHTML;
     }
 
     public get(): Document {
@@ -36,6 +65,51 @@ export class BuilderDocument extends PageDocument {
 
     public getBody(): HTMLBodyElement {
         return this.document.body as HTMLBodyElement;
+    }
+
+    public focus() {
+        this.getBody().focus();
+    }
+
+    public getScrollTop(): number {
+        return this.document.documentElement.scrollTop || this.getBody().scrollTop;
+    }
+
+    public scrollIntoView(node: HTMLElement) {
+        if ( ! node) return;
+        node.scrollIntoView({behavior: "smooth", block: "center", inline: "center"});
+    }
+
+    public elementFromPoint(x: number, y: number): HTMLElement {
+        return this.document.elementFromPoint(x, y) as HTMLElement;
+    }
+
+    public createElement(tagName: string): HTMLElement {
+        return this.document.createElement(tagName);
+    }
+
+    public setInnerHtml(html: string) {
+        this.document.documentElement.innerHTML = html.trim();
+    }
+
+    public on(name: string, callback: Function, useCapture?: boolean) {
+        this.document.addEventListener(name as any, callback as any, useCapture);
+    }
+
+    public find(selector: string): HTMLElement {
+        return this.document.querySelector(selector) as HTMLElement;
+    }
+
+    public findAll(selector: string): NodeListOf<HTMLElement> {
+        return this.document.querySelectorAll(selector) as NodeListOf<HTMLElement>;
+    }
+
+    public execCommand(name: string, value?: string|number) {
+        return this.document.execCommand(name, null, value);
+    }
+
+    public queryCommandState(name: string): boolean {
+        return this.document.queryCommandState(name);
     }
 
     public setHtml(html: string, source: changeSources = 'builderDocument') {
@@ -47,9 +121,61 @@ export class BuilderDocument extends PageDocument {
      */
     public update(html: string, template: BuilderTemplate, source: changeSources = 'builderDocument') {
         this.template = template;
-        this.generate(html, template);
+        this.contextBoxes.hideBoxes();
+        this.setInnerHtml(this.transformHtml(html, template));
         this.addIframeCss();
         this.contentChanged.next(source);
+    }
+
+    /**
+     * Transform specified html string into production ready document html.
+     */
+    private transformHtml(html: string, template: BuilderTemplate): string {
+        const doc = new PageDocument();
+        doc.setBaseUrl(this.baseUrl);
+        return doc.generate(html, template).getInnerHtml();
+    }
+
+    public reload(source: changeSources = 'builderDocument') {
+        this.update(this.getInnerHtml(), this.template, source);
+    }
+
+    public getMetaTagValue(name: string) {
+        const node = this.document.querySelector(`meta[name=${name}]`);
+        return node && node.getAttribute('content');
+    }
+
+    public setMetaTagValue(name: string, value: string) {
+        let node = this.document.querySelector(`meta[name=${name}]`);
+        if ( ! node) {
+            node = this.document.createElement('meta');
+            this.document.head.appendChild(node);
+        }
+
+        node.setAttribute('name', name);
+        node.setAttribute('content', value);
+    }
+
+    public getTitleValue() {
+        const node = this.document.querySelector('title');
+        return node && node.innerText;
+    }
+
+    public setTitleValue(value: string) {
+        let node = this.document.querySelector('title');
+        if ( ! node) {
+            node = this.document.createElement('title');
+            this.document.head.appendChild(node);
+        }
+
+        node.innerText = value;
+    }
+
+    /**
+     * Set template that is currently applied to project.
+     */
+    public setTemplate(template: BuilderTemplate) {
+        this.template = template;
     }
 
     /**
@@ -59,5 +185,12 @@ export class BuilderDocument extends PageDocument {
         const url = this.settings.getBaseUrl(true) + 'assets/css/iframe.css';
         const link = DomHelpers.createLink(url, 'preview-css');
         this.document.head.appendChild(link);
+    }
+
+    /**
+     * Set url for document "base" tag.
+     */
+    public setBaseUrl(url: string) {
+        this.baseUrl = url;
     }
 }

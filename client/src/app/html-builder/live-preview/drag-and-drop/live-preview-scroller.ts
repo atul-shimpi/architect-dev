@@ -1,4 +1,4 @@
-import {LivePreviewDocument} from "../live-preview-document.service";
+import {BuilderDocument} from "../../builder-document.service";
 
 export class LivePreviewScroller {
 
@@ -10,7 +10,7 @@ export class LivePreviewScroller {
      * LivePreviewScroller Constructor.
      */
     constructor(
-        private previewDocument: LivePreviewDocument,
+        private builderDocument: BuilderDocument,
         private previewContainer: HTMLElement
     ) {}
 
@@ -18,8 +18,8 @@ export class LivePreviewScroller {
      * Scroll iframe body when given y is above or below it.
      */
     public scroll(y: number) {
-        let scrollTop = this.previewDocument.getScrollTop(),
-            pointY = y + this.previewDocument.getScrollTop();
+        let scrollTop = this.builderDocument.getScrollTop(),
+            pointY = y + this.builderDocument.getScrollTop();
 
         if ( ! this.previewHeight) {
             this.previewHeight = this.previewContainer.offsetHeight;
@@ -48,7 +48,7 @@ export class LivePreviewScroller {
     private scrollFrameDown() {
         clearInterval(this.scrollDownTimeout);
         return this.scrollDownTimeout = setInterval(() => {
-            return this.setScrollTop(this.previewDocument.getScrollTop() + 40)
+            return this.setScrollTop(this.builderDocument.getScrollTop() + 40)
         }, 40)
     }
 
@@ -58,7 +58,7 @@ export class LivePreviewScroller {
     private scrollFrameUp() {
         clearInterval(this.scrollUpTimeout);
         return this.scrollUpTimeout = setInterval(() => {
-            return this.setScrollTop(this.previewDocument.getScrollTop() - 40)
+            return this.setScrollTop(this.builderDocument.getScrollTop() - 40)
         }, 40)
     }
 
@@ -67,6 +67,6 @@ export class LivePreviewScroller {
      */
     private setScrollTop(newScrollTop: number) {
         newScrollTop = Math.max(0, newScrollTop);
-        this.previewDocument.getBody().scrollTop = newScrollTop;
+        this.builderDocument.getBody().scrollTop = newScrollTop;
     }
 }

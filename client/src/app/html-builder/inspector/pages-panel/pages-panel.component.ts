@@ -5,7 +5,6 @@ import {Projects} from "../../projects/projects.service";
 import {Toast} from "vebto-client/core";
 import {BuilderPage} from "../../builder-types";
 import {BuilderDocument} from "../../builder-document.service";
-import {ContextBoxes} from "../../live-preview/context-boxes.service";
 import {PageDocument} from "../../page-document";
 
 @Component({
@@ -49,12 +48,14 @@ export class PagesPanelComponent implements OnInit {
         private projects: Projects,
         private toast: Toast,
         private builderDocument: BuilderDocument,
-        private contextBoxes: ContextBoxes,
     ) {}
 
     ngOnInit() {
         this.selectedPage = this.activeProject.getPages()[0];
-        this.hydrateUpdateModel();
+
+        this.builderDocument.loaded.subscribe(() => {
+            this.hydrateUpdateModel();
+        });
     }
 
     /**
@@ -94,7 +95,6 @@ export class PagesPanelComponent implements OnInit {
     public onPageSelected() {
         this.hydrateUpdateModel();
         this.activeProject.setActivePage(this.selectedPage);
-        this.contextBoxes.hideBoxes();
     }
 
     public updateSelectedPage() {

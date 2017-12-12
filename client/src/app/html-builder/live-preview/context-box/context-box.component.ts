@@ -72,7 +72,7 @@ export class ContextBoxComponent {
         } else if (this.elements.isImage(node)) {
             this.openUploadImageModal();
         } else if (this.elements.isLink(node)) {
-            this.linkEditor.open(node);
+            this.linkEditor.open(node as HTMLLinkElement);
         } else {
             if (this.elements.canModifyText(this.elements.match(node))) {
                 this.contextBoxes.hideBoxes();

@@ -3,11 +3,9 @@ import {Settings} from "vebto-client/core";
 import {BuilderDocument} from "../builder-document.service";
 import {ProjectBaseUrl} from "./project-base-url.service";
 import {BuilderPage, BuilderProject, BuilderTemplate} from "../builder-types";
-import {LivePreviewDocument} from "../live-preview/live-preview-document.service";
 import {Projects} from "./projects.service";
 import {Observable} from "rxjs/Observable";
 import * as html2canvas from "html2canvas";
-import {Template} from "../../../types/models/Template";
 
 @Injectable()
 export class ActiveProject {
@@ -44,7 +42,6 @@ export class ActiveProject {
         private settings: Settings,
         private builderDocument: BuilderDocument,
         private projectUrl: ProjectBaseUrl,
-        private previewDocument: LivePreviewDocument,
         private projects: Projects,
     ) {
         this.builderDocument.contentChanged.subscribe(source => {
@@ -68,6 +65,13 @@ export class ActiveProject {
     }
 
     /**
+     * Find a page by specified name.
+     */
+    public getPage(name: string): BuilderPage {
+        return this.pages.find(page => page.name.toLowerCase() === name.toLowerCase());
+    }
+
+    /**
      * Get active project page.
      */
     public getActivePage(): BuilderPage {
@@ -81,7 +85,7 @@ export class ActiveProject {
         this.saving = true;
 
         if (options.thumbnail) {
-            html2canvas(this.previewDocument.getBody(), {height: 320, width: 200, svgRendering: true}).then(canvas => {
+            html2canvas(this.builderDocument.getBody(), {height: 320, width: 200, svgRendering: true}).then(canvas => {
                 this.projects.generateThumbnail(this.project.model.id, canvas.toDataURL('image/png')).subscribe();
             });
         }
@@ -148,9 +152,7 @@ export class ActiveProject {
         this.activePage = 0;
         this.pages = project.pages;
         this.activeTemplate = project.template;
-
-        this.setBuilderDocumentBaseUrl();
-        this.updateBuilderDocument();
+        this.builderDocument.setTemplate(this.activeTemplate);
     }
 
     public applyTemplate(template: BuilderTemplate) {
@@ -177,7 +179,7 @@ export class ActiveProject {
 
     private updateBuilderDocument() {
         this.builderDocument.update(
-            this.pages[this.activePage].html,
+            this.getActivePage().html,
             this.activeTemplate,
             'activeProject'
         );
@@ -189,9 +191,5 @@ export class ActiveProject {
 
     public hasTemplate(): boolean {
         return this.activeTemplate !== undefined;
-    }
-
-    private setBuilderDocumentBaseUrl() {
-        this.builderDocument.setBaseUrl(this.projectUrl.generate(this.project.model.uuid));
     }
 }

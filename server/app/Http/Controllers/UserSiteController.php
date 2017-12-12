@@ -74,10 +74,10 @@ class UserSiteController extends Controller
         $urls = array_unique($matches[1]);
 
         foreach ($urls as $url) {
-            //if link is already absolute, continue to next one
-            if (starts_with($url, ['//', 'http'])) continue;
+            //if link is already absolute or an ID, continue to next one
+            if (starts_with($url, ['//', 'http', '#'])) continue;
 
-            $html = str_replace($url, "$base/$url", $html);
+            $html = preg_replace("/href=\"$url\"/i", "href=\"$base/$url\"", $html);
         }
 
         return $html;

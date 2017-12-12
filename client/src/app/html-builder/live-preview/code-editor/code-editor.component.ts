@@ -140,7 +140,7 @@ export class CodeEditorComponent implements OnInit {
 
             //reload custom css and js links, so changes are reflected in preview
             this.activeProject.save({thumbnail: false}).subscribe(() => {
-                this.builderDocument.contentChanged.next('codeEditor');
+                this.builderDocument.reload('codeEditor');
             });
         });
     }
