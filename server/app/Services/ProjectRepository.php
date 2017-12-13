@@ -5,6 +5,7 @@ use Auth;
 use App\Project;
 use App\Template;
 use File;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Storage;
 use Symfony\Component\Finder\Finder;
@@ -119,6 +120,10 @@ class ProjectRepository
         $projectPath = $this->getProjectPath($project);
 
         $this->updatePages($project, $data['pages']);
+
+        if (Arr::get($data, 'template') !== $project->template) {
+            $this->updateTemplate($project, $data['template']);
+        }
 
         //custom css
         $this->storage->put("$projectPath/css/styles.css", $data['css']);
@@ -241,6 +246,50 @@ class ProjectRepository
 
         //custom js
         $this->storage->put("$projectPath/js/scripts.js", '');
+    }
+
+
+    /**
+     * Update project template to specified one.
+     *
+     * @param Project $project
+     * @param string $templateName
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    private function updateTemplate(Project $project, $templateName)
+    {
+        $project->fill(['template' => $templateName])->save();
+
+        $oldTemplatePath = "$this->templatesPath/$templateName";
+        $projectPath = $this->getProjectPath($project);
+        $template = $this->templateLoader->load($templateName);
+
+        //delete old images
+        $paths = Finder::create()->ignoreDotFiles(true)->in("$oldTemplatePath/images");
+
+        collect($paths)->each(function (SplFileInfo $file) use($projectPath) {
+            $path = "$projectPath/images/".$file->getBasename();
+
+            if ( ! $this->storage->exists($path)) return;
+
+            if ($file->isDir()) {
+                $this->storage->deleteDirectory($path);
+            } else {
+                $this->storage->delete($path);
+            }
+        });
+
+        //delete old libraries
+        collect($template['config']['libraries'])->each(function($library) use($projectPath) {
+            $name = strtolower(kebab_case($library));
+
+            if ($this->storage->exists("$projectPath/js/$name.js")) {
+                $this->storage->delete("$projectPath/js/$name.js");
+            }
+        });
+
+        //apply new template
+        $this->applyTemplate($template, $projectPath);
     }
 
     private function applyTemplate($templateData, $projectPath)

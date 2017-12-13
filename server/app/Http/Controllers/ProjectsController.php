@@ -95,6 +95,7 @@ class ProjectsController extends Controller {
             'name' => 'string|min:1|max:255',
             'css' => 'nullable|string|min:1|max:255',
             'js' => 'nullable|string|min:1|max:255',
+            'template' => 'nullable|string|min:1|max:255',
             'pages' => 'required|array',
             'pages.*' => 'required|array',
         ]);

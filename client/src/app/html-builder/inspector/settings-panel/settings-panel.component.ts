@@ -1,9 +1,8 @@
-import {Component, ComponentRef, OnInit, ViewEncapsulation} from '@angular/core';
-import {Overlay, OverlayRef} from "@angular/cdk/overlay";
-import {ComponentPortal} from "@angular/cdk/portal";
-import {TemplatesPanelComponent} from "./templates-panel/templates-panel.component";
+import {Component, ViewEncapsulation} from '@angular/core';
+import {Overlay} from "@angular/cdk/overlay";
 import {Inspector} from "../inspector.service";
 import {ActiveProject} from "../../projects/active-project";
+import {InspectorDrawer} from "../inspector-drawer.service";
 
 @Component({
     selector: 'settings-panel',
@@ -11,40 +10,20 @@ import {ActiveProject} from "../../projects/active-project";
     styleUrls: ['./settings-panel.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class SettingsPanelComponent implements OnInit {
-
-    private overlayRef: OverlayRef;
+export class SettingsPanelComponent {
 
     constructor(
         private overlay: Overlay,
         private inspector: Inspector,
         public activeProject: ActiveProject,
+        private inspectorDrawer: InspectorDrawer,
     ) {}
 
-    ngOnInit() {
-
-    }
-
     public openTemplatesPanel() {
-        const strategy = this.overlay.position().connectedTo(
-            this.inspector.elementRef,
-            {originX: 'end', originY: 'top'},
-            {overlayX: 'start', overlayY: 'top'}
-        );
-
-        const height = this.inspector.elementRef.nativeElement.getBoundingClientRect().height;
-
-        this.overlayRef = this.overlay.create({positionStrategy: strategy, hasBackdrop: true, height: height});
-
-        this.overlayRef.backdropClick().subscribe(() => {
-            this.overlayRef.dispose();
-        });
-
-        const componentRef = this.overlayRef
-            .attach(new ComponentPortal(TemplatesPanelComponent)) as ComponentRef<TemplatesPanelComponent>;
+        this.inspectorDrawer.toggle('templates');
     }
 
     public openThemesPanel() {
-
+        this.inspectorDrawer.toggle('themes');
     }
 }

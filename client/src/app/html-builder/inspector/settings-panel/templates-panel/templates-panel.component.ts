@@ -6,6 +6,8 @@ import {ActiveProject} from "../../../projects/active-project";
 import {Modal} from "vebto-client/core/ui/modal.service";
 import {ConfirmModalComponent} from "vebto-client/core/ui/confirm-modal/confirm-modal.component";
 import {BuilderTemplate} from "../../../builder-types";
+import {Toast} from "vebto-client/core/ui/toast.service";
+import {InspectorDrawer} from "../../inspector-drawer.service";
 
 @Component({
     selector: 'templates-panel',
@@ -25,6 +27,8 @@ export class TemplatesPanelComponent implements OnInit {
         private settings: Settings,
         private activeProject: ActiveProject,
         private modal: Modal,
+        private toast: Toast,
+        private inspectorDrawer: InspectorDrawer,
     ) {}
 
     ngOnInit() {
@@ -37,15 +41,17 @@ export class TemplatesPanelComponent implements OnInit {
      * Apply specified template to the active project.
      */
     public applyTemplate(template: BuilderTemplate) {
-        console.log('x');
         this.modal.open(ConfirmModalComponent, {
-            title: 'Are you sure you want to apply this template?',
-            body: 'This will erase all the current contents of your project.',
-            bodyBold: 'This action is NOT undoable.',
+            title: 'Apply Template',
+            body: 'Are you sure you want to apply this template?',
+            bodyBold: 'This will erase all the current contents of your project.',
             ok: 'Apply'
         }).afterClosed().subscribe(result => {
             if ( ! result) return;
-            this.activeProject.applyTemplate(template);
+            this.activeProject.applyTemplate(template.name).subscribe(() => {
+                this.toast.open('Template applied');
+                this.inspectorDrawer.close();
+            })
         });
     }
 

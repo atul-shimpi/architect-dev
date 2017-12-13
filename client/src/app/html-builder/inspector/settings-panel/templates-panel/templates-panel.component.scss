@@ -1,9 +1,9 @@
 @import "../../../../../scss/variables";
+@import '~@angular/material/theming';
 
 templates-panel {
   display: block;
   background-color: $inspector-bg-color-200;
-  box-shadow: $box-shadow-4;
   height: 100%;
   width: 300px;
   box-sizing: inherit;
@@ -12,14 +12,14 @@ templates-panel {
     padding: 20px;
 
     > .template {
-      margin-bottom: 10px;
+      margin-bottom: 20px;
       cursor: pointer;
-      box-shadow: $box-shadow-3;
       background-color: $inspector-bg-color-100;
-      transition: box-shadow 280ms cubic-bezier(.4,0,.2,1);
+      @include mat-elevation-transition;
+      @include mat-elevation(2);
 
       &:hover {
-        box-shadow: $box-shadow-4;
+        @include mat-elevation(8);
       }
 
       > .name {

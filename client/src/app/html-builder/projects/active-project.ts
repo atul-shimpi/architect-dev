@@ -6,6 +6,10 @@ import {BuilderPage, BuilderProject, BuilderTemplate} from "../builder-types";
 import {Projects} from "./projects.service";
 import {Observable} from "rxjs/Observable";
 import * as html2canvas from "html2canvas";
+import {Templates} from "../../templates/templates.service";
+import {PageDocument} from "../page-document";
+import {Toast} from "vebto-client/core/ui/toast.service";
+import {Subject} from "rxjs/Subject";
 
 @Injectable()
 export class ActiveProject {
@@ -43,6 +47,8 @@ export class ActiveProject {
         private builderDocument: BuilderDocument,
         private projectUrl: ProjectBaseUrl,
         private projects: Projects,
+        private templates: Templates,
+        private toast: Toast,
     ) {
         this.builderDocument.contentChanged.subscribe(source => {
             if (source === 'activeProject') return;
@@ -81,7 +87,7 @@ export class ActiveProject {
     /**
      * Save project to the backend.
      */
-    public save(options = {thumbnail: true}): Observable<{project: BuilderProject}> {
+    public save(options: {thumbnail?: boolean, params?: object} = {thumbnail: true}): Observable<{project: BuilderProject}> {
         this.saving = true;
 
         if (options.thumbnail) {
@@ -90,20 +96,25 @@ export class ActiveProject {
             });
         }
 
-        const payload = {
+        if ( ! options.params) options.params = {};
+
+        const payload = Object.assign({}, options.params, {
             name: this.project.model.name,
             css: this.project.css,
             js: this.project.js,
             pages: this.pages.map(page => {
                 return {name: page.name, html: page.html}
             })
-        };
+        });
 
         const request = this.projects.update(this.project.model.id, payload).share();
 
         request.subscribe(response => {
             this.project = response.project;
             this.saving = false;
+        }, () => {
+            this.saving = false;
+            this.toast.open('Could not save project');
         });
 
         return request;
@@ -155,12 +166,24 @@ export class ActiveProject {
         this.builderDocument.setTemplate(this.activeTemplate);
     }
 
-    public applyTemplate(template: BuilderTemplate) {
-        this.activeTemplate = template;
-        this.pages = template.pages.slice() as BuilderPage[];
-        this.activePage = 0;
+    public applyTemplate(name: string) {
+        const completed = new Subject();
 
-        this.updateBuilderDocument();
+        this.templates.get(name).subscribe(response => {
+            this.activeTemplate = response.template;
+            this.pages = response.template.pages.map(page => {
+                return {
+                    name: page.name,
+                    html: (new PageDocument(this.getBaseUrl())).generate(page.html, this.activeTemplate).getOuterHtml(),
+                }
+            });
+            this.activePage = 0;
+            this.updateBuilderDocument();
+            this.save({thumbnail: true, params: {template: name}});
+            completed.next() && completed.complete();
+        });
+
+        return completed;
     }
 
     /**

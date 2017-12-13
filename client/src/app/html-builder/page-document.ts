@@ -16,6 +16,13 @@ export class PageDocument {
     protected baseUrl: string;
 
     /**
+     * PageDocument Constructor.
+     */
+    constructor(baseUrl: string = null) {
+        this.baseUrl = baseUrl;
+    }
+
+    /**
      * Ids of dom elements that are created by the builder and are not part of the project.
      */
     protected internalIds = [

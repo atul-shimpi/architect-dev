@@ -1,4 +1,12 @@
 <inspector>
 </inspector>
 
-<live-preview></live-preview>
+<mat-drawer-container>
+    <mat-drawer #inspectorDrawer>
+        <templates-panel *ngIf="getInspectorDrawerPanel() === 'templates'"></templates-panel>
+    </mat-drawer>
+    <mat-drawer-content>
+        <live-preview></live-preview>
+    </mat-drawer-content>
+</mat-drawer-container>
+

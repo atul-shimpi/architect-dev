@@ -64,11 +64,30 @@ class TemplateLoader
 
         return [
             'name' => $name,
-            'config' => json_decode($this->storage->get("templates/$name/config.json")),
+            'config' => json_decode($this->storage->get("templates/$name/config.json"), true),
             'thumbnail' => "storage/templates/$name/thumbnail.png",
             'pages' => $pages,
             'css' => $this->storage->get("templates/$name/css/styles.css"),
-            'js' => $this->storage->get("templates/$name/js/scripts.js"),
+            'js' => $this->getTemplateJs($name),
         ];
+    }
+
+
+    /**
+     * Get javascript of specified template.
+     *
+     * @param string $name
+     * @return string
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    private function getTemplateJs($name)
+    {
+        $path = "templates/$name/js/scripts.js";
+
+        if ($this->storage->exists($path)) {
+            return $this->storage->get($path);
+        }
+
+        return '';
     }
 }
