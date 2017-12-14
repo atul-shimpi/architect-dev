@@ -1,4 +1,5 @@
 @import "../../../scss/variables";
+@import '~@angular/material/theming';
 
 inspector {
   display: flex;
@@ -190,6 +191,21 @@ inspector {
           border-right: none;
         }
       }
+    }
+  }
+
+  .content-panel {
+    background-color: $inspector-bg-color-100;
+    border-radius: 2px;
+    padding: 15px;
+    margin-bottom: 15px;
+    color: $text-color;
+    @include mat-elevation(1);
+
+    > .header {
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+      font-weight: 500;
     }
   }
 }

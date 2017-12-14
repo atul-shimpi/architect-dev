@@ -10,6 +10,7 @@ import {Templates} from "../../templates/templates.service";
 import {PageDocument} from "../page-document";
 import {Toast} from "vebto-client/core/ui/toast.service";
 import {Subject} from "rxjs/Subject";
+import {Theme} from "../../../types/models/Theme";
 
 @Injectable()
 export class ActiveProject {
@@ -102,6 +103,9 @@ export class ActiveProject {
             name: this.project.model.name,
             css: this.project.css,
             js: this.project.js,
+            theme: this.project.model.theme,
+            template: this.project.model.template,
+            framework: this.project.model.framework,
             pages: this.pages.map(page => {
                 return {name: page.name, html: page.html}
             })
@@ -168,6 +172,7 @@ export class ActiveProject {
 
     public applyTemplate(name: string) {
         const completed = new Subject();
+        this.project.model.template = name;
 
         this.templates.get(name).subscribe(response => {
             this.activeTemplate = response.template;
@@ -177,13 +182,39 @@ export class ActiveProject {
                     html: (new PageDocument(this.getBaseUrl())).generate(page.html, this.activeTemplate).getOuterHtml(),
                 }
             });
-            this.activePage = 0;
-            this.updateBuilderDocument();
-            this.save({thumbnail: true, params: {template: name}});
-            completed.next() && completed.complete();
+
+            this.save({thumbnail: true}).subscribe(() => {
+                this.activePage = 0;
+                this.updateBuilderDocument().then(() => {
+                    completed.next() && completed.complete();
+                });
+            });
         });
 
         return completed;
+    }
+
+    /**
+     * Change project's css framework.
+     */
+    public changeFramework(name: string) {
+        this.project.model.framework = name;
+
+        return new Promise(resolve => {
+            this.save({thumbnail: false}).subscribe(() => {
+                this.updateBuilderDocument().then(() => resolve());
+            });
+        });
+    }
+
+    public applyTheme(theme?: Theme) {
+        this.project.model.theme = theme ? theme.name : null;
+
+        return new Promise(resolve => {
+            this.save({thumbnail: false}).subscribe(() => {
+                this.updateBuilderDocument().then(() => resolve());
+            });
+        });
     }
 
     /**
@@ -201,11 +232,13 @@ export class ActiveProject {
     }
 
     private updateBuilderDocument() {
-        this.builderDocument.update(
-            this.getActivePage().html,
-            this.activeTemplate,
-            'activeProject'
-        );
+        return this.builderDocument.update({
+            html: this.getActivePage().html,
+            template: this.activeTemplate,
+            source: 'activeProject',
+            framework: this.project.model.framework,
+            theme: this.project.model.theme,
+        });
     }
 
     public getTemplate(): BuilderTemplate {

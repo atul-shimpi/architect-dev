@@ -1,7 +1,9 @@
-<div class="many-inputs">
+<div class="content-panel many-inputs">
+    <div class="header" trans>Project Settings</div>
+
     <div class="input-container">
         <label for="project-framework" trans>Framework</label>
-        <select name="project-framework" id="project-framework" [(ngModel)]="framework" (ngModelChange)="changeFramework(framework)">
+        <select name="project-framework" id="project-framework" [(ngModel)]="selectedFramework" (ngModelChange)="changeFramework(selectedFramework)">
             <option value="bootstrap-3">Bootstrap 3</option>
             <option value="bootstrap-4">Bootstrap 4</option>
         </select>
@@ -18,12 +20,26 @@
             <button mat-raised-button color="accent" (click)="openTemplatesPanel()" trans>Change</button>
         </div>
     </div>
+</div>
+
+<div class="content-panel many-inputs">
+    <div class="header" trans>Builder Settings</div>
 
     <div class="input-container">
         <div class="fake-label" trans>Theme</div>
         <div class="box">
-            <div class="fake-input" (click)="openThemesPanel()">{{activeProject.getActivePage().theme}}</div>
+            <div class="fake-input" (click)="openThemesPanel()">{{activeProject.get().model.theme || 'None'}}</div>
             <button mat-raised-button color="accent" (click)="openThemesPanel()" trans>Change</button>
         </div>
+    </div>
+
+    <div class="setting-container">
+        <mat-slide-toggle trans>Hover Box</mat-slide-toggle>
+        <p trans>Toggle visibility of box that appears when hovering over elements in the builder.</p>
+    </div>
+
+    <div class="setting-container">
+        <mat-slide-toggle trans>Select Box</mat-slide-toggle>
+        <p class="ng-binding">Toggle visibility of box that appears when clicking on element in the builder.</p>
     </div>
 </div>

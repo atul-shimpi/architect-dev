@@ -13,6 +13,8 @@ import {Keybinds} from "vebto-client/core/keybinds/keybinds.service";
 import {SelectedElement} from "./live-preview/selected-element.service";
 import {ContextBoxes} from "./live-preview/context-boxes.service";
 import {BuilderDocument} from "./builder-document.service";
+import {LivePreviewLoader} from "./live-preview/live-preview-loader.service";
+import {LinkEditor} from "./live-preview/link-editor/link-editor.service";
 
 @Injectable()
 export class LivePreview {
@@ -38,9 +40,13 @@ export class LivePreview {
         public contextBoxes: ContextBoxes,
         private builderDocument: BuilderDocument,
         private activeProject: ActiveProject,
+        private loader: LivePreviewLoader,
+        private linkEditor: LinkEditor,
     ) {}
 
     public init(dragHelper: DragVisualHelperComponent, iframe: ElementRef) {
+        this.loader.show();
+
         this.dragHelper = dragHelper;
         this.iframe = iframe.nativeElement;
 
@@ -53,30 +59,7 @@ export class LivePreview {
             this.registerKeybinds();
             this.bindToIframeEvents();
             this.bindToUndoCommandExecuted();
-
-            this.builderDocument.get().addEventListener('click', e => {
-                const node = e.target as HTMLElement;
-
-                //clicked node is not a link
-                if ( ! node.matches('a, a *')) return;
-
-                e.preventDefault();
-                e.stopPropagation();
-
-                //get relative url of for the link
-                const link = node as HTMLLinkElement,
-                    href = link.href.replace(this.activeProject.getBaseUrl(), '');
-
-                //link just scrolls to a node on the page, bail
-                if (href.indexOf('#') === 0) return;
-
-                //link navigates to an external site, bail
-                if (href.indexOf('//') > -1) return;
-
-                //link navigates to a different page
-                const pageName = href.replace('.html', '');
-                this.activeProject.setActivePage(this.activeProject.getPage(pageName));
-            }, true);
+            this.loader.hide();
         };
     }
 
@@ -90,14 +73,12 @@ export class LivePreview {
     private bindToIframeEvents() {
         this.zone.runOutsideAngular(() => {
             const hammer = new Hammer.Manager(this.builderDocument.get()),
-                singleTap = new Hammer.Tap({event: 'single_tap'}),
                 doubleTap = new Hammer.Tap({event: 'double_tap', taps: 2});
 
-            hammer.add([doubleTap, singleTap]);
-            doubleTap.recognizeWith(singleTap);
+            hammer.add(doubleTap);
 
             this.listenForHover();
-            this.listenForClick(hammer);
+            this.listenForClick();
             this.listenForDoubleClick(hammer);
             this.keybinds.listenOn(this.builderDocument.get());
 
@@ -160,31 +141,58 @@ export class LivePreview {
         });
     }
 
-    private listenForClick(hammer: HammerManager) {
-        hammer.on('single_tap', e => {
+    private listenForClick() {
+        this.builderDocument.get().addEventListener('click', e => {
+            console.log('single');
+
+            const node = e.target as HTMLElement;
+
+            this.handleLinkClick(e);
+
             //hide context menu
             this.contextMenu.close();
-
-            this.builderDocument.focus();
-
-            if (this.selected.node == e.target) return true;
-
-            let node = e.target;
-
-            if (node.hasAttribute('contenteditable') || node.parentNode['hasAttribute']('contenteditable')) {
-                return;
-            }
 
             //hide wysiwyg toolbar when clicked outside it
             this.inlineTextEditor.close();
 
-            //hide linker
-            //this.linker.addClass('hidden');
+            //hide link editor
+            this.linkEditor.close();
 
-            if (node.nodeName !== 'HTML') {
-                this.zone.run(() => this.selected.selectNode(node));
-            }
-        });
+            this.builderDocument.focus();
+
+            //node is already selected, bail
+            if (this.selected.node == node) return true;
+
+            //node text is being edited, bail
+            if (node.hasAttribute('contenteditable') || node.parentNode['hasAttribute']('contenteditable')) return;
+
+            //select node
+            if (node.nodeName !== 'HTML') this.zone.run(() => this.selected.selectNode(node));
+        }, true);
+    }
+
+    private handleLinkClick(e: MouseEvent) {
+        const node = e.target as HTMLElement;
+
+        //clicked node is not a link
+        if ( ! node.matches('a, a *')) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        //get relative url of for the link
+        const link = node as HTMLLinkElement,
+            href = link.href.replace(this.activeProject.getBaseUrl(), '');
+
+        //link just scrolls to a node on the page, bail
+        if (href.indexOf('#') === 0) return;
+
+        //link navigates to an external site, bail
+        if (href.indexOf('//') > -1) return;
+
+        //link navigates to a different page
+        const pageName = href.replace('.html', '');
+        this.activeProject.setActivePage(this.activeProject.getPage(pageName));
     }
 
     private listenForDoubleClick(hammer: HammerManager) {

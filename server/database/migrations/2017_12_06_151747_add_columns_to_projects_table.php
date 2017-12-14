@@ -18,6 +18,7 @@ class AddColumnsToProjectsTable extends Migration
             $table->integer('theme_id')->nullable();
             $table->string('template')->nullable();
             $table->string('framework')->default('bootstrap-3');
+            $table->string('theme')->nullable();
         });
     }
 

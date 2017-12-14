@@ -56,6 +56,8 @@ import { ContextBoxComponent } from './live-preview/context-box/context-box.comp
 import { LinkEditorComponent } from './live-preview/link-editor/link-editor.component';
 import {LinkEditor} from "./live-preview/link-editor/link-editor.service";
 import {InspectorDrawer} from "./inspector/inspector-drawer.service";
+import {LivePreviewLoader} from "./live-preview/live-preview-loader.service";
+import {Themes} from "./themes.service";
 
 @NgModule({
     imports: [
@@ -132,6 +134,8 @@ import {InspectorDrawer} from "./inspector/inspector-drawer.service";
         ProjectResolver,
         LinkEditor,
         InspectorDrawer,
+        LivePreviewLoader,
+        Themes,
     ]
 })
 export class HtmlBuilderModule {

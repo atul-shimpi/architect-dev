@@ -6,4 +6,6 @@
     <iframe #iframe></iframe>
     <div class="drag-overlay" #dragOverlay></div>
     <drag-visual-helper class="drag-helper" #dragHelper></drag-visual-helper>
+
+    <loading-indicator class="overlay overlay-light" [isVisible]="loader.isVisible()"></loading-indicator>
 </ng-container>

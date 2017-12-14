@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {utils} from 'vebto-client/core';
 import {Subject} from "rxjs/Subject";
 import {ActiveProject} from "../../projects/active-project";
@@ -7,6 +7,7 @@ import {Observable} from "rxjs/Observable";
 import {SelectedElement} from "../selected-element.service";
 import {BuilderDocument} from "../../builder-document.service";
 import htmlBeautify from 'html-beautify'
+import {Subscription} from "rxjs/Subscription";
 
 declare let ace: any;
 
@@ -16,7 +17,7 @@ declare let ace: any;
     styleUrls: ['./code-editor.component.scss'],
     encapsulation: ViewEncapsulation.None,
 })
-export class CodeEditorComponent implements OnInit {
+export class CodeEditorComponent implements OnInit, OnDestroy {
     @ViewChild('editor') editorEl: ElementRef;
 
     private loading = false;
@@ -49,6 +50,8 @@ export class CodeEditorComponent implements OnInit {
      */
     private loaded = new Subject();
 
+    private subscriptions: Subscription[] = [];
+
     constructor(
         private utils: utils,
         private activeProject: ActiveProject,
@@ -61,17 +64,26 @@ export class CodeEditorComponent implements OnInit {
             this.updateEditorContents(this.activeEditor);
 
             //select node html in the code editor when new node is selected in the builder
-            this.selectedElement.changed.subscribe(() => {
+            const sub = this.selectedElement.changed.subscribe(() => {
                 if (this.selectedElement.node) this.selectNodeSource(this.selectedElement.node);
             });
 
             this.bindToBuilderDocumentChangeEvent();
             this.bindToEditorChangeEvent();
+            this.subscriptions.push(sub);
 
             setTimeout(() => {
                 this.loaded.next(this);
                 this.loaded.complete();
             });
+        });
+    }
+
+    ngOnDestroy() {
+        this.editor.destroy();
+
+        this.subscriptions.forEach(subscription => {
+            subscription && subscription.unsubscribe();
         });
     }
 
@@ -123,7 +135,7 @@ export class CodeEditorComponent implements OnInit {
      * Update project html when code editor contents are changed by user.
      */
     private bindToEditorChangeEvent() {
-        this.contentsChange.debounceTime(800).subscribe(() => {
+        const sub = this.contentsChange.debounceTime(800).subscribe(() => {
             let shouldReload = false;
 
             if (this.activeEditor === 'html') {
@@ -143,19 +155,23 @@ export class CodeEditorComponent implements OnInit {
                 this.builderDocument.reload('codeEditor');
             });
         });
+
+        this.subscriptions.push(sub);
     }
 
     /**
      * Update code editor contents when live preview html is changed.
      */
     private bindToBuilderDocumentChangeEvent() {
-        this.builderDocument.contentChanged
+        const sub = this.builderDocument.contentChanged
             .debounceTime(500)
             .subscribe(source => {
                 //if dom change was initiated by code editor, bail to avoid infinite loops
                 if (source === 'codeEditor') return;
                 this.updateEditorContents(this.activeEditor);
             });
+
+        this.subscriptions.push(sub);
     }
 
     private setEditorValue(value: string) {

@@ -20,12 +20,12 @@ export class NewProjectModalComponent {
     /**
      * New project model.
      */
-    private newProject: {name?: string, uuid?: string} = {};
+    public newProject: {name?: string, uuid?: string} = {};
 
     /**
      * Errors from backend.
      */
-    private errors: {name?: string} = {};
+    public errors: {name?: string} = {};
 
     private pageDocument = new PageDocument();
 

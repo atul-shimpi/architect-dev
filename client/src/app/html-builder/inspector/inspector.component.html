@@ -1,4 +1,4 @@
-<nav class="inspector-nav mat-elevation-z1">
+<nav class="inspector-nav mat-elevation-z3">
     <a class="back-button" matTooltip="Dashboard" routerLink="/dashboard">
         <svg-icon name="keyboard-arrow-left"></svg-icon>
     </a>
@@ -19,10 +19,6 @@
         <button mat-button class="panel-nav-item" [class.active]="inspector.activePanelIs('pages')" (click)="inspector.togglePanel('pages')">
             <svg-icon name="documents-custom"></svg-icon>
             <span class="name" trans>Pages</span>
-        </button>
-        <button mat-button class="panel-nav-item" [class.active]="inspector.activePanelIs('themes')" (click)="inspector.togglePanel('themes')">
-            <svg-icon name="paint-palette-custom"></svg-icon>
-            <span class="name" trans>Themes</span>
         </button>
         <button mat-button class="panel-nav-item" [class.active]="inspector.activePanelIs('settings')" (click)="inspector.togglePanel('settings')">
             <svg-icon name="settings-custom"></svg-icon>

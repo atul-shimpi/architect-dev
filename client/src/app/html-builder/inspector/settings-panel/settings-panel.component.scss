@@ -28,4 +28,10 @@ settings-panel {
       }
     }
   }
+
+  .setting-container {
+    > p {
+      color: $text-color-secondary;
+    }
+  }
 }

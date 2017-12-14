@@ -12,12 +12,12 @@ export class InspectorDrawer {
     /**
      * Currently active drawer panel.
      */
-    public activePanel: 'templates'|'themes' = null;
+    public activePanel: 'templates' | 'themes' = null;
 
     /**
      * Toggle inspector drawer state.
      */
-    public toggle(name: 'templates'|'themes') {
+    public toggle(name: 'templates' | 'themes') {
         this.activePanel = name;
         this.drawer.toggle();
     }
@@ -26,8 +26,8 @@ export class InspectorDrawer {
      * Close inspector drawer.
      */
     public close() {
-        this.drawer.close();
         this.activePanel = null;
+        return this.drawer.close();
     }
 
     public setDrawer(drawer: MatDrawer) {

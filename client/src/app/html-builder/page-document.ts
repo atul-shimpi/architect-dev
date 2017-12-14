@@ -1,6 +1,5 @@
 import {DomHelpers} from "./dom-helpers.service";
 import {utils} from "vebto-client/core/services/utils";
-import {Template} from "../../types/models/Template";
 import {BuilderTemplate} from "./builder-types";
 
 export class PageDocument {
@@ -26,7 +25,7 @@ export class PageDocument {
      * Ids of dom elements that are created by the builder and are not part of the project.
      */
     protected internalIds = [
-        '#base', '#jquery', '#custom-css', '#custom-js', '#template-js', '[id^=library]',
+        '#base', '#jquery', '#custom-css', '#custom-js', '#template-js', '[id^=library]', '#theme-css',
         '#template-css', '#framework-css', '#framework-js', '#preview-css', '#font-awesome'
     ];
 
@@ -64,12 +63,15 @@ export class PageDocument {
         this.useFramework('bootstrap-3');
         this.addIconsLink();
 
+        //theme
+        this.createLink('link', 'css/theme.css', 'theme-css');
+
         if (template) {
             this.addTemplate(template);
         }
 
         this.createLink('link', 'css/styles.css', 'custom-css');
-        this.createLink('script', 'js/scripts.js', 'template-js');
+        this.createLink('script', 'js/scripts.js', 'custom-js');
 
         return this;
     }
@@ -78,15 +80,15 @@ export class PageDocument {
      * Add specified template to page.
      */
     private addTemplate(template: BuilderTemplate) {
+        //legacy libraries
+        if (template.config.libraries) {
+            template.config.libraries.forEach(library => {
+                this.createLink('script', `js/${library}.js`, `library-${library}`);
+            });
+        }
+
         this.createLink('link', 'css/template.css', 'template-css');
         this.createLink('script', 'js/template.js', 'template-js');
-
-        if ( ! template.config.libraries) return;
-
-        //legacy libraries
-        template.config.libraries.forEach(library => {
-            this.createLink('script', `js/${library}.js`, `library-${library}`);
-        });
     }
 
     /**
@@ -116,14 +118,9 @@ export class PageDocument {
      * Add needed links and scripts of specified css framework to document.
      */
     protected useFramework(name: string) {
-        const link = DomHelpers.createLink(this.baseUrl+'css/framework.css', 'framework-css');
-        this.pageDocument.head.appendChild(link);
-
-        const jquery = DomHelpers.createScript(this.baseUrl+'js/jquery.min.js', 'jquery');
-        this.pageDocument.body.appendChild(jquery);
-
-        const script = DomHelpers.createScript(this.baseUrl+'js/framework.js', 'framework-js');
-        this.pageDocument.body.appendChild(script);
+        this.createLink('link', 'css/framework.css', 'framework-css');
+        this.createLink('script', 'js/jquery.min.js', 'jquery');
+        this.createLink('script', 'js/framework.js', 'framework-js');
     }
 
     /**

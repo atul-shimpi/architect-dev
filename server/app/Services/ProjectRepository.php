@@ -125,11 +125,25 @@ class ProjectRepository
             $this->updateTemplate($project, $data['template']);
         }
 
+        if (Arr::get($data, 'framework') !== $project->framework) {
+            $this->applyFramework($projectPath, $data['framework']);
+        }
+
+        if (Arr::get($data, 'theme') !== $project->theme) {
+            $this->applyTheme($projectPath, $data['theme']);
+        }
+
         //custom css
         $this->storage->put("$projectPath/css/styles.css", $data['css']);
 
         //custom js
         $this->storage->put("$projectPath/js/scripts.js", $data['js']);
+
+        $project->fill([
+            'theme' => Arr::get($data, 'theme'),
+            'template' => Arr::get($data, 'template'),
+            'framework' => Arr::get($data, 'framework')
+        ])->save();
     }
 
     /**
@@ -137,6 +151,7 @@ class ProjectRepository
      *
      * @param array $data
      * @return Project
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function create($data)
     {
@@ -149,6 +164,18 @@ class ProjectRepository
         $projectPath = $this->getProjectPath($project);
 
         $this->applyFramework($projectPath, $project->framework);
+
+        //thumbnail
+        $this->storage->put("$projectPath/thumbnail.png", File::get(public_path('assets/images/default_project_thumbnail.png')));
+
+        //custom css
+        $this->storage->put("$projectPath/css/styles.css", '');
+
+        //custom js
+        $this->storage->put("$projectPath/js/scripts.js", '');
+
+        //empty theme
+        $this->applyTheme($projectPath, null);
 
         //apply template
         if ($data['template']) {
@@ -234,20 +261,20 @@ class ProjectRepository
             "$projectPath/js/jquery.min.js",
             File::get(resource_path("builder/js/jquery.min.js"))
         );
-
-        //thumbnail
-        $this->storage->put(
-            "$projectPath/thumbnail.png",
-            File::get(public_path('assets/images/default_project_thumbnail.png'))
-        );
-
-        //custom css
-        $this->storage->put("$projectPath/css/styles.css", '');
-
-        //custom js
-        $this->storage->put("$projectPath/js/scripts.js", '');
     }
 
+    /**
+     * Apply specified theme to the project.
+     *
+     * @param string $projectPath
+     * @param string $themeName
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    private function applyTheme($projectPath, $themeName = null)
+    {
+        $contents = is_null($themeName) ? '' :  $this->storage->get("themes/$themeName/stylesheet.css");
+        $this->storage->put("$projectPath/css/theme.css", $contents);
+    }
 
     /**
      * Update project template to specified one.
@@ -258,8 +285,6 @@ class ProjectRepository
      */
     private function updateTemplate(Project $project, $templateName)
     {
-        $project->fill(['template' => $templateName])->save();
-
         $oldTemplatePath = "$this->templatesPath/$templateName";
         $projectPath = $this->getProjectPath($project);
         $template = $this->templateLoader->load($templateName);

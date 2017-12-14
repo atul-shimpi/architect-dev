@@ -113,18 +113,28 @@ export class BuilderDocument {
     }
 
     public setHtml(html: string, source: changeSources = 'builderDocument') {
-        this.update(html, this.template, source);
+        this.update({html, source});
     }
 
     /**
      * Update builder document using specified markup.
      */
-    public update(html: string, template: BuilderTemplate, source: changeSources = 'builderDocument') {
-        this.template = template;
+    public update(options: {html: string, template?: BuilderTemplate, framework?: string, theme?: string, source?: changeSources} = {}) {
+        options = Object.assign({}, options, {
+            template: this.template,
+            source: 'builderDocument'
+        });
+
+        this.template = options.template;
         this.contextBoxes.hideBoxes();
-        this.setInnerHtml(this.transformHtml(html, template));
+        this.setInnerHtml(this.transformHtml(options.html, options.template));
         this.addIframeCss();
-        this.contentChanged.next(source);
+        this.contentChanged.next(options.source);
+
+        //TODO: prevent unstyled content flash, use stylesheet "load" event later
+        return new Promise(resolve => {
+            setTimeout(() => resolve(), 200);
+        });
     }
 
     /**
@@ -137,7 +147,7 @@ export class BuilderDocument {
     }
 
     public reload(source: changeSources = 'builderDocument') {
-        this.update(this.getInnerHtml(), this.template, source);
+        this.update({html: this.getInnerHtml(), source});
     }
 
     public getMetaTagValue(name: string) {

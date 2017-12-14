@@ -1,5 +1,5 @@
 <div class="templates scroll-container" customScrollbar>
-    <div class="template" *ngFor="let template of templates" (click)="applyTemplate(template)">
+    <div class="template" *ngFor="let template of templates" (click)="applyTemplate(template)" [class.disabled]="loading">
         <img [src]="getThumbnailUrl(template)">
         <div class="name">{{template.name}}</div>
     </div>

@@ -7,6 +7,9 @@ export class Project {
     public: number = 0;
     uuid?: string;
     pages?: Page[];
+    framework: string;
+    theme: string;
+    template: string;
 
     constructor(params: Object = {}) {
         for (let name in params) {

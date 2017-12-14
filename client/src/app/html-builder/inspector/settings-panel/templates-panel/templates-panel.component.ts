@@ -8,6 +8,7 @@ import {ConfirmModalComponent} from "vebto-client/core/ui/confirm-modal/confirm-
 import {BuilderTemplate} from "../../../builder-types";
 import {Toast} from "vebto-client/core/ui/toast.service";
 import {InspectorDrawer} from "../../inspector-drawer.service";
+import {LivePreviewLoader} from "../../../live-preview/live-preview-loader.service";
 
 @Component({
     selector: 'templates-panel',
@@ -20,6 +21,11 @@ export class TemplatesPanelComponent implements OnInit {
     public templates: Template[] = [];
 
     /**
+     * Whether new template is being applied to project currently.
+     */
+    private loading: boolean = false;
+
+    /**
      * TemplatesPanelComponent Constructor.
      */
     constructor(
@@ -29,6 +35,7 @@ export class TemplatesPanelComponent implements OnInit {
         private modal: Modal,
         private toast: Toast,
         private inspectorDrawer: InspectorDrawer,
+        private loader: LivePreviewLoader,
     ) {}
 
     ngOnInit() {
@@ -48,10 +55,17 @@ export class TemplatesPanelComponent implements OnInit {
             ok: 'Apply'
         }).afterClosed().subscribe(result => {
             if ( ! result) return;
+
+            this.loading = true;
+            this.loader.show();
+
+            this.inspectorDrawer.close();
+
             this.activeProject.applyTemplate(template.name).subscribe(() => {
                 this.toast.open('Template applied');
-                this.inspectorDrawer.close();
-            })
+                this.loading = false;
+                this.loader.hide();
+            });
         });
     }
 
