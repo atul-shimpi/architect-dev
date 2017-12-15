@@ -57,6 +57,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
         private activeProject: ActiveProject,
         private selectedElement: SelectedElement,
         private builderDocument: BuilderDocument,
+        private el: ElementRef,
     ) {}
 
     ngOnInit() {

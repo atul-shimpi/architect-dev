@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {AppHttpClient} from "vebto-client/core";
 import {Observable} from "rxjs/Observable";
-import {Template} from "../../types/models/Template";
 import {BuilderTemplate} from "../html-builder/builder-types";
 
 @Injectable()
@@ -15,7 +14,7 @@ export class Templates {
     /**
      * Get all available templates.
      */
-    public all(): Observable<{templates: Template[]}> {
+    public all(): Observable<{templates: BuilderTemplate[]}> {
         return this.http.get('templates');
     }
 

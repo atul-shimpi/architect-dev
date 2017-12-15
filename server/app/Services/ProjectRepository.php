@@ -5,6 +5,7 @@ use Auth;
 use App\Project;
 use App\Template;
 use File;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Storage;
@@ -131,6 +132,10 @@ class ProjectRepository
 
         if (Arr::get($data, 'theme') !== $project->theme) {
             $this->applyTheme($projectPath, $data['theme']);
+        }
+
+        if (Arr::get($data, 'custom_element_css')) {
+            $this->addCustomElementCss($projectPath, $data['custom_element_css']);
         }
 
         //custom css
@@ -376,5 +381,29 @@ class ProjectRepository
         })->map(function ($path) {
             return ['name' => basename($path, '.html'), 'html' => $this->storage->get($path)];
         })->values();
+    }
+
+    /**
+     * Add specified custom element css to the project.
+     *
+     * @param string $projectPath
+     * @param string $customElementCss
+     */
+    private function addCustomElementCss($projectPath, $customElementCss)
+    {
+        $path = "$projectPath/css/custom_elements.css";
+
+        try {
+            $contents = $this->storage->get($path);
+        } catch (FileNotFoundException $e) {
+            $contents = '';
+        }
+
+        //if this custom element css is already added, bail
+        if (str_contains($contents, $customElementCss)) return;
+
+        $contents = "$contents\n$customElementCss";
+
+        $this->storage->put($path, $contents);
     }
 }

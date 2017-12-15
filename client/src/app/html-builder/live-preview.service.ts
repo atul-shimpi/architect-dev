@@ -56,10 +56,13 @@ export class LivePreview {
             console.log('iframe loaded');
             this.builderDocument.setBaseUrl(this.activeProject.getBaseUrl());
             this.builderDocument.init(this.iframe.contentDocument);
-            this.registerKeybinds();
-            this.bindToIframeEvents();
-            this.bindToUndoCommandExecuted();
-            this.loader.hide();
+
+            this.builderDocument.reload('livePreview').then(() => {
+                this.registerKeybinds();
+                this.bindToIframeEvents();
+                this.bindToUndoCommandExecuted();
+                this.loader.hide();
+            });
         };
     }
 

@@ -30,6 +30,12 @@ export class LayoutPanelComponent implements OnInit {
             if ( ! this.inspector.activePanelIs('layout')) return;
             this.layoutPanel.loadContainers();
         });
+
+        //reload container once layout panel is opened
+        this.inspector.panelChanged.subscribe(name => {
+            if (name !== 'layout') return;
+            this.layoutPanel.loadContainers();
+        });
     }
 
     public openInspectorPanel(node: HTMLElement) {

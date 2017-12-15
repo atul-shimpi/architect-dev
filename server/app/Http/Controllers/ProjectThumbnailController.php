@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
+use Imagine\Image\Point;
 use Vebto\Bootstrap\Controller;
 
 class ProjectThumbnailController extends Controller
@@ -65,8 +66,10 @@ class ProjectThumbnailController extends Controller
         $string = preg_replace('/data:image\/.+?;base64,/', '', $this->request->get('dataUrl'));
 
         $size = new Box(260, 160);
-        $mode = ImageInterface::THUMBNAIL_INSET;
+        $mode = ImageInterface::THUMBNAIL_OUTBOUND;
 
-        return (string) $this->imagine->load(base64_decode($string))->thumbnail($size, $mode);
+        $image = $this->imagine->load(base64_decode($string));
+
+        return (string) $image->crop(new Point(0, 0), new Box($image->getSize()->getWidth(), 500))->thumbnail($size, $mode);
     }
 }

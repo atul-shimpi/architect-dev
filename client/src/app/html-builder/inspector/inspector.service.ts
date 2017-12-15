@@ -1,17 +1,20 @@
 import {ElementRef, Injectable} from '@angular/core';
 import {SelectedElement} from "../live-preview/selected-element.service";
+import {Subject} from "rxjs/Subject";
 
 type PanelNames = 'elements'|'inspector'|'pages'|'themes'|'settings'|'layout';
 
 @Injectable()
 export class Inspector {
 
-    private activePanel: PanelNames = 'pages';
+    private activePanel: PanelNames = 'elements';
 
     /**
      * Inspector sidebar host element.
      */
     public elementRef: ElementRef;
+
+    public panelChanged: Subject<string> = new Subject();
 
     constructor(private selectedElement: SelectedElement) {
         this.selectedElement.changed.subscribe(() => {
@@ -27,11 +30,13 @@ export class Inspector {
 
     public togglePanel(name: PanelNames) {
         this.activePanel = name;
+        this.panelChanged.next(name);
     }
 
     public openPanel(name: PanelNames) {
         if (this.activePanelIs(name)) return;
         this.activePanel = name;
+        this.panelChanged.next(name);
     }
 
     public activePanelIs(name: PanelNames) {

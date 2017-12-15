@@ -26,7 +26,7 @@ export class PageDocument {
      */
     protected internalIds = [
         '#base', '#jquery', '#custom-css', '#custom-js', '#template-js', '[id^=library]', '#theme-css',
-        '#template-css', '#framework-css', '#framework-js', '#preview-css', '#font-awesome'
+        '#template-css', '#framework-css', '#framework-js', '#preview-css', '#font-awesome', '#custom-elements-css'
     ];
 
     public getOuterHtml(): string {
@@ -65,6 +65,9 @@ export class PageDocument {
 
         //theme
         this.createLink('link', 'css/theme.css', 'theme-css');
+
+        //custom elements css
+        this.createLink('link', 'css/custom_elements.css', 'custom-elements-css');
 
         if (template) {
             this.addTemplate(template);

@@ -98,6 +98,7 @@ class ProjectsController extends Controller {
             'template' => 'nullable|string|min:1|max:255',
             'framework' => 'nullable|string|min:1|max:255',
             'theme' => 'nullable|string|min:1|max:255',
+            'custom_element_css' => 'nullable|string|min:1',
             'pages' => 'required|array',
             'pages.*' => 'required|array',
         ]);
@@ -123,8 +124,8 @@ class ProjectsController extends Controller {
             'js' => 'nullable|string|min:1|max:255',
             'template' => 'nullable|array',
             'template.id' => 'integer',
-            'template.css' => 'string|min:1',
-            'template.js' => 'string|min:1',
+            'template.css' => 'nullable|string|min:1',
+            'template.js' => 'nullable|string|min:1',
             'uuid' => 'required|string|size:36'
         ]);
 

@@ -92,7 +92,7 @@ export class ActiveProject {
         this.saving = true;
 
         if (options.thumbnail) {
-            html2canvas(this.builderDocument.getBody(), {height: 320, width: 200, svgRendering: true}).then(canvas => {
+            html2canvas(this.builderDocument.getBody(), {svgRendering: true}).then(canvas => {
                 this.projects.generateThumbnail(this.project.model.id, canvas.toDataURL('image/png')).subscribe();
             });
         }

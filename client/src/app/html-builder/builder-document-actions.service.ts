@@ -52,6 +52,8 @@ export class BuilderDocumentActions {
             this.contentChanged.next('nodeRemoved');
         });
 
+        this.contextBoxes.hideBoxes();
+
         return node;
     }
 

@@ -1,6 +1,5 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {Templates} from "../../../../templates/templates.service";
-import {Template} from "../../../../../types/models/Template";
 import {Settings} from "vebto-client/core/services/settings.service";
 import {ActiveProject} from "../../../projects/active-project";
 import {Modal} from "vebto-client/core/ui/modal.service";
@@ -18,7 +17,7 @@ import {LivePreviewLoader} from "../../../live-preview/live-preview-loader.servi
 })
 export class TemplatesPanelComponent implements OnInit {
 
-    public templates: Template[] = [];
+    public templates: BuilderTemplate[] = [];
 
     /**
      * Whether new template is being applied to project currently.

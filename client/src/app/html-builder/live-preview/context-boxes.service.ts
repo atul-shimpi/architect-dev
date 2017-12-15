@@ -1,10 +1,18 @@
 import {Injectable} from '@angular/core';
 import {Elements} from "../elements/elements.service";
+import {LocalStorage} from "vebto-client/core/services/local-storage.service";
+import {utils} from "vebto-client/core/services/utils";
 
 @Injectable()
 export class ContextBoxes {
 
-    constructor(private elements: Elements) {}
+    /**
+     * ContextBoxes service constructor.
+     */
+    constructor(
+        private elements: Elements,
+        private localStorage: LocalStorage
+    ) {}
 
     private hoverBox: HTMLElement;
     private selectedBox: HTMLElement;
@@ -19,13 +27,10 @@ export class ContextBoxes {
     private minWidth = 100;
 
     public repositionBox(name: 'hover'|'selected', node: HTMLElement, el?: any) {
-
         //hide context boxes depending on user settings
-        // if (! settings.get('enable'+name.ucFirst()+'Box')) {
-        //     return $scope[name+'Box'].hide();
-        // }
+        if ( ! this.localStorage.get('settings.'+name+'BoxEnabled', true)) return;
 
-        if (node && node.nodeName == 'BODY') {
+        if (node && (node.nodeName === 'BODY' || node.nodeName === 'HTML')) {
             return this.hideBox(name);
         }
 
@@ -46,6 +51,13 @@ export class ContextBoxes {
             this.getBox(name).style.height = this.getBoxHeight(rect) + 'px';
             this.getBox(name).style.width = this.getBoxWidth(rect) + 'px';
             this.showBox(name);
+        }
+
+        //place context box toolbar on the bottom, if there's not enough space top
+        if (parseInt(this.getBox(name).style.top) < 20) {
+            this.getBox(name).classList.add('toolbar-bottom');
+        } else {
+            this.getBox(name).classList.remove('toolbar-bottom');
         }
     };
 

@@ -90,6 +90,7 @@ export class LayoutPanel {
         }
 
         this.builderDocument.contentChanged.next('livePreview');
+
         this.selectContainer(container);
         this.selected.selectNode(this.selectedContainer.node);
     }
@@ -118,7 +119,7 @@ export class LayoutPanel {
      * Select specified row.
      */
     public selectRow(node: HTMLElement, selectNode = true) {
-        if ( ! node) return;
+        if ( ! node || (this.selectedRow && this.selectedRow.node === node)) return;
 
         if (selectNode) this.selected.selectNode(node);
 
@@ -256,7 +257,6 @@ export class LayoutPanel {
      */
     private createColumnNode(span: number): HTMLElement {
         let col = this.builderDocument.createElement('div');
-        col.innerText = 'New Column';
         col.className = 'col-sm-'+span;
         return col;
     }

@@ -5,7 +5,7 @@ import {ElementsApi} from "./elements-api.service";
 @Injectable()
 export class CustomElementsResolver implements Resolve<any[]> {
 
-    constructor(private elementsApi: ElementsApi,) {}
+    constructor(private elementsApi: ElementsApi) {}
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<any[]> {
         return this.elementsApi.getCustom().toPromise() as any;

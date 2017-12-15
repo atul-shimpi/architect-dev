@@ -6,6 +6,7 @@ import {DomHelpers} from "./dom-helpers.service";
 import {Settings} from "vebto-client/core/services/settings.service";
 import {BuilderTemplate} from "./builder-types";
 import {ContextBoxes} from "./live-preview/context-boxes.service";
+import {utils} from "vebto-client/core/services/utils";
 
 export type changeSources = 'builderDocument' | 'livePreview' | 'textEditor' | 'codeEditor' | 'activeProject';
 
@@ -84,6 +85,15 @@ export class BuilderDocument {
         return this.document.elementFromPoint(x, y) as HTMLElement;
     }
 
+    /**
+     * Reload css from specified stylesheet link.
+     */
+    public reloadCustomElementsCss() {
+        const link = this.find('#custom-elements-css');
+        const newHref = link.getAttribute('href').split('?')[0]+'?='+utils.randomString(8);
+        link.setAttribute('href', newHref);
+    }
+
     public createElement(tagName: string): HTMLElement {
         return this.document.createElement(tagName);
     }
@@ -147,7 +157,7 @@ export class BuilderDocument {
     }
 
     public reload(source: changeSources = 'builderDocument') {
-        this.update({html: this.getInnerHtml(), source});
+        return this.update({html: this.getInnerHtml(), source});
     }
 
     public getMetaTagValue(name: string) {

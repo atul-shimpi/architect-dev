@@ -10,6 +10,11 @@ context-box {
   color: $hover-box-actions-color;
   pointer-events: none;
 
+  &.toolbar-bottom > .context-box-toolbar {
+    top: auto;
+    bottom: -12px;
+  }
+
   > .context-box-toolbar {
     position: absolute;
     top: -12px;

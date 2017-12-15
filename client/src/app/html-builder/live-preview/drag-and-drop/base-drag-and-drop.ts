@@ -80,6 +80,7 @@ export abstract class BaseDragAndDrop implements AfterContentInit {
     protected handleDragStart(e: HammerInput) {
         this.bodyBeforeDrag = this.builderDocument.getBody().cloneNode(true) as HTMLBodyElement;
 
+        this.builderDocument.getBody().classList.add('dragging');
         this.livePreview.dragging = true;
         this.livePreview.contextBoxes.hideBoxes();
 
@@ -121,14 +122,14 @@ export abstract class BaseDragAndDrop implements AfterContentInit {
     protected handleDragEnd(e: HammerInput) {
         this.scroller.stopScrolling();
         this.livePreview.dragging = false;
+        this.builderDocument.getBody().classList.remove('dragging');
 
         this.dragHelper.hide();
         this.renderer.setStyle(this.dragOverlay, 'display', 'none');
 
         if (this.dragEl.element.name !== 'column') {
             this.dropPlaceholder.parentNode && this.dropPlaceholder.parentNode.replaceChild(this.dragEl.node, this.dropPlaceholder);
-            this.renderer.setStyle(this.dragEl.node, 'display', this.dragEl.node.getAttribute('data-display'));
-            this.renderer.removeAttribute(this.dragEl.node, 'data-display');
+            this.showDragEl();
             this.dropPlaceholder.remove();
             this.dropPlaceholder = null;
         }
@@ -136,6 +137,11 @@ export abstract class BaseDragAndDrop implements AfterContentInit {
         this.selectedElement.selectNode(this.dragEl.node);
         this.undoManager.wrapDomChanges(this.builderDocument.getBody(), null, {before: this.bodyBeforeDrag});
         this.builderDocument.contentChanged.next('livePreview');
+    }
+
+    private showDragEl() {
+        this.renderer.setStyle(this.dragEl.node, 'display', this.dragEl.node.getAttribute('data-display'));
+        this.renderer.removeAttribute(this.dragEl.node, 'data-display');
     }
 
     /**
@@ -174,6 +180,7 @@ export abstract class BaseDragAndDrop implements AfterContentInit {
 
     protected createDropPlaceholder() {
         this.dropPlaceholder = this.builderDocument.createElement('div');
+        this.dropPlaceholder.classList.add('drop-placeholder');
         this.renderer.setStyle(this.dropPlaceholder, 'display', this.dragEl.node.getAttribute('data-display'));
         this.renderer.setStyle(this.dropPlaceholder, 'pointer-events', 'none');
         this.renderer.setStyle(this.dropPlaceholder, 'height', '50px');

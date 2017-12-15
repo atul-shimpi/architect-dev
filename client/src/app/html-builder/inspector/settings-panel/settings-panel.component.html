@@ -20,10 +20,6 @@
             <button mat-raised-button color="accent" (click)="openTemplatesPanel()" trans>Change</button>
         </div>
     </div>
-</div>
-
-<div class="content-panel many-inputs">
-    <div class="header" trans>Builder Settings</div>
 
     <div class="input-container">
         <div class="fake-label" trans>Theme</div>
@@ -32,14 +28,23 @@
             <button mat-raised-button color="accent" (click)="openThemesPanel()" trans>Change</button>
         </div>
     </div>
+</div>
+
+<div class="content-panel many-inputs">
+    <div class="header" trans>Builder Settings</div>
 
     <div class="setting-container">
-        <mat-slide-toggle trans>Hover Box</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]="settings.autoSave" (ngModelChange)="updateSettings()" trans>Auto Save</mat-slide-toggle>
+        <p trans>Toggle auto saving of project when changes are made in the builder.</p>
+    </div>
+
+    <div class="setting-container">
+        <mat-slide-toggle [(ngModel)]="settings.hoverBoxEnabled" (ngModelChange)="updateSettings()" trans>Hover Box</mat-slide-toggle>
         <p trans>Toggle visibility of box that appears when hovering over elements in the builder.</p>
     </div>
 
     <div class="setting-container">
-        <mat-slide-toggle trans>Select Box</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]="settings.selectedBoxEnabled" (ngModelChange)="updateSettings()" trans>Selected Box</mat-slide-toggle>
         <p class="ng-binding">Toggle visibility of box that appears when clicking on element in the builder.</p>
     </div>
 </div>

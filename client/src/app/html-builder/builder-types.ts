@@ -1,5 +1,4 @@
 import {Project} from "../../types/models/Project";
-import {Template} from "../../types/models/Template";
 
 export type BuilderPage = {name: string, html: string};
 

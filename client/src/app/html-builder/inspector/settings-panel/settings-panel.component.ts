@@ -4,6 +4,7 @@ import {Inspector} from "../inspector.service";
 import {ActiveProject} from "../../projects/active-project";
 import {InspectorDrawer} from "../inspector-drawer.service";
 import {LivePreviewLoader} from "../../live-preview/live-preview-loader.service";
+import {LocalStorage} from "vebto-client/core/services/local-storage.service";
 
 @Component({
     selector: 'settings-panel',
@@ -13,14 +14,30 @@ import {LivePreviewLoader} from "../../live-preview/live-preview-loader.service"
 })
 export class SettingsPanelComponent implements OnInit {
 
+    /**
+     * Currently selected builder css framework.
+     */
     public selectedFramework: string;
 
+    /**
+     * Builder local storage settings models.
+     */
+    public settings: {
+        selectedBoxEnabled: boolean,
+        hoverBoxEnabled: boolean,
+        autoSave: boolean,
+    };
+
+    /**
+     * SettingsPanelComponent Constructor.
+     */
     constructor(
         private overlay: Overlay,
         private inspector: Inspector,
         public activeProject: ActiveProject,
         private inspectorDrawer: InspectorDrawer,
         public loader: LivePreviewLoader,
+        private localStorage: LocalStorage,
     ) {}
 
     ngOnInit() {
@@ -38,15 +55,39 @@ export class SettingsPanelComponent implements OnInit {
         });
     }
 
+    /**
+     * Open panel for selecting a template.
+     */
     public openTemplatesPanel() {
         this.inspectorDrawer.toggle('templates');
     }
 
+    /**
+     * Open panel for selecting a theme.
+     */
     public openThemesPanel() {
         this.inspectorDrawer.toggle('themes');
     }
 
+    /**
+     * Update builder settings in local storage.
+     */
+    public updateSettings() {
+        for (let key in this.settings) {
+            this.localStorage.set('settings.'+key, this.settings[key]);
+        }
+    }
+
+    /**
+     * Hydrate settings panel models.
+     */
     private hydrateModels() {
         this.selectedFramework = this.activeProject.get().model.framework;
+
+        this.settings = {
+            hoverBoxEnabled: this.localStorage.get('settings.hoverBoxEnabled', true),
+            selectedBoxEnabled: this.localStorage.get('settings.selectedBoxEnabled', true),
+            autoSave: this.localStorage.get('settings.autoSave', false),
+        }
     }
 }

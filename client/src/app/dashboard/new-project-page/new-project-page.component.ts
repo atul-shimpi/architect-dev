@@ -1,11 +1,10 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {Template} from "../../../types/models/Template";
 import {Settings} from "vebto-client/core/services/settings.service";
 import {TemplateColors} from "./template-colors";
 import {Modal} from "vebto-client/core/ui/modal.service";
 import {NewProjectModalComponent} from "./new-project-modal/new-project-modal.component";
-import {BuilderProject} from "../../html-builder/builder-types";
+import {BuilderProject, BuilderTemplate} from "../../html-builder/builder-types";
 
 @Component({
     selector: 'new-project-page',
@@ -20,12 +19,12 @@ export class NewProjectPageComponent implements OnInit {
     /**
      * All available templates.
      */
-    public templates: Template[] = [];
+    public templates: BuilderTemplate[] = [];
 
     /**
      * Template filtered by category and color.
      */
-    public filteredTemplates: Template[] = [];
+    public filteredTemplates: BuilderTemplate[] = [];
 
     /**
      * Currently selected category filter.
@@ -64,7 +63,7 @@ export class NewProjectPageComponent implements OnInit {
         });
     }
 
-    public getTemplateThumbnail(template: Template) {
+    public getTemplateThumbnail(template: BuilderTemplate) {
         return this.settings.getBaseUrl(true) + 'storage/' + template.thumbnail;
     }
 
@@ -77,7 +76,7 @@ export class NewProjectPageComponent implements OnInit {
         if ( ! name) return this.filteredTemplates = this.templates.slice();
 
         this.filteredTemplates = this.templates.filter(template => {
-            return template.category.toLowerCase().indexOf(name.toLowerCase()) > -1;
+            return template.config.category.toLowerCase().indexOf(name.toLowerCase()) > -1;
         });
     }
 
@@ -90,7 +89,7 @@ export class NewProjectPageComponent implements OnInit {
         if ( ! name) return this.filteredTemplates = this.templates.slice();
 
         this.filteredTemplates = this.templates.filter(template => {
-            return template.color.toLowerCase().indexOf(name.toLowerCase()) > -1;
+            return template.config.color.toLowerCase().indexOf(name.toLowerCase()) > -1;
         });
     }
 }
