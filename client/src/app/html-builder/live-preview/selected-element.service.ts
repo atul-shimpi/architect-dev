@@ -57,7 +57,8 @@ export class SelectedElement extends ActiveElement {
         this.contextBoxes.repositionBox('selected', this.node, this.element);
     }
 
-    public getStyle(name: string) {
+    public getStyle(name: string): string {
+        if ( ! this.node) return null;
         return window.getComputedStyle(this.node)[name];
     }
 

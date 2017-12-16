@@ -7,6 +7,7 @@ import {DomHelpers} from "../../dom-helpers.service";
 import {SelectedElement} from "../selected-element.service";
 import {BuilderDocument} from "../../builder-document.service";
 import {ActiveProject} from "../../projects/active-project";
+import {DragVisualHelper} from "./drag-visual-helper/drag-visual-helper.service";
 
 @Directive({
     selector: '[dragElements]'
@@ -19,13 +20,14 @@ export class DragElementsDirective extends BaseDragAndDrop {
      */
     constructor(
         protected livePreview: LivePreview,
-        protected renderer: Renderer2,
         protected undoManager: UndoManager,
         protected elements: Elements,
         protected zone: NgZone,
         protected selectedElement: SelectedElement,
         protected builderDocument: BuilderDocument,
         protected activeProject: ActiveProject,
+        protected renderer: Renderer2,
+        protected dragHelper: DragVisualHelper,
     ) {
         super();
     }

@@ -54,9 +54,16 @@ export class AttributesPanelComponent implements OnInit {
 
         this.callElementOnAssign(this.selectedElement);
 
+        if ( ! this.selectedElement.node) return;
+
         //set element classes
         for (let i = 0; i < this.selectedElement.node.classList.length; i++) {
-            this.classes.push(this.selectedElement.node.classList[i]);
+            const className = this.selectedElement.node.classList[i],
+                hiddenClasses = this.selectedElement.element.hiddenClasses;
+
+            if (hiddenClasses && hiddenClasses.indexOf(className) > -1) continue;
+
+            this.classes.push(className);
         }
 
         //set element id
@@ -143,6 +150,8 @@ export class AttributesPanelComponent implements OnInit {
      * Add given class to active html node and to inspector styles object.
      */
     public addClass(classes: string[], addUndo = true) {
+        if (classes.length === 1 && ! classes[0].length) return;
+
         classes.forEach(className => {
             if (className && className.length && this.classes.indexOf(className) === -1) {
                 this.classes.push(className);

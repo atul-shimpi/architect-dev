@@ -58,6 +58,7 @@ import {LinkEditor} from "./live-preview/link-editor/link-editor.service";
 import {InspectorDrawer} from "./inspector/inspector-drawer.service";
 import {LivePreviewLoader} from "./live-preview/live-preview-loader.service";
 import {Themes} from "./themes.service";
+import {DragVisualHelper} from "./live-preview/drag-and-drop/drag-visual-helper/drag-visual-helper.service";
 
 @NgModule({
     imports: [
@@ -136,6 +137,7 @@ import {Themes} from "./themes.service";
         InspectorDrawer,
         LivePreviewLoader,
         Themes,
+        DragVisualHelper,
     ]
 })
 export class HtmlBuilderModule {

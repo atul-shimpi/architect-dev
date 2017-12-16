@@ -2,51 +2,6 @@ import {LivePreview} from "../../live-preview.service";
 
 export const baseElements = [];
 
-declare let $;
-
-baseElements.push({
-    name: 'transparent background',
-    nodes: ['*'],
-    'class': 'transparent-background',
-    frameworks: ['base', 'bootstrap'],
-    types: ['flow'],
-    validChildren: ['flow'],
-    draggable: false,
-    hiddenClasses: ['transparent-background'],
-    attributes: {
-        opacity: {
-            list: [
-                {name: '0.1', value: '.1'},
-                {name: '0.2', value: '.2'},
-                {name: '0.3', value: '.3'},
-                {name: '0.4', value: '.4'},
-                {name: '0.5', value: '.5'},
-                {name: '0.6', value: '.6'},
-                {name: '0.7', value: '.7'},
-                {name: '0.8', value: '.8'},
-                {name: '0.9', value: '.9'},
-                {name: '1', value: '1'},
-            ],
-            value: '',
-            onAssign: function ($scope) {
-                for (let i = this.list.length - 1; i >= 0; i--) {
-                    if ($($scope.selected.node).css('background-color').indexOf(this.list[i].value) > -1) {
-                        return this.value = this.list[i];
-                    }
-                }
-
-                //if we didn't assign anything just default to not transparent
-                if (this.value === '') {
-                    this.value = this.list[9];
-                }
-            },
-            onChange: function ($scope, opa) {
-                $($scope.selected.node).css('background-color', 'rgba(0,0,0,' + opa.value + ')');
-            }
-        }
-    }
-});
-
 baseElements.push({
     name: 'paragraph',
     frameworks: ['base'],
@@ -231,30 +186,29 @@ baseElements.push({
     attributes: {
         size: {
             list: [
-                {name: 'Default', value: ''},
+                {name: 'Default', value: 'default'},
                 {name: 'Large', value: 'fa-lg'},
                 {name: '2x', value: 'fa-2x'},
                 {name: '3x', value: 'fa-3x'},
                 {name: '4x', value: 'fa-4x'},
                 {name: '5x', value: 'fa-5x'}
             ],
-            value: '',
-            onAssign: function ($scope) {
+            value: 'default',
+            onAssign: function (livePreview: LivePreview) {
                 for (let i = this.list.length - 1; i >= 0; i--) {
-                    if ($scope.selected.node.className.indexOf(this.list[i].value) > -1) {
-                        return this.value = this.list[i];
+                    if (livePreview.selected.node.className.indexOf(this.list[i].value) > -1) {
+                        return this.value = this.list[i].value;
                     }
                 }
             },
-            onChange: function ($scope, size) {
-
+            onChange: function (livePreview: LivePreview, size: string) {
                 //strip any previously assigned size classes from the icon
                 for (let i = this.list.length - 1; i >= 0; i--) {
-                    $($scope.selected.node).removeClass(this.list[i].value);
+                    if ( ! this.list[i].value) continue;
+                    livePreview.selected.node.classList.remove(this.list[i].value);
                 }
-                ;
 
-                $($scope.selected.node).addClass(size.value);
+                livePreview.selected.node.classList.add(size);
             }
         }
     },

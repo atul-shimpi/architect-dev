@@ -222,7 +222,7 @@ export class Elements {
             if (node['type']) {
                 const type = nodeName+'='+node['type'];
 
-                if (element.nodes.find(nodeName => nodeName == type)) {
+                if (Array.isArray(element.nodes) && element.nodes.find(nodeName => nodeName == type)) {
                     return element;
                 }
             }

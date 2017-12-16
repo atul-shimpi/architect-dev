@@ -1,18 +1,14 @@
-import {Injectable} from '@angular/core';
+import {ElementRef, Injectable} from '@angular/core';
 import {Elements} from "../elements/elements.service";
 import {LocalStorage} from "vebto-client/core/services/local-storage.service";
-import {utils} from "vebto-client/core/services/utils";
 
 @Injectable()
 export class ContextBoxes {
 
     /**
-     * ContextBoxes service constructor.
+     * Live preview iframe client rect.
      */
-    constructor(
-        private elements: Elements,
-        private localStorage: LocalStorage
-    ) {}
+    private previewRect: ClientRect;
 
     private hoverBox: HTMLElement;
     private selectedBox: HTMLElement;
@@ -25,6 +21,16 @@ export class ContextBoxes {
     private spacing = 10;
 
     private minWidth = 100;
+
+    private minLeft = 15;
+
+    /**
+     * ContextBoxes service constructor.
+     */
+    constructor(
+        private elements: Elements,
+        private localStorage: LocalStorage
+    ) {}
 
     public repositionBox(name: 'hover'|'selected', node: HTMLElement, el?: any) {
         //hide context boxes depending on user settings
@@ -67,8 +73,13 @@ export class ContextBoxes {
     }
 
     private getBoxWidth(rect: ClientRect) {
-        const width = rect.width < this.minWidth ? this.minWidth : rect.width;
-        return width + (this.spacing * 2);
+        let width = rect.width < this.minWidth ? this.minWidth : rect.width;
+        width = width + (this.spacing * 2);
+
+        //min left distance - scrollbar width
+        const maxWidth = this.previewRect.width - (this.minLeft * 2) - 20;
+
+        return width > maxWidth ? maxWidth : width;
     }
 
     private getBoxTop(rect: ClientRect) {
@@ -77,8 +88,9 @@ export class ContextBoxes {
     }
 
     private getBoxLeft(rect: ClientRect) {
-        const offset = rect.width < this.minWidth ? this.minWidth - rect.width : 0;
-        return rect.left - (offset /2) - this.spacing;
+        let offset = rect.width < this.minWidth ? this.minWidth - rect.width : 0;
+        offset = rect.left - (offset /2) - this.spacing;
+        return offset < this.minLeft ? this.minLeft : offset;
     }
 
     /**
@@ -100,9 +112,10 @@ export class ContextBoxes {
         this.getBox(name).classList.remove('hidden');
     }
 
-    public set(hover: HTMLElement, selected: HTMLElement) {
+    public set(hover: HTMLElement, selected: HTMLElement, iframe: ElementRef) {
         this.hoverBox = hover;
         this.selectedBox = selected;
+        this.previewRect = iframe.nativeElement.getBoundingClientRect();
     }
 
     private getBox(name: 'hover'|'selected'): HTMLElement {

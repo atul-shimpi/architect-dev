@@ -40,20 +40,34 @@
 	 	types: ['flow'],
 	 	validChildren: ['coption', 'colgroup', 'thead', 'tbody', 'tfoot', 'tr'],
 	 	category: 'typography',
-	 	previewScale: '0.2',
 	 	hiddenClasses: ['table'],
 	 	icon: 'border-all',
 	 	attributes: {
 	 		type: {
 	 			list: [
-	 				{name: 'Basic', value: ''},
+	 				{name: 'Basic', value: 'default'},
 	 				{name: 'Striped', value: 'table-striped'},
 	 				{name: 'Bordered', value: 'table-bordered'},
 	 				{name: 'Hover', value: 'table-hover'},
 	 				{name: 'Condensed', value: 'table-condensed'},
 	 				{name: 'Responsive', value: 'table-responsive'},
 	 			],
-	 			value: '',
+	 			value: 'default',
+        onAssign: function(livePreview) {
+          for (var i = this.list.length - 1; i >= 0; i--) {
+            if (livePreview.selected.node.className.indexOf(this.list[i].value) > -1) {
+              return this.value = this.list[i].value;
+            }
+          }
+        },
+        onChange: function(livePreview, type) {
+          //strip any previously assigned type classes from the icon
+          for (var i = this.list.length - 1; i >= 0; i--) {
+            livePreview.selected.node.classList.remove(this.list[i].value);
+          };
+
+          livePreview.selected.node.classList.add(type);
+        }
 	 		}
 	 	},
 	})

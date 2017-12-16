@@ -1,6 +1,6 @@
-export const bootstrapElements = [];
+import {LivePreview} from "../../live-preview.service";
 
-declare let $;
+export const bootstrapElements = [];
 
 bootstrapElements.push({
     name: 'page header',
@@ -80,15 +80,31 @@ bootstrapElements.push({
     types: ['flow'],
     validChildren: ['flow'],
     category: 'layout',
-    previewScale: '0.15',
     dragHelper: true,
     icon: 'crop-square',
     attributes: {
         type: {
             list: [
-                {name: 'default', value: 'container'},
-                {name: 'wide', value: 'container-fluid'},
+                {name: 'Default', value: 'container'},
+                {name: 'Wide', value: 'container-fluid'},
             ],
+            value: 'container',
+            onAssign: function (livePreview: LivePreview) {
+                for (let i = this.list.length - 1; i >= 0; i--) {
+                    if (livePreview.selected.node.className.indexOf(this.list[i].value) > -1) {
+                        return this.value = this.list[i].value;
+                    }
+                }
+            },
+            onChange: function (livePreview: LivePreview, size: string) {
+                //strip any previously assigned size classes from the node
+                for (let i = this.list.length - 1; i >= 0; i--) {
+                    if ( ! this.list[i].value) continue;
+                    livePreview.selected.node.classList.remove(this.list[i].value);
+                }
+
+                livePreview.selected.node.classList.add(size);
+            }
         }
     },
 });
@@ -209,12 +225,12 @@ bootstrapElements.push({
         placeholder: {
             text: true,
             value: 'Text input',
-            onAssign: function ($scope) {
-                this.value = $scope.selected.node.getAttribute('placeholder');
+            onAssign: function (livePreview: LivePreview) {
+                this.value = livePreview.selected.node.getAttribute('placeholder');
             },
-            onChange: function ($scope, text) {
-                $scope.selected.node.setAttribute('placeholder', text);
-                $scope.repositionBox('select');
+            onChange: function (livePreview: LivePreview, text: string) {
+                livePreview.selected.node.setAttribute('placeholder', text);
+                livePreview.repositionBox('selected');
             }
         },
         type: {
@@ -234,19 +250,18 @@ bootstrapElements.push({
                 {name: 'Tel', value: 'tel'},
                 {name: 'Color', value: 'color'},
             ],
-            value: false,
-            onAssign: function ($scope) {
-                for (var i = this.list.length - 1; i >= 0; i--) {
-                    if ($scope.selected.node.getAttribute('type') == this.list[i].value) {
-                        return this.value = this.list[i];
+            value: '',
+            onAssign: function (livePreview: LivePreview) {
+                for (let i = this.list.length - 1; i >= 0; i--) {
+                    if (livePreview.selected.node.getAttribute('type') == this.list[i].value) {
+                        return this.value = this.list[i].value;
                     }
                 }
-                ;
 
-                return this.value = this.list[0];
+                return this.value = this.list[0].value;
             },
-            onChange: function ($scope, type) {
-                $scope.selected.node.setAttribute('type', type.value);
+            onChange: function (livePreview: LivePreview, type: string) {
+                livePreview.selected.node.setAttribute('type', type);
             }
         }
     },
@@ -268,23 +283,23 @@ bootstrapElements.push({
         rows: {
             text: true,
             value: 1,
-            onAssign: function ($scope) {
-                this.value = $scope.selected.node.getAttribute('rows');
+            onAssign: function (livePreview: LivePreview) {
+                this.value = livePreview.selected.node.getAttribute('rows');
             },
-            onChange: function ($scope, rows) {
-                $scope.selected.node.setAttribute('rows', rows);
-                $scope.repositionBox('select');
+            onChange: function (livePreview: LivePreview, rows: string) {
+                livePreview.selected.node.setAttribute('rows', rows);
+                livePreview.repositionBox('selected');
             }
         },
         placeholder: {
             text: true,
-            value: 'Text input',
-            onAssign: function ($scope) {
-                this.value = $scope.selected.node.getAttribute('placeholder');
+            value: 'Placeholder...',
+            onAssign: function (livePreview: LivePreview) {
+                this.value = livePreview.selected.node.getAttribute('placeholder');
             },
-            onChange: function ($scope, text) {
-                $scope.selected.node.setAttribute('placeholder', text);
-                $scope.repositionBox('select');
+            onChange: function (livePreview: LivePreview, text: string) {
+                livePreview.selected.node.setAttribute('placeholder', text);
+                livePreview.repositionBox('selected');
             }
         },
     },
@@ -319,10 +334,27 @@ bootstrapElements.push({
     attributes: {
         size: {
             list: [
-                {name: 'Medium', value: ''},
+                {name: 'Medium', value: 'default'},
                 {name: 'Large', value: 'input-group-lg'},
                 {name: 'Small', value: 'input-group-sm'},
             ],
+            value: 'default',
+            onAssign: function (livePreview: LivePreview) {
+                for (let i = this.list.length - 1; i >= 0; i--) {
+                    if (livePreview.selected.node.className.indexOf(this.list[i].value) > -1) {
+                        return this.value = this.list[i].value;
+                    }
+                }
+            },
+            onChange: function (livePreview: LivePreview, size: string) {
+                //strip any previously assigned size classes from the node
+                for (let i = this.list.length - 1; i >= 0; i--) {
+                    if ( ! this.list[i].value) continue;
+                    livePreview.selected.node.classList.remove(this.list[i].value);
+                }
+
+                livePreview.selected.node.classList.add(size);
+            }
         }
     },
     previewScale: '0.5',
@@ -346,11 +378,28 @@ bootstrapElements.push({
     attributes: {
         state: {
             list: [
-                {name: 'None', value: ''},
+                {name: 'None', value: 'default'},
                 {name: 'Error', value: 'has-error'},
                 {name: 'Success', value: 'has-success'},
                 {name: 'Warning', value: 'has-warning'},
-            ]
+            ],
+            value: 'default',
+            onAssign: function (livePreview: LivePreview) {
+                for (let i = this.list.length - 1; i >= 0; i--) {
+                    if (livePreview.selected.node.className.indexOf(this.list[i].value) > -1) {
+                        return this.value = this.list[i].value;
+                    }
+                }
+            },
+            onChange: function (livePreview: LivePreview, size: string) {
+                //strip any previously assigned size classes from the node
+                for (let i = this.list.length - 1; i >= 0; i--) {
+                    if ( ! this.list[i].value) continue;
+                    livePreview.selected.node.classList.remove(this.list[i].value);
+                }
+
+                livePreview.selected.node.classList.add(size);
+            }
         }
     },
     previewScale: '0.5',
@@ -368,38 +417,6 @@ bootstrapElements.push({
     types: ['flow', 'phrasing', 'interactive'],
     validChildren: ['flow'],
     category: 'typography',
-    onEdit: function ($scope) {
-        $scope.linker.removeClass('hidden');
-
-        var left = 0, top = 0,
-            pos = $scope.selected.node.getBoundingClientRect(),
-            rightEdge = $('#viewport').width(),
-            bottomEdge = $('#viewport').height(),
-            leftEdge = $('#elements-container')[0].getBoundingClientRect(),
-            linkerRight = pos.left + $scope.frameOffset.left + $scope.linker.width(),
-            linkerTop = pos.top + $scope.frameOffset.top + $scope.linker.height();
-
-        //make sure linker doesn't go over right sidebar
-        if (rightEdge.left < linkerRight) {
-            left = pos.left - (linkerRight - rightEdge.left) - 40;
-        } else {
-            left = pos.left - ($scope.linker.width() - $scope.selected.node.offsetWidth) / 2;
-        }
-
-        //position linker either above or below link dom element depending on space available
-        if (bottomEdge < linkerTop) {
-            top = pos.top - $scope.selected.node.offsetHeight - $scope.linker.height() - 10;
-        } else {
-            top = pos.top + $scope.selected.node.offsetHeight;
-        }
-
-        //make sure linker doesn't go under the left sidebar
-        if (left < leftEdge.left) {
-            left = leftEdge.left + 30;
-        }
-
-        $scope.linker.css({top: top, left: left});
-    },
     icon: 'link'
 });
 
@@ -421,22 +438,24 @@ bootstrapElements.push({
                 {name: 'Right', value: 'right'},
             ],
             value: false,
-            onAssign: function ($scope) {
-                if (!$($scope.selected.node).index()) {
-                    this.value = this.list[0];
+            onAssign: function (livePreview: LivePreview) {
+                let i = 0, child;
+                while((child = livePreview.selected.node.previousSibling as any) != null) i++;
+
+                if ( ! i) {
+                    this.value = this.list[0].value;
                 } else {
-                    this.value = this.list[1];
+                    this.value = this.list[1].value;
                 }
             },
-            onChange: function ($scope, position) {
-                var childs = $($scope.selected.parent).children();
+            onChange: function (livePreview: LivePreview, position: number) {
+                let children = livePreview.selected.node.parentNode.childNodes;
 
-                //insert input group addon either before first element
-                //of parent or after the last one
-                if (position.value == 'right') {
-                    $(childs[childs.length - 1]).after($scope.selected.node);
+                //insert input group addon either before first element of parent or after the last one
+                if (position == 'right') {
+                    children[children.length - 1].after(livePreview.selected.node);
                 } else {
-                    $(childs[0]).before($scope.selected.node);
+                    children[0].before(livePreview.selected.node);
                 }
             }
         },
@@ -448,43 +467,50 @@ bootstrapElements.push({
                 {name: 'Button', value: 'button'},
                 {name: 'Dropdown', value: 'dropdown'},
             ],
-            onAssign: function ($scope) {
-                var childs = $($scope.selected.node).children();
+            onAssign: function (livePreview: LivePreview) {
+                if ( ! livePreview.selected.node) return;
+                let children = livePreview.selected.node.closest('.input-group-addon').childNodes;
 
-                if (childs.length == 0) {
-                    this.value = this.list[0];
-                } else if (childs[0].type == 'checkbox') {
-                    this.value = this.list[1];
-                } else if (childs[0].type == 'radio') {
-                    this.value = this.list[2];
-                } else if (childs[0].nodeName == 'BUTTON') {
-                    this.value = this.list[3];
-                } else if (childs.length > 1) {
-                    this.value = this.list[4];
+                if (children[0].nodeType === Node.TEXT_NODE) {
+                    this.value = this.list[0].value;
+                } else if (children[0].type == 'checkbox') {
+                    this.value = this.list[1].value;
+                } else if (children[0].type == 'radio') {
+                    this.value = this.list[2].value;
+                } else if (children[0].nodeName == 'BUTTON') {
+                    this.value = this.list[3].value;
+                } else if (children.length > 1) {
+                    this.value = this.list[4].value;
                 }
             },
-            onChange: function ($scope, contents) {
+            onChange: function (livePreview: LivePreview, contents: string) {
 
                 //text
-                if (contents.value == 'text') {
-                    $($scope.selected.node).removeClass().addClass('input-group-addon');
-                    $($scope.selected.node).html('@');
+                if (contents == 'text') {
+                    livePreview.selected.node.classList.remove();
+                    livePreview.selected.node.classList.add('input-group-addon');
+                    livePreview.selected.node.innerHTML = '';
+                    livePreview.selected.node.innerText = '@';
                     //checkbox
-                } else if (contents.value == 'checkbox') {
-                    $($scope.selected.node).removeClass().addClass('input-group-addon');
-                    $($scope.selected.node).html('<input type="checkbox">');
+                } else if (contents == 'checkbox') {
+                    livePreview.selected.node.classList.remove();
+                    livePreview.selected.node.classList.add('input-group-addon');
+                    livePreview.selected.node.innerHTML = '<input type="checkbox">';
                     //radio
-                } else if (contents.value == 'radio') {
-                    $($scope.selected.node).removeClass().addClass('input-group-addon');
-                    $($scope.selected.node).html('<input type="radio">');
+                } else if (contents == 'radio') {
+                    livePreview.selected.node.classList.remove();
+                    livePreview.selected.node.classList.add('input-group-addon');
+                    livePreview.selected.node.innerHTML = '<input type="radio">';
                     //button
-                } else if (contents.value == 'button') {
-                    $($scope.selected.node).removeClass().addClass('input-group-btn');
-                    $($scope.selected.node).html('<button class="btn btn-default" type="button">Go!</button>');
+                } else if (contents == 'button') {
+                    livePreview.selected.node.classList.remove();
+                    livePreview.selected.node.classList.add('input-group-btn');
+                    livePreview.selected.node.innerHTML = '<button class="btn btn-default" type="button">Go!</button>';
                     //dropdown
-                } else if (contents.value == 'dropdown') {
-                    $($scope.selected.node).removeClass().addClass('input-group-btn');
-                    $($scope.selected.node).html(
+                } else if (contents == 'dropdown') {
+                    livePreview.selected.node.classList.remove();
+                    livePreview.selected.node.classList.add('input-group-btn');
+                    livePreview.selected.node.innerHTML =
                         '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Action <span class="caret"></span></button>' +
                         '<ul class="dropdown-menu" role="menu">' +
                         '<li><a href="#">Action</a></li>' +
@@ -492,8 +518,7 @@ bootstrapElements.push({
                         '<li><a href="#">Something else here</a></li>' +
                         '<li class="divider"></li>' +
                         '<li><a href="#">Separated link</a></li>' +
-                        '</ul>'
-                    );
+                        '</ul>';
                 }
             }
         }
@@ -517,12 +542,29 @@ bootstrapElements.push({
     validChildren: false,
     attributes: {
         state: {
+            value: 'none',
             list: [
-                {name: 'None', value: ''},
+                {name: 'None', value: 'none'},
                 {name: 'Error', value: 'has-error'},
                 {name: 'Success', value: 'has-success'},
                 {name: 'Warning', value: 'has-warning'},
             ],
+            onAssign: function (livePreview: LivePreview) {
+                for (let i = this.list.length - 1; i >= 0; i--) {
+                    if (livePreview.selected.node.className.indexOf(this.list[i].value) > -1) {
+                        return this.value = this.list[i].value;
+                    }
+                }
+            },
+            onChange: function (livePreview: LivePreview, state: string) {
+                //strip any previously assigned classes from the node
+                for (let i = this.list.length - 1; i >= 0; i--) {
+                    if ( ! this.list[i].value) continue;
+                    livePreview.selected.node.classList.remove(this.list[i].value);
+                }
+
+                livePreview.selected.node.classList.add(state);
+            }
         }
     },
     previewScale: '0.5',
@@ -542,17 +584,31 @@ bootstrapElements.push({
     icon: 'image',
     canModify: ['padding', 'margin', 'attributes', 'shadows', 'borders'],
     previewScale: '0.3',
-    onEdit: function ($scope) {
-        //
-    },
     attributes: {
         shape: {
             list: [
-                {name: 'Default', value: ''},
+                {name: 'Default', value: 'none'},
                 {name: 'Rounded', value: 'img-rounded'},
                 {name: 'Thumbnail', value: 'img-thumbnail'},
                 {name: 'Circle', value: 'img-circle'},
             ],
+            value: 'none',
+            onAssign: function (livePreview: LivePreview) {
+                for (let i = this.list.length - 1; i >= 0; i--) {
+                    if (livePreview.selected.node.className.indexOf(this.list[i].value) > -1) {
+                        return this.value = this.list[i].value;
+                    }
+                }
+            },
+            onChange: function (livePreview: LivePreview, type: string) {
+                //strip any previously assigned type classes from the icon
+                for (let i = this.list.length - 1; i >= 0; i--) {
+                    if ( ! this.list[i].value) continue;
+                    livePreview.selected.node.classList.remove(this.list[i].value);
+                }
+
+                livePreview.selected.node.classList.add(type);
+            }
         }
     },
 });
@@ -568,21 +624,19 @@ bootstrapElements.push({
     category: 'media',
     icon: 'video-library',
     canModify: ['padding', 'margin', 'shadows', 'attributes'],
-    previewScale: '0.7',
-    previewHtml: '<img data-name="responsive video" data-src="//www.youtube.com/embed/sENM2wA_FTg" class="img-responsive preview-node" src="assets/images/previews/responsiveEmbedPreview.png">',
     attributes: {
         url: {
             text: true,
             value: '//www.youtube.com/embed/wGp0GAd1d1s',
-            onAssign: function ($scope) {
-                this.value = $scope.selected.node.dataset.src;
+            onAssign: function (livePreview: LivePreview) {
+                this.value = livePreview.selected.node.querySelector('iframe').src;
             },
-            onChange: function ($scope, url) {
-                $scope.selected.node.dataset.src = url;
+            onChange: function (livePreview: LivePreview, url: string) {
+                livePreview.selected.node.querySelector('iframe').src = url;
             }
         }
     },
-    hiddenClasses: ['embed-responsive', 'preview-node', 'img-responsive'],
+    hiddenClasses: ['embed-responsive', 'embed-responsive-16by9', 'preview-node', 'img-responsive'],
 });
 
 bootstrapElements.push({

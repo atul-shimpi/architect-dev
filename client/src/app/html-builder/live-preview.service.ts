@@ -44,10 +44,9 @@ export class LivePreview {
         private linkEditor: LinkEditor,
     ) {}
 
-    public init(dragHelper: DragVisualHelperComponent, iframe: ElementRef) {
+    public init(iframe: ElementRef) {
         this.loader.show();
 
-        this.dragHelper = dragHelper;
         this.iframe = iframe.nativeElement;
 
         this.iframe.src = this.activeProject.getBaseUrl();
@@ -146,11 +145,13 @@ export class LivePreview {
 
     private listenForClick() {
         this.builderDocument.get().addEventListener('click', e => {
-            console.log('single');
+            console.log('single', e);
 
             const node = e.target as HTMLElement;
 
             this.handleLinkClick(e);
+
+            this.handleFormSubmitButtonClick(e);
 
             //hide context menu
             this.contextMenu.close();
@@ -196,6 +197,18 @@ export class LivePreview {
         //link navigates to a different page
         const pageName = href.replace('.html', '');
         this.activeProject.setActivePage(this.activeProject.getPage(pageName));
+    }
+
+    private handleFormSubmitButtonClick(e: MouseEvent) {
+        const node = e.target as HTMLElement;
+
+        //clicked node is not a submit button
+        if ( ! node.matches('button[type=submit], button[type=submit] *')) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        //
     }
 
     private listenForDoubleClick(hammer: HammerManager) {

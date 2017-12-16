@@ -7,12 +7,11 @@ import {LivePreviewScroller} from "./live-preview-scroller";
 import {DomHelpers} from "../../dom-helpers.service";
 import {BuilderDocument} from "../../builder-document.service";
 import {SelectedElement} from "../selected-element.service";
+import {DragVisualHelper} from "./drag-visual-helper/drag-visual-helper.service";
 
 export abstract class BaseDragAndDrop implements AfterContentInit {
 
     protected dragOverlay: HTMLElement;
-
-    protected dragHelper: DragVisualHelperComponent;
 
     /**
      * Helper service for scrolling preview during drag and drop.
@@ -45,10 +44,11 @@ export abstract class BaseDragAndDrop implements AfterContentInit {
 
     protected abstract elements: Elements;
 
+    protected abstract dragHelper: DragVisualHelper;
+
     ngAfterContentInit() {
         this.dragOverlay = document.querySelector('.drag-overlay') as HTMLElement;
         let container  = document.querySelector('live-preview') as HTMLElement;
-        this.dragHelper = this.livePreview.dragHelper;
         this.scroller = new LivePreviewScroller(this.builderDocument, container);
 
         this.zone.runOutsideAngular(() => {
@@ -133,6 +133,9 @@ export abstract class BaseDragAndDrop implements AfterContentInit {
             this.dropPlaceholder.remove();
             this.dropPlaceholder = null;
         }
+
+        //if node was not dragged into preview and appended to dom, bail
+        if ( ! this.builderDocument.getBody().contains(this.dragEl.node)) return;
 
         this.selectedElement.selectNode(this.dragEl.node);
         this.undoManager.wrapDomChanges(this.builderDocument.getBody(), null, {before: this.bodyBeforeDrag});

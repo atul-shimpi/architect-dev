@@ -16,10 +16,13 @@
 <div class="inputs">
     <ng-container *ngFor="let key of getElAttributeKeys(customAttributes)">
         <div class="input-container">
-            <label for="test">{{key}}</label>
-            <select name="test" id="test" [ngModel]="customAttributes[key].value" (ngModelChange)="callElementOnChange(key, $event)">
+            <label [for]="key">{{key}}</label>
+
+            <select [name]="key" [id]="key" *ngIf="!customAttributes[key].text" [ngModel]="customAttributes[key].value" (ngModelChange)="callElementOnChange(key, $event)">
                 <option *ngFor="let listItem of customAttributes[key].list" [value]="listItem.value">{{listItem.name}}</option>
             </select>
+
+            <input [name]="key" [id]="key" *ngIf="customAttributes[key].text" [ngModel]="customAttributes[key].value" (ngModelChange)="callElementOnChange(key, $event)">
         </div>
     </ng-container>
 

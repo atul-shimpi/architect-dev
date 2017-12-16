@@ -35,16 +35,31 @@
 	 	validChildren: ['flow'],
 	 	category: 'components',
 	 	description: 'Navbars are responsive meta components that serve as navigation headers for your application or site.',
-	 	previewScale: '0.2',
 	 	hiddenClasses: ['navbar'],
 	 	icon: 'menu',
 	 	attributes: {
  			types: {
 	 			list: [
-	 				{ name: 'default', value: '' },
+	 				{ name: 'default', value: 'default' },
 	 				{ name: 'fixed top', value: 'navbar-fixed-top' }, 
 	 			],
- 				value: '',
+ 				value: 'default',
+ 				onAssign: function(livePreview) {
+ 					for (var i = this.list.length - 1; i >= 0; i--) {
+ 						if (livePreview.selected.node.className.indexOf(this.list[i].value) > -1) {
+ 							return this.value = this.list[i].value;
+ 						}
+ 					}
+ 				},
+ 				onChange: function(livePreview, type) {
+
+                    //strip any previously assigned type classes from the icon
+                    for (var i = this.list.length - 1; i >= 0; i--) {
+                    	livePreview.selected.node.classList.remove(this.list[i].value);
+                    };
+
+                    livePreview.selected.node.classList.add(type);
+                }
  			}
  		}
 	})

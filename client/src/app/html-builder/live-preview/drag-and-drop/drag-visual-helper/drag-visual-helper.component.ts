@@ -1,5 +1,5 @@
-import {Component, ElementRef, NgZone, Renderer2, ViewEncapsulation} from '@angular/core';
-import {LivePreview} from "../../../live-preview.service";
+import {Component, ElementRef, Renderer2, ViewEncapsulation} from '@angular/core';
+import {DragVisualHelper} from "./drag-visual-helper.service";
 
 @Component({
     selector: 'drag-visual-helper',
@@ -9,34 +9,12 @@ import {LivePreview} from "../../../live-preview.service";
 })
 export class DragVisualHelperComponent {
 
-    private element;
-
     /**
      * DragVisualHelperComponent Constructor.
      */
     constructor(
-        public livePreview: LivePreview,
-        private renderer: Renderer2,
-        private el: ElementRef,
-        private zone: NgZone
+        public renderer: Renderer2,
+        public el: ElementRef,
+        public dragHelper: DragVisualHelper,
     ) {}
-
-    public getName() {
-        return this.element && this.element.name;
-    }
-
-    public reposition(y: number, x: number) {
-        //offset drag helper a bit, so it's in top right corner of cursor
-        this.renderer.setStyle(this.el.nativeElement, 'top', y - 14 + 'px');
-        this.renderer.setStyle(this.el.nativeElement, 'left', x + 21 + 'px');
-    }
-
-    public show(element: any) {
-        this.zone.run(() => this.element = element);
-        this.renderer.removeClass(this.el.nativeElement, 'hidden');
-    }
-
-    public hide() {
-        this.renderer.addClass(this.el.nativeElement, 'hidden');
-    }
 }
