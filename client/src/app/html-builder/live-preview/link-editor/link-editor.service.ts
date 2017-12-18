@@ -27,6 +27,9 @@ export class LinkEditor {
         ).withFallbackPosition(
             {originX: 'center', originY: 'bottom'},
             {overlayX: 'center', overlayY: 'top'}
+        ).withFallbackPosition(
+            {originX: 'end', originY: 'bottom'},
+            {overlayX: 'end', overlayY: 'top'}
         ).withOffsetX(380);
 
         if (this.overlayRef) this.overlayRef.dispose();

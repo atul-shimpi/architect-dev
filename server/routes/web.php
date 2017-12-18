@@ -27,6 +27,7 @@ Route::group(['prefix' => 'secure'], function () {
     Route::put('projects/{id}', 'ProjectsController@update');
     Route::delete('projects/{id}', 'ProjectsController@destroy');
     Route::post('projects/{id}/generate-thumbnail', 'ProjectThumbnailController@store');
+    Route::get('projects/{id}/download', 'ProjectDownloadController@download');
 
     //pages
     Route::post('projects/{projectId}/pages', 'ProjectPagesController@store');

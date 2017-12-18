@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {baseFonts, fontWeights} from "../../text-style-values";
 import {fontAwesomeIconsList} from "../../font-awesome-icons-list";
-import {Settings} from "vebto-client/core";
+import {Settings} from "vebto-client/core/services/settings.service";
 import {DomHelpers} from "../../dom-helpers.service";
 import {UndoManager} from "../../undo-manager/undo-manager.service";
 import {BuilderDocument} from "../../builder-document.service";
@@ -73,7 +73,7 @@ export class InlineTextEditorComponent implements OnInit, OnDestroy {
         this.makeNodesNotEditable();
 
         this.undoManager.wrapDomChanges(this.editedNode.parentNode, null, {before: this.beforeDomNode});
-        this.builderDocument.contentChanged.next('textEditor');
+        this.builderDocument.contentChanged.next('builder');
     }
 
     /**

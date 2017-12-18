@@ -1,10 +1,13 @@
-import {Component, ElementRef, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Inspector} from "./inspector.service";
 import {UndoManager} from "../undo-manager/undo-manager.service";
 import {CodeEditor} from "../live-preview/code-editor/code-editor.service";
 import {Projects} from "../projects/projects.service";
 import {ActiveProject} from "../projects/active-project";
 import {Toast} from "vebto-client/core/ui/toast.service";
+import {Settings} from "vebto-client/core/services/settings.service";
+import {DeviceSwitcherComponent} from "./device-switcher/device-switcher.component";
+import {ContextBoxes} from "../live-preview/context-boxes.service";
 
 @Component({
     selector: 'inspector',
@@ -13,6 +16,7 @@ import {Toast} from "vebto-client/core/ui/toast.service";
     encapsulation: ViewEncapsulation.None,
 })
 export class InspectorComponent implements OnInit {
+    @ViewChild('deviceSwitcher') private deviceSwitcher: DeviceSwitcherComponent;
 
     /**
      * InspectorComponent Constructor.
@@ -25,11 +29,17 @@ export class InspectorComponent implements OnInit {
         public activeProject: ActiveProject,
         private toast: Toast,
         private el: ElementRef,
+        private settings: Settings,
+        private contextBoxes: ContextBoxes,
     ) {}
 
     ngOnInit() {
         this.codeEditor.setOrigin(this.el);
         this.inspector.elementRef = this.el;
+
+        this.el.nativeElement.addEventListener('mouseenter', (e) => {
+            this.contextBoxes.hideBox('hover');
+        });
     }
 
     /**
@@ -54,6 +64,22 @@ export class InspectorComponent implements OnInit {
     public openPreview() {
         this.activeProject.save().subscribe(() => {
             window.open(this.activeProject.getSiteUrl(), '_blank');
+        });
+    }
+
+    /**
+     * Toggle visibility of device switcher panel.
+     */
+    public toggleDeviceSwitcher() {
+        this.deviceSwitcher.toggleVisibility();
+    }
+
+    /**
+     * Initiate download of currently active project.
+     */
+    public downloadProject() {
+        this.activeProject.save({thumbnail: false}).subscribe(() => {
+            window.open(this.settings.getBaseUrl(true)+'secure/projects/'+this.activeProject.get().model.id+'/download', '_blank');
         });
     }
 }

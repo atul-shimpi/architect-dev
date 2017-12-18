@@ -62,7 +62,7 @@ export class LinkEditorComponent {
 
     public closeAndEmitChanges() {
         this.close();
-        this.builderDocument.contentChanged.next('livePreview');
+        this.builderDocument.contentChanged.next('builder');
     }
 
     public close() {

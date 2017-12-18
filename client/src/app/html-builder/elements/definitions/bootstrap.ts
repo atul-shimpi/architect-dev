@@ -448,14 +448,14 @@ bootstrapElements.push({
                     this.value = this.list[1].value;
                 }
             },
-            onChange: function (livePreview: LivePreview, position: number) {
+            onChange: function (livePreview: LivePreview, position: string) {
                 let children = livePreview.selected.node.parentNode.childNodes;
 
                 //insert input group addon either before first element of parent or after the last one
-                if (position == 'right') {
-                    children[children.length - 1].after(livePreview.selected.node);
+                if (position === 'right') {
+                    children[children.length-1]['after'](livePreview.selected.node);
                 } else {
-                    children[0].before(livePreview.selected.node);
+                    children[0]['before'](livePreview.selected.node);
                 }
             }
         },
@@ -473,9 +473,9 @@ bootstrapElements.push({
 
                 if (children[0].nodeType === Node.TEXT_NODE) {
                     this.value = this.list[0].value;
-                } else if (children[0].type == 'checkbox') {
+                } else if (children[0]['type'] == 'checkbox') {
                     this.value = this.list[1].value;
-                } else if (children[0].type == 'radio') {
+                } else if (children[0]['type'] == 'radio') {
                     this.value = this.list[2].value;
                 } else if (children[0].nodeName == 'BUTTON') {
                     this.value = this.list[3].value;

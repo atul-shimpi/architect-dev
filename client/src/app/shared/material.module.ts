@@ -1,6 +1,6 @@
 import {
     MatButtonModule, MatCheckboxModule, MatChipsModule, MatDialogModule, MatExpansionModule,
-    MatRadioModule, MatSliderModule, MatTooltipModule, MatMenuModule, MatListModule, MatCardModule,
+    MatRadioModule, MatSliderModule, MatTooltipModule, MatMenuModule, MatListModule,
     MatProgressBarModule, MatTabsModule, MatSidenavModule, MatSlideToggleModule,
 } from '@angular/material';
 import {NgModule} from "@angular/core";
@@ -21,7 +21,6 @@ import {OverlayModule} from "@angular/cdk/overlay";
         MatRadioModule,
         MatMenuModule,
         MatListModule,
-        MatCardModule,
         MatProgressBarModule,
         MatTabsModule,
         MatSidenavModule,
@@ -40,7 +39,6 @@ import {OverlayModule} from "@angular/cdk/overlay";
         MatRadioModule,
         MatMenuModule,
         MatListModule,
-        MatCardModule,
         MatProgressBarModule,
         MatTabsModule,
         MatSidenavModule,

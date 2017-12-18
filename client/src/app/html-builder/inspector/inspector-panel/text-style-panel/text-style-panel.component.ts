@@ -3,6 +3,7 @@ import {baseFonts, fontWeights} from "../../../text-style-values";
 import {InspectorFloatingPanel} from "../../inspector-floating-panel.service";
 import {GoogleFontsPanelComponent} from "./google-fonts-panel/google-fonts-panel.component";
 import {SelectedElement} from "../../../live-preview/selected-element.service";
+import {BuilderDocumentActions} from "../../../builder-document-actions.service";
 
 @Component({
     selector: 'text-style-panel',
@@ -22,7 +23,11 @@ export class TextStylePanelComponent implements OnInit {
     /**
      * TextStylePanelComponent Constructor.
      */
-    constructor(private selectedElement: SelectedElement, private panel: InspectorFloatingPanel) {}
+    constructor(
+        private selectedElement: SelectedElement,
+        private panel: InspectorFloatingPanel,
+        private builderActions: BuilderDocumentActions,
+    ) {}
 
     ngOnInit() {
         this.selectedElement.changed.subscribe(() => {
@@ -31,7 +36,7 @@ export class TextStylePanelComponent implements OnInit {
     }
 
     public applyTextStyle(name: string, addUndoCommand = true) {
-        this.selectedElement.applyStyle(name, this.styles[name], addUndoCommand);
+        this.builderActions.applyStyle(this.selectedElement.node, name, this.styles[name], addUndoCommand);
     }
 
     /**
@@ -39,9 +44,9 @@ export class TextStylePanelComponent implements OnInit {
      */
     public toggleTextStyle(name: string, value: string) {
         if (this.textStyleIs(name, value)) {
-            this.selectedElement.applyStyle(name, 'initial');
+            this.builderActions.applyStyle(this.selectedElement.node, name, 'initial');
         } else {
-            this.selectedElement.applyStyle(name, value);
+            this.builderActions.applyStyle(this.selectedElement.node, name, value);
         }
     }
 
@@ -54,7 +59,7 @@ export class TextStylePanelComponent implements OnInit {
 
     public openGoogleFontsPanel() {
         this.panel.open(GoogleFontsPanelComponent, this.googleFontsOrigin).selected.subscribe(fontFamily => {
-            this.selectedElement.applyStyle('fontFamily', fontFamily);
+            this.builderActions.applyStyle(this.selectedElement.node, 'fontFamily', fontFamily);
         });
     }
 

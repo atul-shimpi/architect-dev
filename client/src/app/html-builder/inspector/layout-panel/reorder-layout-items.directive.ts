@@ -3,7 +3,7 @@ import {UndoManager} from "../../undo-manager/undo-manager.service";
 import {LivePreview} from "../../live-preview.service";
 import {LayoutPanel} from "./layout-panel.service";
 import * as Sortable from "sortablejs";
-import {utils} from "vebto-client/core";
+import {utils} from "vebto-client/core/services/utils";
 import {DomHelpers} from "../../dom-helpers.service";
 import {BuilderDocument} from "../../builder-document.service";
 
@@ -35,7 +35,7 @@ export class ReorderLayoutItemsDirective implements AfterContentInit {
                 utils.moveArrayElement(newOrder, e['oldIndex'], e['newIndex']);
                 DomHelpers.reorderDom(newOrder, oldOrder);
                 this.livePreview.repositionBox('selected');
-                this.builderDocument.contentChanged.next('builderDocument');
+                this.builderDocument.contentChanged.next('builder');
 
                 this.createUndoCommand(oldOrder, newOrder);
             }

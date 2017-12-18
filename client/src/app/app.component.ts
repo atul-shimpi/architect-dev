@@ -15,6 +15,7 @@ import "rxjs/add/operator/finally";
 import "rxjs/add/observable/throw";
 import "rxjs/add/observable/forkJoin";
 import "rxjs/add/operator/startWith";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-root',
@@ -26,9 +27,11 @@ export class AppComponent implements OnInit {
     @ViewChild('contextMenuViewRef', {read: ViewContainerRef}) contextMenuViewRef;
     @ViewChild('contextMenuOrigin') contextMenuOrigin: ElementRef;
 
-    constructor(private contextMenu: ContextMenu) {}
+    constructor(private contextMenu: ContextMenu, private router: Router) {}
 
     ngOnInit() {
         this.contextMenu.registerViewContainerRef(this.contextMenuViewRef, this.contextMenuOrigin);
+
+        this.router.config.push({path: '', redirectTo: 'dashboard', pathMatch: 'full'});
     }
 }

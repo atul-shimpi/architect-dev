@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {AppHttpClient} from "vebto-client/core";
+import {AppHttpClient} from "vebto-client/core/http/app-http-client.service";
 import {Observable} from "rxjs/Observable";
 import {BuilderTemplate} from "../html-builder/builder-types";
 

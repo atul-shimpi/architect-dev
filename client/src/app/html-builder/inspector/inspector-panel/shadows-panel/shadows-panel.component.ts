@@ -3,6 +3,7 @@ import {LivePreview} from "../../../live-preview.service";
 import {InspectorFloatingPanel} from "../../inspector-floating-panel.service";
 import {ColorpickerPanelComponent} from "../colorpicker-panel/colorpicker-panel.component";
 import {SelectedElement} from "../../../live-preview/selected-element.service";
+import {BuilderDocumentActions} from "../../../builder-document-actions.service";
 
 @Component({
     selector: 'shadows-panel',
@@ -23,7 +24,8 @@ export class ShadowsPanelComponent implements OnInit {
     constructor(
         private selectedElement: SelectedElement,
         private panel: InspectorFloatingPanel,
-        private renderer: Renderer2
+        private renderer: Renderer2,
+        private builderActions: BuilderDocumentActions,
     ) {
         this.resetProps();
     }
@@ -42,12 +44,12 @@ export class ShadowsPanelComponent implements OnInit {
 
     public applyStyle(name: string, value: string, addUndoCommand = true) {
         this.props[name] = value;
-        this.selectedElement.applyStyle(this.props.type, this.propsToString(this.props), addUndoCommand);
+        this.builderActions.applyStyle(this.selectedElement.node, this.props.type, this.propsToString(this.props), addUndoCommand);
         this.clearShadow(this.props.type === 'boxShadow' ? 'textShadow' : 'boxShadow');
     }
 
     public clearShadow(type: string) {
-        this.selectedElement.applyStyle(type, 'none', false);
+        this.builderActions.applyStyle(this.selectedElement.node, type, 'none', false);
     }
 
     public openColorpickerPanel() {

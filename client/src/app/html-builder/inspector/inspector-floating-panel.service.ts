@@ -9,7 +9,7 @@ export class InspectorFloatingPanel {
     /**
      * Overlay reference of currently open panel.
      */
-    private overlayRef: OverlayRef;
+    public overlayRef: OverlayRef;
 
     /**
      * Component reference of currently open panel.

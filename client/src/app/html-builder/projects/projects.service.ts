@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
-import {AppHttpClient} from "vebto-client/core";
+import {AppHttpClient} from "vebto-client/core/http/app-http-client.service";
 import {Observable} from "rxjs/Observable";
 import {Project} from "../../../types/models/Project";
-import {Page} from "../../../types/models/Page";
+import {Page} from "vebto-client/core/types/models/Page";
 import {BuilderPage, BuilderProject} from "../builder-types";
 
 @Injectable()

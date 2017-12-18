@@ -2,7 +2,7 @@ import {Component, ViewEncapsulation} from '@angular/core';
 import {LivePreview} from "../../live-preview.service";
 import {LayoutPanel} from "../layout-panel/layout-panel.service";
 import {Inspector} from "../inspector.service";
-import {UploadFileModalComponent} from "vebto-client/core/index";
+import {UploadFileModalComponent} from "vebto-client/core/files/upload-file-modal/upload-file-modal.component";
 import {Modal} from "vebto-client/core/ui/modal.service";
 import {ActiveProject} from "../../projects/active-project";
 import {LinkEditor} from "../../live-preview/link-editor/link-editor.service";

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Columns, Container} from "./layout-panel-types";
-import {utils} from "vebto-client/core";
+import {utils} from "vebto-client/core/services/utils";
 import {UndoManager} from "../../undo-manager/undo-manager.service";
 import {SelectedElement} from "../../live-preview/selected-element.service";
 import {BuilderDocument} from "../../builder-document.service";
@@ -68,7 +68,7 @@ export class LayoutPanel {
         }
 
         this.selectRow(row);
-        this.builderDocument.contentChanged.next('livePreview');
+        this.builderDocument.contentChanged.next('builder');
     }
 
     /**
@@ -89,7 +89,7 @@ export class LayoutPanel {
             ref[dir](container);
         }
 
-        this.builderDocument.contentChanged.next('livePreview');
+        this.builderDocument.contentChanged.next('builder');
 
         this.selectContainer(container);
         this.selected.selectNode(this.selectedContainer.node);
@@ -178,7 +178,7 @@ export class LayoutPanel {
         });
 
         this.selectRow(this.selectedRow.node);
-        this.builderDocument.contentChanged.next('livePreview');
+        this.builderDocument.contentChanged.next('builder');
         this.contextBoxes.repositionBox('selected', this.selected.node);
     }
 

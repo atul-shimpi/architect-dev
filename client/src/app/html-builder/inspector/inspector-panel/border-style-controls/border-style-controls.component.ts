@@ -2,6 +2,7 @@ import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angu
 import {SelectedElement} from "../../../live-preview/selected-element.service";
 import {ColorpickerPanelComponent} from "../colorpicker-panel/colorpicker-panel.component";
 import {InspectorFloatingPanel} from "../../inspector-floating-panel.service";
+import {BuilderDocumentActions} from "../../../builder-document-actions.service";
 
 @Component({
     selector: 'border-style-controls',
@@ -21,6 +22,7 @@ export class BorderStyleControlsComponent implements OnInit {
     constructor(
         private selected: SelectedElement,
         private panel: InspectorFloatingPanel,
+        private builderActions: BuilderDocumentActions,
     ) {}
 
     ngOnInit() {
@@ -34,14 +36,14 @@ export class BorderStyleControlsComponent implements OnInit {
      */
     public applyBorderColor(color: string) {
         this.borderColor = color;
-        this.selected.applyStyle('borderColor', color);
+        this.builderActions.applyStyle(this.selected.node, 'borderColor', color);
     }
 
     /**
      * Apply border style to selected element.
      */
     public applyBorderStyle() {
-        this.selected.applyStyle('borderStyle', this.borderStyle)
+        this.builderActions.applyStyle(this.selected.node, 'borderStyle', this.borderStyle)
     }
 
     /**

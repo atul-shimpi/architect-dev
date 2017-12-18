@@ -37,34 +37,4 @@ export class UndoCommandsList {
             },
         }
     }
-
-    // /**
-    //  * Command for undoing/redoing element style changes in inspector.
-    //  */
-    // public revertStyles(params: commandParams) {
-    //     this.params = params;
-    //
-    //     css.add(this.params.path, this.params.property, this.params.oldStyles);
-    //
-    //     $rootScope.repositionBox('select');
-    //     $rootScope.hoverBox.hide();
-    // }
-    //
-    // /**
-    //  * RevertStyles command redo action.
-    //  *
-    //  * @return void
-    //  */
-    // manager.revertStyles.prototype.redo = function() {
-    //
-    //     if (this.params.redoProps) {
-    //         css.add(this.params.path, this.params.redoProps);
-    //     } else {
-    //         css.add(this.params.path, this.params.property, this.params.newStyles);
-    //     }
-    //
-    //     $rootScope.repositionBox('select');
-    //     $rootScope.hoverBox.hide();
-    // };
-
 }

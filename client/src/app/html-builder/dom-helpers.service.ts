@@ -22,6 +22,13 @@ export class DomHelpers {
     }
 
     /**
+     * Check if node or its parent has content editable attribute.
+     */
+    public static nodeIsEditable(node: HTMLElement) {
+        return node.hasAttribute('contenteditable') || node.parentNode['hasAttribute']('contenteditable')
+    }
+
+    /**
      * Return whether or not given coordinates are above given element in the dom.
      */
     public static coordinatesAboveNode(node: HTMLElement, x: number, y: number): boolean {

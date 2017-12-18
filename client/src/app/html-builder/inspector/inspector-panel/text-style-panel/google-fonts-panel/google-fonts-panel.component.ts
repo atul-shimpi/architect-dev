@@ -1,5 +1,5 @@
 import {Component, EventEmitter, OnInit, Output, ViewEncapsulation} from '@angular/core';
-import {HttpCacheClient} from "vebto-client/core";
+import {HttpCacheClient} from "vebto-client/core/http/http-cache-client";
 import {FormControl} from "@angular/forms";
 import {BuilderDocument} from "../../../../builder-document.service";
 

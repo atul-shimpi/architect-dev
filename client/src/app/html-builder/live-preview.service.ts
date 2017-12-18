@@ -2,7 +2,6 @@ import {ElementRef, Injectable, NgZone} from '@angular/core';
 import {Elements} from "./elements/elements.service";
 import {ActiveElement} from "./live-preview/active-element";
 import {UndoManager} from "./undo-manager/undo-manager.service";
-import {DragVisualHelperComponent} from "./live-preview/drag-and-drop/drag-visual-helper/drag-visual-helper.component";
 import {InlineTextEditor} from "./live-preview/inline-text-editor/inline-text-editor.service";
 import {ActiveProject} from "./projects/active-project";
 import {ContextMenu} from "vebto-client/core/ui/context-menu/context-menu.service";
@@ -15,17 +14,34 @@ import {ContextBoxes} from "./live-preview/context-boxes.service";
 import {BuilderDocument} from "./builder-document.service";
 import {LivePreviewLoader} from "./live-preview/live-preview-loader.service";
 import {LinkEditor} from "./live-preview/link-editor/link-editor.service";
+import {DomHelpers} from "./dom-helpers.service";
 
 @Injectable()
 export class LivePreview {
-    dragging: any;
 
+    /**
+     * Whether element is currently being dragged in live preview.
+     */
+    dragging: boolean = false;
+
+    /**
+     * Element user's cursor is hovering over.
+     */
     public hover = new ActiveElement();
 
-    public dragHelper: DragVisualHelperComponent;
-
+    /**
+     * Live preview iframe element.
+     */
     private iframe: HTMLIFrameElement;
 
+    /**
+     * Current width of live preview.
+     */
+    public activeWidth: 'phone'|'tablet'|'laptop'|'desktop' = 'desktop';
+
+    /**
+     * LivePreview Constructor.
+     */
     constructor(
         private zone: NgZone,
         private elements: Elements,
@@ -48,15 +64,13 @@ export class LivePreview {
         this.loader.show();
 
         this.iframe = iframe.nativeElement;
-
         this.iframe.src = this.activeProject.getBaseUrl();
 
         this.iframe.onload = () => {
-            console.log('iframe loaded');
             this.builderDocument.setBaseUrl(this.activeProject.getBaseUrl());
             this.builderDocument.init(this.iframe.contentDocument);
 
-            this.builderDocument.reload('livePreview').then(() => {
+            this.builderDocument.reload('activeProject').then(() => {
                 this.registerKeybinds();
                 this.bindToIframeEvents();
                 this.bindToUndoCommandExecuted();
@@ -73,32 +87,33 @@ export class LivePreview {
     }
 
     private bindToIframeEvents() {
-        this.zone.runOutsideAngular(() => {
-            const hammer = new Hammer.Manager(this.builderDocument.get()),
-                doubleTap = new Hammer.Tap({event: 'double_tap', taps: 2});
+        const hammer = new Hammer.Manager(this.builderDocument.get()),
+            doubleTap = new Hammer.Tap({event: 'double_tap', taps: 2});
 
-            hammer.add(doubleTap);
+        hammer.add(doubleTap);
 
-            this.listenForHover();
-            this.listenForClick();
-            this.listenForDoubleClick(hammer);
-            this.keybinds.listenOn(this.builderDocument.get());
+        this.listenForHover();
+        this.listenForClick();
+        this.listenForDoubleClick(hammer);
+        this.listenForContextMenu();
+        this.keybinds.listenOn(this.builderDocument.get());
 
-            this.builderDocument.on('contextmenu', e => {
+        this.builderDocument.on('scroll', e => {
+            this.contextBoxes.hideBox('hover');
+            if (this.selected.node) this.repositionBox('selected');
+            this.inlineTextEditor.close();
+            this.contextMenu.close();
+        }, true);
+    }
+
+    private listenForContextMenu() {
+        this.builderDocument.on('contextmenu', e => {
+            this.zone.run(() => {
                 e.preventDefault();
 
-                this.zone.run(() => {
-                    this.selected.selectNode(e.target as HTMLElement);
-                    this.contextMenu.open(LivePreviewContextMenuComponent, e, {offsetX: 380, overlay: this.overlay});
-                });
-            });
-
-            this.builderDocument.on('scroll', e => {
-                this.contextBoxes.hideBox('hover');
-                if (this.selected.node) this.repositionBox('selected');
-                this.inlineTextEditor.close();
-                this.contextMenu.close();
-            }, true);
+                this.selected.selectNode(e.target as HTMLElement);
+                this.contextMenu.open(LivePreviewContextMenuComponent, e, {offsetX: 380, overlay: this.overlay});
+            })
         });
     }
 
@@ -115,21 +130,20 @@ export class LivePreview {
 
     private listenForHover() {
         this.builderDocument.on('mousemove', e => {
-            if (this.dragging) return;
+            this.zone.run(() => {
+                if (this.dragging) return;
 
-            const node = this.builderDocument.elementFromPoint(e.pageX, e.pageY - this.builderDocument.getScrollTop());
+                const node = this.builderDocument.elementFromPoint(e.pageX, e.pageY - this.builderDocument.getScrollTop());
 
-            if ( ! node || node === this.hover.node) return;
+                if ( ! node || node === this.hover.node) return;
 
-            this.hover.previous = this.hover.node;
+                this.hover.previous = this.hover.node;
 
-            //hide hover box and bail if we're hovering over a selected node
-            if (this.selected.node && this.selected.node == node) {
-                return this.contextBoxes.hideBox('hover');
-            }
+                //hide hover box and bail if we're hovering over a selected node
+                if (this.selected.node && this.selected.node == node) {
+                    return this.contextBoxes.hideBox('hover');
+                }
 
-            //make sure we don't select resize handles
-            if (node.className.indexOf('ui-resizable-handle') == -1) {
                 this.hover.node = node;
 
                 this.hover.element = this.elements.match(this.hover.node, 'hover', true);
@@ -137,42 +151,56 @@ export class LivePreview {
                 if ( ! this.dragging) {
                     this.repositionBox('hover');
                 }
-
-                this.zone.run(() => {});
-            }
+            });
         });
     }
 
     private listenForClick() {
         this.builderDocument.get().addEventListener('click', e => {
-            console.log('single', e);
+           this.zone.run(() => {
+               const node = e.target as HTMLElement;
 
-            const node = e.target as HTMLElement;
+               this.handleLinkClick(e);
 
-            this.handleLinkClick(e);
+               this.handleFormSubmitButtonClick(e);
 
-            this.handleFormSubmitButtonClick(e);
+               this.builderDocument.focus();
 
-            //hide context menu
-            this.contextMenu.close();
+               //node is already selected, bail
+               if (this.selected.node == node) return true;
 
-            //hide wysiwyg toolbar when clicked outside it
-            this.inlineTextEditor.close();
+               //node text is being edited, bail
+               if (DomHelpers.nodeIsEditable(node)) return;
 
-            //hide link editor
-            this.linkEditor.close();
+               //hide context menu
+               this.contextMenu.close();
 
-            this.builderDocument.focus();
+               //hide wysiwyg toolbar when clicked outside it
+               this.inlineTextEditor.close();
 
-            //node is already selected, bail
-            if (this.selected.node == node) return true;
+               //hide link editor
+               this.linkEditor.close();
 
-            //node text is being edited, bail
-            if (node.hasAttribute('contenteditable') || node.parentNode['hasAttribute']('contenteditable')) return;
-
-            //select node
-            if (node.nodeName !== 'HTML') this.zone.run(() => this.selected.selectNode(node));
+               //select node
+               if (node.nodeName !== 'HTML') this.selected.selectNode(node);
+           });
         }, true);
+    }
+
+    private listenForDoubleClick(hammer: HammerManager) {
+        hammer.on('double_tap', e => {
+            this.zone.run(() => {
+                const matched = this.elements.match(e.target);
+
+                //node text is already being edited, bail
+                if (DomHelpers.nodeIsEditable(e.target)) return;
+
+                if (matched.canModify.indexOf('text') > -1 && matched.showWysiwyg) {
+                    this.hideBox('selected');
+                    this.inlineTextEditor.open(e.target);
+                }
+            });
+        });
     }
 
     private handleLinkClick(e: MouseEvent) {
@@ -211,18 +239,6 @@ export class LivePreview {
         //
     }
 
-    private listenForDoubleClick(hammer: HammerManager) {
-        hammer.on('double_tap', e => {
-            console.log('double');
-            const matched = this.elements.match(e.target);
-
-            if (matched.canModify.indexOf('text') > -1 && matched.showWysiwyg) {
-                this.hideBox('selected');
-                this.zone.run(() => this.inlineTextEditor.open(e.target));
-            }
-        });
-    }
-
     public repositionBox(name: 'hover'|'selected') {
         this.contextBoxes.repositionBox(name, this[name].node, this[name].element);
     };
@@ -236,5 +252,12 @@ export class LivePreview {
 
     public getElementDisplayName(el: any, node: HTMLElement): string {
         return this.elements.getDisplayName(el, node);
+    }
+
+    /**
+     * Set live preview with to specified device.
+     */
+    public setWidth(device: 'phone'|'tablet'|'laptop'|'desktop') {
+        this.activeWidth = device;
     }
 }

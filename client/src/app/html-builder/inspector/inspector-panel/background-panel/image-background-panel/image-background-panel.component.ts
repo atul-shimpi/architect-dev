@@ -1,9 +1,10 @@
 import {Component, EventEmitter, OnInit, Output, ViewEncapsulation} from '@angular/core';
 import {LivePreview} from "../../../../live-preview.service";
 import {Modal} from "vebto-client/core/ui/modal.service";
-import {UploadFileModalComponent} from "vebto-client/core";
-import {Settings} from "vebto-client/core";
+import {UploadFileModalComponent} from "vebto-client/core/files/upload-file-modal/upload-file-modal.component";
+import {Settings} from "vebto-client/core/services/settings.service";
 import {ActiveProject} from "../../../../projects/active-project";
+import {BuilderDocumentActions} from "../../../../builder-document-actions.service";
 
 @Component({
     selector: 'image-background-panel',
@@ -36,6 +37,7 @@ export class ImageBackgroundPanelComponent implements OnInit {
         private modal: Modal,
         private settings: Settings,
         private activeProject: ActiveProject,
+        private builderActions: BuilderDocumentActions,
     ) {}
 
     /**
@@ -79,7 +81,7 @@ export class ImageBackgroundPanelComponent implements OnInit {
      */
     public applyStyle(name: string, value: string) {
         this[name] = value;
-        this.livePreview.selected.applyStyle(name, value);
+        this.builderActions.applyStyle(this.livePreview.selected.node, name, value);
     }
 
     public uploadImage() {

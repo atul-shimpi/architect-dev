@@ -1,9 +1,7 @@
 <?php namespace App\Services;
 
-use App\BuilderPage;
 use Auth;
 use App\Project;
-use App\Template;
 use File;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Arr;
@@ -11,7 +9,6 @@ use Illuminate\Support\Collection;
 use Storage;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
-use Vebto\Settings\Settings;
 
 class ProjectRepository
 {
@@ -50,6 +47,17 @@ class ProjectRepository
         $this->templatesPath = config('filesystems.disks.public.root').'/templates';
     }
 
+    /**
+     * Find project by specified id.
+     *
+     * @param int $id
+     * @return Project
+     */
+    public function findOrFail($id)
+    {
+        return $this->project->findOrFail($id);
+    }
+
     public function load(Project $project)
     {
         $path = $this->getProjectPath($project);
@@ -85,7 +93,7 @@ class ProjectRepository
      * @param Project $project
      * @return string
      */
-    private function getProjectPath(Project $project)
+    public function getProjectPath(Project $project)
     {
         return 'projects/' . Auth::user()->id . '/' . $project->uuid;
     }

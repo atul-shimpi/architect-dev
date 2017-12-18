@@ -1,4 +1,4 @@
-<ng-container previewDragAndDrop>
+<div class="width-container" [ngClass]="livePreview.activeWidth" previewDragAndDrop>
     <div class="highlights">
         <context-box class="hidden" type="hover" #hoverBox></context-box>
         <context-box class="hidden" type="selected" #selectedBox></context-box>
@@ -7,4 +7,4 @@
     <div class="drag-overlay" #dragOverlay></div>
 
     <loading-indicator class="overlay overlay-light" [isVisible]="loader.isVisible()"></loading-indicator>
-</ng-container>
+</div>

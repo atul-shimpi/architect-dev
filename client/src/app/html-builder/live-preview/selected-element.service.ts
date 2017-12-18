@@ -3,6 +3,7 @@ import {ActiveElement} from "./active-element";
 import {Elements} from "../elements/elements.service";
 import {ContextBoxes} from "./context-boxes.service";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {BuilderDocument} from "../builder-document.service";
 
 @Injectable()
 export class SelectedElement extends ActiveElement {
@@ -14,7 +15,7 @@ export class SelectedElement extends ActiveElement {
 
     constructor(
         private elements: Elements,
-        private contextBoxes: ContextBoxes
+        private contextBoxes: ContextBoxes,
     ) {
         super();
     }
@@ -24,13 +25,6 @@ export class SelectedElement extends ActiveElement {
      */
     public isLayout(): boolean {
         return this.elements.isLayout(this.node);
-    }
-
-    /**
-     * Check if text contents of selected element can be modified.
-     */
-    public canModifyText(): boolean {
-        return this.elements.canModifyText(this.element);
     }
 
     public selectParent() {
@@ -50,11 +44,6 @@ export class SelectedElement extends ActiveElement {
     public canSelectChild() {
         if ( ! this.node) return false;
         return this.node.firstChild;
-    }
-
-    public applyStyle(name: string, value: string, addUndoCommand = true) {
-        this.node.style[name] = value;
-        this.contextBoxes.repositionBox('selected', this.node, this.element);
     }
 
     public getStyle(name: string): string {

@@ -1,5 +1,5 @@
 import {Component, ElementRef, HostBinding, Input, ViewEncapsulation} from '@angular/core';
-import {UploadFileModalComponent} from "vebto-client/core";
+import {UploadFileModalComponent} from "vebto-client/core/files/upload-file-modal/upload-file-modal.component";
 import {ContextBoxes} from "../context-boxes.service";
 import {SelectedElement} from "../selected-element.service";
 import {BuilderDocumentActions} from "../../builder-document-actions.service";

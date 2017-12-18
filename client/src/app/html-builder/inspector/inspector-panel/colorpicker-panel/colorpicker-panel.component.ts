@@ -18,9 +18,6 @@ export class ColorpickerPanelComponent implements OnInit {
      */
     @Output() public closed = new EventEmitter();
 
-    constructor() {
-    }
-
     ngOnInit() {
         setTimeout(() => {
             this.trigger.nativeElement.click();
@@ -29,9 +26,5 @@ export class ColorpickerPanelComponent implements OnInit {
 
     public emitSelectedEvent(value: string) {
         this.selected.emit(value);
-    }
-
-    public emitClosedEvent(value: string) {
-        this.closed.emit(value);
     }
 }

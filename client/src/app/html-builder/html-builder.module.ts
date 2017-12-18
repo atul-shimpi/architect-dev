@@ -59,6 +59,7 @@ import {InspectorDrawer} from "./inspector/inspector-drawer.service";
 import {LivePreviewLoader} from "./live-preview/live-preview-loader.service";
 import {Themes} from "./themes.service";
 import {DragVisualHelper} from "./live-preview/drag-and-drop/drag-visual-helper/drag-visual-helper.service";
+import { DeviceSwitcherComponent } from './inspector/device-switcher/device-switcher.component';
 
 @NgModule({
     imports: [
@@ -100,6 +101,7 @@ import {DragVisualHelper} from "./live-preview/drag-and-drop/drag-visual-helper/
         ThemesPanelComponent,
         ContextBoxComponent,
         LinkEditorComponent,
+        DeviceSwitcherComponent,
     ],
     entryComponents: [
         GradientBackgroundPanelComponent,

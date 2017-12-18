@@ -8,7 +8,7 @@ import {BuilderTemplate} from "./builder-types";
 import {ContextBoxes} from "./live-preview/context-boxes.service";
 import {utils} from "vebto-client/core/services/utils";
 
-export type changeSources = 'builderDocument' | 'livePreview' | 'textEditor' | 'codeEditor' | 'activeProject';
+export type changeSources = 'builder' | 'codeEditor' | 'activeProject';
 
 @Injectable()
 export class BuilderDocument {
@@ -122,18 +122,18 @@ export class BuilderDocument {
         return this.document.queryCommandState(name);
     }
 
-    public setHtml(html: string, source: changeSources = 'builderDocument') {
+    public setHtml(html: string, source: changeSources = 'builder') {
         this.update({html, source});
     }
 
     /**
      * Update builder document using specified markup.
      */
-    public update(options: {html: string, template?: BuilderTemplate, framework?: string, theme?: string, source?: changeSources} = {}) {
-        options = Object.assign({}, options, {
+    public update(options: {html: string, template?: BuilderTemplate, framework?: string, theme?: string, source?: changeSources}) {
+        options = Object.assign({}, {
             template: this.template,
             source: 'builderDocument'
-        });
+        }, options);
 
         this.template = options.template;
         this.contextBoxes.hideBoxes();
@@ -156,7 +156,7 @@ export class BuilderDocument {
         return doc.generate(html, template).getInnerHtml();
     }
 
-    public reload(source: changeSources = 'builderDocument') {
+    public reload(source: changeSources = 'builder') {
         return this.update({html: this.getInnerHtml(), source});
     }
 

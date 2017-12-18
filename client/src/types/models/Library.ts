@@ -1,4 +1,4 @@
-import {Page} from "./Page";
+import {Page} from "vebto-client/core/types/models/Page";
 
 export class Library {
 	id: number;

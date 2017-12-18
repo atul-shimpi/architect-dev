@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {ActiveProject} from "../../projects/active-project";
-import {Page} from "../../../../types/models/Page";
+import {Page} from "vebto-client/core/types/models/Page";
 import {Projects} from "../../projects/projects.service";
 import {Toast} from "vebto-client/core";
 import {BuilderPage} from "../../builder-types";
@@ -103,7 +103,7 @@ export class PagesPanelComponent implements OnInit {
         this.builderDocument.setMetaTagValue('keywords', this.updateModel.keywords);
         this.builderDocument.setTitleValue(this.updateModel.title);
         this.builderDocument.setMetaTagValue('description', this.updateModel.description);
-        this.builderDocument.contentChanged.next('builderDocument');
+        this.builderDocument.contentChanged.next('builder');
 
         const page = {name: this.updateModel.name, html: this.builderDocument.getOuterHtml()};
 

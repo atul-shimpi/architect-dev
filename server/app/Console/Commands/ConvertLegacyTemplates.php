@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use File;
 use App\BuilderPage;
-use App\Template;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -25,11 +24,6 @@ class ConvertLegacyTemplates extends Command
     protected $description = 'Command description';
 
     /**
-     * @var Template
-     */
-    private $template;
-
-    /**
      * @var BuilderPage
      */
     private $builderPage;
@@ -37,14 +31,12 @@ class ConvertLegacyTemplates extends Command
     /**
      * Create a new command instance.
      *
-     * @param Template $template
      * @param BuilderPage $builderPage
      */
-    public function __construct(Template $template, BuilderPage $builderPage)
+    public function __construct(BuilderPage $builderPage)
     {
         parent::__construct();
 
-        $this->template = $template;
         $this->builderPage = $builderPage;
     }
 
@@ -55,15 +47,6 @@ class ConvertLegacyTemplates extends Command
      */
     public function handle()
     {
-        //in database
-        $this->builderPage->where('pageable_type', Template::class)->chunk(10, function(Collection $pages) {
-            $pages->each(function(BuilderPage $page) {
-                $page->html = $this->fixHtmlImagePaths($page->html);
-                $page->css = $this->fixCssImagePaths($page->css);
-                $page->save();
-            });
-        });
-
         //on disk
         $path = config('filesystems.disks.public.root').'/templates';
         $templates = File::directories($path);

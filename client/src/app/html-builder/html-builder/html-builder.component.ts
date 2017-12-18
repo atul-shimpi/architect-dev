@@ -38,6 +38,7 @@ export class HtmlBuilderComponent implements OnInit {
     }
 
     public getInspectorDrawerPanel(): string {
+        //console.log('hi');
         return this.inspectorDrawer.activePanel;
     }
 }

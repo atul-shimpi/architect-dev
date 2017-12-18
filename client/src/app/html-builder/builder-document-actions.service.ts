@@ -27,6 +27,23 @@ export class BuilderDocumentActions {
     ) {}
 
     /**
+     * Apply specified css style to node.
+     */
+    public applyStyle(node: HTMLElement, name: string, value: string, addUndoCommand = true) {
+        if (addUndoCommand) {
+            this.undoManager.wrapDomChanges(node, () => {
+                node.style[name] = value;
+                this.contextBoxes.repositionBox('selected', node);
+                this.contentChanged.next('builderDocument');
+            });
+        } else {
+            node.style[name] = value;
+            this.contextBoxes.repositionBox('selected', node);
+            this.contentChanged.next('builderDocument');
+        }
+    }
+
+    /**
      * Clone specified node inside the project.
      */
     public cloneNode(node: HTMLElement): HTMLElement {

@@ -162,6 +162,7 @@ inspector {
     flex: 1 1 auto;
     height: 100%;
     color: $inspector-text-color-200;
+    position: relative;
 
     > .panel-container {
       position: relative;

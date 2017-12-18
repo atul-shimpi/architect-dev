@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {Settings} from "vebto-client/core";
+import {Settings} from "vebto-client/core/services/settings.service";
 import {BuilderDocument} from "../builder-document.service";
 import {ProjectBaseUrl} from "./project-base-url.service";
 import {BuilderPage, BuilderProject, BuilderTemplate} from "../builder-types";
@@ -11,6 +11,7 @@ import {PageDocument} from "../page-document";
 import {Toast} from "vebto-client/core/ui/toast.service";
 import {Subject} from "rxjs/Subject";
 import {Theme} from "../../../types/models/Theme";
+import {LocalStorage} from "vebto-client/core/services/local-storage.service";
 
 @Injectable()
 export class ActiveProject {
@@ -50,11 +51,9 @@ export class ActiveProject {
         private projects: Projects,
         private templates: Templates,
         private toast: Toast,
+        private localStorage: LocalStorage,
     ) {
-        this.builderDocument.contentChanged.subscribe(source => {
-            if (source === 'activeProject') return;
-            this.pages[this.activePage].html = this.builderDocument.getOuterHtml();
-        });
+        this.bindToBuilderDocumentChangeEvent();
     }
 
     /**
@@ -241,11 +240,33 @@ export class ActiveProject {
         });
     }
 
+    /**
+     * Get a template used by current project.
+     */
     public getTemplate(): BuilderTemplate {
         return this.activeTemplate;
     }
 
+    /**
+     * Check if current project is using a template.
+     */
     public hasTemplate(): boolean {
         return this.activeTemplate !== undefined;
+    }
+
+    /**
+     * Auto save and update project pages on builder document change event.
+     */
+    private bindToBuilderDocumentChangeEvent() {
+        this.builderDocument.contentChanged.debounceTime(1000).subscribe(source => {
+            if (source === 'activeProject') return;
+            console.log('activeProject: '+source);
+
+            this.pages[this.activePage].html = this.builderDocument.getOuterHtml();
+
+            if (this.localStorage.get('settings.autoSave')) {
+                this.save({thumbnail: false});
+            }
+        });
     }
 }

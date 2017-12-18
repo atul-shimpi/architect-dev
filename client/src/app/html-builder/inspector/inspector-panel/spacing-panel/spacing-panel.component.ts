@@ -1,6 +1,7 @@
 import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import {LivePreview} from "../../../live-preview.service";
 import {SelectedElement} from "../../../live-preview/selected-element.service";
+import {BuilderDocumentActions} from "../../../builder-document-actions.service";
 
 @Component({
     selector: 'spacing-panel',
@@ -43,7 +44,7 @@ export class SpacingPanelComponent implements OnInit {
     /**
      * SpacingPanelComponent Constructor.
      */
-    constructor(private selected: SelectedElement) {
+    constructor(private selected: SelectedElement, private builderActions: BuilderDocumentActions) {
         this.resetSpacing();
     }
 
@@ -90,7 +91,7 @@ export class SpacingPanelComponent implements OnInit {
         this.resetDisabledSideValues();
 
         const spacing = this.generateSpacingCssValue();
-        this.selected.applyStyle(this.type, spacing);
+        this.builderActions.applyStyle(this.selected.node, this.type, spacing);
         this.sliderValue = side ? this.spacing[side] : 0;
     }
 
