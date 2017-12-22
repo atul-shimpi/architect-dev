@@ -15,7 +15,9 @@ import "rxjs/add/operator/finally";
 import "rxjs/add/observable/throw";
 import "rxjs/add/observable/forkJoin";
 import "rxjs/add/operator/startWith";
-import {Router} from "@angular/router";
+import {Settings} from "vebto-client/core/services/settings.service";
+import {AppHttpClient} from "vebto-client/core/http/app-http-client.service";
+import {CustomHomepage} from "vebto-client/core/services/custom-homepage.service";
 
 @Component({
     selector: 'app-root',
@@ -27,11 +29,16 @@ export class AppComponent implements OnInit {
     @ViewChild('contextMenuViewRef', {read: ViewContainerRef}) contextMenuViewRef;
     @ViewChild('contextMenuOrigin') contextMenuOrigin: ElementRef;
 
-    constructor(private contextMenu: ContextMenu, private router: Router) {}
+    constructor(
+        private contextMenu: ContextMenu,
+        private customHomepage: CustomHomepage,
+        private settings: Settings,
+        private httpClient: AppHttpClient,
+    ) {}
 
     ngOnInit() {
         this.contextMenu.registerViewContainerRef(this.contextMenuViewRef, this.contextMenuOrigin);
-
-        this.router.config.push({path: '', redirectTo: 'dashboard', pathMatch: 'full'});
+        this.customHomepage.select();
+        this.settings.setHttpClient(this.httpClient);
     }
 }
