@@ -18,6 +18,8 @@ import "rxjs/add/operator/startWith";
 import {Settings} from "vebto-client/core/services/settings.service";
 import {AppHttpClient} from "vebto-client/core/http/app-http-client.service";
 import {CustomHomepage} from "vebto-client/core/services/custom-homepage.service";
+import {VebtoConfig} from "vebto-client/core/vebto-config.service";
+import {DashboardComponent} from "./dashboard/dashboard.component";
 
 @Component({
     selector: 'app-root',
@@ -34,11 +36,13 @@ export class AppComponent implements OnInit {
         private customHomepage: CustomHomepage,
         private settings: Settings,
         private httpClient: AppHttpClient,
+        private vetoConfig: VebtoConfig,
     ) {}
 
     ngOnInit() {
         this.contextMenu.registerViewContainerRef(this.contextMenuViewRef, this.contextMenuOrigin);
         this.customHomepage.select();
         this.settings.setHttpClient(this.httpClient);
+        this.vetoConfig.admin.appearance.pages.push({name: 'dashboard', component: DashboardComponent});
     }
 }

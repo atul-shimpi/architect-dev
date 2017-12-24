@@ -1,8 +1,7 @@
 import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {SelectedElement} from "../../../live-preview/selected-element.service";
-import {ColorpickerPanelComponent} from "../colorpicker-panel/colorpicker-panel.component";
-import {InspectorFloatingPanel} from "../../inspector-floating-panel.service";
 import {BuilderDocumentActions} from "../../../builder-document-actions.service";
+import {ColorPickerPanel} from "vebto-client/core/ui/color-picker/color-picker-panel.service";
 
 @Component({
     selector: 'border-style-controls',
@@ -21,7 +20,7 @@ export class BorderStyleControlsComponent implements OnInit {
      */
     constructor(
         private selected: SelectedElement,
-        private panel: InspectorFloatingPanel,
+        private colorPicker: ColorPickerPanel,
         private builderActions: BuilderDocumentActions,
     ) {}
 
@@ -50,7 +49,7 @@ export class BorderStyleControlsComponent implements OnInit {
      * Open color picker panel and update border color.
      */
     public openColorpickerPanel() {
-        this.panel.open(ColorpickerPanelComponent, this.colorButton, {closeOnSelected: false}).selected.subscribe(color => {
+        this.colorPicker.open(this.colorButton, {position: 'right'}).selected.subscribe(color => {
             this.applyBorderColor(color);
         });
     }

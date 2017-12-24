@@ -1,10 +1,10 @@
 import {Component, ElementRef, OnInit, Renderer2, ViewChild, ViewEncapsulation} from '@angular/core';
 import {GradientBackgroundPanelComponent} from "./gradient-background-panel/gradient-background-panel.component";
 import {InspectorFloatingPanel} from "../../inspector-floating-panel.service";
-import {ColorpickerPanelComponent} from "../colorpicker-panel/colorpicker-panel.component";
 import {ImageBackgroundPanelComponent} from "./image-background-panel/image-background-panel.component";
 import {SelectedElement} from "../../../live-preview/selected-element.service";
 import {BuilderDocumentActions} from "../../../builder-document-actions.service";
+import {ColorPickerPanel} from "vebto-client/core/ui/color-picker/color-picker-panel.service";
 
 @Component({
     selector: 'background-panel',
@@ -29,6 +29,7 @@ export class BackgroundPanelComponent implements OnInit {
         private panel: InspectorFloatingPanel,
         private renderer: Renderer2,
         private builderActions: BuilderDocumentActions,
+        private colorPicker: ColorPickerPanel,
     ) {}
 
     ngOnInit() {
@@ -47,7 +48,7 @@ export class BackgroundPanelComponent implements OnInit {
     }
 
     public openColorpickerPanel() {
-        this.panel.open(ColorpickerPanelComponent, this.gradientButton, {closeOnSelected: false}).selected.subscribe(color => {
+        this.colorPicker.open(this.gradientButton, {position: 'right'}).selected.subscribe(color => {
             this.setBackgroundButtonColor();
             this.applyBackgroundStyle('backgroundColor', color, false);
         });

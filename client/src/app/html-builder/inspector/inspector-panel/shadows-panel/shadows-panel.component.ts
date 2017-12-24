@@ -1,9 +1,8 @@
 import {Component, ElementRef, OnInit, Renderer2, ViewChild, ViewEncapsulation} from '@angular/core';
-import {LivePreview} from "../../../live-preview.service";
 import {InspectorFloatingPanel} from "../../inspector-floating-panel.service";
-import {ColorpickerPanelComponent} from "../colorpicker-panel/colorpicker-panel.component";
 import {SelectedElement} from "../../../live-preview/selected-element.service";
 import {BuilderDocumentActions} from "../../../builder-document-actions.service";
+import {ColorPickerPanel} from "vebto-client/core/ui/color-picker/color-picker-panel.service";
 
 @Component({
     selector: 'shadows-panel',
@@ -23,7 +22,7 @@ export class ShadowsPanelComponent implements OnInit {
      */
     constructor(
         private selectedElement: SelectedElement,
-        private panel: InspectorFloatingPanel,
+        private colorPicker: ColorPickerPanel,
         private renderer: Renderer2,
         private builderActions: BuilderDocumentActions,
     ) {
@@ -53,7 +52,7 @@ export class ShadowsPanelComponent implements OnInit {
     }
 
     public openColorpickerPanel() {
-        this.panel.open(ColorpickerPanelComponent, this.colorButton, {closeOnSelected: false}).selected.subscribe(color => {
+        this.colorPicker.open(this.colorButton, {position: 'right'}).selected.subscribe(color => {
             this.setColorButtonColor();
             this.applyStyle('color', color);
         });
