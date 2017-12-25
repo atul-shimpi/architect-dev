@@ -12,9 +12,5 @@ export class DashboardNavbarComponent {
     /**
      * DashboardNavbarComponent Constructor.
      */
-    constructor(private settings: Settings) {}
-
-    public getLogoUrl() {
-        return this.settings.getBaseUrl(true) + 'assets/images/logo.png';
-    }
+    constructor(public settings: Settings) {}
 }
