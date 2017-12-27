@@ -2,20 +2,47 @@
 
 dashboard-navbar {
   display: block;
-  background-color: #2166d1;
-  color: #fff;
+  background-color: $navbar-background-color;
+  color: $navbar-text-color;
   padding: 15px 0;
-  box-shadow: $box-shadow-3;
+  box-shadow: $navbar-box-shadow;
 
   .container {
     display: flex;
     align-items: center;
+    padding: 0;
   }
 
   .logo {
     display: block;
     height: 32px;
     width: auto;
+    margin-right: 50px;
+  }
+
+  custom-menu {
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+    flex-grow: 0;
+
+    .nav-item {
+      white-space: nowrap;
+
+      > a, > button, > .text {
+        display: block;
+        color: inherit;
+        text-decoration: none;
+        padding: 5px 15px;
+        border-radius: 5px;
+        line-height: 22px;
+      }
+
+      .router-link-active, .active {
+        color: $accent-text-color;
+        background-color: $primary-color;
+      }
+    }
   }
 
   logged-in-user-widget {

@@ -8,7 +8,7 @@ device-switcher {
   position: absolute;
   left: 0;
   bottom: 50px;
-  background-color: $inspector-bg-color-100;
+  background-color: $site-bg-color-100;
   @include mat-elevation(8);
 
   .device-description {

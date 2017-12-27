@@ -31,7 +31,7 @@ new-project-page {
     }
 
     > .panel {
-      background-color: $inspector-bg-color-100;
+      background-color: $site-bg-color-100;
       box-shadow: $box-shadow-2;
       margin-top: 15px;
 
@@ -113,7 +113,7 @@ new-project-page {
     }
 
     .template {
-      background-color: $inspector-bg-color-100;
+      background-color: $site-bg-color-100;
       box-shadow: $box-shadow-2;
       margin: 0;
       max-height: 275px;

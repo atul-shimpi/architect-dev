@@ -20,7 +20,7 @@ themes-panel {
     > .theme {
       margin-bottom: 20px;
       cursor: pointer;
-      background-color: $inspector-bg-color-100;
+      background-color: $site-bg-color-100;
       border: 2px solid transparent;
       @include mat-elevation-transition;
       @include mat-elevation(2);

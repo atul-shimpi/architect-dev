@@ -19,7 +19,8 @@ import {Settings} from "vebto-client/core/services/settings.service";
 import {AppHttpClient} from "vebto-client/core/http/app-http-client.service";
 import {CustomHomepage} from "vebto-client/core/services/custom-homepage.service";
 import {VebtoConfig} from "vebto-client/core/vebto-config.service";
-import {DashboardComponent} from "./dashboard/dashboard.component";
+import {Router} from "@angular/router";
+import {appConfig} from "./app-config";
 
 @Component({
     selector: 'app-root',
@@ -36,13 +37,23 @@ export class AppComponent implements OnInit {
         private customHomepage: CustomHomepage,
         private settings: Settings,
         private httpClient: AppHttpClient,
-        private vetoConfig: VebtoConfig,
+        private vebtoConfig: VebtoConfig,
+        private router: Router,
     ) {}
 
     ngOnInit() {
         this.contextMenu.registerViewContainerRef(this.contextMenuViewRef, this.contextMenuOrigin);
         this.customHomepage.select();
         this.settings.setHttpClient(this.httpClient);
-        this.vetoConfig.admin.appearance.pages.push({name: 'dashboard', component: DashboardComponent});
+
+        this.vebtoConfig.merge(appConfig);
+
+        this.setInjectorOnAppearanceEditorIframe();
+    }
+
+    private setInjectorOnAppearanceEditorIframe() {
+        if (window.top === window.self) return;
+        if (window.top.location.origin !== this.settings.getBaseUrl().replace(/\/$/, '')) return;
+        window['previewAngular'] = {settings: this.settings, router: this.router};
     }
 }

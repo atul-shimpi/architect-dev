@@ -11,49 +11,49 @@ spacing-panel {
     > .side-control {
       width: 25px;
       height: 25px;
-      border: 1px solid $inspector-bg-color-400;
+      border: 1px solid $site-bg-color-400;
       background-color: $inspector-bg-color-200;
       margin-right: 5px;
       position: relative;
 
       &.all-control {
-        border-color: $inspector-bg-color-400;
+        border-color: $site-bg-color-400;
         margin-right: auto;
 
         &.active {
-          border-color: $inspector-bg-color-100;
+          border-color: $site-bg-color-100;
         }
       }
 
       &.top-control {
-        border-top-color: $inspector-bg-color-400;
+        border-top-color: $site-bg-color-400;
 
         &.active {
-          border-top-color: $inspector-bg-color-100;
+          border-top-color: $site-bg-color-100;
         }
       }
 
       &.right-control {
-        border-right-color: $inspector-bg-color-400;
+        border-right-color: $site-bg-color-400;
 
         &.active {
-          border-right-color: $inspector-bg-color-100;
+          border-right-color: $site-bg-color-100;
         }
       }
 
       &.bottom-control {
-        border-bottom-color: $inspector-bg-color-400;
+        border-bottom-color: $site-bg-color-400;
 
         &.active {
-          border-bottom-color: $inspector-bg-color-100;
+          border-bottom-color: $site-bg-color-100;
         }
       }
 
       &.left-control {
-        border-left-color: $inspector-bg-color-400;
+        border-left-color: $site-bg-color-400;
 
         &.active {
-          border-left-color: $inspector-bg-color-100;
+          border-left-color: $site-bg-color-100;
         }
       }
     }
@@ -66,8 +66,8 @@ spacing-panel {
     height: 115px;
 
     input {
-      border: 2px solid $inspector-bg-color-400;
-      background-color: $inspector-bg-color-100;
+      border: 2px solid $site-bg-color-400;
+      background-color: $site-bg-color-100;
       height: 100%;
       text-align: center;
     }

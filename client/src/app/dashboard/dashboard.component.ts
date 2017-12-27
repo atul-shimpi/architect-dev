@@ -13,6 +13,7 @@ import {ProjectBaseUrl} from "../html-builder/projects/project-base-url.service"
     selector: 'dashboard',
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss'],
+    host: {'id': 'theme-host-dashboard'},
     encapsulation: ViewEncapsulation.None
 })
 export class DashboardComponent implements OnInit {

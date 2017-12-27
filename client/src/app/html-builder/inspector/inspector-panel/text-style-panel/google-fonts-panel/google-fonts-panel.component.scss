@@ -14,7 +14,7 @@ google-fonts-panel {
     align-items: center;
     padding: 10px;
     color: $inspector-text-color-200;
-    border-bottom: 1px solid $inspector-bg-color-100;
+    border-bottom: 1px solid $site-bg-color-100;
 
     > .close-button {
       margin-left: auto;
@@ -26,8 +26,8 @@ google-fonts-panel {
     width: auto;
 
     > input {
-      background-color: $inspector-bg-color-100;
-      border-color: lighten($inspector-bg-color-100, 5%);
+      background-color: $site-bg-color-100;
+      border-color: lighten($site-bg-color-100, 5%);
     }
   }
 

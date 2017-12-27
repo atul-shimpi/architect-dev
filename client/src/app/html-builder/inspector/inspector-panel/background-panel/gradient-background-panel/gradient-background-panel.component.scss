@@ -5,7 +5,7 @@ gradient-background-panel {
   display: block;
   width: 260px;
   height: 400px;
-  background-color: $inspector-bg-color-100;
+  background-color: $site-bg-color-100;
   box-shadow: -1px 0 2px rgba(0,0,0,.5);
   border-radius: 2px;
 
@@ -15,7 +15,7 @@ gradient-background-panel {
     padding: 10px;
     color: inherit;
     font-weight: 500;
-    border-bottom: 1px solid $inspector-bg-color-400;
+    border-bottom: 1px solid $site-bg-color-400;
 
     > .close-button {
       margin-left: auto;
@@ -33,7 +33,7 @@ gradient-background-panel {
       width: 23%;
       height: 50px;
       margin-bottom: 7px;
-      border: 1px solid $inspector-bg-color-400;
+      border: 1px solid $site-bg-color-400;
       @include mat-elevation-transition;
 
       &:hover {

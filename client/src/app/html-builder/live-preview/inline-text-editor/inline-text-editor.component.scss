@@ -2,7 +2,7 @@
 
 inline-text-editor {
   display: block;
-  background-color: $inspector-bg-color-100;
+  background-color: $site-bg-color-100;
   box-shadow: $box-shadow-4;
   width: 648px;
   overflow: hidden;
@@ -14,7 +14,7 @@ inline-text-editor {
   }
 
   > .link-panel {
-    border-top: 1px solid $inspector-bg-color-400;
+    border-top: 1px solid $site-bg-color-400;
 
     > button {
       margin-left: 8px;
@@ -22,7 +22,7 @@ inline-text-editor {
   }
 
   > .icons-panel {
-    border-top: 1px solid $inspector-bg-color-400;
+    border-top: 1px solid $site-bg-color-400;
     flex-wrap: wrap;
     height: 400px;
     width: 100%;

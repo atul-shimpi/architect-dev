@@ -11,9 +11,9 @@ background-panel {
       flex: 0 0 31%;
       width: 31%;
       height: 70px;
-      background-color: $inspector-bg-color-100;
+      background-color: $site-bg-color-100;
       border-radius: 2px;
-      border: 2px solid $inspector-bg-color-400;
+      border: 2px solid $site-bg-color-400;
 
       &:hover {
         background-color: $inspector-bg-color-200;

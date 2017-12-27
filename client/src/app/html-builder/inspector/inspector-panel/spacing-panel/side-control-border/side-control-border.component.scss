@@ -12,7 +12,7 @@ side-control-border {
     height: 100%;
 
     &.active:before, &.active:after {
-      background-color: $inspector-bg-color-400;
+      background-color: $site-bg-color-400;
     }
 
     &.enable:before, &.enable:after {
