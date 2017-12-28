@@ -3,13 +3,13 @@
 dashboard {
   display: block;
   height: 100%;
-  background-color: $inspector-bg-color-200;
+  background-color: $site-bg-color-200;
 
   > .header {
-    background-color: #2166d1;
+    background-color: $site-primary-color-200;
     //background-image: url("https://bedesk.vebto.com/assets/images/pattern.svg");
     //background-position: top;
-    color: #fff;
+    color: $site-text-color-100;
   }
 
   .header-body {
@@ -25,8 +25,8 @@ dashboard {
         margin-right: 20px;
 
         > input, > select {
-          background-color: #fff;
-          color: $text-color;
+          background-color: $site-bg-color-100;
+          color: $site-text-color-400;
           border-radius: 2px;
         }
       }
@@ -102,7 +102,7 @@ dashboard {
         display: flex;
         align-items: center;
         padding: 10px;
-        border-top: 1px solid $border-color-light;
+        border-top: 1px solid $site-border-color-100;
 
         .name {
           font-size: 1.6rem;
@@ -112,7 +112,7 @@ dashboard {
 
         .updated {
           font-size: 1rem;
-          color: $text-color-secondary;
+          color: $site-text-color-300;
         }
 
         .actions {

@@ -15,7 +15,7 @@ gradient-background-panel {
     padding: 10px;
     color: inherit;
     font-weight: 500;
-    border-bottom: 1px solid $site-bg-color-400;
+    border-bottom: 1px solid $site-border-color-200;
 
     > .close-button {
       margin-left: auto;
@@ -33,7 +33,7 @@ gradient-background-panel {
       width: 23%;
       height: 50px;
       margin-bottom: 7px;
-      border: 1px solid $site-bg-color-400;
+      border: 1px solid $site-border-color-200;
       @include mat-elevation-transition;
 
       &:hover {

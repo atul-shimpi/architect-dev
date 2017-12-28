@@ -4,6 +4,7 @@ export const appConfig = {
             navigationRoutes: [
                 'dashboard',
                 'dashboard/projects/new',
+                'builder',
             ],
             menus: {
                 availableRoutes:  [

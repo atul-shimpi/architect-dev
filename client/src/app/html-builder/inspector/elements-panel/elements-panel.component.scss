@@ -13,18 +13,18 @@ elements-panel {
       align-items: center;
       width: 100%;
       padding: 15px;
-      border-bottom: 1px solid $site-bg-color-400;
+      border-bottom: 1px solid $site-border-color-200;
       cursor: move;
 
       &:hover {
-        background-color: $inspector-bg-color-200;
+        background-color: $site-bg-color-200;
       }
 
       > svg-icon {
         display: block;
         width: 26px;
         height: 26px;
-        color: $inspector-text-color-200;
+        color: $site-text-color-300;
       }
 
       > .name {

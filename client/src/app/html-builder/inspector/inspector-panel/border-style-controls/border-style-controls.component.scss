@@ -9,10 +9,10 @@ border-style-controls {
     display: block;
     height: 32px;
     margin-right: 5px;
-    background-color: $inspector-bg-color-200;
+    background-color: $site-bg-color-200;
     flex: 1 1 auto;
     width: 50%;
-    border: 3px solid $inspector-bg-color-200;
+    border: 3px solid $site-bg-color-200;
   }
 
   > .input-container {

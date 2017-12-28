@@ -21,11 +21,11 @@ link-editor {
     cursor: pointer;
 
     &:hover {
-      background-color: $inspector-bg-color-200;
+      background-color: $site-bg-color-200;
     }
 
     &.selected {
-      background-color: $inspector-bg-color-300;
+      background-color: $site-bg-color-300;
     }
   }
 }

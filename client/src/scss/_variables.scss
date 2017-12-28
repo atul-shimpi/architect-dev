@@ -15,14 +15,18 @@ $link-color: blue;
 //inspector
 $inspector-width: 380px;
 
+$site-primary-color-100: $primary-color;
+$site-primary-color-200: $primary-color-dark;
 $site-bg-color-100: #fff;
-$inspector-bg-color-200: #f6f6f6;
-$inspector-bg-color-300: #f1f1f1;
+$site-bg-color-200: #f6f6f6;
+$site-bg-color-300: #f1f1f1;
 $site-bg-color-400: #d8d7d7;
-$inspector-text-color-100: rgba(0,0,0,.24);
-$inspector-text-color-200: $text-color-secondary;
-$inspector-text-color-300: $text-color;
-$inspector-text-color-400: #3b7694;
+$site-text-color-100: #fff;
+$site-text-color-200: rgba(0,0,0,.24);
+$site-text-color-300: $text-color-secondary;
+$site-text-color-400: $text-color;
+$site-border-color-100: $border-color-light;
+$site-border-color-200: $border-color;
 
 //hover boxes
 $hover-box-bg-color: #88ceff;

@@ -1,13 +1,225 @@
 :root {
-    --site-colors-accent: #34AD00;
-    --site-colors-bg-500: #1e1e26;
-    --site-colors-bg-400: #2a2a35;
-    --site-colors-bg-300: #353543;
-    --site-colors-bg-200: #414151;
-    --site-colors-bg-100: #7b7b96;
-    --site-colors-text-300: #898B8C;
-    --site-colors-text-200: #C2C2CA;
-    --site-colors-text-100: #fff;
-    --site-colors-border-200: rgba(255,255,255,0.05);
-    --site-colors-border-100: rgba(255,255,255,0.1);
+	--site-primary-color-100: #2e73de;
+	--site-primary-color-200: #2166d1;
+	--site-bg-color-100: #fff;
+	--site-bg-color-200: #f6f6f6;
+	--site-bg-color-300: #f1f1f1;
+	--site-bg-color-400: #d8d7d7;
+	--site-text-color-100: #fff;
+	--site-text-color-200: rgba(0,0,0,.24);
+	--site-text-color-300: rgba(0,0,0,.54);
+	--site-text-color-400: rgba(0,0,0,.87);
+	--site-border-color-100: #eff1f2;
+	--site-border-color-200: red;
 }
+
+dashboard-navbar,
+dashboard > .header
+{
+	background-color: var(--site-primary-color-200);
+}
+
+dashboard-navbar,
+dashboard-navbar custom-menu .nav-item .router-link-active.active,
+dashboard > .header,
+google-fonts-panel
+{
+	color: var(--site-text-color-100);
+}
+
+dashboard-navbar custom-menu .nav-item .router-link-active.active
+{
+	background-color: var(--site-primary-color-100);
+}
+
+dashboard .projects > .project > .footer,
+new-project-page .sidebar > .panel .panel-header,
+new-project-page .sidebar .colors > .color,
+new-project-page .sidebar .categories > .category,
+elements-panel .elements-grid > .element,
+background-panel > .buttons > button,
+gradient-background-panel > .header,
+gradient-background-panel > .previews > .preview,
+image-background-panel > .header,
+image-background-panel > .textures > .texture,
+image-background-panel .position > .controls > .box,
+border-style-controls > .border-color,
+inspector-panel > .breadcrumbs,
+shadows-panel .sliders > .slider-container > .inner-container > .input-container > input,
+spacing-panel .side-controls > .side-control,
+spacing-panel .side-inputs input,
+google-fonts-panel > .header,
+text-style-panel .text-decorations.font-styles button,
+text-style-panel .font-family-container > .google-fonts-button,
+inspector .mat-expansion-panel,
+inspector > .inspector-content > .actions,
+inspector > .inspector-content > .actions > .mat-button,
+layout-panel .mat-action-row.row-actions > button,
+layout-panel .mat-action-row.row-actions > button,
+layout-panel .add-item-button:before,
+layout-panel .rows .row,
+layout-panel .current-columns > .column,
+settings-panel .input-container > .box > .fake-input,
+themes-panel .themes > .theme,
+code-editor .editor,
+context-box,
+context-box .action-button,
+context-box .element-name,
+inline-text-editor > .link-panel,
+inline-text-editor > .icons-panel,
+inline-text-editor .controls-group
+{
+	border-color: var(--site-primary-color-100);
+}
+
+dashboard,
+new-project-page,
+device-switcher .device-description,
+elements-panel .elements-grid > .element:hover,
+attributes-panel .visibility-controls > button,
+attributes-panel .mat-chip-list-wrapper > .mat-chip,
+background-panel > .buttons > button:hover,
+image-background-panel > .separator,
+image-background-panel .position > .controls > .box,
+border-style-controls > .border-color,
+inspector-panel > .breadcrumbs,
+spacing-panel .side-controls > .side-control,
+google-fonts-panel,
+text-style-panel .text-decorations.font-styles button,
+text-style-panel .font-family-container > .google-fonts-button,
+text-style-panel .text-color,
+inspector .mat-expansion-panel.mat-expanded > .mat-expansion-panel-header,
+inspector .mat-expansion-panel:not(.mat-expanded) > .mat-expansion-panel-header:not([aria-disabled=true]):hover,
+inspector > .inspector-nav > .panel-nav > .panel-nav-item:hover:not([disabled]):not(.active),
+layout-panel .rows .row,
+layout-panel .current-columns > .column,
+templates-panel,
+themes-panel,
+code-editor .toolbar,
+link-editor .page-list-item:hover
+{
+	background-color: var(--site-bg-color-200);
+}
+
+dashboard .header-body > .inputs > .input-container > input > select,
+dashboard .projects > .project,
+new-project-page .sidebar > .panel,
+new-project-page .templates .template,
+device-switcher,
+attributes-panel .visibility-controls > button.active,
+background-panel > .buttons > button,
+gradient-background-panel,
+image-background-panel,
+shadows-panel .types > .color-button,
+spacing-panel .side-inputs input,
+google-fonts-panel > .search > input,
+inspector .mat-expansion-panel.mat-expanded,
+inspector .mat-expansion-panel > .mat-expansion-panel-header,
+inspector .input-container inputselecttextarea,
+inspector > .inspector-nav,
+inspector .content-panel,
+layout-panel .current-columns > .column:hover:not(.dragging),
+settings-panel .input-container > .box > .fake-input,
+templates-panel .templates > .template,
+themes-panel .themes > .theme,
+code-editor,
+drag-visual-helper,
+inline-text-editor,
+link-editor
+{
+	background-color: var(--site-bg-color-100);
+}
+
+inspector > .inspector-content > .actions
+{
+	background: var(--site-bg-color-100);
+}
+
+dashboard .header-body > .inputs > .input-container > input > select,
+attributes-panel .input-container.mat-chip-list-wrapper,
+shadows-panel .sliders > .slider-container > .title,
+drag-visual-helper
+{
+	color: var(--site-text-color-400);
+}
+
+dashboard .projects > .project > .footer .updated,
+elements-panel .elements-grid > .element > svg-icon,
+image-background-panel .image-properties,
+google-fonts-panel > .header,
+inspector > .inspector-nav,
+inspector > .inspector-content,
+layout-panel .mat-action-row.row-actions > button
+{
+	color: var(--site-text-color-300);
+}
+
+side-control-border .side-control-border-inner.active:before&.active:after
+{
+	background-color: var(--site-bg-color-400);
+}
+
+spacing-panel .side-controls > .side-control.all-control,
+inspector .input-container inputselecttextarea
+{
+	border-color: var(--site-border-color-200);
+}
+
+spacing-panel .side-controls > .side-control.top-control
+{
+	border-top-color: var(--site-border-color-200);
+}
+
+spacing-panel .side-controls > .side-control.right-control
+{
+	border-right-color: var(--site-border-color-200);
+}
+
+spacing-panel .side-controls > .side-control.bottom-control
+{
+	border-bottom-color: var(--site-border-color-200);
+}
+
+spacing-panel .side-controls > .side-control.left-control
+{
+	border-left-color: var(--site-border-color-200);
+}
+
+spacing-panel .side-controls > .side-control.all-control.active
+{
+	border-color: var(--site-border-color-100);
+}
+
+spacing-panel .side-controls > .side-control.top-control.active
+{
+	border-top-color: var(--site-border-color-100);
+}
+
+spacing-panel .side-controls > .side-control.right-control.active
+{
+	border-right-color: var(--site-border-color-100);
+}
+
+spacing-panel .side-controls > .side-control.bottom-control.active
+{
+	border-bottom-color: var(--site-border-color-100);
+}
+
+spacing-panel .side-controls > .side-control.left-control.active
+{
+	border-left-color: var(--site-border-color-100);
+}
+
+inspector > .inspector-nav > .panel-nav > .panel-nav-item[disabled]
+{
+	color: var(--site-text-color-200);
+}
+
+inspector > .inspector-nav > .panel-nav > .panel-nav-item.active,
+inspector > .inspector-content > .panel-container,
+layout-panel .add-item-button,
+link-editor .page-list-item.selected
+{
+	background-color: var(--site-bg-color-300);
+}
+

@@ -14,7 +14,7 @@ inline-text-editor {
   }
 
   > .link-panel {
-    border-top: 1px solid $site-bg-color-400;
+    border-top: 1px solid $site-border-color-200;
 
     > button {
       margin-left: 8px;
@@ -22,7 +22,7 @@ inline-text-editor {
   }
 
   > .icons-panel {
-    border-top: 1px solid $site-bg-color-400;
+    border-top: 1px solid $site-border-color-200;
     flex-wrap: wrap;
     height: 400px;
     width: 100%;

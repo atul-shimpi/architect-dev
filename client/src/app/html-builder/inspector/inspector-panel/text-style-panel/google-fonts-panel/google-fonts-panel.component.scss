@@ -4,16 +4,16 @@ google-fonts-panel {
   display: block;
   width: 260px;
   min-height: 600px;
-  background-color: $inspector-bg-color-200;
+  background-color: $site-bg-color-200;
   box-shadow: -1px 0 2px rgba(0,0,0,.5);
   border-radius: 2px;
-  color: $inspector-text-color-100;
+  color: $site-text-color-100;
 
   > .header {
     display: flex;
     align-items: center;
     padding: 10px;
-    color: $inspector-text-color-200;
+    color: $site-text-color-300;
     border-bottom: 1px solid $site-bg-color-100;
 
     > .close-button {

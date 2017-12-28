@@ -9,7 +9,7 @@ attributes-panel {
 
     > button {
       padding: 12px 15px;
-      background-color: $inspector-bg-color-200;
+      background-color: $site-bg-color-200;
       color: inherit;
       border-radius: 3px;
       margin: 0 4px;
@@ -23,7 +23,7 @@ attributes-panel {
   .input-container, .mat-chip-list-wrapper {
     display: flex;
     align-items: center;
-    color: $inspector-text-color-300;
+    color: $site-text-color-400;
 
     label {
       flex: 0 0 80px;
@@ -43,7 +43,7 @@ attributes-panel {
 
   .mat-chip-list-wrapper > .mat-chip {
     margin-top: 7px !important;
-    background-color: $inspector-bg-color-200;
+    background-color: $site-bg-color-200;
     color: inherit;
     padding: 4px 12px;
 
