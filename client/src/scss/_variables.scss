@@ -15,6 +15,7 @@ $link-color: blue;
 //inspector
 $inspector-width: 380px;
 
+$site-accent-color: $accent-color;
 $site-primary-color-100: $primary-color;
 $site-primary-color-200: $primary-color-dark;
 $site-bg-color-100: #fff;
@@ -31,6 +32,3 @@ $site-border-color-200: $border-color;
 //hover boxes
 $hover-box-bg-color: #88ceff;
 $hover-box-actions-color: #fff;
-
-//inputs
-$input-border-color: red !default;

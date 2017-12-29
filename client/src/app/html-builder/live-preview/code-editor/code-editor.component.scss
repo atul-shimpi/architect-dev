@@ -25,13 +25,13 @@ code-editor {
     }
 
     .active {
-      color: $accent-color;
+      color: $site-accent-color;
     }
   }
 
   .editor {
     height: 500px;
-    border: 1px solid $border-color;
+    border: 1px solid $site-border-color-200;
     font-size: 1.4rem;
   }
 }

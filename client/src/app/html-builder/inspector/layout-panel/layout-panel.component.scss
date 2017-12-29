@@ -13,8 +13,8 @@ layout-panel {
     > button {
       margin-left: -1px;
       padding: 10px;
-      border-left: 1px solid $border-color;
-      border-right: 1px solid $border-color;
+      border-left: 1px solid $site-border-color-200;
+      border-right: 1px solid $site-border-color-200;
       color: $site-text-color-300;
       cursor: pointer;
     }
@@ -82,7 +82,7 @@ layout-panel {
       }
 
       &.selected {
-        border-color: $accent-color;
+        border-color: $site-accent-color;
       }
     }
 
@@ -109,7 +109,7 @@ layout-panel {
       }
 
       &.selected {
-        border-color: $accent-color;
+        border-color: $site-accent-color;
         z-index: 1;
       }
 

@@ -37,7 +37,7 @@ new-project-page {
 
       .panel-header {
         padding: 15px;
-        border-bottom: 1px solid $border-color;
+        border-bottom: 1px solid $site-border-color-200;
         font-weight: 500;
       }
     }
@@ -61,11 +61,11 @@ new-project-page {
         }
 
         &.empty-color {
-          border-color: $border-color
+          border-color: $site-border-color-200
         }
 
         &.active {
-          border-color: $accent-color;
+          border-color: $site-accent-color;
         }
       }
     }
@@ -74,11 +74,11 @@ new-project-page {
       padding: 0;
 
       > .category {
-        border-bottom: 1px solid $border-color;
+        border-bottom: 1px solid $site-border-color-200;
         cursor: pointer;
 
         &.active {
-          background-color: $accent-color;
+          background-color: $site-accent-color;
           color: #fff;
         }
       }

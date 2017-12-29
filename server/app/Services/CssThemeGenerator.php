@@ -9,6 +9,7 @@ use Symfony\Component\Finder\SplFileInfo;
 class CssThemeGenerator
 {
     private $variables = [
+        'site-accent-color',
         'site-primary-color-100',
         'site-primary-color-200',
         'site-bg-color-100',
@@ -115,6 +116,7 @@ class CssThemeGenerator
     private function extractVariableValue($sass, $variable)
     {
         $variable = str_replace('$', '', $variable);
+        $variable = '\$'.$variable;
         preg_match("/$variable:(.+?);/", $sass, $matches);
 
         $value = trim(str_replace('!default', '', $matches[1]));
@@ -147,7 +149,7 @@ class CssThemeGenerator
             }
         }
 
-        return $grouped;
+        return $this->addMaterialSelectorsToGroupedVariables($grouped);
     }
 
     /**
@@ -179,9 +181,11 @@ class CssThemeGenerator
             if ($childType === 'assign') {
                 $assignKey = $child[1][2][0];
                 $assignValueType = $child[2][0];
-                $assignValue = $child[2][1];
+                $variableName = $this->getVariableNameFromSassValue($child);
 
-                $variableIndex = array_search($assignValue, $this->variables);
+                $variableIndex = array_search($variableName, $this->variables);
+
+                if ($variableIndex === -1) continue;
 
                 if ($assignValueType === 'list' && str_contains($assignKey, 'border')) {
                     $this->addMatch($block, 'border-color', $variableIndex);
@@ -195,6 +199,25 @@ class CssThemeGenerator
     }
 
     /**
+     * Extract variable name from block child.
+     *
+     * @param array $blockChild
+     * @return string|null;
+     */
+    private function getVariableNameFromSassValue($blockChild)
+    {
+        if ( ! is_array($blockChild[2])) return null;
+
+        $flattened = array_flatten($blockChild[2]);
+
+        foreach ($flattened as $key => $value) {
+            if ($value === 'var') {
+                return $flattened[$key+1];
+            }
+        }
+    }
+
+    /**
      * @param Block $block
      * @param $assignKey
      * @param $variableIndex
@@ -203,7 +226,17 @@ class CssThemeGenerator
     {
         $parent = $this->makeParentSelector($block);
         $child  = $this->makeSelectorString($block->selectors);
-        $selector = $this->formatSelectorString($parent.' '.$child);
+        $parts = explode(',', $child);
+
+        //add parent selector before each selector separated by comma
+        $selector = array_map(function($part) use($parent) {
+            return "$parent $part";
+        }, $parts);
+
+        $selector = implode(', ', $selector);
+
+        //convert sass '&' symbols into css, by simply removing them and surrounding spaces
+        $selector = str_replace([' &', '& '], '', $selector);
 
         $this->matches[] = [
             'selector' => $selector,
@@ -220,15 +253,32 @@ class CssThemeGenerator
      */
     private function makeSelectorString($selectors)
     {
-        $selector = collect($selectors)
-            ->flatten()
-            ->filter(function($part) {
-                return $part !== 'string';
-            })->map(function($part) {
-                return $part === 'self' ? '&' : $part;
-            })->implode('');
+        $string = '';
 
-        return $selector;
+        foreach ($selectors as $key => $selector) {
+            foreach ($selector as $selectorPart) {
+                foreach ($selectorPart as $innerPart) {
+                    if (is_string($innerPart)) {
+                        $string .= $innerPart;
+
+                        if ($innerPart === '>') {
+                            $string .= ' ';
+                        }
+                    } else if ($innerPart[0] === 'self') {
+                        $string .= '&';
+                    } else if ($innerPart[0] === 'string' && isset($innerPart[2])) {
+                        $string .= $innerPart[2][0];
+
+                    }
+                }
+            }
+
+            if (isset($selectors[$key+1])) {
+                $string .= ', ';
+            }
+        }
+
+        return $string;
     }
 
     /**
@@ -247,28 +297,26 @@ class CssThemeGenerator
             $parent = isset($parent->parent) ? $parent->parent : null;
         }
 
+        //compile parent selector into a string
         return join(array_reverse($parentSelector), ' ');
     }
 
     /**
-     * Correct some selector formatting issues.
+     * Add angular material specific accent selectors to the theme.
      *
-     * @param string $selector
-     * @return string
+     * @param array $grouped
+     * @return array
      */
-    private function formatSelectorString($selector)
+    private function addMaterialSelectorsToGroupedVariables($grouped)
     {
-        //remove space between selector and :hover
-        $selector = str_replace(' :hover', ':hover', $selector);
+        $grouped['site-accent-color']['background-color'][] = [
+            'selector' => '.mat-raised-button.mat-accent, .mat-fab.mat-accent, .mat-mini-fab.mat-accent'
+        ];
 
-        //add a space between > and selector
-        $selector = preg_replace("/>([^ ])/", "> $1", $selector);
-        $selector = preg_replace("/([^ ])>/", "$1 >", $selector);
+        $grouped['site-accent-color']['color'][] = [
+            'selector' => ' .mat-button.mat-accent, .mat-icon-button.mat-accent'
+        ];
 
-        //transform sass "self" selector into css "self" selector
-        //example: ".class1 &.class2" into ".class1.class2"
-        $selector = str_replace(" &", '', $selector);
-
-        return trim($selector);
+        return $grouped;
     }
 }
