@@ -28,10 +28,10 @@ class CssThemeGenerator
 
     public function generate()
     {
-        $dir = base_path('../client/src/app');
+        $dirs = [base_path('../client/src/app'), base_path('../client/node_modules/vebto-client')];
         $parser = new Parser(null);
 
-        $files = iterator_to_array(Finder::create()->name('*.scss')->files()->in($dir), false);
+        $files = iterator_to_array(Finder::create()->name('*.scss')->files()->in($dirs), false);
 
         foreach ($files as $file) {
             $tree = $parser->parse(file_get_contents($file->getRealPath()));

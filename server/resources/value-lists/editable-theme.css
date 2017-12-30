@@ -1,13 +1,13 @@
 :root {
-	--site-accent-color: #00b588;
+	--site-accent-color: #6eac00;
 	--site-primary-color-100: #2e73de;
 	--site-primary-color-200: #2166d1;
 	--site-bg-color-100: #fff;
-	--site-bg-color-200: #f6f6f6;
+	--site-bg-color-200: #FAFAFA;
 	--site-bg-color-300: #f1f1f1;
 	--site-bg-color-400: #d8d7d7;
 	--site-text-color-100: #fff;
-	--site-text-color-200: rgba(0,0,0,.24);
+	--site-text-color-200: rgba(0,0,0,.38);
 	--site-text-color-300: rgba(0,0,0,.54);
 	--site-text-color-400: rgba(0,0,0,.87);
 	--site-border-color-100: #eff1f2;
@@ -28,7 +28,8 @@ dashboard > .header,
 	color: var(--site-text-color-100);
 }
 
-dashboard-navbar custom-menu .nav-item .router-link-active, dashboard-navbar custom-menu .nav-item  .active
+dashboard-navbar custom-menu .nav-item .router-link-active, dashboard-navbar custom-menu .nav-item  .active,
+admin .navbar custom-menu .nav-item .router-link-active, admin .navbar custom-menu .nav-item  .active
 {
 	background-color: var(--site-primary-color-100);
 }
@@ -57,7 +58,15 @@ layout-panel .current-columns > .column,
  templates-panel,
  themes-panel,
 code-editor .toolbar,
-link-editor .page-list-item:hover
+link-editor .page-list-item:hover,
+admin > .content > .content-inner,
+ads-page .panel > .header,
+appearance > .sidebar,
+ add-menu-item-panel,
+menus-appearance-panel .mat-expansion-panel > .mat-expansion-panel-content,
+select-permissions-modal .permissions > .permission,
+upload-file-modal .upload-panel > .tabs .dropzone,
+text-editor .mce-tinymce .mce-panel
 {
 	background-color: var(--site-bg-color-200);
 }
@@ -91,7 +100,8 @@ themes-panel .themes > .theme,
  code-editor,
  drag-visual-helper,
  inline-text-editor,
- link-editor
+ link-editor,
+account-settings .content .panel
 {
 	background-color: var(--site-bg-color-100);
 }
@@ -110,13 +120,22 @@ inspector > .inspector-content > .actions
 dashboard .header-body > .inputs > .input-container > input, dashboard .header-body > .inputs > .input-container  > select,
 attributes-panel .input-container, attributes-panel  .mat-chip-list-wrapper,
 shadows-panel .sliders > .slider-container > .title,
- drag-visual-helper
+inspector .content-panel,
+layout-panel .add-item-button:hover> span,
+ drag-visual-helper,
+.context-menu .context-menu-item,
+mail-templates > .label .type.selected,
+.admin-pill-nav > .nav-item
 {
 	color: var(--site-text-color-400);
 }
 
 dashboard .projects > .project > .footer,
-spacing-panel .side-controls > .side-control.all-control.active
+spacing-panel .side-controls > .side-control.all-control.active,
+crupdate-group-modal .permissions-panel .manage-permissions > .permission,
+mail-template-preview .email-inbox > .toolbar > .user > .meta > .info > svg-icon,
+settings .widget.widget-flat,
+user-access-manager .panel-outter > .panel-body .panel-item
 {
 	border-color: var(--site-border-color-100);
 }
@@ -147,7 +166,22 @@ image-background-panel .image-properties,
 google-fonts-panel > .header,
 inspector > .inspector-nav,
 inspector > .inspector-content,
-layout-panel .mat-action-row, .row-actions > button
+layout-panel .mat-action-row, .row-actions > button,
+layout-panel .add-item-button > span,
+pages-panel .active-page-actions,
+settings-panel .setting-container > p,
+.context-menu .context-menu-item > svg-icon,
+.context-menu .context-menu-item > .alt-text,
+account-settings .content .panel .avatar-input > .avatar-actions-container > .info,
+menu-items > .inner > .no-menu-items,
+crupdate-group-modal .setting-container > p,
+mail-templates > .label .type,
+settings .settings-panels-container > .settings-panel > .header,
+upload-file-modal .upload-panel > .menu > .menu-item,
+.menu-with-alt-text .mat-menu-item > .alt-text,
+.admin-table-panel .mat-table .mat-column-edit,
+.input-container > p,
+text-editor .mat-menu .alt-text
 {
 	color: var(--site-text-color-300);
 }
@@ -179,7 +213,56 @@ layout-panel .rows .row,
 layout-panel .current-columns > .column,
 code-editor .editor,
 inline-text-editor > .link-panel,
-inline-text-editor > .icons-panel
+inline-text-editor > .icons-panel,
+account-settings .content .panel,
+connect-social-accounts-panel .social-login-row,
+admin > .content .flex-table-panel,
+ads-page .panel,
+ads-page .panel > .header,
+analytics .ViewSelector2-item> select,
+analytics .charts-row > .chart-panel,
+analytics .chart-panel-header,
+ appearance-panel-meta,
+appearance > .sidebar,
+appearance > .sidebar .back-button,
+appearance > .sidebar .header,
+appearance .nav-item,
+code-editor-modal .mat-dialog-content .editor,
+appearance-image-input .img-container,
+ appearance-list-input,
+add-menu-item-panel > .header,
+add-menu-item-panel .new-item-tabs .items-list > .item,
+menus-appearance-panel .mat-expansion-panel,
+menus-appearance-panel .mat-expansion-panel > .mat-expansion-panel-header.mat-expanded,
+crupdate-group-modal .permissions-panel > .header,
+groups .new-group,
+mail-template-preview .email-inbox > .header,
+mail-template-preview .email-inbox > .toolbar > .actions > .buttons,
+mail-template-preview .email-inbox > .toolbar > .actions > .buttons > .reply,
+mail-templates > .header,
+mail-templates > .header .action,
+mail-templates > .label .type:last-of-type,
+mail-templates > .template.column mail-template-preview,
+mail-templates > .template > .editor,
+mail-templates > .template > mail-template-preview,
+crupdate-page > .slug-container > .back-button,
+settings .settings-panels-container > .settings-panel,
+translations > aside .new-localization,
+translations > aside .update-translations,
+select-permissions-modal .permissions-group,
+select-permissions-modal .permissions-group > .group-name,
+select-permissions-modal .permissions > .permission,
+user-access-manager .panel-outter > .header,
+upload-file-modal .upload-panel > .tabs .dropzone,
+.admin-pill-nav.solid > .nav-item,
+ .admin-table-panel,
+.admin-table-panel .admin-table-panel-header > .header-inner.selected,
+.admin-table-panel .admin-table-panel-header > .header-inner.selected > .right > button,
+ text-editor,
+text-editor .mce-tinymce .mce-panel,
+text-editor .editor-header > .toolbar-row,
+text-editor .editor-header .actions,
+text-editor .editor-footer
 {
 	border-color: var(--site-border-color-200);
 }
@@ -215,7 +298,21 @@ themes-panel .themes > .theme.active,
  context-box,
 context-box .action-button,
 context-box .element-name,
-inline-text-editor .controls-group
+inline-text-editor .controls-group,
+admin > .content > .left-column > .menu-items > .menu-item,
+admin > .content > .left-column > .menu-items > .menu-item,
+appearance > .live-preview > .selected-el-box,
+assign-users-to-group-modal .with-addon > .input-addon,
+settings .widget,
+settings .widget.widget-important,
+settings .widget.widget-warning,
+upload-file-modal .upload-panel > .menu > .menu-item,
+upload-file-modal .upload-panel > .menu > .menu-item.active,
+.admin-pill-nav > .nav-item.selected,
+.auth-page > .auth-panel,
+.auth-page > .auth-panel .input-container > input,
+.admin-table-panel .admin-table-panel-header > .header-inner,
+.input-container input, .input-container  select, .input-container  textarea
 {
 	border-color: var(--site-accent-color);
 }
@@ -224,6 +321,7 @@ new-project-page .sidebar .categories > .category.active,
 image-background-panel .position > .controls > .box.active,
 side-control-border .side-control-border-inner:before, side-control-border .side-control-border-inner :after,
 column-presets > .preset > .col,
+.admin-pill-nav > .nav-item.selected,
 .mat-raised-button.mat-accent, .mat-fab.mat-accent, .mat-mini-fab.mat-accent
 {
 	background-color: var(--site-accent-color);
@@ -233,9 +331,18 @@ inspector-panel > .breadcrumbs > .crumb-container.last.crumb,
 text-style-panel .text-decorations, .font-styles button.active,
 code-editor .toolbar .active,
 inline-text-editor .controls-group .active,
+account-settings .content .panel .avatar-input > .avatar-actions-container > .avatar-remove-button,
+appearance-panel-meta > .title > .path .last,
+upload-file-modal .upload-panel > .menu > .menu-item.active,
+text-editor .editor-header .editor-button.success,
  .mat-button.mat-accent, .mat-icon-button.mat-accent
 {
 	color: var(--site-accent-color);
+}
+
+admin > .content > .left-column > .menu-items > .menu-item.router-link-active
+{
+	border-left-color: var(--site-accent-color);
 }
 
 side-control-border .side-control-border-inner.active:before, side-control-border .side-control-border-inner .active:after
@@ -243,7 +350,8 @@ side-control-border .side-control-border-inner.active:before, side-control-borde
 	background-color: var(--site-bg-color-400);
 }
 
-inspector > .inspector-nav > .panel-nav > .panel-nav-item[disabled]
+inspector > .inspector-nav > .panel-nav > .panel-nav-item[disabled],
+.context-menu .context-menu-item:disabled
 {
 	color: var(--site-text-color-200);
 }

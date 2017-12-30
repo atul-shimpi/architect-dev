@@ -7,6 +7,7 @@ import {CoreModule} from "vebto-client/core";
 import {AuthModule} from "vebto-client/auth/auth.module";
 import {MaterialModule} from "./shared/material.module";
 import {DashboardModule} from "./dashboard/dashboard/dashboard.module";
+import {AccountSettingsModule} from "vebto-client/account-settings/account-settings.module";
 
 @NgModule({
     declarations: [
@@ -20,6 +21,7 @@ import {DashboardModule} from "./dashboard/dashboard/dashboard.module";
         AuthModule,
         MaterialModule,
         DashboardModule,
+        AccountSettingsModule,
     ],
     bootstrap: [AppComponent]
 })

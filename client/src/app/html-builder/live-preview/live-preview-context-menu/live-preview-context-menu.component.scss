@@ -22,7 +22,7 @@ live-preview-context-menu {
   .context-menu-item {
     width: 100%;
     background-color: inherit;
-    color: $text-color;
+    color: $site-text-color-400;
     border: none;
     line-height: 48px;
     font-size: 16px;
@@ -38,18 +38,18 @@ live-preview-context-menu {
     }
 
     &:disabled {
-      color: $text-color-disabled;
+      color: $site-text-color-200;
       cursor: default;
     }
 
     > svg-icon {
       margin-right: 16px;
-      color: $text-color-secondary;
+      color: $site-text-color-300;
     }
 
     > .alt-text {
       margin-left: auto;
-      color: $text-color-secondary;
+      color: $site-text-color-300;
       font-size: 14px;
     }
 

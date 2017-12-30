@@ -37,13 +37,13 @@ layout-panel {
 
     &:hover > span {
       display: inline-block;
-      color: $text-color;
+      color: $site-text-color-400;
     }
 
     > span {
       position: relative;
       z-index: 1;
-      color: $text-color-secondary;
+      color: $site-text-color-300;
       background-color: inherit;
     }
 
