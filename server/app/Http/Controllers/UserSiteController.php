@@ -77,6 +77,7 @@ class UserSiteController extends Controller
             //if link is already absolute or an ID, continue to next one
             if (starts_with($url, ['//', 'http', '#'])) continue;
 
+            $url = 'a';
             $html = preg_replace("/href=\"$url\"/i", "href=\"$base/$url\"", $html);
         }
 

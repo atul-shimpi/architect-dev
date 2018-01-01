@@ -10,17 +10,23 @@ export type BuilderProject = {
     template: BuilderTemplate,
 };
 
-export type BuilderTemplate = {
-    name: string,
-    js: string,
-    css: string,
-    thumbnail: string,
-    pages: BuilderPage[],
+export class BuilderTemplate {
+    name: string;
+    js: string;
+    css: string;
+    thumbnail: string;
+    pages: BuilderPage[];
     config: {
         libraries: string[],
         name: string,
         color: string,
         category: string,
         theme: string,
+    };
+
+    constructor(params: Object = {}) {
+        for (let name in params) {
+            this[name] = params[name];
+        }
     }
 }

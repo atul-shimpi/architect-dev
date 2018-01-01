@@ -14,26 +14,6 @@
 	--site-border-color-200: #E0E0E0;
 }
 
- dashboard-navbar,
-dashboard > .header
-{
-	background-color: var(--site-primary-color-200);
-}
-
- dashboard-navbar,
-dashboard-navbar custom-menu .nav-item .router-link-active, dashboard-navbar custom-menu .nav-item  .active,
-dashboard > .header,
- google-fonts-panel
-{
-	color: var(--site-text-color-100);
-}
-
-dashboard-navbar custom-menu .nav-item .router-link-active, dashboard-navbar custom-menu .nav-item  .active,
-admin .navbar custom-menu .nav-item .router-link-active, admin .navbar custom-menu .nav-item  .active
-{
-	background-color: var(--site-primary-color-100);
-}
-
  dashboard,
  new-project-page,
 device-switcher .device-description,
@@ -59,6 +39,7 @@ layout-panel .current-columns > .column,
  themes-panel,
 code-editor .toolbar,
 link-editor .page-list-item:hover,
+ account-settings,
 admin > .content > .content-inner,
 ads-page .panel > .header,
 appearance > .sidebar,
@@ -74,6 +55,20 @@ text-editor .mce-tinymce .mce-panel
 border-style-controls > .border-color
 {
 	border-color: var(--site-bg-color-200);
+}
+
+dashboard > .header,
+ material-navbar
+{
+	background-color: var(--site-primary-color-200);
+}
+
+dashboard > .header,
+ google-fonts-panel,
+ material-navbar,
+material-navbar custom-menu .nav-item .router-link-active, material-navbar custom-menu .nav-item  .active
+{
+	color: var(--site-text-color-100);
 }
 
 dashboard .header-body > .inputs > .input-container > input, dashboard .header-body > .inputs > .input-container  > select,
@@ -101,7 +96,8 @@ themes-panel .themes > .theme,
  drag-visual-helper,
  inline-text-editor,
  link-editor,
-account-settings .content .panel
+account-settings .content .panel,
+connect-social-accounts-panel .social-login-row > .icon-container.facebook svg-icon
 {
 	background-color: var(--site-bg-color-100);
 }
@@ -117,6 +113,12 @@ inspector > .inspector-content > .actions
 	background: var(--site-bg-color-100);
 }
 
+connect-social-accounts-panel .social-login-row > .icon-container.twitter,
+connect-social-accounts-panel .social-login-row > .icon-container.google
+{
+	color: var(--site-bg-color-100);
+}
+
 dashboard .header-body > .inputs > .input-container > input, dashboard .header-body > .inputs > .input-container  > select,
 attributes-panel .input-container, attributes-panel  .mat-chip-list-wrapper,
 shadows-panel .sliders > .slider-container > .title,
@@ -125,7 +127,8 @@ layout-panel .add-item-button:hover> span,
  drag-visual-helper,
 .context-menu .context-menu-item,
 mail-templates > .label .type.selected,
-.admin-pill-nav > .nav-item
+.admin-pill-nav > .nav-item,
+ body
 {
 	color: var(--site-text-color-400);
 }
@@ -211,10 +214,13 @@ layout-panel .mat-action-row, .row-actions > button,
 layout-panel .add-item-button:before,
 layout-panel .rows .row,
 layout-panel .current-columns > .column,
+settings-panel .input-container > .box > .fake-input,
 code-editor .editor,
 inline-text-editor > .link-panel,
 inline-text-editor > .icons-panel,
 account-settings .content .panel,
+account-settings .content .panel .panel-header,
+account-settings .content .panel .panel-footer,
 connect-social-accounts-panel .social-login-row,
 admin > .content .flex-table-panel,
 ads-page .panel,
@@ -234,6 +240,7 @@ add-menu-item-panel > .header,
 add-menu-item-panel .new-item-tabs .items-list > .item,
 menus-appearance-panel .mat-expansion-panel,
 menus-appearance-panel .mat-expansion-panel > .mat-expansion-panel-header.mat-expanded,
+assign-users-to-group-modal .with-addon > .input-addon,
 crupdate-group-modal .permissions-panel > .header,
 groups .new-group,
 mail-template-preview .email-inbox > .header,
@@ -258,6 +265,7 @@ upload-file-modal .upload-panel > .tabs .dropzone,
  .admin-table-panel,
 .admin-table-panel .admin-table-panel-header > .header-inner.selected,
 .admin-table-panel .admin-table-panel-header > .header-inner.selected > .right > button,
+.input-container input, .input-container  select, .input-container  textarea,
  text-editor,
 text-editor .mce-tinymce .mce-panel,
 text-editor .editor-header > .toolbar-row,
@@ -287,32 +295,13 @@ spacing-panel .side-controls > .side-control.left-control
 	border-left-color: var(--site-border-color-200);
 }
 
-new-project-page .sidebar .colors > .color,
 new-project-page .sidebar .colors > .color.active,
 image-background-panel .position > .controls > .box.active,
 layout-panel .rows .row.selected,
 layout-panel .current-columns > .column.selected,
-settings-panel .input-container > .box > .fake-input,
-themes-panel .themes > .theme,
 themes-panel .themes > .theme.active,
- context-box,
-context-box .action-button,
-context-box .element-name,
-inline-text-editor .controls-group,
-admin > .content > .left-column > .menu-items > .menu-item,
-admin > .content > .left-column > .menu-items > .menu-item,
-appearance > .live-preview > .selected-el-box,
-assign-users-to-group-modal .with-addon > .input-addon,
-settings .widget,
-settings .widget.widget-important,
-settings .widget.widget-warning,
-upload-file-modal .upload-panel > .menu > .menu-item,
 upload-file-modal .upload-panel > .menu > .menu-item.active,
-.admin-pill-nav > .nav-item.selected,
-.auth-page > .auth-panel,
-.auth-page > .auth-panel .input-container > input,
-.admin-table-panel .admin-table-panel-header > .header-inner,
-.input-container input, .input-container  select, .input-container  textarea
+.admin-pill-nav > .nav-item.selected
 {
 	border-color: var(--site-accent-color);
 }
@@ -331,7 +320,6 @@ inspector-panel > .breadcrumbs > .crumb-container.last.crumb,
 text-style-panel .text-decorations, .font-styles button.active,
 code-editor .toolbar .active,
 inline-text-editor .controls-group .active,
-account-settings .content .panel .avatar-input > .avatar-actions-container > .avatar-remove-button,
 appearance-panel-meta > .title > .path .last,
 upload-file-modal .upload-panel > .menu > .menu-item.active,
 text-editor .editor-header .editor-button.success,
@@ -362,5 +350,10 @@ layout-panel .add-item-button,
 link-editor .page-list-item.selected
 {
 	background-color: var(--site-bg-color-300);
+}
+
+material-navbar custom-menu .nav-item .router-link-active, material-navbar custom-menu .nav-item  .active
+{
+	background-color: var(--site-primary-color-100);
 }
 

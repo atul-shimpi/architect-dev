@@ -39,7 +39,7 @@ export class TemplatesPanelComponent implements OnInit {
 
     ngOnInit() {
         this.templatesApi.all().subscribe(response => {
-            this.templates = response.templates;
+            this.templates = response.data;
         });
     }
 

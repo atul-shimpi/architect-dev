@@ -13,10 +13,10 @@ export class TemplatesResolver implements Resolve<BuilderTemplate[]> {
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<BuilderTemplate[]> {
         return this.templates.all().toPromise().then(response => {
-            return response.templates;
+            return response.data;
         }).catch(() => {
             this.router.navigate(['/dashboard']);
-            return false;
-        }) as Promise<BuilderTemplate[]>;
+            return null;
+        });
     }
 }

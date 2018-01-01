@@ -3,7 +3,6 @@ import {CommonModule} from '@angular/common';
 import {NewProjectModalComponent} from "../new-project-page/new-project-modal/new-project-modal.component";
 import {NewProjectPageComponent} from "../new-project-page/new-project-page.component";
 import {DashboardComponent} from "../dashboard.component";
-import {DashboardNavbarComponent} from "../dashboard-navbar/dashboard-navbar.component";
 import {MaterialModule} from "../../shared/material.module";
 import {TemplatesResolver} from "../new-project-page/templates-resolver.service";
 import {Templates} from "../../templates/templates.service";
@@ -26,7 +25,6 @@ import {DashboardRoutingModule} from "../dashboard-routing.module";
     declarations: [
         DashboardComponent,
         NewProjectPageComponent,
-        DashboardNavbarComponent,
         NewProjectModalComponent
     ],
     entryComponents: [

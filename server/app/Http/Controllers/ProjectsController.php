@@ -47,8 +47,6 @@ class ProjectsController extends Controller {
      */
 	public function index()
     {
-        (new \App\Services\CssThemeGenerator())->generate();
-
         $this->authorize('index', [Project::class, $this->request->get('user_id')]);
 
         $query = $this->project->with('pages');

@@ -72,6 +72,15 @@ class TemplateLoader
         ];
     }
 
+    /**
+     * Delete specified template.
+     *
+     * @param string $name
+     */
+    public function delete($name)
+    {
+        $this->storage->deleteDirectory("templates/$name");
+    }
 
     /**
      * Get javascript of specified template.

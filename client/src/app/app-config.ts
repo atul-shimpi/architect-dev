@@ -1,8 +1,17 @@
 import {environment} from './../environments/environment';
 
 export const appConfig = {
+    environment: environment.production ? 'production' : 'dev',
+    navbar: {
+        defaultPosition: 'dashboard',
+        dropdownItems: [
+            {route: '/dashboard', name: 'Dashboard', icon: 'web-design-custom'},
+        ]
+    },
     admin: {
-        environment: environment.production ? 'production' : 'dev',
+        pages: [
+            {name: 'templates', icon: 'web-design-custom', route: 'templates', permission: 'templates.view'},
+        ],
         appearance: {
             defaultRoute: 'dashboard',
             navigationRoutes: [
@@ -20,9 +29,6 @@ export const appConfig = {
                     'admin'
                 ]
             },
-            fields: {
-                colors: {route: 'dashboard'},
-            }
         }
-    }
+    },
 };

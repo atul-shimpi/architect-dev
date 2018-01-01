@@ -5,7 +5,7 @@ import {CustomPageComponent} from "vebto-client/core/ui/custom-page/custom-page.
 const routes: Routes = [
     {path: '', component: CustomPageComponent},
     {path: 'builder', loadChildren: 'app/html-builder/html-builder.module#HtmlBuilderModule'},
-    {path: 'admin', loadChildren: 'vebto-client/admin/admin.module#AdminModule'},
+    {path: 'admin', loadChildren: 'app/admin/app-admin.module#AppAdminModule'},
 ];
 
 @NgModule({

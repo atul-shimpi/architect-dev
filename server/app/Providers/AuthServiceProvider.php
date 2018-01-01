@@ -19,6 +19,7 @@ class AuthServiceProvider extends ServiceProvider
         'App\Model' => 'App\Policies\ModelPolicy',
         BuilderPage::class => BuilderPagePolicy::class,
         Project::class => ProjectPolicy::class,
+        'Template' => 'App\Policies\TemplatePolicy',
     ];
 
     /**
