@@ -12,7 +12,7 @@ export class TemplatesResolver implements Resolve<BuilderTemplate[]> {
     ) {}
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<BuilderTemplate[]> {
-        return this.templates.all().toPromise().then(response => {
+        return this.templates.all({per_page: 50}).toPromise().then(response => {
             return response.data;
         }).catch(() => {
             this.router.navigate(['/dashboard']);

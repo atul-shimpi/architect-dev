@@ -42,7 +42,7 @@ class ProjectsController extends Controller {
     /**
      * Get all projects or projects belonging to specified user.
      *
-     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
 	public function index()
@@ -57,7 +57,7 @@ class ProjectsController extends Controller {
             });
         }
 
-        return $query->orderBy('updated_at', 'desc')->get();
+        return $query->orderBy('updated_at', 'desc')->paginate($this->request->get('per_page'));
     }
 
     /**
@@ -99,8 +99,8 @@ class ProjectsController extends Controller {
             'framework' => 'nullable|string|min:1|max:255',
             'theme' => 'nullable|string|min:1|max:255',
             'custom_element_css' => 'nullable|string|min:1',
-            'pages' => 'required|array',
-            'pages.*' => 'required|array',
+            'pages' => 'array',
+            'pages.*' => 'array',
         ]);
 
         $this->repository->update($project, $this->request->all());
@@ -113,6 +113,7 @@ class ProjectsController extends Controller {
      *
      * @return \Illuminate\Http\JsonResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
 	public function store()
 	{
@@ -135,20 +136,22 @@ class ProjectsController extends Controller {
 	}
 
     /**
-     * Delete project matching specified id.
+     * Delete projects matching specified ids.
      *
      * @param int id
      * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-	public function destroy($id)
+	public function destroy()
     {
-        $project = $this->project->findOrFail($id);
+        foreach ($this->request->get('ids') as $id) {
+            $project = $this->project->findOrFail($id);
 
-        $this->authorize('destroy', $project);
+            $this->authorize('destroy', $project);
 
-        $this->repository->delete($project);
+            $this->repository->delete($project);
+        }
 
         return $this->success();
     }

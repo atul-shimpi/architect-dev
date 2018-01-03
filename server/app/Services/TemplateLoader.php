@@ -15,6 +15,8 @@ class TemplateLoader
      */
     private $storage;
 
+    const DEFAULT_THUMBNAIL = 'assets/images/default_project_thumbnail.png';
+
     /**
      * TemplateLoader constructor.
      */
@@ -36,8 +38,8 @@ class TemplateLoader
         return collect($paths)->map(function($path) {
             return [
                 'name' => basename($path),
-                'config' => json_decode($this->storage->get("$path/config.json")),
-                'thumbnail' => "$path/thumbnail.png"
+                'config' => $this->getTemplateConfig(basename($path)),
+                'thumbnail' => $this->getTemplateImagePath("$path/thumbnail.png", self::DEFAULT_THUMBNAIL)
             ];
         });
     }
@@ -64,39 +66,74 @@ class TemplateLoader
 
         return [
             'name' => $name,
-            'config' => json_decode($this->storage->get("templates/$name/config.json"), true),
-            'thumbnail' => "storage/templates/$name/thumbnail.png",
+            'config' => $this->getTemplateConfig($name),
+            'thumbnail' => $this->getTemplateImagePath("storage/templates/$name/thumbnail.png", self::DEFAULT_THUMBNAIL),
             'pages' => $pages,
-            'css' => $this->storage->get("templates/$name/css/styles.css"),
-            'js' => $this->getTemplateJs($name),
+            'css' => $this->getTemplateAsset("templates/$name/css/styles.css"),
+            'js' => $this->getTemplateAsset("templates/$name/js/scripts.js"),
         ];
     }
 
     /**
-     * Delete specified template.
+     * Check if specified template exists.
      *
      * @param string $name
+     * @return bool
      */
-    public function delete($name)
+    public function exists($name)
     {
-        $this->storage->deleteDirectory("templates/$name");
+        return $this->storage->exists("templates/$name");
     }
 
     /**
-     * Get javascript of specified template.
+     * Get template asset at specified path or default.
      *
-     * @param string $name
+     * @param string $path
+     * @param string $default
      * @return string
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    private function getTemplateJs($name)
+    private function getTemplateAsset($path, $default = '')
     {
-        $path = "templates/$name/js/scripts.js";
-
         if ($this->storage->exists($path)) {
             return $this->storage->get($path);
         }
 
-        return '';
+        return $default;
     }
+
+    /**
+     * Get template image path or default.
+     *
+     * @param string $path
+     * @param string $default
+     * @return string
+     */
+    private function getTemplateImagePath($path, $default = '')
+    {
+        if ($this->storage->exists($path)) {
+            return $path;
+        }
+
+        return $default;
+    }
+
+    /**
+     * Get template configuration.
+     *
+     * @param string $name
+     * @return array
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    private function getTemplateConfig($name)
+    {
+        $path = "templates/$name/config.json";
+
+        if ($this->storage->exists($path)) {
+            return json_decode($this->storage->get($path), true);
+        }
+
+        return [];
+    }
+
 }

@@ -16,8 +16,9 @@ Route::group(['prefix' => 'secure'], function () {
     //templates
     Route::get('templates', 'TemplatesController@index');
     Route::get('templates/{name}', 'TemplatesController@show');
-    Route::post('templates', 'TemplatesController@create');
-    Route::delete('templates/{name}', 'TemplatesController@destroy');
+    Route::post('templates', 'TemplatesController@store');
+    Route::put('templates/{name}', 'TemplatesController@update');
+    Route::delete('templates', 'TemplatesController@destroy');
 
     //themes
     Route::get('themes', 'ThemesController@index');
@@ -27,7 +28,7 @@ Route::group(['prefix' => 'secure'], function () {
     Route::post('projects', 'ProjectsController@store');
     Route::get('projects/{id}', 'ProjectsController@show');
     Route::put('projects/{id}', 'ProjectsController@update');
-    Route::delete('projects/{id}', 'ProjectsController@destroy');
+    Route::delete('projects', 'ProjectsController@destroy');
     Route::post('projects/{id}/generate-thumbnail', 'ProjectThumbnailController@store');
     Route::get('projects/{id}/download', 'ProjectDownloadController@download');
 

@@ -15,8 +15,8 @@ export class Templates {
     /**
      * Get all available templates.
      */
-    public all(): Observable<PaginationResponse<BuilderTemplate>> {
-        return this.http.get('templates');
+    public all(params: object): Observable<PaginationResponse<BuilderTemplate>> {
+        return this.http.get('templates', params);
     }
 
     /**
@@ -37,7 +37,7 @@ export class Templates {
      * Update specified template.
      */
     public update(name: string, params: object): Observable<{template: BuilderTemplate}> {
-        return this.http.post('templates/'+name, params);
+        return this.http.put('templates/'+name, params);
     }
 
     /**

@@ -1,5 +1,8 @@
 <?php namespace App\Http\Controllers;
 
+use App\Services\TemplateRepository;
+use Illuminate\Validation\Rule;
+use Zipper;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Vebto\Bootstrap\Controller;
@@ -19,14 +22,21 @@ class TemplatesController extends Controller {
     private $templateLoader;
 
     /**
+     * @var TemplateRepository
+     */
+    private $repository;
+
+    /**
      * Create new ProjectsController instance.
      *
      * @param Request $request
      * @param TemplateLoader $templateLoader
+     * @param TemplateRepository $repository
      */
-	public function __construct(Request $request, TemplateLoader $templateLoader)
+	public function __construct(Request $request, TemplateLoader $templateLoader, TemplateRepository $repository)
 	{
 		$this->request = $request;
+        $this->repository = $repository;
         $this->templateLoader = $templateLoader;
     }
 
@@ -42,11 +52,14 @@ class TemplatesController extends Controller {
 
 	    $templates = $this->templateLoader->loadAll();
 
+	    $perPage = $this->request->get('per_page', 10);
+	    $page = $this->request->get('page', 1);
+
 	    $paginator = new LengthAwarePaginator(
-	        $templates,
+	        $templates->slice($perPage * ($page - 1), $perPage)->values(),
             count($templates),
-            $this->request->get('per_page', 10),
-            $this->request->get('page', 1)
+            $perPage,
+            $page
         );
 
 	    return $paginator;
@@ -72,24 +85,80 @@ class TemplatesController extends Controller {
         return $this->success(['template' => $template]);
     }
 
-    public function create()
+    /**
+     * Create a new template.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     * @throws FileNotFoundException
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function store()
     {
-        $this->authorize('create', 'Template');
+        $this->authorize('store', 'Template');
 
+        $this->validate($this->request, [
+            'display_name' => 'required|string|min:1|max:255',
+            'color' => 'required|string|min:1|max:255',
+            'category' => 'required|string|min:1|max:255',
+            'template' => 'required|file|mimes:zip',
+            'thumbnail' => 'required|file|image'
+        ]);
+
+        $params = $this->request->except('template');
+        $params['template'] = $this->request->file('template');
+        $params['thumbnail'] = $this->request->file('thumbnail');
+
+        if ($this->templateLoader->exists($params['display_name'])) {
+            return $this->error(['display_name' => 'Template with this name already exists.']);
+        }
+
+        $this->repository->create($params);
+
+        return $this->success([
+            'template' => $this->templateLoader->load($params['display_name'])
+        ]);
     }
 
     /**
-     * Delete template matching specified name.
+     * Update existing template.
      *
      * @param string $name
      * @return \Illuminate\Http\JsonResponse
+     * @throws FileNotFoundException
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy($name)
+    public function update($name)
+    {
+        $this->authorize('update', 'Template');
+
+        $this->validate($this->request, [
+            'display_name' => 'string|min:1|max:255',
+            'color' => 'string|min:1|max:255',
+            'category' => 'string|min:1|max:255',
+            'template' => 'file|mimes:zip',
+            'thumbnail' => 'file|image'
+        ]);
+
+        $params = $this->request->except('template');
+        $params['template'] = $this->request->file('template');
+        $params['thumbnail'] = $this->request->file('thumbnail');
+
+        $this->repository->update($name, $params);
+
+        return $this->success(['template' => $this->templateLoader->load($name)]);
+    }
+
+    /**
+     * Delete specified templates.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function destroy()
     {
         $this->authorize('destroy', 'Template');
 
-        $this->templateLoader->delete($name);
+        $this->repository->delete($this->request->get('names'));
 
         return $this->success();
     }

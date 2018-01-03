@@ -19,9 +19,11 @@ export class BuilderTemplate {
     config: {
         libraries: string[],
         name: string,
+        display_name?: string,
         color: string,
         category: string,
         theme: string,
+        framework: string,
     };
 
     constructor(params: Object = {}) {

@@ -1,15 +1,12 @@
-import {Page} from "vebto-client/core/types/models/Page";
-
 export class Project {
     id: number;
     name: string;
     published: number = 1;
     public: number = 0;
     uuid?: string;
-    pages?: Page[];
-    framework: string;
-    theme: string;
-    template: string;
+    framework: string = '';
+    theme: string = '';
+    template: string = '';
 
     constructor(params: Object = {}) {
         for (let name in params) {

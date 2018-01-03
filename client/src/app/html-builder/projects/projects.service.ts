@@ -2,8 +2,7 @@ import {Injectable} from '@angular/core';
 import {AppHttpClient} from "vebto-client/core/http/app-http-client.service";
 import {Observable} from "rxjs/Observable";
 import {Project} from "../../../types/models/Project";
-import {Page} from "vebto-client/core/types/models/Page";
-import {BuilderPage, BuilderProject} from "../builder-types";
+import {BuilderProject} from "../builder-types";
 
 @Injectable()
 export class Projects {
@@ -44,8 +43,8 @@ export class Projects {
     /**
      * Delete project matching specified id.
      */
-    public delete(id: number): Observable<any> {
-        return this.http.delete('projects/'+id);
+    public delete(params: {ids: number[]}): Observable<any> {
+        return this.http.delete('projects', params);
     }
 
     /**

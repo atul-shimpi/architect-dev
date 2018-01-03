@@ -128,17 +128,19 @@ class ProjectRepository
     {
         $projectPath = $this->getProjectPath($project);
 
-        $this->updatePages($project, $data['pages']);
+        if (isset($data['pages'])) {
+            $this->updatePages($project, $data['pages']);
+        }
 
-        if (Arr::get($data, 'template') !== $project->template) {
+        if (Arr::get($data, 'template', $project->template) !== $project->template) {
             $this->updateTemplate($project, $data['template']);
         }
 
-        if (Arr::get($data, 'framework') !== $project->framework) {
+        if (Arr::get($data, 'framework', $project->framework) !== $project->framework) {
             $this->applyFramework($projectPath, $data['framework']);
         }
 
-        if (Arr::get($data, 'theme') !== $project->theme) {
+        if (Arr::get($data, 'theme', $project->theme) !== $project->theme) {
             $this->applyTheme($projectPath, $data['theme']);
         }
 
@@ -147,15 +149,21 @@ class ProjectRepository
         }
 
         //custom css
-        $this->storage->put("$projectPath/css/styles.css", $data['css']);
+        if (isset($data['css'])) {
+            $this->storage->put("$projectPath/css/styles.css", $data['css']);
+        }
 
         //custom js
-        $this->storage->put("$projectPath/js/scripts.js", $data['js']);
+        if (isset($data['js'])) {
+            $this->storage->put("$projectPath/js/scripts.js", $data['js']);
+        }
 
         $project->fill([
-            'theme' => Arr::get($data, 'theme'),
-            'template' => Arr::get($data, 'template'),
-            'framework' => Arr::get($data, 'framework')
+            'name' => Arr::get($data, 'name', $project->name),
+            'theme' => Arr::get($data, 'theme', $project->theme),
+            'template' => Arr::get($data, 'template', $project->template),
+            'published' => Arr::get($data, 'published', $project->published),
+            'framework' => Arr::get($data, 'framework', $project->framework),
         ])->save();
     }
 
@@ -187,6 +195,9 @@ class ProjectRepository
         //custom js
         $this->storage->put("$projectPath/js/scripts.js", '');
 
+        //custom elements css
+        $this->addCustomElementCss($projectPath, '');
+
         //empty theme
         $this->applyTheme($projectPath, null);
 
@@ -196,7 +207,9 @@ class ProjectRepository
         }
 
         //create pages
-        $this->updatePages($project, $data['pages']);
+        if (isset($data['pages'])) {
+            $this->updatePages($project, $data['pages']);
+        }
 
         //attach to user
         $project->users()->attach(Auth::user()->id);
@@ -303,28 +316,32 @@ class ProjectRepository
         $template = $this->templateLoader->load($templateName);
 
         //delete old images
-        $paths = Finder::create()->ignoreDotFiles(true)->in("$oldTemplatePath/images");
+        if ($this->storage->exists("$oldTemplatePath/images")) {
+            $paths = Finder::create()->ignoreDotFiles(true)->in("$oldTemplatePath/images");
 
-        collect($paths)->each(function (SplFileInfo $file) use($projectPath) {
-            $path = "$projectPath/images/".$file->getBasename();
+            collect($paths)->each(function (SplFileInfo $file) use($projectPath) {
+                $path = "$projectPath/images/".$file->getBasename();
 
-            if ( ! $this->storage->exists($path)) return;
+                if ( ! $this->storage->exists($path)) return;
 
-            if ($file->isDir()) {
-                $this->storage->deleteDirectory($path);
-            } else {
-                $this->storage->delete($path);
-            }
-        });
+                if ($file->isDir()) {
+                    $this->storage->deleteDirectory($path);
+                } else {
+                    $this->storage->delete($path);
+                }
+            });
+        }
 
         //delete old libraries
-        collect($template['config']['libraries'])->each(function($library) use($projectPath) {
-            $name = strtolower(kebab_case($library));
+        if (isset($template['config']['libraries'])) {
+            collect($template['config']['libraries'])->each(function($library) use($projectPath) {
+                $name = strtolower(kebab_case($library));
 
-            if ($this->storage->exists("$projectPath/js/$name.js")) {
-                $this->storage->delete("$projectPath/js/$name.js");
-            }
-        });
+                if ($this->storage->exists("$projectPath/js/$name.js")) {
+                    $this->storage->delete("$projectPath/js/$name.js");
+                }
+            });
+        }
 
         //apply new template
         $this->applyTemplate($template, $projectPath);
@@ -334,46 +351,32 @@ class ProjectRepository
     {
         $templateName = strtolower(kebab_case($templateData['name']));
 
-        $this->copyImages($templateName, $projectPath);
+        //copy template files recursively
+        foreach ($this->storage->allFiles("templates/$templateName") as $path) {
+            $innerPath = str_replace("templates/$templateName", $projectPath, $path);
+
+            if ($this->storage->exists($innerPath)) {
+                $this->storage->delete($innerPath);
+            }
+
+            $this->storage->copy($path, $innerPath);
+        }
 
         //copy template css and js
         $this->storage->put("$projectPath/css/template.css", $templateData['css']);
         $this->storage->put("$projectPath/js/template.js", $templateData['js']);
 
         //libraries
-        collect($templateData['config']['libraries'])->each(function($library) use($projectPath) {
-            $name = strtolower(kebab_case($library));
-            $content = File::get(resource_path("builder/js/libraries/$name.js"));
-            $this->storage->put("$projectPath/js/$name.js", $content);
-        });
+        if (isset($templateData['config']['libraries'])) {
+            collect($templateData['config']['libraries'])->each(function($library) use($projectPath) {
+                $name = strtolower(kebab_case($library));
+                $content = File::get(resource_path("builder/js/libraries/$name.js"));
+                $this->storage->put("$projectPath/js/$name.js", $content);
+            });
+        }
 
         //thumbnail
         $this->storage->put("$projectPath/thumbnail.png", File::get($templateData['thumbnail']));
-    }
-
-    /**
-     * @param string $templateName
-     * @param $projectPath
-     * @param null $imagesPath
-     */
-    public function copyImages($templateName, $projectPath, $imagesPath = null)
-    {
-        $templatePath = "$this->templatesPath/$templateName";
-
-        if ( ! $imagesPath) {
-            $imagesPath = "$templatePath/images";
-        }
-
-        $files = Finder::create()->ignoreDotFiles(true)->in($imagesPath);
-
-        collect($files)->each(function (SplFileInfo $file) use ($projectPath, $templatePath, $templateName) {
-            if ($file->isFile()) {
-                $imagePath = str_replace($templatePath.'/', '', $file->getPathname());
-                $this->storage->put("$projectPath/$imagePath", File::get($file->getRealPath()));
-            } else if ($file->isDir()) {
-                $this->copyImages($templateName, $projectPath, $file->getRealPath());
-            }
-        });
     }
 
     /**
@@ -408,7 +411,7 @@ class ProjectRepository
         }
 
         //if this custom element css is already added, bail
-        if (str_contains($contents, $customElementCss)) return;
+        if ($contents && str_contains($contents, $customElementCss)) return;
 
         $contents = "$contents\n$customElementCss";
 

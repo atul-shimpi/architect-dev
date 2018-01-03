@@ -68,6 +68,7 @@ class ConvertLegacyTemplates extends Command
 
             //convert config file from php to json
             $config = \File::getRequire("$templatePath/config.php");
+            $config['framework'] = 'bootstrap-3';
             $json = json_encode($config, JSON_PRETTY_PRINT);
             File::put("$templatePath/config.json", $json);
             File::delete("$templatePath/config.php");

@@ -60,7 +60,7 @@ export class PageDocument {
         });
 
         this.addBaseElement();
-        this.useFramework('bootstrap-3');
+        this.useFramework(template.config.framework);
         this.addIconsLink();
 
         //theme
@@ -121,6 +121,7 @@ export class PageDocument {
      * Add needed links and scripts of specified css framework to document.
      */
     protected useFramework(name: string) {
+        if ( ! name || name === 'none') return;
         this.createLink('link', 'css/framework.css', 'framework-css');
         this.createLink('script', 'js/jquery.min.js', 'jquery');
         this.createLink('script', 'js/framework.js', 'framework-js');

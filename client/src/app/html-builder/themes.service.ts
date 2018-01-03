@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
-import {AppHttpClient} from "vebto-client/core/http/app-http-client.service";
 import {Observable} from "rxjs/Observable";
 import {Theme} from "../../types/models/Theme";
+import {HttpCacheClient} from "../../../node_modules/vebto-client/core";
 
 @Injectable()
 export class Themes {
@@ -9,7 +9,7 @@ export class Themes {
     /**
      * Themes API service constructor.
      */
-    constructor(private http: AppHttpClient) {}
+    constructor(private http: HttpCacheClient) {}
 
     /**
      * Get all available themes.

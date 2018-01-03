@@ -11,6 +11,7 @@ export const appConfig = {
     admin: {
         pages: [
             {name: 'templates', icon: 'web-design-custom', route: 'templates', permission: 'templates.view'},
+            {name: 'projects', icon: 'dashboard', route: 'projects', permission: 'projects.view'},
         ],
         appearance: {
             defaultRoute: 'dashboard',

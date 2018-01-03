@@ -39,18 +39,6 @@ export class TemplatesComponent implements OnInit {
     }
 
     /**
-     * Delete currently selected templates.
-     */
-    public deleteSelectedTemplates() {
-        const ids = this.dataSource.selectedRows.selected.map(template => template.name);
-
-        this.templates.delete(ids).subscribe(() => {
-            this.paginator.refresh();
-            this.dataSource.selectedRows.clear();
-        });
-    }
-
-    /**
      * Ask user to confirm deletion of selected templates
      * and delete selected templates if user confirms.
      */
@@ -62,6 +50,18 @@ export class TemplatesComponent implements OnInit {
         }).afterClosed().subscribe(confirmed => {
             if ( ! confirmed) return;
             this.deleteSelectedTemplates();
+        });
+    }
+
+    /**
+     * Delete currently selected templates.
+     */
+    public deleteSelectedTemplates() {
+        const ids = this.dataSource.selectedRows.selected.map(template => template.name);
+
+        this.templates.delete(ids).subscribe(() => {
+            this.paginator.refresh();
+            this.dataSource.selectedRows.clear();
         });
     }
 
