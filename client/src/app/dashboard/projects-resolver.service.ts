@@ -3,9 +3,10 @@ import {Resolve, RouterStateSnapshot, ActivatedRouteSnapshot, Router} from '@ang
 import {Project} from "../../types/models/Project";
 import {Projects} from "../html-builder/projects/projects.service";
 import {CurrentUser} from "vebto-client/auth/current-user";
+import {PaginationResponse} from "../../../node_modules/vebto-client/core/types/pagination-response";
 
 @Injectable()
-export class ProjectsResolver implements Resolve<{projects: Project[]}> {
+export class ProjectsResolver implements Resolve<PaginationResponse<Project>> {
 
     constructor(
         private router: Router,
@@ -13,7 +14,7 @@ export class ProjectsResolver implements Resolve<{projects: Project[]}> {
         private currentUser: CurrentUser,
     ) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<{projects: Project[]}> {
-        return this.projects.all({user_id: this.currentUser.get('id')}).toPromise();
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<PaginationResponse<Project>> {
+        return this.projects.all({user_id: this.currentUser.get('id'), per_page: 20}).toPromise();
     }
 }

@@ -73,7 +73,7 @@ export class ImageBackgroundPanelComponent implements OnInit {
      * Get absolute url for specified texture image.
      */
     public getTextureUrl(index: number): string {
-        return this.settings.getBaseUrl(true)+'assets/images/textures/'+index+'.png';
+        return this.settings.getAssetUrl()+'images/textures/'+index+'.png';
     }
 
     /**

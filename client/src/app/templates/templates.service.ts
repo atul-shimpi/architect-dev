@@ -15,7 +15,7 @@ export class Templates {
     /**
      * Get all available templates.
      */
-    public all(params: object): Observable<PaginationResponse<BuilderTemplate>> {
+    public all(params: object = {}): Observable<PaginationResponse<BuilderTemplate>> {
         return this.http.get('templates', params);
     }
 

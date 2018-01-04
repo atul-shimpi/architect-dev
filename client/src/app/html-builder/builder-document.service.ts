@@ -202,7 +202,7 @@ export class BuilderDocument {
      * Add html builder iframe css to the document.
      */
     private addIframeCss() {
-        const url = this.settings.getBaseUrl(true) + 'assets/css/iframe.css';
+        const url = this.settings.getAssetUrl() + 'css/iframe.css';
         const link = DomHelpers.createLink(url, 'preview-css');
         this.document.head.appendChild(link);
     }

@@ -187,7 +187,7 @@ class ProjectRepository
         $this->applyFramework($projectPath, $project->framework);
 
         //thumbnail
-        $this->storage->put("$projectPath/thumbnail.png", File::get(public_path('assets/images/default_project_thumbnail.png')));
+        $this->storage->put("$projectPath/thumbnail.png", File::get(public_path(TemplateLoader::DEFAULT_THUMBNAIL)));
 
         //custom css
         $this->storage->put("$projectPath/css/styles.css", '');

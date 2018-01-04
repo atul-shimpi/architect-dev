@@ -56,6 +56,14 @@ dashboard {
     height: calc(100% - 233px);
   }
 
+  .ad-host-top {
+    margin-top: 35px;
+  }
+
+  .ad-host-bottom {
+    margin-bottom: 35px;
+  }
+
   .projects {
     display: grid;
     grid-template-columns: 1fr;

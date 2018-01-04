@@ -33,8 +33,10 @@
 </div>
 
 <div class="scroll-container">
+    <ad-host [slot]="siteConfig.get().admin.ads[0].slot" class="ad-host-top"></ad-host>
+
     <div class="projects container">
-        <div class="project" *ngFor="let project of projects" >
+        <div class="project" *ngFor="let project of projects">
             <div class="header">
                 <a [href]="getProjectUrl(project)" target="_blank" trans>View Site</a>
             </div>
@@ -52,4 +54,6 @@
             </div>
         </div>
     </div>
+
+    <ad-host [slot]="siteConfig.get().admin.ads[1].slot" class="ad-host-bottom"></ad-host>
 </div>

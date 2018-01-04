@@ -7,15 +7,23 @@ new-project-page {
   
   .content  {
     height: calc(100% - 70px);
+    overflow: auto;
 
     > .container {
-      height: 100%;
       display: flex;
       margin-top: 60px;
 
       @media only screen and (max-width: $tablet) {
         display: block;
       }
+    }
+
+    .ad-host-top {
+      margin-top: 60px;
+    }
+
+    .ad-host-bottom {
+      margin-bottom: 60px;
     }
   }
 
@@ -97,7 +105,6 @@ new-project-page {
 
   .templates {
     flex: 1 1 auto;
-    height: 100%;
 
     .grid-container {
       display: grid;

@@ -141,19 +141,12 @@ gulp.task('i18n-extract', function() {
 });
 
 gulp.task('dist', function() {
-    var files = [
-        './../server/public/*',
-        '!./../server/public/.htaccess',
-        '!./../server/public/index.php',
-        '!./../server/public/storage',
-        '!./../server/public/install_files'
-    ];
 
     //remove old dist files from laravel public folder
-    gulp.src(files, {read: false}).pipe(clean({force: true}));
+    gulp.src('./../server/public/client', {read: false}).pipe(clean({force: true}));
 
     //copy dist folder into laravel public folder
-    gulp.src(['./../dist/**/*', '!./../dist/index.html', '!./../dist/stats.json']).pipe(gulp.dest('./../server/public'));
+    gulp.src(['./../dist/**/*', '!./../dist/index.html', '!./../dist/stats.json']).pipe(gulp.dest('./../server/public/client'));
 
     var $ = cheerio.load(fs.readFileSync('./../dist/index.html', 'utf8'));
 
@@ -177,11 +170,13 @@ gulp.task('dist', function() {
     var cssSearch = /{{--angular styles begin--}}[\s\S]*{{--angular styles end--}}/;
     var cssReplaceStr = '{{--angular styles begin--}}' + "\n\t\t" + styles.join("\n\t\t") + "\n\t\t{{--angular styles end--}}";
 
+    var laravelViewPath = './../server/vendor/vebto-server/src/views/main.blade.php';
+
     //replace app stylesheet links and js script tags with new ones
-    var content = fs.readFileSync('./../server/resources/views/main.blade.php', 'utf8');
+    var content = fs.readFileSync(laravelViewPath, 'utf8');
     content = content.replace(jsSearch, jsReplaceStr).replace(cssSearch, cssReplaceStr);
 
-    fs.writeFileSync('./../server/resources/views/main.blade.php', content, 'utf8');
+    fs.writeFileSync(laravelViewPath, content, 'utf8');
 });
 
 //Compile svg icons into a single file

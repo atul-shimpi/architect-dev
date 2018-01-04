@@ -1,6 +1,9 @@
 <material-navbar menuPosition="dashboard"></material-navbar>
 
-<div class="content scroll-container" customScrollbar>
+<div class="content scroll-container">
+
+    <ad-host [slot]="siteConfig.get().admin.ads[0].slot" class="ad-host-top"></ad-host>
+
     <div class="container">
         <aside class="sidebar">
             <button mat-raised-button color="accent" class="blank-page-button" (click)="openNewProjectModal()" trans>Start with Blank Page</button>
@@ -37,4 +40,6 @@
             </div>
         </div>
     </div>
+
+    <ad-host [slot]="siteConfig.get().admin.ads[1].slot" class="ad-host-bottom"></ad-host>
 </div>

@@ -15,7 +15,7 @@ class TemplateLoader
      */
     private $storage;
 
-    const DEFAULT_THUMBNAIL = 'assets/images/default_project_thumbnail.png';
+    const DEFAULT_THUMBNAIL = 'client/assets/images/default_project_thumbnail.png';
 
     /**
      * TemplateLoader constructor.

@@ -13,6 +13,18 @@ export const appConfig = {
             {name: 'templates', icon: 'web-design-custom', route: 'templates', permission: 'templates.view'},
             {name: 'projects', icon: 'dashboard', route: 'projects', permission: 'projects.view'},
         ],
+        analytics: {
+          stats: [
+              {name: 'users', icon: 'group'},
+              {name: 'projects', icon: 'dashboard'},
+              {name: 'templates', icon: 'web-design-custom'},
+              {name: 'pages', icon: 'description'},
+          ]
+        },
+        ads: [
+            {name: 'Slot #1', slot: 'ad_slot_1', description: 'This will appear at the top of user dashboard.'},
+            {name: 'Slot #2', slot: 'ad_slot_2', description: 'This will appear at the bottom of user dashboard.'},
+        ],
         appearance: {
             defaultRoute: 'dashboard',
             navigationRoutes: [

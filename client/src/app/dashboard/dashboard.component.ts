@@ -8,6 +8,7 @@ import {Toast} from "vebto-client/core/ui/toast.service";
 import {Modal} from "vebto-client/core/ui/modal.service";
 import {ConfirmModalComponent} from "vebto-client/core/ui/confirm-modal/confirm-modal.component";
 import {ProjectBaseUrl} from "../html-builder/projects/project-base-url.service";
+import {VebtoConfig} from "../../../node_modules/vebto-client/core/vebto-config.service";
 
 @Component({
     selector: 'dashboard',
@@ -37,11 +38,12 @@ export class DashboardComponent implements OnInit {
         private toast: Toast,
         private modal: Modal,
         private projectUrl: ProjectBaseUrl,
+        public siteConfig: VebtoConfig,
     ) {}
 
     ngOnInit() {
         this.route.data.subscribe(data => {
-            this.projects = data.projects;
+            this.projects = data.projects.data;
         });
     }
 
@@ -77,7 +79,7 @@ export class DashboardComponent implements OnInit {
         }).afterClosed().subscribe(confirmed => {
             if ( ! confirmed) return;
 
-            this.projectsApi.delete(project.id).subscribe(() => {
+            this.projectsApi.delete({ids: [project.id]}).subscribe(() => {
                 this.toast.open('Project deleted');
                 this.projects.splice(this.projects.indexOf(project), 1);
             });
