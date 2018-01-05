@@ -25,6 +25,7 @@ Route::group(['prefix' => 'secure'], function () {
 
     //projects
     Route::get('projects', 'ProjectsController@index');
+    Route::post('projects/{id}/publish', 'PublishProjectController@publish');
     Route::post('projects', 'ProjectsController@store');
     Route::get('projects/{id}', 'ProjectsController@show');
     Route::put('projects/{id}', 'ProjectsController@update');

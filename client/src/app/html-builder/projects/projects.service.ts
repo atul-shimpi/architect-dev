@@ -4,6 +4,7 @@ import {Observable} from "rxjs/Observable";
 import {Project} from "../../../types/models/Project";
 import {BuilderProject} from "../builder-types";
 import {PaginationResponse} from "../../../../node_modules/vebto-client/core/types/pagination-response";
+import {FtpDetails} from "../../shared/publish-project-modal/publish-project-modal.component";
 
 @Injectable()
 export class Projects {
@@ -53,5 +54,12 @@ export class Projects {
      */
     public generateThumbnail(projectId: number, dataUrl: string): Observable<any> {
         return this.http.post('projects/'+projectId+'/generate-thumbnail', {dataUrl});
+    }
+
+    /**
+     * Publish specified project to FTP.
+     */
+    public publish(projectId: number, params: FtpDetails): Observable<{project: Project}> {
+        return this.http.post('projects/'+projectId+'/publish', params);
     }
 }

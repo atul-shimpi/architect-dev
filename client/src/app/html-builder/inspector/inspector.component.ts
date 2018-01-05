@@ -8,6 +8,8 @@ import {Toast} from "vebto-client/core/ui/toast.service";
 import {Settings} from "vebto-client/core/services/settings.service";
 import {DeviceSwitcherComponent} from "./device-switcher/device-switcher.component";
 import {ContextBoxes} from "../live-preview/context-boxes.service";
+import {Modal} from "../../../../node_modules/vebto-client/core/ui/modal.service";
+import {PublishProjectModalComponent} from "../../shared/publish-project-modal/publish-project-modal.component";
 
 @Component({
     selector: 'inspector',
@@ -31,6 +33,7 @@ export class InspectorComponent implements OnInit {
         private el: ElementRef,
         private settings: Settings,
         private contextBoxes: ContextBoxes,
+        private modal: Modal,
     ) {}
 
     ngOnInit() {
@@ -56,6 +59,13 @@ export class InspectorComponent implements OnInit {
         this.activeProject.save().subscribe(() => {
             this.toast.open('Project saved');
         });
+    }
+
+    /**
+     * Open modal for publishing currently active project.
+     */
+    public openPublishProjectModal() {
+        this.modal.open(PublishProjectModalComponent, {project: this.activeProject.get().model});
     }
 
     /**

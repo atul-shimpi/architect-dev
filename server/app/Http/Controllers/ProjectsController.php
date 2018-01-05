@@ -99,6 +99,7 @@ class ProjectsController extends Controller {
             'framework' => 'nullable|string|min:1|max:255',
             'theme' => 'nullable|string|min:1|max:255',
             'custom_element_css' => 'nullable|string|min:1',
+            'published' => 'boolean',
             'pages' => 'array',
             'pages.*' => 'array',
         ]);
@@ -127,7 +128,8 @@ class ProjectsController extends Controller {
             'template.id' => 'integer',
             'template.css' => 'nullable|string|min:1',
             'template.js' => 'nullable|string|min:1',
-            'uuid' => 'required|string|size:36'
+            'uuid' => 'required|string|size:36',
+            'published' => 'boolean',
         ]);
 
         $project = $this->repository->create($this->request->all());

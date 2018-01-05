@@ -8,10 +8,12 @@ import {AuthModule} from "vebto-client/auth/auth.module";
 import {MaterialModule} from "./shared/material.module";
 import {DashboardModule} from "./dashboard/dashboard/dashboard.module";
 import {AccountSettingsModule} from "vebto-client/account-settings/account-settings.module";
+import {PublishProjectModalComponent} from "./shared/publish-project-modal/publish-project-modal.component";
 
 @NgModule({
     declarations: [
         AppComponent,
+        PublishProjectModalComponent,
     ],
     imports: [
         BrowserModule,
@@ -22,6 +24,9 @@ import {AccountSettingsModule} from "vebto-client/account-settings/account-setti
         MaterialModule,
         DashboardModule,
         AccountSettingsModule,
+    ],
+    entryComponents: [
+        PublishProjectModalComponent,
     ],
     bootstrap: [AppComponent]
 })
