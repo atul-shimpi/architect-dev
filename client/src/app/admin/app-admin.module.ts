@@ -6,6 +6,7 @@ import {AdminModule} from "../../../node_modules/vebto-client/admin/admin.module
 import { CrupdateTemplateModalComponent } from './templates/crupdate-template-modal/crupdate-template-modal.component';
 import { ProjectsComponent } from './projects/projects.component';
 import { CrupdateProjectModalComponent } from './projects/crupdate-project-modal/crupdate-project-modal.component';
+import {BuilderSettingsComponent} from "./settings/builder/builder-settings.component";
 
 @NgModule({
     imports: [
@@ -18,6 +19,7 @@ import { CrupdateProjectModalComponent } from './projects/crupdate-project-modal
         CrupdateTemplateModalComponent,
         ProjectsComponent,
         CrupdateProjectModalComponent,
+        BuilderSettingsComponent,
     ],
     entryComponents: [
         CrupdateTemplateModalComponent,

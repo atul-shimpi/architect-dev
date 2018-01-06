@@ -13,6 +13,9 @@ export const appConfig = {
             {name: 'templates', icon: 'web-design-custom', route: 'templates', permission: 'templates.view'},
             {name: 'projects', icon: 'dashboard', route: 'projects', permission: 'projects.view'},
         ],
+        settingsPages: [
+            {name: 'builder', route: 'builder'},
+        ],
         analytics: {
           stats: [
               {name: 'users', icon: 'group'},

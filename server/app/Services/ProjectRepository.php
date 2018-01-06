@@ -95,7 +95,7 @@ class ProjectRepository
      */
     public function getProjectPath(Project $project)
     {
-        return 'projects/' . Auth::user()->id . '/' . $project->uuid;
+        return 'projects/' . $project->users->first()->id . '/' . $project->uuid;
     }
 
     /**

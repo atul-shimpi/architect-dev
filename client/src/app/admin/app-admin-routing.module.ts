@@ -5,6 +5,10 @@ import {AuthGuard} from "../../../node_modules/vebto-client/guards/auth-guard.se
 import {CheckPermissionsGuard} from "../../../node_modules/vebto-client/guards/check-permissions-guard.service";
 import {AdminComponent} from "../../../node_modules/vebto-client/admin/admin.component";
 import {ProjectsComponent} from "./projects/projects.component";
+import {BuilderSettingsComponent} from "./settings/builder/builder-settings.component";
+import {SettingsComponent} from "../../../node_modules/vebto-client/admin/settings/settings.component";
+import {SettingsResolve} from "../../../node_modules/vebto-client/admin/settings/settings-resolve.service";
+import {SettingsRoutes} from "../../../node_modules/vebto-client/admin/settings/settings-routing.module";
 
 const routes: Routes = [
     {
@@ -22,6 +26,18 @@ const routes: Routes = [
                 path: 'projects',
                 component: ProjectsComponent,
                 data: {permissions: ['projects.view']}
+            },
+            {
+                path: 'settings',
+                component: SettingsComponent,
+                resolve: {settings: SettingsResolve},
+                data: {permissions: ['settings.view']},
+                children: SettingsRoutes.concat([
+                    {
+                        path: 'builder',
+                        component: BuilderSettingsComponent,
+                    },
+                ]),
             },
         ]
     }

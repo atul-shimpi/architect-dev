@@ -8,7 +8,7 @@
 <form (ngSubmit)="confirm()" ngNativeValidate>
 
     <div class="project-url">
-        <div class="url">{{getProjectUrl()}}</div>
+        <a [href]="getProjectUrl()" target="_blank">{{getProjectUrl()}}</a>
         <mat-slide-toggle name="ssl" [checked]="data.project.published" [disabled]="loading" (change)="toggleProjectState($event)">Public</mat-slide-toggle>
     </div>
 

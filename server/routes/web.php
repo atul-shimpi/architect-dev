@@ -42,6 +42,10 @@ Route::group(['prefix' => 'secure'], function () {
     Route::get('elements/custom', 'ElementsController@custom');
 });
 
-Route::get('sites/{name}/{page?}', 'UserSiteController@show');
+Route::domain('{name}.{domain}.{tls}')->group(function () {
+    Route::get('/{page?}', 'UserSiteController@show')->name('user-site-subdomain');
+});
+
+Route::get('sites/{name}/{page?}', 'UserSiteController@show')->name('user-site-regular');
 
 Route::get('{all}', '\Vebto\Bootstrap\HomeController@index')->where('all', '.*');

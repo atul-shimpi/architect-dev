@@ -6,11 +6,11 @@ publish-project-modal {
   .project-url {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 40px;
     padding-bottom: 15px;
     border-bottom: 1px solid $site-border-color-100;
 
-    > .url {
+    > a {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
