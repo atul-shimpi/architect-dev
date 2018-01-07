@@ -4,7 +4,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 import {Templates} from "../../../templates/templates.service";
 import {PageDocument} from "../../../html-builder/page-document";
 import {utils} from "vebto-client/core/services/utils";
-import {ProjectBaseUrl} from "../../../html-builder/projects/project-base-url.service";
+import {ProjectUrl} from "../../../html-builder/projects/project-url.service";
 import {BuilderTemplate} from "../../../html-builder/builder-types";
 
 @Component({
@@ -40,10 +40,10 @@ export class NewProjectModalComponent {
         @Inject(MAT_DIALOG_DATA) public data: {templateName?: string},
         private projects: Projects,
         private templates: Templates,
-        private projectUrl: ProjectBaseUrl,
+        private projectUrl: ProjectUrl,
     ) {
         this.newProject.uuid = utils.randomString(36);
-        this.pageDocument.setBaseUrl(this.projectUrl.generate(this.newProject.uuid));
+        this.pageDocument.setBaseUrl(this.projectUrl.getBaseUrl(this.newProject.uuid));
     }
 
     /**

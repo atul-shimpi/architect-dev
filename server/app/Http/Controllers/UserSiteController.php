@@ -7,6 +7,7 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Http\Request;
 use Vebto\Bootstrap\Controller;
 use App\Services\ProjectRepository;
+use Vebto\Settings\Settings;
 
 class UserSiteController extends Controller
 {
@@ -19,17 +20,26 @@ class UserSiteController extends Controller
      * @var ProjectRepository
      */
     private $projectRepository;
+    /**
+     * @var Settings
+     */
+    private $settings;
 
     /**
      * UserSiteController constructor.
      *
      * @param Project $project
      * @param ProjectRepository $projectRepository
+     * @param Settings $settings
      */
-    public function __construct(Project $project, ProjectRepository $projectRepository)
+    public function __construct(Project $project, ProjectRepository $projectRepository, Settings $settings)
     {
         $this->project = $project;
         $this->projectRepository = $projectRepository;
+        $this->settings = $settings;
+
+        //user site routing is disabled by admin
+        if ($this->settings->get('builder.routing_type') === 'none') abort(404);
     }
 
     /**

@@ -7,24 +7,29 @@ import {Projects} from "../html-builder/projects/projects.service";
 import {Toast} from "vebto-client/core/ui/toast.service";
 import {Modal} from "vebto-client/core/ui/modal.service";
 import {ConfirmModalComponent} from "vebto-client/core/ui/confirm-modal/confirm-modal.component";
-import {ProjectBaseUrl} from "../html-builder/projects/project-base-url.service";
+import {ProjectUrl} from "../html-builder/projects/project-url.service";
 import {VebtoConfig} from "../../../node_modules/vebto-client/core/vebto-config.service";
+import {PublishProjectModalComponent} from "../shared/publish-project-modal/publish-project-modal.component";
+import {FormControl, FormGroup} from "@angular/forms";
+import {UrlAwarePaginator} from "../../../node_modules/vebto-client/admin/pagination/url-aware-paginator.service";
+import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 
 @Component({
     selector: 'dashboard',
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss'],
+    providers: [UrlAwarePaginator],
     encapsulation: ViewEncapsulation.None
 })
 export class DashboardComponent implements OnInit {
 
     public projects: Project[] = [];
 
-    public models = {
-        query: '',
-        order: 'newest',
-        status: 'all',
-    };
+    public models = new FormGroup<ProjectFilters>({
+        query:  new FormControl(''),
+        order: new FormControl('created_at|desc'),
+        published: new FormControl('all')
+    });
 
     /**
      * DashboardComponent Constructor.
@@ -37,13 +42,30 @@ export class DashboardComponent implements OnInit {
         private projectsApi: Projects,
         private toast: Toast,
         private modal: Modal,
-        private projectUrl: ProjectBaseUrl,
+        private projectUrl: ProjectUrl,
         public siteConfig: VebtoConfig,
+        private paginator: UrlAwarePaginator,
     ) {}
 
     ngOnInit() {
         this.route.data.subscribe(data => {
             this.projects = data.projects.data;
+        });
+
+        this.bindToProjectFilters();
+    }
+
+    /**
+     * Bind to page header filters and refresh projects on change.
+     */
+    private bindToProjectFilters() {
+        this.models.valueChanges.pipe(debounceTime(250), distinctUntilChanged())
+        .subscribe((params: ProjectFilters) => {
+            const merged = Object.assign({user_id: this.currentUser.get('id'), per_page: 20}, params);
+
+            this.paginator.paginate('projects', merged).subscribe(response => {
+                this.projects = response.data;
+            });
         });
     }
 
@@ -58,14 +80,25 @@ export class DashboardComponent implements OnInit {
      * Get absolute url for specified project's thumbnail image.
      */
     public getProjectImage(project: Project) {
-        return this.projectUrl.generate(project.uuid)+'thumbnail.png';
+        return this.projectUrl.getBaseUrl(project.uuid)+'thumbnail.png';
     }
 
     /**
      * Get absolute url for specified project site.
      */
     public getProjectUrl(project: Project) {
-        return this.settings.getBaseUrl(true)+'sites/'+project.name;
+        return this.projectUrl.getSiteUrl(project);
+    }
+
+    /**
+     * Open modal for publish specified project.
+     */
+    public openPublishProjectModal(project: Project) {
+        this.modal.open(PublishProjectModalComponent, {project}).afterClosed().subscribe(project => {
+            if ( ! project) return;
+            const i = this.projects.findIndex(curr => curr.id === project.model.id);
+            this.projects[i] = project.model;
+        });
     }
 
     /**
@@ -85,4 +118,10 @@ export class DashboardComponent implements OnInit {
             });
         });
     }
+}
+
+declare interface ProjectFilters {
+    order: string,
+    status: string,
+    query: string;
 }

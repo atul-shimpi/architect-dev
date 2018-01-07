@@ -8,7 +8,8 @@ import {ProjectsComponent} from "./projects/projects.component";
 import {BuilderSettingsComponent} from "./settings/builder/builder-settings.component";
 import {SettingsComponent} from "../../../node_modules/vebto-client/admin/settings/settings.component";
 import {SettingsResolve} from "../../../node_modules/vebto-client/admin/settings/settings-resolve.service";
-import {SettingsRoutes} from "../../../node_modules/vebto-client/admin/settings/settings-routing.module";
+import {vebtoSettingsRoutes} from "../../../node_modules/vebto-client/admin/settings/settings-routing.module";
+import {vebtoAdminRoutes} from "../../../node_modules/vebto-client/admin/admin-routing.module";
 
 const routes: Routes = [
     {
@@ -32,13 +33,15 @@ const routes: Routes = [
                 component: SettingsComponent,
                 resolve: {settings: SettingsResolve},
                 data: {permissions: ['settings.view']},
-                children: SettingsRoutes.concat([
+                children: [
                     {
                         path: 'builder',
                         component: BuilderSettingsComponent,
                     },
-                ]),
+                    ...vebtoSettingsRoutes,
+                ],
             },
+            ...vebtoAdminRoutes,
         ]
     }
 ];

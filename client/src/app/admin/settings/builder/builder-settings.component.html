@@ -1,6 +1,6 @@
 <div class="header">
-    <div class="title" trans>Cache</div>
-    <div class="subtitle" trans>Configure cache time, method and related 3rd party integrations.</div>
+    <div class="title" trans>Site Builder</div>
+    <div class="subtitle" trans>Configure the site builder and user dashboard settings.</div>
 </div>
 
 <form class="body many-inputs" (submit)="saveSettings()" ngNativeValidate>
@@ -11,10 +11,12 @@
             <option value="subdomain">Subdomain</option>
             <option value="regular">Regular</option>
         </select>
-        <p trans>Via what url user created sites should be accessible.</p>
-        <p *ngIf="state.client['builder.routing_type'] === 'none'" trans>None: User sites will not be accessible at all.</p>
-        <p *ngIf="state.client['builder.routing_type'] === 'subdomain'" trans>Subdomain: project-name.your-site.com</p>
-        <p *ngIf="state.client['builder.routing_type'] === 'regular'" trans>Regular: your-site.com/sites/project-name</p>
+        <p>
+            <span trans>Via what url user created sites should be accessible. </span>
+            <span *ngIf="state.client['builder.routing_type'] === 'none'" trans>None: User sites will not be accessible at all.</span>
+            <span *ngIf="state.client['builder.routing_type'] === 'subdomain'" trans>Subdomain: https://project-name.your-site.com</span>
+            <span *ngIf="state.client['builder.routing_type'] === 'regular'" trans>Regular: https://your-site.com/sites/project-name</span>
+        </p>
     </div>
 
     <button mat-raised-button color="accent" class="button primary update-button" type="submit" trans>Update</button>

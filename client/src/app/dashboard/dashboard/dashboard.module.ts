@@ -6,7 +6,7 @@ import {DashboardComponent} from "../dashboard.component";
 import {MaterialModule} from "../../shared/material.module";
 import {TemplatesResolver} from "../new-project-page/templates-resolver.service";
 import {Templates} from "../../templates/templates.service";
-import {ProjectBaseUrl} from "../../html-builder/projects/project-base-url.service";
+import {ProjectUrl} from "../../html-builder/projects/project-url.service";
 import {Projects} from "../../html-builder/projects/projects.service";
 import {ProjectsResolver} from "../projects-resolver.service";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -35,7 +35,7 @@ import {DashboardRoutingModule} from "../dashboard-routing.module";
         Templates,
         ProjectsResolver,
         TemplatesResolver,
-        ProjectBaseUrl,
+        ProjectUrl,
     ],
 })
 export class DashboardModule {

@@ -1,5 +1,5 @@
 import {Component, ViewEncapsulation} from "@angular/core";
-import {SettingsPanelComponent} from "../../../html-builder/inspector/settings-panel/settings-panel.component";
+import {SettingsPanelComponent} from "vebto-client/admin/settings/settings-panel.component";
 
 @Component({
     selector: 'builder-settings',

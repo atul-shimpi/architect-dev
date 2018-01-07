@@ -2,31 +2,31 @@
     <material-navbar menuPosition="dashboard"></material-navbar>
 
     <div class="header-body container">
-        <div class="inputs">
+        <form class="inputs" [formGroup]="models">
             <div class="input-container">
                 <label for="search-query" trans>Search</label>
-                <input type="search" name="search-query" id="search-query" [(ngModel)]="models.query">
+                <input type="search" formControlName="query" id="search-query">
             </div>
 
             <div class="input-container">
                 <label for="project-status" trans>Status</label>
-                <select name="project-status" id="project-status" [(ngModel)]="models.status">
+                <select formControlName="published" id="project-status">
                     <option value="all" trans>All</option>
-                    <option value="published" trans>Published</option>
-                    <option value="unpublished" trans>Unpublished</option>
+                    <option [value]="1" trans>Published</option>
+                    <option [value]="0" trans>Unpublished</option>
                 </select>
             </div>
 
             <div class="input-container">
                 <label for="project-order" trans>Sort</label>
-                <select name="project-order" id="project-order" [(ngModel)]="models.order">
-                    <option value="newest" trans>Newest</option>
-                    <option value="oldest" trans>Oldest</option>
-                    <option value="a-z" trans>A-Z</option>
-                    <option value="z-a" trans>Z-A</option>
+                <select formControlName="order" id="project-order">
+                    <option value="created_at|desc" trans>Newest</option>
+                    <option value="created_at|asc" trans>Oldest</option>
+                    <option value="name|desc" trans>A-Z</option>
+                    <option value="name|asc" trans>Z-A</option>
                 </select>
             </div>
-        </div>
+        </form>
 
         <a class="new-project-button" mat-raised-button color="accent" routerLink="/dashboard/projects/new" trans>New Project</a>
     </div>
@@ -48,7 +48,7 @@
                 </div>
                 <div class="actions">
                     <button mat-icon-button color="accent" (click)="openBuilder(project)" matTooltip="Open in builder"><svg-icon name="brush"></svg-icon></button>
-                    <button mat-icon-button color="accent"><svg-icon name="publish" matTooltip="Publish"></svg-icon></button>
+                    <button mat-icon-button color="accent" (click)="openPublishProjectModal(project)"><svg-icon name="publish" matTooltip="Publish"></svg-icon></button>
                     <button mat-icon-button color="accent" (click)="deleteProjectWithConfirmation(project);"><svg-icon name="delete" matTooltip="Delete"></svg-icon></button>
                 </div>
             </div>

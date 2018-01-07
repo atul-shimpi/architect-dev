@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Settings} from "vebto-client/core/services/settings.service";
 import {BuilderDocument} from "../builder-document.service";
-import {ProjectBaseUrl} from "./project-base-url.service";
+import {ProjectUrl} from "./project-url.service";
 import {BuilderPage, BuilderProject, BuilderTemplate} from "../builder-types";
 import {Projects} from "./projects.service";
 import {Observable} from "rxjs/Observable";
@@ -47,7 +47,7 @@ export class ActiveProject {
     constructor(
         private settings: Settings,
         private builderDocument: BuilderDocument,
-        private projectUrl: ProjectBaseUrl,
+        private projectUrl: ProjectUrl,
         private projects: Projects,
         private templates: Templates,
         private toast: Toast,
@@ -220,7 +220,7 @@ export class ActiveProject {
      * Get project's base static files url.
      */
     public getBaseUrl(relative: boolean = false) {
-        return this.projectUrl.generate(this.project.model.uuid, relative);
+        return this.projectUrl.getBaseUrl(this.project.model.uuid, relative);
     }
 
     /**

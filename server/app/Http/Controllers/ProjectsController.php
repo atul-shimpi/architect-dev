@@ -5,6 +5,7 @@ use App\Services\ProjectRepository;
 use Illuminate\Http\Request;
 use Vebto\Bootstrap\Controller;
 use Illuminate\Database\Eloquent\Builder;
+use Vebto\Database\Paginator;
 
 class ProjectsController extends Controller {
 
@@ -42,22 +43,26 @@ class ProjectsController extends Controller {
     /**
      * Get all projects or projects belonging to specified user.
      *
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     * @return \Illuminate\Pagination\LengthAwarePaginator
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
 	public function index()
     {
         $this->authorize('index', [Project::class, $this->request->get('user_id')]);
 
-        $query = $this->project->with('pages');
+        $paginator = (new Paginator($this->project));
 
         if ($this->request->has('user_id')) {
-            $query->whereHas('users', function(Builder $q) {
+            $paginator->query()->whereHas('users', function(Builder $q) {
                 return $q->where('users.id', $this->request->get('user_id'));
             });
         }
 
-        return $query->orderBy('updated_at', 'desc')->paginate($this->request->get('per_page'));
+        if ($this->request->has('published') && $this->request->get('published') !== 'all') {
+            $paginator->query()->where('published', $this->request->get('published'));
+        }
+
+        return $paginator->paginate($this->request->all());
     }
 
     /**

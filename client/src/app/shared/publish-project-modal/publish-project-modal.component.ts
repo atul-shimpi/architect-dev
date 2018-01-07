@@ -2,9 +2,10 @@ import {Component, Inject, OnInit, ViewEncapsulation} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef, MatSlideToggleChange} from "@angular/material";
 import {NewProjectModalComponent} from "../../dashboard/new-project-page/new-project-modal/new-project-modal.component";
 import {Projects} from "../../html-builder/projects/projects.service";
-import {ProjectBaseUrl} from "../../html-builder/projects/project-base-url.service";
+import {ProjectUrl} from "../../html-builder/projects/project-url.service";
 import {Project} from "../../../types/models/Project";
 import {Settings, Toast} from "../../../../node_modules/vebto-client/core";
+import {Subscription} from "rxjs/Subscription";
 
 @Component({
     selector: 'publish-project-modal',
@@ -30,13 +31,19 @@ export class PublishProjectModalComponent implements OnInit {
     public loading = false;
 
     /**
+     * Subscription for project state toggle
+     * http request, if one is in progress.
+     */
+    private stateToggleRequest: Subscription;
+
+    /**
      * NewProjectModalComponent Constructor.
      */
     constructor(
         private dialogRef: MatDialogRef<NewProjectModalComponent>,
         @Inject(MAT_DIALOG_DATA) public data: {project: Project},
         private projects: Projects,
-        private projectUrl: ProjectBaseUrl,
+        private projectUrl: ProjectUrl,
         private settings: Settings,
         private toast: Toast,
     ) {}
@@ -61,24 +68,29 @@ export class PublishProjectModalComponent implements OnInit {
      * Close the modal.
      */
     public close() {
-        this.dialogRef.close();
+        this.dialogRef.close(this.data.project);
     }
 
     /**
      * Get absolute url for project site.
      */
     public getProjectUrl() {
-        return this.settings.getBaseUrl(true)+'sites/'+this.data.project.name;
+        return this.projectUrl.getSiteUrl(this.data.project);
     }
 
     /**
      * Toggle project "published" state.
      */
     public toggleProjectState(e: MatSlideToggleChange) {
-        this.loading = true;
-        this.projects.update(this.data.project.id, {public: e.checked}).finally(() => {
-            this.loading = false;
-        }).subscribe();
+        if (this.stateToggleRequest) {
+            this.stateToggleRequest.unsubscribe();
+            this.stateToggleRequest = null;
+        }
+
+        this.stateToggleRequest = this.projects
+            .update(this.data.project.id, {published: e.checked ? 1 : 0}).subscribe(response => {
+                this.data.project.published = response.project.model.published;
+            });
     }
 }
 

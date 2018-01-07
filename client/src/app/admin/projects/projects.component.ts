@@ -6,7 +6,7 @@ import {CurrentUser} from "../../../../node_modules/vebto-client/auth/current-us
 import {ConfirmModalComponent} from "../../../../node_modules/vebto-client/core/ui/confirm-modal/confirm-modal.component";
 import {MatPaginator, MatSort} from "@angular/material";
 import {Projects} from "../../html-builder/projects/projects.service";
-import {ProjectBaseUrl} from "../../html-builder/projects/project-base-url.service";
+import {ProjectUrl} from "../../html-builder/projects/project-url.service";
 import {CrupdateProjectModalComponent} from "./crupdate-project-modal/crupdate-project-modal.component";
 import {Project} from "../../../types/models/Project";
 
@@ -30,7 +30,7 @@ export class ProjectsComponent implements OnInit {
         public paginator: UrlAwarePaginator,
         private projects: Projects,
         private modal: Modal,
-        private projectUrl: ProjectBaseUrl,
+        private projectUrl: ProjectUrl,
         public currentUser: CurrentUser,
     ) {}
 
@@ -82,6 +82,6 @@ export class ProjectsComponent implements OnInit {
      * Get relative url for specified project's thumbnail.
      */
     public getProjectThumbnail(project: Project) {
-        return this.projectUrl.generate(project.uuid)+'thumbnail.png';
+        return this.projectUrl.getBaseUrl(project.uuid)+'thumbnail.png';
     }
 }
