@@ -25,7 +25,7 @@ export class DashboardComponent implements OnInit {
 
     public projects: Project[] = [];
 
-    public models = new FormGroup<ProjectFilters>({
+    public models = new FormGroup({
         query:  new FormControl(''),
         order: new FormControl('created_at|desc'),
         published: new FormControl('all')

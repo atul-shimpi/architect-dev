@@ -95,7 +95,7 @@ gulp.task('i18n-extract', function() {
     files.forEach(function(path) {
         var $ = cheerio.load(fs.readFileSync(path, 'utf8'));
 
-        $('[trans], [trans-placeholder], [trans-title], [itemsName], [tooltip]').each(function(i, el) {
+        $('[trans], [trans-placeholder], [trans-title], [itemsName], [tooltip], [matTooltip]').each(function(i, el) {
             var $el = $(el), text;
 
             //extract input placeholder attribute
@@ -116,6 +116,11 @@ gulp.task('i18n-extract', function() {
             //extract custom "tooltip" attribute
             else if ($el.attr('tooltip') && $el.attr('tooltip').length) {
                 text = $el.attr('tooltip');
+            }
+
+            //extract custom "matTooltip" attribute
+            else if ($el.attr('matTooltip') && $el.attr('matTooltip').length) {
+                text = $el.attr('matTooltip');
             }
 
             //extract node text content
