@@ -64,7 +64,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => env('APP_TIMEZONE', 'UTC'),
 
     /*
     |--------------------------------------------------------------------------
@@ -77,7 +77,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => env('APP_LOCALE', 'english'),
 
     /*
     |--------------------------------------------------------------------------
@@ -90,7 +90,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'en',
+    'fallback_locale' => null,
 
     /*
     |--------------------------------------------------------------------------
@@ -169,6 +169,8 @@ return [
         Laravel\Tinker\TinkerServiceProvider::class,
         Chumper\Zipper\ZipperServiceProvider::class,
         Vebto\VebtoServiceProvider::class,
+        Sentry\SentryLaravel\SentryLaravelServiceProvider::class,
+        Fideloper\Proxy\TrustedProxyServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -229,6 +231,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         'Zipper' => Chumper\Zipper\Zipper::class,
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+        'Sentry' => Sentry\SentryLaravel\SentryFacade::class,
     ],
 
 ];
