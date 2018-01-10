@@ -18,8 +18,11 @@
     "laravel/framework": "5.4.*",
     "laravel/socialite": "^3.0",
     "laravel/tinker": "~1.0",
+    "omnipay/paypal": "^2.6",
+    "omnipay/stripe": "^2.4",
     "pda/pheanstalk": "^3.1",
     "sentry/sentry-laravel": "^0.7.0",
+    "symfony/event-dispatcher": "^2.8",
     "vebto-server": "dev-master"
   },
   "require-dev": {

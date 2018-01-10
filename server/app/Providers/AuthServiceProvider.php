@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\BillingPlan;
 use App\BuilderPage;
+use App\Policies\BillingPlanPolicy;
 use App\Policies\BuilderPagePolicy;
 use App\Policies\ProjectPolicy;
 use App\Project;
@@ -20,6 +22,7 @@ class AuthServiceProvider extends ServiceProvider
         BuilderPage::class => BuilderPagePolicy::class,
         Project::class => ProjectPolicy::class,
         'Template' => 'App\Policies\TemplatePolicy',
+        BillingPlan::class => BillingPlanPolicy::class,
     ];
 
     /**

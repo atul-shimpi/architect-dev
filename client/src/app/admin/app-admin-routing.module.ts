@@ -10,6 +10,7 @@ import {SettingsComponent} from "../../../node_modules/vebto-client/admin/settin
 import {SettingsResolve} from "../../../node_modules/vebto-client/admin/settings/settings-resolve.service";
 import {vebtoSettingsRoutes} from "../../../node_modules/vebto-client/admin/settings/settings-routing.module";
 import {vebtoAdminRoutes} from "../../../node_modules/vebto-client/admin/admin-routing.module";
+import {PlansListComponent} from "./billing/plans/plans-list/plans-list.component";
 
 const routes: Routes = [
     {
@@ -42,6 +43,13 @@ const routes: Routes = [
                 ],
             },
             ...vebtoAdminRoutes,
+
+            //move billing routes to vebto-client admin module after they're done
+            {
+                path: 'plans',
+                component: PlansListComponent,
+                data: {permissions: ['plans.view']}
+            },
         ]
     }
 ];

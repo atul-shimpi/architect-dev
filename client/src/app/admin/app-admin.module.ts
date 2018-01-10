@@ -7,12 +7,16 @@ import { CrupdateTemplateModalComponent } from './templates/crupdate-template-mo
 import { ProjectsComponent } from './projects/projects.component';
 import { CrupdateProjectModalComponent } from './projects/crupdate-project-modal/crupdate-project-modal.component';
 import {BuilderSettingsComponent} from "./settings/builder/builder-settings.component";
+import {BillingModule} from "./billing/billing.module";
 
 @NgModule({
     imports: [
         CommonModule,
         AdminModule,
         AppAdminRoutingModule,
+
+        //import into vebto-client admin mode after billing is done
+        BillingModule,
     ],
     declarations: [
         TemplatesComponent,

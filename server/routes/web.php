@@ -40,6 +40,15 @@ Route::group(['prefix' => 'secure'], function () {
 
     //elements
     Route::get('elements/custom', 'ElementsController@custom');
+
+    //billing plans
+    Route::get('billing/plans', function() {
+        return App::call('App\Services\Billing\Plans\BillingPlansController@index');
+    });
+
+    Route::post('billing/plans', function() {
+        return App::call('App\Services\Billing\Plans\BillingPlansController@store');
+    });
 });
 
 Route::domain('{name}.{domain}.{tls}')->group(function () {

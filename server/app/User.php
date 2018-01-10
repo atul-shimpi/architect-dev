@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Laravel\Cashier\Billable;
 use Vebto\Auth\User as VebtoUser;
 
 /**
@@ -59,5 +60,5 @@ use Vebto\Auth\User as VebtoUser;
  */
 class User extends VebtoUser
 {
-
+    use Billable;
 }
