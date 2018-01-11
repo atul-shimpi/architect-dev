@@ -3,7 +3,6 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 import {Plans} from "../plans.service";
 import {Plan} from "../plan";
 import {Toast} from "vebto-client/core/ui/toast.service";
-import {utils} from "vebto-client/core/services/utils";
 
 @Component({
     selector: 'crupdate-plan-modal',
@@ -66,8 +65,7 @@ export class CrupdatePlanModalComponent implements OnInit {
         if (this.updating) {
             request = this.plans.update(this.data.plan.id, this.model);
         } else {
-            const model = Object.assign({}, this.model, {uuid: utils.randomString(36)});
-            request = this.plans.create(model);
+            request = this.plans.create(this.model);
         }
 
         request.subscribe(response => {
@@ -94,6 +92,9 @@ export class CrupdatePlanModalComponent implements OnInit {
      */
     private hydrateModel(plan: Plan) {
         this.model.name = plan.name;
+        this.model.amount = plan.amount;
+        this.model.currency = plan.currency;
+        this.model.interval = plan.interval;
     }
 
     /**

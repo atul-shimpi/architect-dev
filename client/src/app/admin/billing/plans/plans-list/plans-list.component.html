@@ -2,12 +2,12 @@
     <div class="admin-table-panel-header">
         <div class="header-inner default" *ngIf="dataSource.selectedRows.isEmpty()">
             <div class="left">
-                <button mat-raised-button color="accent" (click)="showCrupdatePlanModal()" *ngIf="currentUser.hasPermission('projects.create')" trans>Add</button>
+                <button mat-raised-button color="accent" (click)="showCrupdatePlanModal()" *ngIf="currentUser.hasPermission('plans.create')" trans>Add</button>
             </div>
 
             <div class="right">
                 <div class="input-container">
-                    <input type="text" class="search" placeholder="Search projects" trans-placeholder [formControl]="dataSource.searchQuery">
+                    <input type="text" class="search" placeholder="Search plans" trans-placeholder [formControl]="dataSource.searchQuery">
                     <svg-icon name="search"></svg-icon>
                 </div>
             </div>
@@ -16,7 +16,7 @@
         <div class="header-inner selected" *ngIf="dataSource.selectedRows.hasValue()">
             <div class="left">{{dataSource.selectedRows.selected.length}} <span trans>Plans Selected</span></div>
             <div class="right">
-                <button mat-icon-button matTooltip="Delete selected" (click)="maybeDeleteSelectedPlans()" *ngIf="currentUser.hasPermission('projects.delete')">
+                <button mat-icon-button matTooltip="Delete selected" (click)="maybeDeleteSelectedPlans()" *ngIf="currentUser.hasPermission('plans.delete')">
                     <svg-icon name="delete"></svg-icon>
                 </button>
             </div>
@@ -39,53 +39,50 @@
             </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="image">
-            <mat-header-cell *matHeaderCellDef trans>Thumbnail</mat-header-cell>
-            <mat-cell *matCellDef="let project"> <img [src]="getPlanThumbnail(project)"> </mat-cell>
-        </ng-container>
-
         <ng-container matColumnDef="name">
             <mat-header-cell *matHeaderCellDef mat-sort-header trans>Name</mat-header-cell>
-            <mat-cell *matCellDef="let project"> {{project.name}} </mat-cell>
+            <mat-cell *matCellDef="let plan"> {{plan.name}} </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="published">
-            <mat-header-cell *matHeaderCellDef mat-sort-header trans>Published</mat-header-cell>
-            <mat-cell *matCellDef="let project"> {{project.published ? 'Yes' : 'No'}} </mat-cell>
+        <ng-container matColumnDef="amount">
+            <mat-header-cell *matHeaderCellDef mat-sort-header trans>Amount</mat-header-cell>
+            <mat-cell *matCellDef="let plan"> {{plan.amount}} </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="template">
-            <mat-header-cell *matHeaderCellDef trans>Template</mat-header-cell>
-            <mat-cell *matCellDef="let project"> {{project.template}} </mat-cell>
+        <ng-container matColumnDef="currency">
+            <mat-header-cell *matHeaderCellDef mat-sort-header trans>Currency</mat-header-cell>
+            <mat-cell *matCellDef="let plan"> {{plan.currency}} </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="framework">
-            <mat-header-cell *matHeaderCellDef trans>Framework</mat-header-cell>
-            <mat-cell *matCellDef="let project"> {{project.framework}} </mat-cell>
+        <ng-container matColumnDef="interval">
+            <mat-header-cell *matHeaderCellDef mat-sort-header trans>Interval</mat-header-cell>
+            <mat-cell *matCellDef="let plan"> {{plan.interval}} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="created_at">
             <mat-header-cell *matHeaderCellDef trans>Created At</mat-header-cell>
-            <mat-cell *matCellDef="let project"> {{project.created_at}} </mat-cell>
+            <mat-cell *matCellDef="let plan"> {{plan.created_at}} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="edit">
             <mat-header-cell *matHeaderCellDef></mat-header-cell>
-            <mat-cell *matCellDef="let project">
-                <button mat-icon-button (click)="showCrupdatePlanModal(project)" *ngIf="currentUser.hasPermission('projects.update')" matTooltip="Edit project">
+            <mat-cell *matCellDef="let plan">
+                <button mat-icon-button (click)="showCrupdatePlanModal(plan)" *ngIf="currentUser.hasPermission('plans.update')" matTooltip="Edit plan">
                     <svg-icon name="edit"></svg-icon>
                 </button>
             </mat-cell>
         </ng-container>
 
-        <mat-header-row *matHeaderRowDef="['select', 'image', 'name', 'published', 'template', 'framework', 'created_at', 'edit']"></mat-header-row>
-        <mat-row *matRowDef="let myRowData; columns: ['select', 'image', 'name', 'published', 'template', 'framework', 'created_at', 'edit']"></mat-row>
+        <mat-header-row *matHeaderRowDef="['select', 'name', 'amount', 'currency', 'interval', 'created_at', 'edit']"></mat-header-row>
+        <mat-row *matRowDef="let myRowData; columns: ['select', 'name', 'amount', 'currency', 'interval', 'created_at', 'edit']"></mat-row>
     </mat-table>
 
     <no-results-message *ngIf="dataSource.isEmpty()">
-        <span primary-text trans>Nothing To Display.</span>
-        <span secondary-text trans>Seems like no projects have been created yet.</span>
+        <span primary-text trans>Nothing to Display.</span>
+        <span secondary-text trans>Seems like no plans have been created yet.</span>
     </no-results-message>
 
     <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
+
+    <loading-indicator class="overlay" [isVisible]="loading"></loading-indicator>
 </div>

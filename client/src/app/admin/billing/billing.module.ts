@@ -7,11 +7,12 @@ import {PlansListComponent} from "./plans/plans-list/plans-list.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {
     MatButtonModule,
-    MatCheckboxModule, MatDialogModule, MatPaginatorModule, MatSnackBarModule,
+    MatCheckboxModule, MatChipsModule, MatDialogModule, MatPaginatorModule, MatSnackBarModule,
     MatSortModule,
     MatTableModule,
     MatTooltipModule
 } from "@angular/material";
+import {PermissionsManagerPanelComponent} from "../../permissions-manager-panel/permissions-manager-panel.component";
 
 @NgModule({
     imports: [
@@ -29,10 +30,12 @@ import {
         MatSortModule,
         MatTooltipModule,
         MatDialogModule,
+        MatChipsModule,
     ],
     declarations: [
         PlansListComponent,
         CrupdatePlanModalComponent,
+        PermissionsManagerPanelComponent,
     ],
     entryComponents: [
         CrupdatePlanModalComponent,

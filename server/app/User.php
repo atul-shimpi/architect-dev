@@ -57,6 +57,15 @@ use Vebto\Auth\User as VebtoUser;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereTimezone($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string|null $stripe_id
+ * @property string|null $card_brand
+ * @property string|null $card_last_four
+ * @property string|null $trial_ends_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Cashier\Subscription[] $subscriptions
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereCardBrand($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereCardLastFour($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereStripeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereTrialEndsAt($value)
  */
 class User extends VebtoUser
 {

@@ -24,6 +24,10 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Project wherePublished($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Project whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Project whereFramework($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Project whereTemplate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Project whereTheme($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Project whereUuid($value)
  */
 class Project extends Eloquent {
 

@@ -1,0 +1,14 @@
+<div class="header">
+    <span class="title" trans>Plan Permissions</span>
+    <button mat-raised-button color="accent" (click)="showAddPermissionsModal()" type="button" trans>Add</button>
+</div>
+<div class="manage-permissions" *ngIf="!addNewPermissionsActive">
+    <div class="no-permissions" *ngIf="!(model | mapToIterable).length" trans>No permissions yet.</div>
+
+    <mat-chip-list [selectable]="false">
+        <mat-chip (remove)="removePermission(permission.key)" [removable]="true" *ngFor="let permission of model | mapToIterable">
+            <span>{{permission.key}}</span>
+            <svg-icon name="cancel" matChipRemove></svg-icon>
+        </mat-chip>
+    </mat-chip-list>
+</div>

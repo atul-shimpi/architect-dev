@@ -49,6 +49,10 @@ Route::group(['prefix' => 'secure'], function () {
     Route::post('billing/plans', function() {
         return App::call('App\Services\Billing\Plans\BillingPlansController@store');
     });
+
+    Route::delete('billing/plans', function() {
+        return App::call('App\Services\Billing\Plans\BillingPlansController@destroy');
+    });
 });
 
 Route::domain('{name}.{domain}.{tls}')->group(function () {

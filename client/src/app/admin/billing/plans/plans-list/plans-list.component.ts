@@ -8,6 +8,7 @@ import {Modal} from "vebto-client/core/ui/modal.service";
 import {CurrentUser} from "vebto-client/auth/current-user";
 import {ConfirmModalComponent} from "vebto-client/core/ui/confirm-modal/confirm-modal.component";
 import {CrupdatePlanModalComponent} from "../crupdate-plan-modal/crupdate-plan-modal.component";
+import {finalize} from "rxjs/operators";
 
 @Component({
     selector: 'plans-list',
@@ -21,6 +22,11 @@ export class PlansListComponent implements OnInit {
     @ViewChild(MatSort) matSort: MatSort;
 
     public dataSource: AdminTableDataSource<Plan>;
+
+    /**
+     * Whether server request is currently in progress.
+     */
+    public loading: boolean = false;
 
     /**
      * PlansComponent Constructor.
@@ -57,20 +63,24 @@ export class PlansListComponent implements OnInit {
      * Delete currently selected plans.
      */
     public deleteSelectedPlans() {
-        const ids = this.dataSource.selectedRows.selected.map(project => project.id);
+        this.loading = true;
 
-        this.plans.delete({ids}).subscribe(() => {
-            this.paginator.refresh();
-            this.dataSource.selectedRows.clear();
-        });
+        const ids = this.dataSource.selectedRows.selected.map(plan => plan.id);
+
+        this.plans.delete({ids})
+            .pipe(finalize(() => this.loading = false))
+            .subscribe(() => {
+                this.paginator.refresh();
+                this.dataSource.selectedRows.clear();
+            });
     }
 
     /**
-     * Show modal for editing project if project is specified
-     * or for creating a new project otherwise.
+     * Show modal for editing plan if plan is specified
+     * or for creating a new plan otherwise.
      */
-    public showCrupdatePlanModal(project?: Plan) {
-        this.modal.show(CrupdatePlanModalComponent, {project}).afterClosed().subscribe(data => {
+    public showCrupdatePlanModal(plan?: Plan) {
+        this.modal.show(CrupdatePlanModalComponent, {plan}).afterClosed().subscribe(data => {
             if ( ! data) return;
             this.paginator.refresh();
         });
