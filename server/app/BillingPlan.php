@@ -1,7 +1,6 @@
-<?php
+<?php namespace App;
 
-namespace App;
-
+use Vebto\Auth\FormatsPermissions;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -27,5 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BillingPlan extends Model
 {
+    use FormatsPermissions;
+
     protected $guarded = ['id'];
 }

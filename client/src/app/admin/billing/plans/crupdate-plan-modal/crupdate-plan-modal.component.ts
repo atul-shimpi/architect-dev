@@ -62,6 +62,8 @@ export class CrupdatePlanModalComponent implements OnInit {
         this.loading = true;
         let request;
 
+        console.log(this.model);
+
         if (this.updating) {
             request = this.plans.update(this.data.plan.id, this.model);
         } else {
@@ -95,6 +97,7 @@ export class CrupdatePlanModalComponent implements OnInit {
         this.model.amount = plan.amount;
         this.model.currency = plan.currency;
         this.model.interval = plan.interval;
+        this.model.permissions = plan.permissions;
     }
 
     /**

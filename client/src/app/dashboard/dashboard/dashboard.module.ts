@@ -12,6 +12,7 @@ import {ProjectsResolver} from "../projects-resolver.service";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {CoreModule} from "vebto-client/core/core.module";
 import {DashboardRoutingModule} from "../dashboard-routing.module";
+import {BillingModule} from "../../admin/billing/billing.module";
 
 @NgModule({
     imports: [
@@ -21,6 +22,7 @@ import {DashboardRoutingModule} from "../dashboard-routing.module";
         MaterialModule,
         CoreModule,
         DashboardRoutingModule,
+        BillingModule,
     ],
     declarations: [
         DashboardComponent,

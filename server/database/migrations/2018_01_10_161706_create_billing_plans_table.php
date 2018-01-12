@@ -19,6 +19,7 @@ class CreateBillingPlansTable extends Migration
             $table->integer('amount');
             $table->string('currency');
             $table->string('interval');
+            $table->text('permissions');
             $table->uuid('uuid');
             $table->timestamps();
         });

@@ -50,6 +50,10 @@ Route::group(['prefix' => 'secure'], function () {
         return App::call('App\Services\Billing\Plans\BillingPlansController@store');
     });
 
+    Route::put('billing/plans/{id}', function($id) {
+        return App::call('App\Services\Billing\Plans\BillingPlansController@update', ['id' => $id]);
+    });
+
     Route::delete('billing/plans', function() {
         return App::call('App\Services\Billing\Plans\BillingPlansController@destroy');
     });

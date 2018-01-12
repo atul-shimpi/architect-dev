@@ -32,7 +32,7 @@
             <div class="error" *ngIf="errors.interval">{{errors.interval}}</div>
         </div>
 
-        <permissions-manager-panel [model]="model.permissions"></permissions-manager-panel>
+        <permissions-manager-panel [permissions]="model.permissions" [errors]="errors" (change)="model.permissions = $event"></permissions-manager-panel>
 
         <div class="no-input-error" *ngIf="errors.general">{{errors.general}}</div>
     </div>
