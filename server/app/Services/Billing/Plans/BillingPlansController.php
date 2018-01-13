@@ -77,10 +77,10 @@ class BillingPlansController extends Controller
 
         //delete plan from database if it could not be
         //created on currently active payment gateway
-//        if ( ! $this->gatewayPlans->create($plan)) {
-//            $plan->delete();
-//            return $this->error(['general' => 'Could not create plan on the gateway.']);
-//        }
+        if ( ! $this->gatewayPlans->create($plan)) {
+            $plan->delete();
+            return $this->error(['general' => 'Could not create plan on the gateway.']);
+        }
 
         return $this->success(['plan' => $plan]);
     }

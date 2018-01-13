@@ -17,7 +17,7 @@
             <mat-list role="list" class="permissions-list">
                 <mat-list-item role="listitem" *ngFor="let permission of plan.permissions | mapToIterable">{{permission.key}}</mat-list-item>
             </mat-list>
-            <button class="select-plan-button" mat-raised-button color="accent" trans>Select</button>
+            <button class="select-plan-button" (click)="selectPlan(plan)" [disabled]="loading" mat-raised-button color="accent" trans>Select</button>
         </div>
     </div>
 </div>

@@ -70,4 +70,24 @@ use Vebto\Auth\User as VebtoUser;
 class User extends VebtoUser
 {
     use Billable;
+
+    /**
+     * Subscriptions user has.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    /**
+     * User billing data.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function billing()
+    {
+        return $this->hasOne(BillingData::class);
+    }
 }

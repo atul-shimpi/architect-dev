@@ -12,6 +12,7 @@ import {
     MatSnackBarModule,
     MatSortModule, MatTableModule, MatTooltipModule
 } from "@angular/material";
+import {Subscriptions} from "./subscriptions/subscriptions.service";
 
 @NgModule({
     imports: [
@@ -46,6 +47,7 @@ import {
     ],
     providers: [
         Plans,
+        Subscriptions,
     ]
 })
 export class BillingModule {
