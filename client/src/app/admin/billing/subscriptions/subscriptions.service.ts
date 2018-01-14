@@ -3,6 +3,7 @@ import {AppHttpClient} from "vebto-client/core/http/app-http-client.service";
 import {Observable} from "rxjs/Observable";
 import {PaginationResponse} from "vebto-client/core/types/pagination-response";
 import {Subscription} from "./subscription";
+import {CreditCard} from "../upgrade-page/upgrade-page.component";
 
 @Injectable()
 export class Subscriptions {
@@ -29,7 +30,7 @@ export class Subscriptions {
     /**
      * Create a new subscription.
      */
-    public create(params: {plan_id: number}): Observable<{subscription: Subscription}> {
+    public create(params: {plan_id: number, card: CreditCard}): Observable<{subscription: Subscription}> {
         return this.http.post('billing/subscriptions', params);
     }
 

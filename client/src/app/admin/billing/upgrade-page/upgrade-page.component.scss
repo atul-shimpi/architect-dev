@@ -1,0 +1,125 @@
+@import "../../../../scss/variables";
+
+upgrade-page {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: $site-bg-color-200;
+
+  .main-content {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    background-color: inherit;
+  }
+
+  .mat-horizontal-stepper-content {
+    padding: 5px;
+  }
+
+  .plans {
+    display: flex;
+    width: 100%;
+
+    > .plan {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      align-items: center;
+      max-width: 250px;
+      margin-right: 15px;
+      @include mat-elevation(2);
+      background-color: $site-bg-color-100;
+
+      &:last-of-type {
+        margin-right: 0;
+      }
+
+      > .name {
+        font-size: 1.8rem;
+        font-weight: 500;
+        padding: 15px 0;
+        color: $site-text-color-300;
+      }
+
+      > .price-box {
+        width: 100%;
+        padding: 25px 0;
+        background-color: $site-accent-color;
+        color: $site-text-color-100;
+        text-align: center;
+
+        > .amount {
+          display: inline-block;
+          position: relative;
+
+          > .number {
+            font-size: 4.5rem;
+          }
+
+          > .currency {
+            position: absolute;
+            top: 10px;
+            left: -15px;
+            font-size: 2rem;
+          }
+        }
+      }
+
+      > .permissions-list {
+        flex: 1 1 auto;
+      }
+
+      > .select-plan-button {
+        width: fit-content;
+        margin: 20px 0;
+      }
+    }
+  }
+  
+  .payment-step {
+    display: flex;
+
+    > .permission, .card-form {
+      flex: 1 1 auto;
+    }
+
+    > .card-form {
+      margin-right: 30px;
+    }
+  }
+
+  .permissions {
+    background-color: $site-bg-color-100;
+    @include mat-elevation(2);
+
+    svg-icon {
+      color: $site-accent-color;
+      margin-right: 5px;
+    }
+  }
+
+  .card-form {
+    max-width: 500px;
+    padding: 20px;
+    background-color: $site-bg-color-100;
+    @include mat-elevation(2);
+
+    .expiration-date {
+      display: flex;
+      border: none;
+      padding: 0;
+      margin: 0;
+
+      > select {
+        display: block;
+        flex: 1 1 auto;
+        width: initial;
+      }
+
+      > .expiration-month {
+        margin-right: 10px;
+      }
+    }
+  }
+}
+

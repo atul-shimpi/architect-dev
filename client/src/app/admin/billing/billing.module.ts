@@ -6,13 +6,16 @@ import {CrupdatePlanModalComponent} from "./plans/crupdate-plan-modal/crupdate-p
 import {PlansListComponent} from "./plans/plans-list/plans-list.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AdminModule} from "vebto-client/admin/admin.module";
-import { SelectPlanModalComponent } from './select-plan-modal/select-plan-modal.component';
 import {
     MatButtonModule, MatCheckboxModule, MatChipsModule, MatDialogModule, MatListModule, MatPaginatorModule,
+    MatProgressBarModule,
     MatSnackBarModule,
-    MatSortModule, MatTableModule, MatTooltipModule
+    MatSortModule, MatStepperModule, MatTableModule, MatTooltipModule
 } from "@angular/material";
 import {Subscriptions} from "./subscriptions/subscriptions.service";
+import {UpgradePageComponent} from "./upgrade-page/upgrade-page.component";
+import {BillingPlansResolver} from "./upgrade-page/billing-plans-resolver.service";
+import {BillingRoutingModule} from "./billing-routing.module";
 
 @NgModule({
     imports: [
@@ -20,6 +23,7 @@ import {Subscriptions} from "./subscriptions/subscriptions.service";
         FormsModule,
         ReactiveFormsModule,
         UiModule,
+        BillingRoutingModule,
 
         //can remove this probably when migrated billing module to vebto-client
         AdminModule,
@@ -35,19 +39,24 @@ import {Subscriptions} from "./subscriptions/subscriptions.service";
         MatDialogModule,
         MatChipsModule,
         MatListModule,
+        MatStepperModule,
+        MatProgressBarModule,
     ],
     declarations: [
         PlansListComponent,
         CrupdatePlanModalComponent,
-        SelectPlanModalComponent,
+        UpgradePageComponent,
     ],
     entryComponents: [
         CrupdatePlanModalComponent,
-        SelectPlanModalComponent,
     ],
     providers: [
         Plans,
         Subscriptions,
+        BillingPlansResolver,
+    ],
+    exports: [
+        BillingRoutingModule,
     ]
 })
 export class BillingModule {

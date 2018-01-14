@@ -1,7 +1,9 @@
 <?php namespace App\Services\Billing\Subscriptions;
 
 use App\BillingPlan;
+use App\Services\Billing\GatewayException;
 use App\User;
+use Omnipay\Common\CreditCard;
 use Omnipay\Omnipay;
 use Omnipay\Stripe\Gateway;
 
@@ -27,51 +29,106 @@ class GatewaySubscriptions
      *
      * @param BillingPlan $plan
      * @param User $user
+     * @param array $cardData
+     * @throws GatewayException
      * @return bool
      */
-    public function create(BillingPlan $plan, User $user)
+    public function create(BillingPlan $plan, User $user, $cardData)
     {
-        $stripeId = $this->getStripeCustomerId($user);
+        $user = $this->maybeCreateStripeCustomer($user, $cardData);
+        $this->createStripeSubscription($user, $plan);
 
-        $response = $this->gateway->createSubscription([
-            'customerReference' => $stripeId,
-            'plan' => $plan->uuid,
-        ])->send();
-
-        http_response_code(500);
-        dd($response->getMessage());
-
+        return true;
     }
 
-    public function getStripeCustomerId(User $user)
+    /**
+     * Create stripe customer for specified user, if not already created.
+     *
+     * @param User $user
+     * @param array $cardData
+     * @throws GatewayException
+     * @return User
+     */
+    public function maybeCreateStripeCustomer(User $user, $cardData)
     {
         if ($user->billing && $user->billing->stripe_id) {
             return $user->billing->stripe_id;
         }
 
+        $stripeId = $this->createStripeCustomer($user);
+        $user->billing()->create(['stripe_id' => $stripeId]);
+
+        $this->createStripeCard($user, $cardData);
+
+        return $user;
+    }
+
+    /**
+     * Subscribe user to specified plan on stripe.
+     *
+     * @param User $user
+     * @param BillingPlan $plan
+     * @throws GatewayException
+     */
+    private function createStripeSubscription(User $user, BillingPlan $plan)
+    {
+        $response = $this->gateway->createSubscription([
+            'customerReference' => $user->billing->stripe_id,
+            'plan' => $plan->uuid,
+        ])->send();
+
+        if ( ! $response->isSuccessful()) {
+            throw new GatewayException('Could not create stripe subscription.');
+        }
+    }
+
+    /**
+     * Create a new stripe customer.
+     *
+     * @param User $user
+     * @throws GatewayException
+     * @return string
+     */
+    private function createStripeCustomer(User $user)
+    {
         $response = $this->gateway->createCustomer([
             'email' => $user->email,
         ])->send();
 
-
-        if ($response->isSuccessful()) {
-            $stripeId = $response->getCustomerReference();
-            $user->billing()->create(['stripe_id' => $stripeId]);
-
-            return $stripeId;
+        if ( ! $response->isSuccessful()) {
+            throw new GatewayException('Could not create stripe customer.');
         }
 
-        //TODO: throw exception if could not create stripe user
+        /** @var \Omnipay\Stripe\Message\Response $response */
+        return $response->getCustomerReference();
     }
 
     /**
-     * Delete specified billing plan from currently active gateway.
+     * Create a new card on stripe.
      *
-     * @param BillingPlan $plan
-     * @return bool
+     * @param User $user
+     * @param array $cardData
+     * @throws GatewayException
      */
-    public function delete(BillingPlan $plan)
+    private function createStripeCard(User $user, $cardData)
     {
-        return $this->gateway->deletePlan(['id' => $plan->uuid])->send()->isSuccessful();
+        $card = new CreditCard([
+            'number' => $cardData['number'],
+            'expiryMonth' => $cardData['expiration_month'],
+            'expiryYear' => $cardData['expiration_year'],
+            'cvv' => $cardData['cvc'],
+            'email' => $user->email,
+            'firstName' => $user->first_name,
+            'lastName' => $user->last_name,
+        ]);
+
+        $response = $this->gateway->createCard([
+            'card' => $card,
+            'customerReference' => $user->billing->stripe_id,
+        ])->send();
+
+        if ( ! $response->isSuccessful()) {
+            throw new GatewayException('Could not create stripe credit card.');
+        }
     }
 }

@@ -13,7 +13,6 @@ import {PublishProjectModalComponent} from "../shared/publish-project-modal/publ
 import {FormControl, FormGroup} from "@angular/forms";
 import {UrlAwarePaginator} from "../../../node_modules/vebto-client/admin/pagination/url-aware-paginator.service";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
-import {SelectPlanModalComponent} from "../admin/billing/select-plan-modal/select-plan-modal.component";
 
 @Component({
     selector: 'dashboard',
@@ -54,12 +53,6 @@ export class DashboardComponent implements OnInit {
         });
 
         this.bindToProjectFilters();
-    }
-
-    public openSelectPlanModal() {
-        this.modal.open(SelectPlanModalComponent).afterClosed().subscribe(() => {
-            //
-        })
     }
 
     /**

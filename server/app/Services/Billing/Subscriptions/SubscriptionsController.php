@@ -49,6 +49,11 @@ class SubscriptionsController extends Controller
     {
         $this->validate($this->request, [
             'plan_id' => 'required|integer|exists:billing_plans,id',
+            'card' => 'required|array|min:4',
+            'card.number' => 'required|string|min:4',
+            'card.expiration_month' => 'required|integer|min:1|max:12',
+            'card.expiration_year' => 'required|integer|min:2018|max:2060',
+            'card.cvc' => 'required|integer|min:1|max:999',
         ]);
 
         $user = $this->request->user();
@@ -57,7 +62,7 @@ class SubscriptionsController extends Controller
         //TODO: calc based on plan interval
         $endsAt = Carbon::now()->addDays(30);
 
-        $this->gatewaySubscriptions->create($plan, $user);
+        $this->gatewaySubscriptions->create($plan, $user, $this->request->get('card'));
 
         $subscription = $user->subscriptions()->create([
             'plan_id' => $plan->id,

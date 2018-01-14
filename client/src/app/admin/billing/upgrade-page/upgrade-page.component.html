@@ -1,0 +1,68 @@
+<material-navbar></material-navbar>
+
+<mat-horizontal-stepper class="main-content container" [linear]="true">
+    <mat-step label="Select a plan" [completed]="false">
+        <div class="plans">
+            <div class="plan" *ngFor="let plan of plans">
+                <div class="name">{{plan.name}}</div>
+                <div class="price-box">
+                    <div class="amount">
+                        <div class="currency">$</div>
+                        <div class="number">{{plan.amount}}</div>
+                    </div>
+                    <div class="interval">{{plan.interval}}</div>
+                </div>
+                <mat-list role="list" class="permissions-list">
+                    <mat-list-item role="listitem" *ngFor="let permission of plan.permissions | mapToIterable">{{permission.key}}</mat-list-item>
+                </mat-list>
+                <button class="select-plan-button" (click)="selectPlan(plan)" mat-raised-button color="accent" trans>Select</button>
+            </div>
+        </div>
+    </mat-step>
+    <mat-step label="Payment" [completed]="false">
+        <div class="payment-step">
+            <form class="card-form many-inputs" (ngSubmit)="submitPurchase()" ngNativeValidate>
+                <div class="input-container">
+                    <label for="card-number" trans>Credit or Debit Card</label>
+                    <input type="text" id="card-number" name="card-number" [(ngModel)]="cardModel.number" placeholder="Card Number" trans-placeholder required>
+                    <div class="error" *ngIf="errors.card-number">{{errors.card-number}}</div>
+                </div>
+
+                <div class="input-container">
+                    <label for="expiration-date" trans>Expiration Date</label>
+                    <div id="expiration-date" class="expiration-date">
+                        <select name="expiration-month" class="expiration-month" [(ngModel)]="cardModel.expiration_month" required>
+                            <option [ngValue]="null" disabled trans>Month</option>
+                            <option [ngValue]="month" *ngFor="let month of months">{{month}}</option>
+                        </select>
+                        <select name="expiration-year" class="expiration-year" [(ngModel)]="cardModel.expiration_year" required>
+                            <option [ngValue]="null" disabled trans>Year</option>
+                            <option [ngValue]="year" *ngFor="let year of years">{{year}}</option>
+                        </select>
+                    </div>
+                    <div class="error" *ngIf="errors.expiration_month">{{errors.expiration_month}}</div>
+                    <div class="error" *ngIf="errors.expiration_year">{{errors.expiration_year}}</div>
+                </div>
+
+                <div class="input-container">
+                    <label for="cvc" trans>CVC</label>
+                    <input type="text" id="cvc" name="cvc" [(ngModel)]="cardModel.cvc" required>
+                    <mat-progress-bar mode="indeterminate" *ngIf="loading" color="accent"></mat-progress-bar>
+                    <div class="error" *ngIf="errors.cvc">{{errors.cvc}}</div>
+                </div>
+
+                <button type="submit" mat-raised-button color="accent" [disabled]="loading" trans>Submit Purchase</button>
+            </form>
+
+            <div class="permissions" *ngIf="selectedPlan">
+                <mat-list role="list">
+                    <mat-list-item role="listitem" *ngFor="let permission of selectedPlan.permissions | mapToIterable">
+                        <svg-icon name="check"></svg-icon>
+                        <span>{{permission.key}}</span>
+                    </mat-list-item>
+                </mat-list>
+            </div>
+        </div>
+    </mat-step>
+</mat-horizontal-stepper>
+
