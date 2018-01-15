@@ -1,10 +1,12 @@
 <?php namespace App\Services\Billing\Plans;
 
 use App\BillingPlan;
+use App\Services\Billing\GatewayException;
+use App\Services\Billing\Plans\Gateways\GatewayPlansInterface;
 use Omnipay\Omnipay;
 use Omnipay\Stripe\Gateway;
 
-class GatewayPlans
+class StripePlans implements GatewayPlansInterface
 {
 
     /**
@@ -25,17 +27,24 @@ class GatewayPlans
      * Create a new plan on currently active gateway.
      *
      * @param BillingPlan $plan
+     * @throws GatewayException
      * @return bool
      */
     public function create(BillingPlan $plan)
     {
-        return $this->gateway->createPlan([
+        $response = $this->gateway->createPlan([
             'id' => $plan->uuid,
             'amount' => $plan->amount,
             'currency' => $plan->currency,
             'interval' => $plan->interval,
             'name' => $plan->name,
-        ])->send()->isSuccessful();
+        ])->send();
+
+        if ( ! $response->isSuccessful()) {
+            throw new GatewayException('Could not create subscription plan on stripe.');
+        }
+
+        return true;
     }
 
     /**

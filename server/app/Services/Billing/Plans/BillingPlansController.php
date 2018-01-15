@@ -1,6 +1,7 @@
 <?php namespace App\Services\Billing\Plans;
 
 use App\BillingPlan;
+use App\Services\Billing\Plans\Gateways\PaypalPlans;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -20,22 +21,15 @@ class BillingPlansController extends Controller
     private $request;
 
     /**
-     * @var GatewayPlans
-     */
-    private $gatewayPlans;
-
-    /**
      * BillingPlansController constructor.
      *
      * @param BillingPlan $plan
      * @param Request $request
-     * @param GatewayPlans $gatewayPlans
      */
-    public function __construct(BillingPlan $plan, Request $request, GatewayPlans $gatewayPlans)
+    public function __construct(BillingPlan $plan, Request $request)
     {
         $this->plan = $plan;
         $this->request = $request;
-        $this->gatewayPlans = $gatewayPlans;
     }
 
     /**
@@ -77,7 +71,7 @@ class BillingPlansController extends Controller
 
         //delete plan from database if it could not be
         //created on currently active payment gateway
-        if ( ! $this->gatewayPlans->create($plan)) {
+        if ( ! \App::make(PaypalPlans::class)->create($plan)) {
             $plan->delete();
             return $this->error(['general' => 'Could not create plan on the gateway.']);
         }

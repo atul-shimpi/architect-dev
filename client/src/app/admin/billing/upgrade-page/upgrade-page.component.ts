@@ -17,7 +17,7 @@ export class UpgradePageComponent implements OnInit {
 
     public loading = false;
 
-    public errors: CreditCard = {};
+    public errors: {card: CreditCard} = {card: {}};
 
     /**
      * All available plans.
@@ -56,7 +56,7 @@ export class UpgradePageComponent implements OnInit {
     public submitPurchase() {
         this.loading = true;
 
-        const params = {plan_id: this.selectedPlan.id, card: this.cardModel};
+        const params = {plan_id: this.selectedPlan.id, gateway: 'stripe', card: this.cardModel};
 
         this.subscriptions.create(params)
             .subscribe(response => {
@@ -65,6 +65,10 @@ export class UpgradePageComponent implements OnInit {
                 this.errors = response.messages;
                 this.loading = false;
             });
+    }
+
+    public submitWithPaypal() {
+        this.subscriptions.create({plan_id: this.selectedPlan.id, gateway: 'paypal'}).subscribe()
     }
 }
 

@@ -59,8 +59,8 @@ Route::group(['prefix' => 'secure'], function () {
     });
 
     //subs
-    Route::post('billing/subscriptions', function() {
-        return App::call('App\Services\Billing\Subscriptions\SubscriptionsController@store');
+    Route::post('billing/subscriptions/{gateway}', function($gateway) {
+        return App::call('App\Services\Billing\Subscriptions\SubscriptionsController@store', ['gateway' => $gateway]);
     });
 });
 

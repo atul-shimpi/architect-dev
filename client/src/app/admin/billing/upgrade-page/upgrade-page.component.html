@@ -21,11 +21,16 @@
     </mat-step>
     <mat-step label="Payment" [completed]="false">
         <div class="payment-step">
+
+            <h1>Paypal</h1>
+            <button mat-raised-button (click)="submitWithPaypal()">Pay with paypal</button>
+
+
             <form class="card-form many-inputs" (ngSubmit)="submitPurchase()" ngNativeValidate>
                 <div class="input-container">
                     <label for="card-number" trans>Credit or Debit Card</label>
                     <input type="text" id="card-number" name="card-number" [(ngModel)]="cardModel.number" placeholder="Card Number" trans-placeholder required>
-                    <div class="error" *ngIf="errors.card-number">{{errors.card-number}}</div>
+                    <div class="error" *ngIf="errors.card.number">{{errors.card.number}}</div>
                 </div>
 
                 <div class="input-container">
@@ -40,15 +45,15 @@
                             <option [ngValue]="year" *ngFor="let year of years">{{year}}</option>
                         </select>
                     </div>
-                    <div class="error" *ngIf="errors.expiration_month">{{errors.expiration_month}}</div>
-                    <div class="error" *ngIf="errors.expiration_year">{{errors.expiration_year}}</div>
+                    <div class="error" *ngIf="errors.card.expiration_month">{{errors.card.expiration_month}}</div>
+                    <div class="error" *ngIf="errors.card.expiration_year">{{errors.card.expiration_year}}</div>
                 </div>
 
                 <div class="input-container">
                     <label for="cvc" trans>CVC</label>
                     <input type="text" id="cvc" name="cvc" [(ngModel)]="cardModel.cvc" required>
                     <mat-progress-bar mode="indeterminate" *ngIf="loading" color="accent"></mat-progress-bar>
-                    <div class="error" *ngIf="errors.cvc">{{errors.cvc}}</div>
+                    <div class="error" *ngIf="errors.card.cvc">{{errors.card.cvc}}</div>
                 </div>
 
                 <button type="submit" mat-raised-button color="accent" [disabled]="loading" trans>Submit Purchase</button>

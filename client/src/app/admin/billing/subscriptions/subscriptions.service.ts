@@ -30,8 +30,8 @@ export class Subscriptions {
     /**
      * Create a new subscription.
      */
-    public create(params: {plan_id: number, card: CreditCard}): Observable<{subscription: Subscription}> {
-        return this.http.post('billing/subscriptions', params);
+    public create(params: {gateway: 'stripe'|'paypal', plan_id: number, card?: CreditCard}): Observable<{subscription: Subscription}> {
+        return this.http.post('billing/subscriptions/'+params.gateway, params);
     }
 
     /**
