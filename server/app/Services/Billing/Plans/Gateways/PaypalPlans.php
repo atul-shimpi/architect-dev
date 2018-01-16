@@ -35,11 +35,10 @@ class PaypalPlans implements GatewayPlansInterface
      */
     public function create(BillingPlan $plan)
     {
-        $request = $this->gateway->createPlan([
+        $response = $this->gateway->createPlan([
             'name'  => $plan->name,
-            'description'  => $plan->name,
+            'description'  => $plan->uuid,
             'type' => RestGateway::BILLING_PLAN_TYPE_INFINITE,
-            'state' => RestGateway::BILLING_PLAN_STATE_ACTIVE,
             'paymentDefinitions' => [
                 [
                     'name'               => $plan->name.' definition',
@@ -51,26 +50,23 @@ class PaypalPlans implements GatewayPlansInterface
                 ],
             ],
             'merchant_preferences' => [
-                'setup_fee' => [
-                    'value' => '1',
-                    'currency' => 'USD'
-                ],
                 'return_url' => 'http://google.com',
                 'cancel_url' => 'http://google.com',
                 'auto_bill_amount' => 'YES',
                 'initial_fail_amount_action' => 'CONTINUE',
-                'max_fail_attempts' => '5',
+                'max_fail_attempts' => '3',
             ]
-        ]);
+        ])->send();
 
-        $data = $request->getData();
-        $data['id'] = $plan->uuid;
-        http_response_code(500);
-        dd($data);
-        $response = $request->sendData($data);
+        if ( ! $response->isSuccessful()) {
+            throw new GatewayException('Could not create subscription plan on paypal');
+        }
 
-        http_response_code(500);
-        dd($response);
+        //set plan to active on paypal
+        $response = $this->gateway->updatePlan([
+            'state' => RestGateway::BILLING_PLAN_STATE_ACTIVE,
+            'transactionReference' => $response->getData()['id'],
+        ])->send();
 
         if ( ! $response->isSuccessful()) {
             throw new GatewayException('Could not create subscription plan on paypal');

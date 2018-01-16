@@ -56,7 +56,7 @@ export class UpgradePageComponent implements OnInit {
     public submitPurchase() {
         this.loading = true;
 
-        const params = {plan_id: this.selectedPlan.id, gateway: 'stripe', card: this.cardModel};
+        const params = {plan_id: this.selectedPlan.id, gateway: 'stripe', card: this.cardModel} as any;
 
         this.subscriptions.create(params)
             .subscribe(response => {
@@ -68,7 +68,13 @@ export class UpgradePageComponent implements OnInit {
     }
 
     public submitWithPaypal() {
-        this.subscriptions.create({plan_id: this.selectedPlan.id, gateway: 'paypal'}).subscribe()
+        this.subscriptions.create({plan_id: this.selectedPlan.id, gateway: 'paypal'}).subscribe(response => {
+            window.open(
+                response.url,
+                'Authenticate PayPal',
+                'menubar=0, location=0, toolbar=0, titlebar=0, status=0, scrollbars=1, width='+1000+', height='+900+', '+'left='+0+', top='+0
+            );
+        })
     }
 }
 

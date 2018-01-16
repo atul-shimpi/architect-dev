@@ -35,36 +35,39 @@ class PaypalSubscriptions
      * @param BillingPlan $plan
      * @param User $user
      * @param array $cardData
-     * @return bool
+     * @return string
      */
     public function create(BillingPlan $plan, User $user, $cardData)
     {
-
-        $response = $this->gateway->listPlan()->send();
-        http_response_code(500);
-        dd($response);
-
         $response = $this->gateway->createSubscription([
-            'name'        => 'Test Subscription',
-            'description' => 'A subscription created for testing',
-            'planId' => $plan->uuid,
+            'name'        => config('app.name')." subscription: {$plan->name}.",
+            'description' => "{$plan->name} subscription on ".config('app.name'),
+            'planId' => $this->getPaypalPlanId($plan),
             'startDate' => Carbon::now()->addMinute(),
             'payerDetails' => ['payment_method' => 'paypal'],
         ])->send();
 
-        if ( ! $response->isSuccessful()) {
-            http_response_code(500);
-            dd($response);
+        if ( ! $response->isSuccessful() || ! $response->isRedirect()) {
             throw new GatewayException('Could not create subscription on paypal');
         }
 
-        if ($response->isRedirect()) {
-            echo "Response is a redirect\n";
-            echo "Redirect URL = " . $response->getRedirectUrl();
-            $subscription_id = $response->getTransactionReference();
-            die("Subscription reference = " . $subscription_id);
-        }
+        return $response->getRedirectUrl();
+    }
 
-        return true;
+    /**
+     * Get specified plan's PayPal ID.
+     *
+     * @param BillingPlan $plan
+     * @return string
+     */
+    private function getPaypalPlanId(BillingPlan $plan)
+    {
+        $response = $this->gateway->listPlan(['page_size' => 20, 'status' => RestGateway::BILLING_PLAN_STATE_ACTIVE])->send();
+
+        $paypalPlan = collect($response->getData()['plans'])->first(function ($paypalPlan) use ($plan) {
+            return $paypalPlan['description'] === $plan->uuid;
+        });
+
+        return $paypalPlan['id'];
     }
 }
