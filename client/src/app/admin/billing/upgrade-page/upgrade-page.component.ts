@@ -5,6 +5,7 @@ import {Subscriptions} from "../subscriptions/subscriptions.service";
 import {finalize} from "rxjs/operators";
 import {MatStepper} from "@angular/material";
 import {ActivatedRoute} from "@angular/router";
+import {Settings} from "../../../../../node_modules/vebto-client/core";
 
 @Component({
     selector: 'upgrade-page',
@@ -35,7 +36,7 @@ export class UpgradePageComponent implements OnInit {
     /**
      * SelectPlanModalComponent Constructor.
      */
-    constructor(private subscriptions: Subscriptions, private route: ActivatedRoute) {
+    constructor(private subscriptions: Subscriptions, private route: ActivatedRoute, private settings: Settings) {
     }
 
     ngOnInit() {
@@ -69,10 +70,21 @@ export class UpgradePageComponent implements OnInit {
 
     public submitWithPaypal() {
         this.subscriptions.create({plan_id: this.selectedPlan.id, gateway: 'paypal'}).subscribe(response => {
-            window.open(
-                response.url,
+            const windowHeight = 650;
+            const windowWidth = 450;
+            const left = (window.innerWidth/2)-(windowWidth/2);
+            const top  = (window.innerHeight/2)-(windowHeight/2);
+
+            window.addEventListener('message', e => {
+                if (this.settings.getBaseUrl().indexOf(e.origin) === -1) return;
+                console.log(e.data.token);
+                //TODO: execute payment
+            }, false);
+
+            const popup = window.open(
+                response.urls['approve'],
                 'Authenticate PayPal',
-                'menubar=0, location=0, toolbar=0, titlebar=0, status=0, scrollbars=1, width='+1000+', height='+900+', '+'left='+0+', top='+0
+                'menubar=0, location=0, toolbar=0, titlebar=0, status=0, scrollbars=1, width='+windowWidth+', height='+windowHeight+', '+'left='+left+', top='+top
             );
         })
     }

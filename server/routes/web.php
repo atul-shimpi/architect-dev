@@ -64,6 +64,15 @@ Route::group(['prefix' => 'secure'], function () {
     });
 });
 
+//paypal
+Route::get('billing/paypal/callback/approved', function() {
+    return App::call('App\Services\Billing\Gateways\Paypal\PaypalCallbacksController@approved');
+});
+
+Route::get('billing/paypal/callback/canceled', function() {
+    return App::call('App\Services\Billing\Gateways\Paypal\PaypalCallbacksController@canceled');
+});
+
 Route::domain('{name}.{domain}.{tls}')->group(function () {
     Route::get('/{page?}', 'UserSiteController@show')->name('user-site-subdomain');
 });

@@ -35,7 +35,7 @@ class PaypalSubscriptions
      * @param BillingPlan $plan
      * @param User $user
      * @param array $cardData
-     * @return string
+     * @return array
      */
     public function create(BillingPlan $plan, User $user, $cardData)
     {
@@ -47,11 +47,18 @@ class PaypalSubscriptions
             'payerDetails' => ['payment_method' => 'paypal'],
         ])->send();
 
+//        http_response_code(500);
+//        dd($response->getTransactionReference());
+
         if ( ! $response->isSuccessful() || ! $response->isRedirect()) {
             throw new GatewayException('Could not create subscription on paypal');
         }
 
-        return $response->getRedirectUrl();
+        return [
+            'approve' => "https://www.sandbox.paypal.com/checkoutnow?version=4&token={$response->getTransactionReference()}",
+            'execute' => $response->getCompleteUrl(),
+        ];
+
     }
 
     /**

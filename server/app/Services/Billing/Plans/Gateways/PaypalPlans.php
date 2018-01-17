@@ -50,8 +50,8 @@ class PaypalPlans implements GatewayPlansInterface
                 ],
             ],
             'merchant_preferences' => [
-                'return_url' => 'http://google.com',
-                'cancel_url' => 'http://google.com',
+                'return_url' => url('billing/paypal/callback/approved'),
+                'cancel_url' => url('billing/paypal/callback/canceled'),
                 'auto_bill_amount' => 'YES',
                 'initial_fail_amount_action' => 'CONTINUE',
                 'max_fail_attempts' => '3',

@@ -70,7 +70,7 @@ class SubscriptionsController extends Controller
         //TODO: calc based on plan interval
         $endsAt = Carbon::now()->addDays(30);
 
-        return $this->success(['url' => \App::make(PaypalSubscriptions::class)->create($plan, $user, $this->request->get('card'))]);
+        return $this->success(['urls' => \App::make(PaypalSubscriptions::class)->create($plan, $user, $this->request->get('card'))]);
 
 //        $subscription = $user->subscriptions()->create([
 //            'plan_id' => $plan->id,
