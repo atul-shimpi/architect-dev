@@ -3,6 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 import {Plans} from "../plans.service";
 import {Plan} from "../plan";
 import {Toast} from "vebto-client/core/ui/toast.service";
+import {utils} from "../../../../../../node_modules/vebto-client/core";
 
 @Component({
     selector: 'crupdate-plan-modal',
@@ -26,6 +27,16 @@ export class CrupdatePlanModalComponent implements OnInit {
      * If we are updating existing plan or creating a new one.
      */
     public updating: boolean = false;
+
+    /**
+     * New feature input model.
+     */
+    public newFeature: string;
+
+    /**
+     * Plan features model.
+     */
+    public features: {content: string, id: string}[] = [];
 
     /**
      * Errors returned from backend.
@@ -62,12 +73,10 @@ export class CrupdatePlanModalComponent implements OnInit {
         this.loading = true;
         let request;
 
-        console.log(this.model);
-
         if (this.updating) {
-            request = this.plans.update(this.data.plan.id, this.model);
+            request = this.plans.update(this.data.plan.id, this.getPayload());
         } else {
-            request = this.plans.create(this.model);
+            request = this.plans.create(this.getPayload());
         }
 
         request.subscribe(response => {
@@ -81,6 +90,12 @@ export class CrupdatePlanModalComponent implements OnInit {
         });
     }
 
+    public getPayload() {
+        let payload = Object.assign({}, this.model);
+        payload.features = this.features.map(feature => feature.content);
+        return payload;
+    }
+
     /**
      * Close the modal.
      */
@@ -90,14 +105,31 @@ export class CrupdatePlanModalComponent implements OnInit {
     }
 
     /**
+     * Add new feature to plan.
+     */
+    public addFeature() {
+        const exists = this.features.findIndex(curr => curr.content === this.newFeature) > -1;
+        if (exists || ! this.newFeature) return;
+        this.features.push({content: this.newFeature, id: utils.randomString(5)});
+        this.newFeature = null;
+    }
+
+    /**
+     * Remove specified feature from plan.
+     */
+    public removeFeature(feature: {content: string, id: string}) {
+        const i = this.features.findIndex(curr => curr.id === feature.id);
+        this.features.splice(i, 1);
+    }
+
+    /**
      * Populate plan model with given data.
      */
     private hydrateModel(plan: Plan) {
-        this.model.name = plan.name;
-        this.model.amount = plan.amount;
-        this.model.currency = plan.currency;
-        this.model.interval = plan.interval;
-        this.model.permissions = plan.permissions;
+        this.model = Object.assign(plan);
+        this.features = plan.features.map(feature => {
+            return {content: feature, id: utils.randomString(5)};
+        });
     }
 
     /**
@@ -105,6 +137,7 @@ export class CrupdatePlanModalComponent implements OnInit {
      */
     private resetState() {
         this.model = new Plan();
+        this.features = [];
         this.errors = {};
     }
 }

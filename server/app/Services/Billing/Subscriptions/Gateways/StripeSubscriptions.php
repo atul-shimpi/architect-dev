@@ -1,4 +1,4 @@
-<?php namespace App\Services\Billing\Subscriptions;
+<?php namespace App\Services\Billing\Subscriptions\Gateways;
 
 use App\BillingPlan;
 use App\Services\Billing\GatewayException;
@@ -7,9 +7,8 @@ use Omnipay\Common\CreditCard;
 use Omnipay\Omnipay;
 use Omnipay\Stripe\Gateway;
 
-class GatewaySubscriptions
+class StripeSubscriptions
 {
-
     /**
      * @var Gateway
      */

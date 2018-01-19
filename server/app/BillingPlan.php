@@ -29,4 +29,15 @@ class BillingPlan extends Model
     use FormatsPermissions;
 
     protected $guarded = ['id'];
+
+    public function getFeaturesAttribute($value)
+    {
+        return json_decode($value, true) ?: [];
+    }
+
+    public function setFeaturesAttribute($value)
+    {
+        if (is_string($value)) return;
+        $this->attributes['features'] = json_encode($value);
+    }
 }

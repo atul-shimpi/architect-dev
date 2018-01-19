@@ -59,8 +59,16 @@ Route::group(['prefix' => 'secure'], function () {
     });
 
     //subs
-    Route::post('billing/subscriptions/{gateway}', function($gateway) {
-        return App::call('App\Services\Billing\Subscriptions\SubscriptionsController@store', ['gateway' => $gateway]);
+    Route::post('billing/subscriptions/stripe', function() {
+        return App::call('App\Services\Billing\Subscriptions\SubscriptionsController@createOnStripe');
+    });
+
+    Route::post('billing/subscriptions/paypal/agreement/create', function() {
+        return App::call('App\Services\Billing\Subscriptions\SubscriptionsController@createPaypalAgreement');
+    });
+
+    Route::post('billing/subscriptions/paypal/agreement/execute', function() {
+        return App::call('App\Services\Billing\Subscriptions\SubscriptionsController@executePaypalAgreement');
     });
 });
 

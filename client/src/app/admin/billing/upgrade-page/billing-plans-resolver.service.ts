@@ -10,7 +10,7 @@ export class BillingPlansResolver implements Resolve<Plan[]> {
     constructor(private plans: Plans) {}
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<Plan[]> {
-        return this.plans.all().pipe(map(response => response.data)).toPromise();
+        return this.plans.all({order: 'position|asc'}).pipe(map(response => response.data)).toPromise();
     }
 }
 

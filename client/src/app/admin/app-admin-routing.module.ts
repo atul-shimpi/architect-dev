@@ -11,6 +11,7 @@ import {SettingsResolve} from "../../../node_modules/vebto-client/admin/settings
 import {vebtoSettingsRoutes} from "../../../node_modules/vebto-client/admin/settings/settings-routing.module";
 import {vebtoAdminRoutes} from "../../../node_modules/vebto-client/admin/admin-routing.module";
 import {PlansListComponent} from "./billing/plans/plans-list/plans-list.component";
+import {BillingSettingsComponent} from "./settings/billing/billing-settings.component";
 
 const routes: Routes = [
     {
@@ -38,6 +39,10 @@ const routes: Routes = [
                     {
                         path: 'builder',
                         component: BuilderSettingsComponent,
+                    },
+                    {
+                        path: 'billing',
+                        component: BillingSettingsComponent,
                     },
                     ...vebtoSettingsRoutes,
                 ],

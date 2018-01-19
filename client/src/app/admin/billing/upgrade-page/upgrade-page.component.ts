@@ -34,6 +34,11 @@ export class UpgradePageComponent implements OnInit {
     public cardModel: CreditCard = {expiration_month: null, expiration_year: null};
 
     /**
+     * Whether any of the billing plans are marked as "recommended"
+     */
+    public hasRecommendedPlan: boolean = false;
+
+    /**
      * SelectPlanModalComponent Constructor.
      */
     constructor(private subscriptions: Subscriptions, private route: ActivatedRoute, private settings: Settings) {
@@ -42,11 +47,8 @@ export class UpgradePageComponent implements OnInit {
     ngOnInit() {
         this.route.data.subscribe(data => {
             this.plans = data.plans;
-        })
-    }
-
-    public close() {
-        //
+            this.hasRecommendedPlan = this.plans.filter(plan => plan.recommended).length > 0;
+        });
     }
 
     public selectPlan(plan: Plan) {
@@ -57,9 +59,7 @@ export class UpgradePageComponent implements OnInit {
     public submitPurchase() {
         this.loading = true;
 
-        const params = {plan_id: this.selectedPlan.id, gateway: 'stripe', card: this.cardModel} as any;
-
-        this.subscriptions.create(params)
+        this.subscriptions.createOnStripe({plan_id: this.selectedPlan.id, card: this.cardModel})
             .subscribe(response => {
                 this.loading = false;
             }, response => {
@@ -69,20 +69,26 @@ export class UpgradePageComponent implements OnInit {
     }
 
     public submitWithPaypal() {
-        this.subscriptions.create({plan_id: this.selectedPlan.id, gateway: 'paypal'}).subscribe(response => {
+        this.loading = true;
+
+        this.subscriptions.createPaypalAgreement(this.selectedPlan.id).subscribe(response => {
+            this.loading = false;
+
             const windowHeight = 650;
             const windowWidth = 450;
-            const left = (window.innerWidth/2)-(windowWidth/2);
-            const top  = (window.innerHeight/2)-(windowHeight/2);
+            const left = (screen.width/2)-(windowWidth/2);
+            const top  = (screen.height/2)-(windowHeight/2);
 
             window.addEventListener('message', e => {
                 if (this.settings.getBaseUrl().indexOf(e.origin) === -1) return;
-                console.log(e.data.token);
-                //TODO: execute payment
+
+                this.subscriptions.executePaypalAgreement(e.data.token, this.selectedPlan.id).subscribe(response => {
+                    //
+                });
             }, false);
 
             const popup = window.open(
-                response.urls['approve'],
+                response.urls.approve,
                 'Authenticate PayPal',
                 'menubar=0, location=0, toolbar=0, titlebar=0, status=0, scrollbars=1, width='+windowWidth+', height='+windowHeight+', '+'left='+left+', top='+top
             );

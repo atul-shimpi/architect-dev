@@ -16,7 +16,8 @@ class CreateBillingDataTable extends Migration
         Schema::create('billing_data', function(Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id');
-            $table->string('stripe_id');
+            $table->string('stripe_id')->nullable();
+            $table->string('paypal_subscription_id')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ class CreateBillingDataTable extends Migration
      */
     public function down()
     {
-        Schema::drop('billing_plans');
+        Schema::drop('billing_data');
     }
 }

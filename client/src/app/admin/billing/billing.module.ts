@@ -10,12 +10,13 @@ import {
     MatButtonModule, MatCheckboxModule, MatChipsModule, MatDialogModule, MatListModule, MatPaginatorModule,
     MatProgressBarModule,
     MatSnackBarModule,
-    MatSortModule, MatStepperModule, MatTableModule, MatTooltipModule
+    MatSortModule, MatStepperModule, MatTableModule, MatTabsModule, MatTooltipModule
 } from "@angular/material";
 import {Subscriptions} from "./subscriptions/subscriptions.service";
 import {UpgradePageComponent} from "./upgrade-page/upgrade-page.component";
 import {BillingPlansResolver} from "./upgrade-page/billing-plans-resolver.service";
 import {BillingRoutingModule} from "./billing-routing.module";
+import {ReorderPlanFeaturesDirective} from "./plans/crupdate-plan-modal/reorder-plan-features.directive";
 
 @NgModule({
     imports: [
@@ -41,11 +42,13 @@ import {BillingRoutingModule} from "./billing-routing.module";
         MatListModule,
         MatStepperModule,
         MatProgressBarModule,
+        MatTabsModule,
     ],
     declarations: [
         PlansListComponent,
         CrupdatePlanModalComponent,
         UpgradePageComponent,
+        ReorderPlanFeaturesDirective,
     ],
     entryComponents: [
         CrupdatePlanModalComponent,

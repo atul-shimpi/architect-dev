@@ -8,6 +8,7 @@ import { ProjectsComponent } from './projects/projects.component';
 import { CrupdateProjectModalComponent } from './projects/crupdate-project-modal/crupdate-project-modal.component';
 import {BuilderSettingsComponent} from "./settings/builder/builder-settings.component";
 import {BillingModule} from "./billing/billing.module";
+import {BillingSettingsComponent} from "./settings/billing/billing-settings.component";
 
 @NgModule({
     imports: [
@@ -24,6 +25,7 @@ import {BillingModule} from "./billing/billing.module";
         ProjectsComponent,
         CrupdateProjectModalComponent,
         BuilderSettingsComponent,
+        BillingSettingsComponent,
     ],
     entryComponents: [
         CrupdateTemplateModalComponent,

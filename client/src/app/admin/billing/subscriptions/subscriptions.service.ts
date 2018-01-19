@@ -28,10 +28,18 @@ export class Subscriptions {
     }
 
     /**
-     * Create a new subscription.
+     * Create a new subscription on stripe.
      */
-    public create(params: {gateway: 'stripe'|'paypal', plan_id: number, card?: CreditCard}): Observable<{subscription: Subscription}> {
-        return this.http.post('billing/subscriptions/'+params.gateway, params);
+    public createOnStripe(params: {plan_id: number, card: CreditCard}): Observable<{subscription: Subscription}> {
+        return this.http.post('billing/subscriptions/stripe', params);
+    }
+
+    public createPaypalAgreement(plan_id: number): Observable<{urls: {execute: string, approve: string}}> {
+        return this.http.post('billing/subscriptions/paypal/agreement/create', {plan_id});
+    }
+
+    public executePaypalAgreement(agreement_id: string, plan_id: number) {
+        return this.http.post('billing/subscriptions/paypal/agreement/execute', {agreement_id, plan_id});
     }
 
     /**

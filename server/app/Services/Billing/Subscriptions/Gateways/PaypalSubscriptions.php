@@ -29,15 +29,13 @@ class PaypalSubscriptions
     }
 
     /**
-     * Create a new subscription on paypal.
+     * Create subscription agreement on paypal.
      *
-     * @throws GatewayException
      * @param BillingPlan $plan
-     * @param User $user
-     * @param array $cardData
      * @return array
+     * @throws GatewayException
      */
-    public function create(BillingPlan $plan, User $user, $cardData)
+    public function createAgreement(BillingPlan $plan)
     {
         $response = $this->gateway->createSubscription([
             'name'        => config('app.name')." subscription: {$plan->name}.",
@@ -47,18 +45,39 @@ class PaypalSubscriptions
             'payerDetails' => ['payment_method' => 'paypal'],
         ])->send();
 
-//        http_response_code(500);
-//        dd($response->getTransactionReference());
-
         if ( ! $response->isSuccessful() || ! $response->isRedirect()) {
-            throw new GatewayException('Could not create subscription on paypal');
+            throw new GatewayException('Could not create subscription agreement on paypal');
         }
 
         return [
             'approve' => "https://www.sandbox.paypal.com/checkoutnow?version=4&token={$response->getTransactionReference()}",
             'execute' => $response->getCompleteUrl(),
         ];
+    }
 
+    /**
+     * Execute paypal subscription agreement.
+     *
+     * @param User $user
+     * @param string $agreementId
+     * @return bool
+     * @throws GatewayException
+     */
+    public function executeAgreement(User $user, $agreementId)
+    {
+        $response = $this->gateway->completeSubscription([
+            'transactionReference' => $agreementId
+        ])->send();
+
+        if ( ! $response->isSuccessful()) {
+            throw new GatewayException('Could not execute subscription agreement on paypal');
+        }
+
+        $user->billing()->firstOrNew(['user_id' => $user->id])->fill([
+            'paypal_subscription_id' => $response->getTransactionReference()
+        ])->save();
+
+        return true;
     }
 
     /**

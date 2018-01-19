@@ -1,0 +1,15 @@
+<div class="header">
+    <div class="title" trans>Billing</div>
+    <div class="subtitle" trans>Configure billing and subscriptions settings.</div>
+</div>
+
+<form class="body many-inputs" (submit)="saveSettings()" ngNativeValidate>
+    <div class="setting-toggle-container">
+        <mat-slide-toggle name="billing.enable" id="billing.enable" [(ngModel)]="state.client['billing.enable']" trans>Enable Billing</mat-slide-toggle>
+        <p trans>When off, all billing functionality will be disabled and hidden across the site.</p>
+    </div>
+
+    <button mat-raised-button color="accent" class="button primary update-button" type="submit" trans>Update</button>
+</form>
+
+<loading-indicator [isVisible]="loading" class="overlay"></loading-indicator>

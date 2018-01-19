@@ -2,7 +2,7 @@
 
 namespace App;
 
-use Laravel\Cashier\Billable;
+use App\Services\Billing\Billable;
 use Vebto\Auth\User as VebtoUser;
 
 /**
@@ -79,15 +79,5 @@ class User extends VebtoUser
     public function subscriptions()
     {
         return $this->hasMany(Subscription::class);
-    }
-
-    /**
-     * User billing data.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function billing()
-    {
-        return $this->hasOne(BillingData::class);
     }
 }

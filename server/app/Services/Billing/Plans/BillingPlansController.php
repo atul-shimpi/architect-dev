@@ -58,10 +58,13 @@ class BillingPlansController extends Controller
 
         $this->validate($this->request, [
             'name' => 'required|string|max:250|unique:billing_plans',
-            'currency' => 'required|string|max:255',
-            'interval' => 'required|string|max:255',
-            'amount' => 'required|integer|min:0',
+            'currency' => 'required_unless:free,1|string|max:255',
+            'interval' => 'required_unless:free,1|string|max:255',
+            'amount' => 'required_unless:free,1|integer|min:0',
             'permissions' => 'required|array|min:1',
+            'show_permissions' => 'required|in:0,1',
+            'recommended' => 'required|in:0,1',
+            'position' => 'required|integer',
         ]);
 
         $data = $this->request->all();
@@ -96,6 +99,8 @@ class BillingPlansController extends Controller
             'interval' => 'string|max:255',
             'amount' => 'integer|min:0',
             'permissions' => 'array|min:1',
+            'show_permissions' => 'in:0,1',
+            'recommended' => 'in:0,1',
         ]);
 
         $plan = $this->plan->findOrFail($id)->fill($this->request->all());
@@ -121,10 +126,8 @@ class BillingPlansController extends Controller
 
         foreach ($this->request->get('ids') as $id) {
             $plan = $this->plan->find($id);
-
-            if ($this->gatewayPlans->delete($plan)) {
-                $plan->delete();
-            }
+            //$this->gatewayPlans->delete($plan);
+            $plan->delete();
         }
 
         return $this->success();

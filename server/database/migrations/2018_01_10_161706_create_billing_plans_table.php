@@ -21,6 +21,11 @@ class CreateBillingPlansTable extends Migration
             $table->string('interval');
             $table->text('permissions');
             $table->uuid('uuid');
+            $table->boolean('recommended')->default(0);
+            $table->boolean('free')->default(0);
+            $table->boolean('show_permissions')->default(0);
+            $table->text('features')->nullable();
+            $table->integer('position')->default(0);
             $table->timestamps();
         });
     }

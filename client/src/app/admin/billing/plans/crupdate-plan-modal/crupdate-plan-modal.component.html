@@ -1,3 +1,5 @@
+<mat-progress-bar class="dialog-loading-bar" mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+
 <div class="modal-header">
     <h2 class="modal-title" mat-dialog-title *ngIf="updating" trans>Update Plan Details</h2>
     <h2 class="modal-title" mat-dialog-title *ngIf="!updating" trans>Create a New Plan</h2>
@@ -12,27 +14,81 @@
             <div class="error" *ngIf="errors.name">{{errors.name}}</div>
         </div>
 
-        <div class="input-container">
-            <label for="amount" trans>Amount</label>
-            <input type="number" id="amount" name="amount" [(ngModel)]="model.amount" required min="0">
-            <p trans>How much subscribers of this plan should be charged.</p>
-            <div class="error" *ngIf="errors.amount">{{errors.amount}}</div>
-        </div>
+       <ng-container *ngIf="!model.free">
+           <div class="input-container">
+               <label for="amount" trans>Amount</label>
+               <input type="number" id="amount" name="amount" [(ngModel)]="model.amount" required min="0">
+               <p trans>How much subscribers of this plan should be charged.</p>
+               <div class="error" *ngIf="errors.amount">{{errors.amount}}</div>
+           </div>
+
+           <div class="input-container">
+               <label for="currency" trans>Currency</label>
+               <input type="text" id="currency" name="currency" [(ngModel)]="model.currency" required>
+               <div class="error" *ngIf="errors.currency">{{errors.currency}}</div>
+           </div>
+
+           <div class="input-container">
+               <label for="interval" trans>Interval</label>
+               <input type="text" id="interval" name="interval" [(ngModel)]="model.interval" required>
+               <p trans>How often subscribers of this plan should be charged.</p>
+               <div class="error" *ngIf="errors.interval">{{errors.interval}}</div>
+           </div>
+       </ng-container>
 
         <div class="input-container">
-            <label for="currency" trans>Currency</label>
-            <input type="text" id="currency" name="currency" [(ngModel)]="model.currency" required>
-            <div class="error" *ngIf="errors.currency">{{errors.currency}}</div>
+            <label for="position" trans>Position</label>
+            <select type="text" id="position" name="position" [(ngModel)]="model.position" required>
+                <option [ngValue]="1">1</option>
+                <option [ngValue]="2">2</option>
+                <option [ngValue]="3">3</option>
+                <option [ngValue]="4">4</option>
+                <option [ngValue]="5">5</option>
+                <option [ngValue]="6">6</option>
+                <option [ngValue]="7">7</option>
+                <option [ngValue]="8">8</option>
+            </select>
+            <p trans>Order of plans. Lower position will appear first.</p>
+            <div class="error" *ngIf="errors.position">{{errors.position}}</div>
         </div>
 
-        <div class="input-container">
-            <label for="interval" trans>Interval</label>
-            <input type="text" id="interval" name="interval" [(ngModel)]="model.interval" required>
-            <p trans>How often subscribers of this plan should be charged.</p>
-            <div class="error" *ngIf="errors.interval">{{errors.interval}}</div>
+        <div class="setting-toggle-container">
+            <mat-slide-toggle name="recommended" id="recommended" [(ngModel)]="model.recommended" trans>Recommended</mat-slide-toggle>
+            <p trans>Plan will be marked as "Most Popular" and emphasized to users.</p>
+        </div>
+
+        <div class="setting-toggle-container">
+            <mat-slide-toggle name="free" id="free" [(ngModel)]="model.free" trans>Free</mat-slide-toggle>
+            <p trans>Basic free plan that will be assigned to new users that have not upgraded to other plans.</p>
+        </div>
+
+        <div class="setting-toggle-container">
+            <mat-slide-toggle name="show_permissions" id="show_permissions" [(ngModel)]="model.show_permissions" trans>Show Permissions</mat-slide-toggle>
+            <p trans>Whether plan permissions should be displayed as features to users.</p>
         </div>
 
         <permissions-manager-panel [permissions]="model.permissions" [errors]="errors" (change)="model.permissions = $event"></permissions-manager-panel>
+
+       <div class="plan-features">
+           <div class="title">Plan Features</div>
+
+           <mat-list role="list" class="features-list" [reorderPlanFeatures]="features">
+               <mat-list-item role="listitem" *ngFor="let feature of features" [attr.data-id]="feature.id">
+                   <button mat-icon-button class="drag-handle"><svg-icon name="drag-handle" matListIcon></svg-icon></button>
+                   <div class="mat-list-text">{{feature.content}}</div>
+                   <button class="delete-button" mat-icon-button (click)="removeFeature(feature)"><svg-icon name="delete" matListIcon></svg-icon></button>
+               </mat-list-item>
+           </mat-list>
+
+           <p *ngIf="! model.features.length" trans>No custom features yet.</p>
+
+           <form (ngSubmit)="addFeature(newFeature)" class="many-inputs" ngNativeValidate>
+               <div class="input-container">
+                   <input type="text" name="new-feature" placeholder="+New Feature" [(ngModel)]="newFeature" required>
+               </div>
+               <button type="submit" mat-raised-button color="accent" trans>Add</button>
+           </form>
+       </div>
 
         <div class="no-input-error" *ngIf="errors.general">{{errors.general}}</div>
     </div>

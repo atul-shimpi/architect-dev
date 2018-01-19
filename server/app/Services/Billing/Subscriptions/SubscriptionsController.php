@@ -2,8 +2,9 @@
 
 use App\BillingPlan;
 use App\Services\Billing\Subscriptions\Gateways\PaypalSubscriptions;
+use App\Services\Billing\Subscriptions\Gateways\StripeSubscriptions;
 use App\Subscription;
-use Carbon\Carbon;
+use App\User;
 use Illuminate\Http\Request;
 use Vebto\Bootstrap\Controller;
 
@@ -25,9 +26,14 @@ class SubscriptionsController extends Controller
     private $subscription;
 
     /**
-     * @var GatewaySubscriptions
+     * @var PaypalSubscriptions
      */
-    private $gatewaySubscriptions;
+    private $paypal;
+
+    /**
+     * @var StripeSubscriptions
+     */
+    private $stripe;
 
     /**
      * SubscriptionsController constructor.
@@ -35,46 +41,86 @@ class SubscriptionsController extends Controller
      * @param Request $request
      * @param BillingPlan $billingPlan
      * @param Subscription $subscription
+     * @param PaypalSubscriptions $paypal
+     * @param StripeSubscriptions $stripe
      */
-    public function __construct(Request $request, BillingPlan $billingPlan, Subscription $subscription, GatewaySubscriptions $gatewaySubscriptions)
+    public function __construct(
+        Request $request,
+        BillingPlan $billingPlan,
+        Subscription $subscription,
+        PaypalSubscriptions $paypal,
+        StripeSubscriptions $stripe
+    )
     {
+        $this->paypal = $paypal;
+        $this->stripe = $stripe;
         $this->request = $request;
-
-        $this->middleware('auth');
         $this->billingPlan = $billingPlan;
         $this->subscription = $subscription;
-        $this->gatewaySubscriptions = $gatewaySubscriptions;
+
+        $this->middleware('auth');
     }
 
-    public function store($gateway)
+    public function createOnStripe()
     {
-        $rules = [
+        $this->validate($this->request, [
             'plan_id' => 'required|integer|exists:billing_plans,id',
-        ];
+            'card' => 'required|array|min:4',
+            'card.number' => 'required|string|min:4',
+            'card.expiration_month' => 'required|integer|min:1|max:12',
+            'card.expiration_year' => 'required|integer|min:2018|max:2060',
+            'card.cvc' => 'required|integer|min:1|max:999',
+        ]);
 
-        if ($gateway === 'stripe') {
-            $rules = array_merge($rules, [
-                'card' => 'required|array|min:4',
-                'card.number' => 'required|string|min:4',
-                'card.expiration_month' => 'required|integer|min:1|max:12',
-                'card.expiration_year' => 'required|integer|min:2018|max:2060',
-                'card.cvc' => 'required|integer|min:1|max:999',
-            ]);
-        }
-
-        $this->validate($this->request, $rules);
-
+        /** @var User $user */
         $user = $this->request->user();
         $plan = $this->billingPlan->findOrFail($this->request->get('plan_id'));
 
-        //TODO: calc based on plan interval
-        $endsAt = Carbon::now()->addDays(30);
+        $this->stripe->create($plan, $user, $this->request->get('card'));
+        $user->subscribe($plan);
 
-        return $this->success(['urls' => \App::make(PaypalSubscriptions::class)->create($plan, $user, $this->request->get('card'))]);
+        return $this->success();
+    }
 
-//        $subscription = $user->subscriptions()->create([
-//            'plan_id' => $plan->id,
-//            'ends_at' => $endsAt,
-//        ]);
+    /**
+     * Create subscription agreement on paypal.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \App\Services\Billing\GatewayException
+     */
+    public function createPaypalAgreement()
+    {
+        $this->validate($this->request, [
+            'plan_id' => 'required|integer|exists:billing_plans,id'
+        ]);
+
+        $plan = $this->billingPlan->findOrFail($this->request->get('plan_id'));
+        $urls = $this->paypal->createAgreement($plan);
+
+        return $this->success(['urls' => $urls]);
+    }
+
+    /**
+     * Execute subscription agreement on paypal.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \App\Services\Billing\GatewayException
+     */
+    public function executePaypalAgreement()
+    {
+        $this->validate($this->request, [
+            'agreement_id' => 'required|string|min:1',
+            'plan_id' => 'required|integer|exists:billing_plans,id',
+        ]);
+
+        $this->paypal->executeAgreement(
+            $this->request->user(),
+            $this->request->get('agreement_id')
+        );
+
+        $plan = $this->billingPlan->findOrFail($this->request->get('plan_id'));
+        $this->request->user()->subscribe($plan);
+
+        return $this->success();
     }
 }
