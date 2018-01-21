@@ -1,0 +1,18 @@
+<material-navbar [menuPosition]="vebtoConfig.get().navbar.defaultPosition"></material-navbar>
+
+<div class="content container">
+    <mat-card>
+        <mat-card-title>
+            <svg-icon name="check-circle" class="check-icon"></svg-icon>
+            <span trans>Some Plan Name Here</span>
+        </mat-card-title>
+        <mat-card-content>
+            Your plan will automatically renew on 2/20/18 and you'll be charged 6.99 EUR
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-button (click)="maybeCancelSubscription()">Cancel</button>
+            <button mat-raised-button color="accent">Change</button>
+        </mat-card-actions>
+    </mat-card>
+</div>
+

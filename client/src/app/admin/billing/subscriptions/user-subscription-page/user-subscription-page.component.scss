@@ -1,0 +1,20 @@
+@import "../../../../../scss/variables";
+
+user-subscription-page {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background-color: $site-bg-color-200;
+
+  .content {
+    padding: 50px;
+
+    .check-icon {
+      color: $site-accent-color;
+    }
+  }
+
+  .mat-card {
+    max-width: 600px;
+  }
+}

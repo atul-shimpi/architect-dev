@@ -50,6 +50,10 @@ Route::group(['prefix' => 'secure'], function () {
         return App::call('App\Services\Billing\Plans\BillingPlansController@store');
     });
 
+    Route::post('billing/plans/sync', function() {
+        return App::call('App\Services\Billing\Plans\BillingPlansController@sync');
+    });
+
     Route::put('billing/plans/{id}', function($id) {
         return App::call('App\Services\Billing\Plans\BillingPlansController@update', ['id' => $id]);
     });

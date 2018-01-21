@@ -1,12 +1,11 @@
-<?php namespace App\Services\Billing\Plans;
+<?php namespace App\Services\Billing\Plans\Gateways;
 
 use App\BillingPlan;
 use App\Services\Billing\GatewayException;
-use App\Services\Billing\Plans\Gateways\GatewayPlansInterface;
 use Omnipay\Omnipay;
 use Omnipay\Stripe\Gateway;
 
-class StripePlans implements GatewayPlansInterface
+class StripePlans implements GatewayPlans
 {
 
     /**
@@ -19,8 +18,23 @@ class StripePlans implements GatewayPlansInterface
         $this->gateway = Omnipay::create('Stripe');
 
         $this->gateway->initialize(array(
-            'apiKey' => 'sk_test_XkSUco6kDbp7cObW1fCDtALE',
+            'apiKey' => config('services.stripe.key'),
         ));
+    }
+
+    /**
+     * Find specified plan on stripe.
+     *
+     * @param BillingPlan $plan
+     * @return array|null
+     */
+    public function find(BillingPlan $plan)
+    {
+        $response = $this->gateway->fetchPlan(['id' => $plan->uuid])->send();
+
+        if ( ! $response->isSuccessful()) return null;
+
+        return $response->getData();
     }
 
     /**

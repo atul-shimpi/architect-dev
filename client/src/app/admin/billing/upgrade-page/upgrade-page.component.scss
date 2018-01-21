@@ -5,6 +5,7 @@ upgrade-page {
   width: 100%;
   height: 100%;
   background-color: $site-bg-color-200;
+  overflow: auto;
 
   .main-content {
     margin-top: 30px;
@@ -35,7 +36,7 @@ upgrade-page {
       align-items: center;
       max-width: 300px;
       margin-right: 15px;
-      @include mat-elevation(2);
+      @include mat-elevation(1);
       background-color: $site-bg-color-100;
 
       &.recommended {
@@ -83,18 +84,6 @@ upgrade-page {
         }
       }
 
-      > .permissions-list {
-        flex: 1 1 auto;
-        overflow: hidden;
-        width: 100%;
-        text-align: center;
-
-        .mat-list-item-content {
-          white-space: nowrap;
-          text-overflow: ellipsis;
-        }
-      }
-
       > .select-plan-button {
         width: fit-content;
         margin: 20px 0;
@@ -106,14 +95,15 @@ upgrade-page {
     display: flex;
     position: relative;
     background-color: $site-bg-color-100;
-    @include mat-elevation(2);
+    border-radius: 3px;
+    @include mat-elevation(1);
 
-    > .features, .mat-tab-group {
+    > .left-col {
       flex: 1 1 auto;
     }
 
     .mat-tab-body-content {
-      padding: 20px;
+      padding: 35px;
     }
 
     .mat-progress-bar {
@@ -122,23 +112,83 @@ upgrade-page {
       left: 0;
     }
 
-    .paypal-tab {
-      > p {
-        background-color: $site-bg-color-200;
-        border-radius: 4px;
-        padding: 15px;
+    .left-col {
+      .paypal-tab {
+        > p {
+          background-color: $site-bg-color-200;
+          border-radius: 4px;
+          padding: 15px;
+        }
+      }
+    }
+
+    .right-col {
+      padding: 0 20px;
+      border-left: 1px solid $site-border-color-200;
+      min-width: 320px;
+
+      .header {
+        font-weight: 500;
+        font-size: 1.5rem;
+        padding: 20px 20px 0;
+      }
+
+      plan-features-list {
+        text-align: left;
+      }
+
+      .mat-divider {
+        margin: 20px 0 30px;
+      }
+
+      .secure-shopping {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border: 1px solid $site-border-color-200;
+        border-radius: 3px;
+
+        .icon-container {
+          margin-right: 15px;
+          background-color: lighten($site-accent-color, 5%);
+          border-radius: 3px;
+          padding: 10px 10px 5px;
+
+          svg-icon {
+            color: $site-text-color-100;
+          }
+        }
+
+        .text {
+          font-size: 1.6rem;
+          font-weight: 300;
+        }
       }
     }
   }
 
-  .features {
-    padding-left: 15px;
-    border-left: 1px solid $site-border-color-200;
-    max-width: 300px;
-  }
-
   .card-form {
-    max-width: 500px;
+    > .many-inputs {
+      max-width: 500px;
+    }
+
+    .card-icons {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 30px;
+
+      > img {
+        margin-right: 5px;
+        width: 50px;
+        height: auto;
+      }
+    }
+
+    input:not([type=file]), select {
+      max-width: 400px;
+      border-radius: 4px;
+      height: 46px;
+    }
 
     .expiration-date {
       display: flex;

@@ -1,0 +1,13 @@
+<div class="line">
+    <div class="summary-left">
+        <span trans>Monthly </span>
+        <span>{{plan.name}}</span>
+        <span trans> Plan</span>
+    </div>
+    <div class="summary-right">{{getCurrencySymbol()+plan.amount}}</div>
+</div>
+
+<div class="line emphasis">
+    <div class="summary-left" trans>Total</div>
+    <div class="summary-right">{{getCurrencySymbol()+plan.amount}}</div>
+</div>

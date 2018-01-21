@@ -2,6 +2,7 @@
 
 use App\BillingPlan;
 use App\Services\Billing\GatewayException;
+use App\Subscription;
 use App\User;
 use Omnipay\Common\CreditCard;
 use Omnipay\Omnipay;
@@ -19,7 +20,7 @@ class StripeSubscriptions
         $this->gateway = Omnipay::create('Stripe');
 
         $this->gateway->initialize(array(
-            'apiKey' => 'sk_test_XkSUco6kDbp7cObW1fCDtALE',
+            'apiKey' => config('services.stripe.key'),
         ));
     }
 
@@ -30,14 +31,17 @@ class StripeSubscriptions
      * @param User $user
      * @param array $cardData
      * @throws GatewayException
-     * @return bool
+     * @return string
      */
     public function create(BillingPlan $plan, User $user, $cardData)
     {
         $user = $this->maybeCreateStripeCustomer($user, $cardData);
-        $this->createStripeSubscription($user, $plan);
+        return $this->createStripeSubscription($user, $plan);
+    }
 
-        return true;
+    public function cancel(Subscription $subscription)
+    {
+        $this->gateway->cancelSubscription();
     }
 
     /**
@@ -51,7 +55,7 @@ class StripeSubscriptions
     public function maybeCreateStripeCustomer(User $user, $cardData)
     {
         if ($user->billing && $user->billing->stripe_id) {
-            return $user->billing->stripe_id;
+            return $user;
         }
 
         $stripeId = $this->createStripeCustomer($user);
@@ -67,6 +71,7 @@ class StripeSubscriptions
      *
      * @param User $user
      * @param BillingPlan $plan
+     * @return string
      * @throws GatewayException
      */
     private function createStripeSubscription(User $user, BillingPlan $plan)
@@ -79,6 +84,8 @@ class StripeSubscriptions
         if ( ! $response->isSuccessful()) {
             throw new GatewayException('Could not create stripe subscription.');
         }
+
+        return $response->getSubscriptionReference();
     }
 
     /**

@@ -76,8 +76,8 @@ class SubscriptionsController extends Controller
         $user = $this->request->user();
         $plan = $this->billingPlan->findOrFail($this->request->get('plan_id'));
 
-        $this->stripe->create($plan, $user, $this->request->get('card'));
-        $user->subscribe($plan);
+        $subscriptionId = $this->stripe->create($plan, $user, $this->request->get('card'));
+        $user->subscribe('stripe', $subscriptionId, $plan);
 
         return $this->success();
     }
@@ -113,13 +113,12 @@ class SubscriptionsController extends Controller
             'plan_id' => 'required|integer|exists:billing_plans,id',
         ]);
 
-        $this->paypal->executeAgreement(
-            $this->request->user(),
+        $subscriptionId = $this->paypal->executeAgreement(
             $this->request->get('agreement_id')
         );
 
         $plan = $this->billingPlan->findOrFail($this->request->get('plan_id'));
-        $this->request->user()->subscribe($plan);
+        $this->request->user()->subscribe('paypal', $subscriptionId, $plan);
 
         return $this->success();
     }

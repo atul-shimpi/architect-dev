@@ -14,7 +14,7 @@
             <div class="error" *ngIf="errors.name">{{errors.name}}</div>
         </div>
 
-       <ng-container *ngIf="!model.free">
+       <ng-container *ngIf="!model.free && !updating">
            <div class="input-container">
                <label for="amount" trans>Amount</label>
                <input type="number" id="amount" name="amount" [(ngModel)]="model.amount" required min="0">
@@ -82,7 +82,7 @@
 
            <p *ngIf="! model.features.length" trans>No custom features yet.</p>
 
-           <form (ngSubmit)="addFeature(newFeature)" class="many-inputs" ngNativeValidate>
+           <form (ngSubmit)="addFeature()" class="many-inputs" ngNativeValidate>
                <div class="input-container">
                    <input type="text" name="new-feature" placeholder="+New Feature" [(ngModel)]="newFeature" required>
                </div>

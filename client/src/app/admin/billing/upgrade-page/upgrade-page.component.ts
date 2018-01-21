@@ -4,8 +4,8 @@ import {Plan} from "../plans/plan";
 import {Subscriptions} from "../subscriptions/subscriptions.service";
 import {finalize} from "rxjs/operators";
 import {MatStepper} from "@angular/material";
-import {ActivatedRoute} from "@angular/router";
-import {Settings} from "../../../../../node_modules/vebto-client/core";
+import {ActivatedRoute, Router} from "@angular/router";
+import {Settings, Toast} from "../../../../../node_modules/vebto-client/core";
 
 @Component({
     selector: 'upgrade-page',
@@ -27,6 +27,8 @@ export class UpgradePageComponent implements OnInit {
 
     public months = [1,2,3,4,5,6,7,8,9,10,11,12];
 
+    public acceptedCards: string[] = [];
+
     public years = [2020];
 
     public selectedPlan: Plan;
@@ -41,10 +43,17 @@ export class UpgradePageComponent implements OnInit {
     /**
      * SelectPlanModalComponent Constructor.
      */
-    constructor(private subscriptions: Subscriptions, private route: ActivatedRoute, private settings: Settings) {
-    }
+    constructor(
+        private subscriptions: Subscriptions,
+        private route: ActivatedRoute,
+        private settings: Settings,
+        private router: Router,
+        private toast: Toast,
+    ) {}
 
     ngOnInit() {
+        this.acceptedCards = this.settings.getJson('billing.accepted_cards', []);
+
         this.route.data.subscribe(data => {
             this.plans = data.plans;
             this.hasRecommendedPlan = this.plans.filter(plan => plan.recommended).length > 0;
@@ -62,10 +71,16 @@ export class UpgradePageComponent implements OnInit {
         this.subscriptions.createOnStripe({plan_id: this.selectedPlan.id, card: this.cardModel})
             .subscribe(response => {
                 this.loading = false;
+                this.navigateAfterSuccess();
             }, response => {
                 this.errors = response.messages;
                 this.loading = false;
             });
+    }
+
+    private navigateAfterSuccess() {
+        this.router.navigate(['/dashboard']);
+        this.toast.open('Subscribed to '+this.selectedPlan.name+' successfully');
     }
 
     public submitWithPaypal() {
@@ -83,7 +98,7 @@ export class UpgradePageComponent implements OnInit {
                 if (this.settings.getBaseUrl().indexOf(e.origin) === -1) return;
 
                 this.subscriptions.executePaypalAgreement(e.data.token, this.selectedPlan.id).subscribe(response => {
-                    //
+                    this.navigateAfterSuccess();
                 });
             }, false);
 
@@ -93,6 +108,13 @@ export class UpgradePageComponent implements OnInit {
                 'menubar=0, location=0, toolbar=0, titlebar=0, status=0, scrollbars=1, width='+windowWidth+', height='+windowHeight+', '+'left='+left+', top='+top
             );
         })
+    }
+
+    /**
+     * Get specified credit card's icon url.
+     */
+    public getCardIcon(card: string) {
+        return this.settings.getAssetUrl() + 'images/billing/'+card+'.png';
     }
 }
 

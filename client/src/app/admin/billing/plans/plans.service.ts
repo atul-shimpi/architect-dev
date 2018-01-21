@@ -34,6 +34,13 @@ export class Plans {
     }
 
     /**
+     * Sync billing plans across all gateways.
+     */
+    public sync(): Observable<object> {
+        return this.http.post('billing/plans/sync');
+    }
+
+    /**
      * Update plan matching specified id.
      */
     public update(id: number, params: object): Observable<{plan: Plan}> {

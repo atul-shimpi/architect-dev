@@ -9,6 +9,7 @@ import {CurrentUser} from "vebto-client/auth/current-user";
 import {ConfirmModalComponent} from "vebto-client/core/ui/confirm-modal/confirm-modal.component";
 import {CrupdatePlanModalComponent} from "../crupdate-plan-modal/crupdate-plan-modal.component";
 import {finalize} from "rxjs/operators";
+import {Toast} from "../../../../../../node_modules/vebto-client/core";
 
 @Component({
     selector: 'plans-list',
@@ -36,6 +37,7 @@ export class PlansListComponent implements OnInit {
         private plans: Plans,
         private modal: Modal,
         public currentUser: CurrentUser,
+        private toast: Toast,
     ) {}
 
     ngOnInit() {
@@ -84,5 +86,14 @@ export class PlansListComponent implements OnInit {
             if ( ! data) return;
             this.paginator.refresh();
         });
+    }
+
+    public syncPlans() {
+        this.loading = true;
+
+        this.plans.sync().subscribe(() => {
+            this.loading = false;
+            this.toast.open('Synced plans across all enabled payment gateways');
+        }, () => this.loading = false);
     }
 }

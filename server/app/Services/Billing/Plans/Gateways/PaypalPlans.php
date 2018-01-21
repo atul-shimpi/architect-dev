@@ -5,7 +5,7 @@ use App\Services\Billing\GatewayException;
 use Omnipay\Omnipay;
 use Omnipay\PayPal\RestGateway;
 
-class PaypalPlans implements GatewayPlansInterface
+class PaypalPlans implements GatewayPlans
 {
     /**
      * @var RestGateway
@@ -20,10 +20,40 @@ class PaypalPlans implements GatewayPlansInterface
         $this->gateway = Omnipay::create('PayPal_Rest');
 
         $this->gateway->initialize(array(
-            'clientId' => 'Ad1xgUa63HvJMPt0UwFRd0JbegiwAf4k6luLAQiW-YwCdBOudl-tW4eJeqHa7yZD4qmrKF_NTZLTsku3',
-            'secret' => 'EJPT6OnWxZ9Pl8tkW0o9KS_KwdW1JpwlsMR44zDIomjYcDiLU5uxcMAisqgZueJ-9ynSGC8mIeuDlNFe',
+            'clientId' => config('services.paypal.client_id'),
+            'secret' => config('services.paypal.secret'),
             'testMode' => true,
         ));
+    }
+
+    /**
+     * Find specified plan on paypal.
+     *
+     * @param BillingPlan $plan
+     * @return array|null
+     */
+    public function find(BillingPlan $plan)
+    {
+        $response = $this->gateway->listPlan(['page_size' => 20, 'status' => RestGateway::BILLING_PLAN_STATE_ACTIVE])->send();
+
+        if ( ! isset($response->getData()['plans'])) return null;
+
+        $paypalPlan = collect($response->getData()['plans'])->first(function ($paypalPlan) use ($plan) {
+            return $paypalPlan['description'] === $plan->uuid;
+        });
+
+        return $paypalPlan ?: null;
+    }
+
+    /**
+     * Get specified plan's PayPal ID.
+     *
+     * @param BillingPlan $plan
+     * @return string
+     */
+    public function getPlanId(BillingPlan $plan)
+    {
+        return $plan = $this->find($plan) ? $plan['id'] : null;
     }
 
     /**
@@ -83,6 +113,9 @@ class PaypalPlans implements GatewayPlansInterface
      */
     public function delete(BillingPlan $plan)
     {
-        return $this->gateway->deletePlan(['id' => $plan->uuid])->send()->isSuccessful();
+        return $this->gateway->updatePlan([
+            'transactionReference' => $this->getPlanId($plan),
+            'state' => RestGateway::BILLING_PLAN_STATE_DELETED
+        ])->send()->isSuccessful();
     }
 }

@@ -1,0 +1,21 @@
+<svg-icon name="help"></svg-icon>
+
+<div class="text" trans>Accepted Payment Methods</div>
+<popover [origin]="el">
+    <div class="section">
+        <div class="title" trans>Credit/Debit Cards</div>
+        <div class="content">
+            <div class="card-icons">
+                <img [src]="getCardIcon(card)" *ngFor="let card of acceptedCards">
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="title" trans>Other</div>
+        <div class="content">
+            <div class="card-icons">
+                <img [src]="getCardIcon('paypal')">
+            </div>
+        </div>
+    </div>
+</popover>

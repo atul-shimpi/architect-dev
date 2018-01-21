@@ -12,75 +12,96 @@
                     </div>
                     <div class="interval">{{plan.interval}}</div>
                 </div>
-                <mat-list role="list" class="permissions-list">
-                    <ng-container *ngIf="plan.show_permissions">
-                        <mat-list-item role="listitem" *ngFor="let permission of plan.permissions | mapToIterable"><div class="mat-list-text">{{permission.key}}</div></mat-list-item>
-                    </ng-container>
-                    <ng-container *ngIf="plan.features.length">
-                        <mat-list-item role="listitem" *ngFor="let feature of plan.features"><div class="mat-list-text">{{feature}}</div></mat-list-item>
-                    </ng-container>
-                </mat-list>
+                <plan-features-list [plan]="plan"></plan-features-list>
                 <button class="select-plan-button" (click)="selectPlan(plan)" mat-raised-button color="accent" trans>Select</button>
             </div>
         </div>
     </mat-step>
     <mat-step label="Payment" [completed]="false">
-        <div class="payment-step">
-            <mat-tab-group [dynamicHeight]="true" color="accent">
-                <mat-tab label="Bank Card">
-                    <form class="card-form many-inputs" (ngSubmit)="submitPurchase()" ngNativeValidate>
-                        <div class="input-container">
-                            <label for="card-number" trans>Credit or Debit Card</label>
-                            <input type="text" id="card-number" name="card-number" [(ngModel)]="cardModel.number" placeholder="Card Number" trans-placeholder required>
-                            <div class="error" *ngIf="errors.card.number">{{errors.card.number}}</div>
-                        </div>
+        <div class="payment-step" *ngIf="selectedPlan">
+            <div class="left-col">
+                <mat-tab-group [dynamicHeight]="true" color="accent">
+                    <mat-tab label="Bank Card">
+                        <form class="card-form" (ngSubmit)="submitPurchase()" ngNativeValidate>
 
-                        <div class="input-container">
-                            <label for="expiration-date" trans>Expiration Date</label>
-                            <div id="expiration-date" class="expiration-date">
-                                <select name="expiration-month" class="expiration-month" [(ngModel)]="cardModel.expiration_month" required>
-                                    <option [ngValue]="null" disabled trans>Month</option>
-                                    <option [ngValue]="month" *ngFor="let month of months">{{month}}</option>
-                                </select>
-                                <select name="expiration-year" class="expiration-year" [(ngModel)]="cardModel.expiration_year" required>
-                                    <option [ngValue]="null" disabled trans>Year</option>
-                                    <option [ngValue]="year" *ngFor="let year of years">{{year}}</option>
-                                </select>
+                            <div class="card-icons">
+                                <img [src]="getCardIcon(card)" *ngFor="let card of acceptedCards">
                             </div>
-                            <div class="error" *ngIf="errors.card.expiration_month">{{errors.card.expiration_month}}</div>
-                            <div class="error" *ngIf="errors.card.expiration_year">{{errors.card.expiration_year}}</div>
+
+                            <div class="many-inputs">
+                                <div class="input-container">
+                                    <label for="card-number" trans>Credit or Debit Card</label>
+                                    <input type="text" id="card-number" name="card-number" [(ngModel)]="cardModel.number" placeholder="Card Number" trans-placeholder required>
+                                    <div class="error" *ngIf="errors['card.number']">{{errors['card.number']}}</div>
+                                </div>
+
+                                <div class="input-container">
+                                    <label for="expiration-date" trans>Expiration Date</label>
+                                    <div id="expiration-date" class="expiration-date">
+                                        <select name="expiration-month" class="expiration-month" [(ngModel)]="cardModel.expiration_month" required>
+                                            <option [ngValue]="null" disabled trans>Month</option>
+                                            <option [ngValue]="month" *ngFor="let month of months">{{month}}</option>
+                                        </select>
+                                        <select name="expiration-year" class="expiration-year" [(ngModel)]="cardModel.expiration_year" required>
+                                            <option [ngValue]="null" disabled trans>Year</option>
+                                            <option [ngValue]="year" *ngFor="let year of years">{{year}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="error" *ngIf="errors['card.expiration_month']">{{errors['card.expiration_month']}}</div>
+                                    <div class="error" *ngIf="errors['card.expiration_year']">{{errors['card.expiration_year']}}</div>
+                                </div>
+
+                                <div class="input-container">
+                                    <label for="cvc" trans>CVC</label>
+                                    <input type="text" id="cvc" name="cvc" [(ngModel)]="cardModel.cvc" required>
+                                    <mat-progress-bar mode="indeterminate" *ngIf="loading" color="accent"></mat-progress-bar>
+                                    <div class="error" *ngIf="errors['card.cvc']">{{errors['card.cvc']}}</div>
+                                </div>
+                            </div>
+
+                            <order-summary [plan]="selectedPlan"></order-summary>
+
+                            <button type="submit" mat-raised-button color="accent" [disabled]="loading" trans>Submit Purchase</button>
+                        </form>
+                    </mat-tab>
+                    <mat-tab label="Paypal">
+                        <div class="paypal-tab">
+                            <p class="info" trans>
+                                After clicking the button below, you will be redirected to paypal.com to approve the subscription.
+                            </p>
+                            <order-summary [plan]="selectedPlan"></order-summary>
+                            <button mat-raised-button color="accent" (click)="submitWithPaypal()" [disabled]="loading">Pay with paypal</button>
                         </div>
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
 
-                        <div class="input-container">
-                            <label for="cvc" trans>CVC</label>
-                            <input type="text" id="cvc" name="cvc" [(ngModel)]="cardModel.cvc" required>
-                            <mat-progress-bar mode="indeterminate" *ngIf="loading" color="accent"></mat-progress-bar>
-                            <div class="error" *ngIf="errors.card.cvc">{{errors.card.cvc}}</div>
-                        </div>
+            <div class="right-col">
+                <accepted-payments-header></accepted-payments-header>
 
-                        <button type="submit" mat-raised-button color="accent" [disabled]="loading" trans>Submit Purchase</button>
-                    </form>
-                </mat-tab>
-                <mat-tab label="Paypal">
-                   <div class="paypal-tab">
-                       <p class="info" trans>
-                           After clicking the button below, you will be redirected to paypal.com to approve the subscription.
-                       </p>
-                       <button mat-raised-button color="accent" (click)="submitWithPaypal()" [disabled]="loading">Pay with paypal</button>
-                   </div>
-                </mat-tab>
-            </mat-tab-group>
+                <div class="selected-plan">
+                    <div class="header">
+                        <span trans>Monthly </span>
+                        <span>{{selectedPlan.name}}</span>
+                        <span trans> Plan</span>
+                    </div>
+                    <plan-features-list [plan]="selectedPlan" [showCheckIcons]="true" [dense]="true"></plan-features-list>
+                </div>
 
-            <div class="features" *ngIf="selectedPlan">
-                <mat-list role="list">
-                    <mat-list-item role="listitem" *ngFor="let permission of selectedPlan.permissions | mapToIterable">
-                        <span>{{permission.key}}</span>
-                    </mat-list-item>
-                </mat-list>
+                <mat-divider></mat-divider>
+
+                <div class="secure-shopping">
+                    <div class="icon-container">
+                        <svg-icon name="lock-outline"></svg-icon>
+                    </div>
+                    <div class="text" trans>Secure Shopping</div>
+                </div>
             </div>
 
             <mat-progress-bar color="accent" mode="indeterminate" *ngIf="loading"></mat-progress-bar>
         </div>
+
+        <p>You authorise Spotify to charge you automatically every month, until you cancel your subscription. You consent to get access to your Spotify subscription immediately, and acknowledge that refunds are only available within 14 days and provided you haven't accessed Spotify. Full terms and instructions on how to cancel are available here.</p>
     </mat-step>
 </mat-horizontal-stepper>
 

@@ -7,7 +7,8 @@ import {PlansListComponent} from "./plans/plans-list/plans-list.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AdminModule} from "vebto-client/admin/admin.module";
 import {
-    MatButtonModule, MatCheckboxModule, MatChipsModule, MatDialogModule, MatListModule, MatPaginatorModule,
+    MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDialogModule, MatListModule,
+    MatPaginatorModule,
     MatProgressBarModule,
     MatSnackBarModule,
     MatSortModule, MatStepperModule, MatTableModule, MatTabsModule, MatTooltipModule
@@ -17,6 +18,10 @@ import {UpgradePageComponent} from "./upgrade-page/upgrade-page.component";
 import {BillingPlansResolver} from "./upgrade-page/billing-plans-resolver.service";
 import {BillingRoutingModule} from "./billing-routing.module";
 import {ReorderPlanFeaturesDirective} from "./plans/crupdate-plan-modal/reorder-plan-features.directive";
+import { PlanFeaturesListComponent } from './upgrade-page/plan-features-list/plan-features-list.component';
+import { OrderSummaryComponent } from './upgrade-page/order-summary/order-summary.component';
+import { AcceptedPaymentsHeaderComponent } from './upgrade-page/accepted-payments-header/accepted-payments-header.component';
+import { UserSubscriptionPageComponent } from './subscriptions/user-subscription-page/user-subscription-page.component';
 
 @NgModule({
     imports: [
@@ -43,12 +48,17 @@ import {ReorderPlanFeaturesDirective} from "./plans/crupdate-plan-modal/reorder-
         MatStepperModule,
         MatProgressBarModule,
         MatTabsModule,
+        MatCardModule,
     ],
     declarations: [
         PlansListComponent,
         CrupdatePlanModalComponent,
         UpgradePageComponent,
         ReorderPlanFeaturesDirective,
+        PlanFeaturesListComponent,
+        OrderSummaryComponent,
+        AcceptedPaymentsHeaderComponent,
+        UserSubscriptionPageComponent,
     ],
     entryComponents: [
         CrupdatePlanModalComponent,

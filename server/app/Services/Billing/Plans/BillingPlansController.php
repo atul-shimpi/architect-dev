@@ -1,6 +1,8 @@
 <?php namespace App\Services\Billing\Plans;
 
 use App\BillingPlan;
+use App\Services\Billing\Gateways\GatewayFactory;
+use App\Services\Billing\Plans\Gateways\GatewayPlans;
 use App\Services\Billing\Plans\Gateways\PaypalPlans;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -21,15 +23,22 @@ class BillingPlansController extends Controller
     private $request;
 
     /**
+     * @var GatewayFactory
+     */
+    private $factory;
+
+    /**
      * BillingPlansController constructor.
      *
      * @param BillingPlan $plan
      * @param Request $request
+     * @param GatewayFactory $factory
      */
-    public function __construct(BillingPlan $plan, Request $request)
+    public function __construct(BillingPlan $plan, Request $request, GatewayFactory $factory)
     {
         $this->plan = $plan;
         $this->request = $request;
+        $this->factory = $factory;
     }
 
     /**
@@ -61,7 +70,7 @@ class BillingPlansController extends Controller
             'currency' => 'required_unless:free,1|string|max:255',
             'interval' => 'required_unless:free,1|string|max:255',
             'amount' => 'required_unless:free,1|integer|min:0',
-            'permissions' => 'required|array|min:1',
+            'permissions' => 'array',
             'show_permissions' => 'required|in:0,1',
             'recommended' => 'required|in:0,1',
             'position' => 'required|integer',
@@ -72,12 +81,9 @@ class BillingPlansController extends Controller
 
         $plan = $this->plan->create($data);
 
-        //delete plan from database if it could not be
-        //created on currently active payment gateway
-        if ( ! \App::make(PaypalPlans::class)->create($plan)) {
-            $plan->delete();
-            return $this->error(['general' => 'Could not create plan on the gateway.']);
-        }
+        $this->factory->getEnabledPlanGateways()->each(function(GatewayPlans $plans) use($plan) {
+            $plans->create($plan);
+        });
 
         return $this->success(['plan' => $plan]);
     }
@@ -126,9 +132,29 @@ class BillingPlansController extends Controller
 
         foreach ($this->request->get('ids') as $id) {
             $plan = $this->plan->find($id);
-            //$this->gatewayPlans->delete($plan);
             $plan->delete();
+
+            $this->factory->getEnabledPlanGateways()->each(function(GatewayPlans $plans) use($plan) {
+                $plans->delete($plan);
+            });
         }
+
+        return $this->success();
+    }
+
+    /**
+     * Sync billing plans across all enabled payment gateways.
+     */
+    public function sync()
+    {
+        $plans = $this->plan->all();
+
+        $this->factory->getEnabledPlanGateways()->each(function(GatewayPlans $gatewayPlans) use($plans) {
+            $plans->each(function(BillingPlan $plan) use($gatewayPlans) {
+                if ( ! is_null($gatewayPlans->find($plan))) return;
+                $gatewayPlans->create($plan);
+            });
+        });
 
         return $this->success();
     }

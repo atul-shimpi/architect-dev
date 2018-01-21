@@ -17,6 +17,8 @@ class CreateSubscriptionsTable extends Migration
             $table->increments('id');
             $table->integer('user_id');
             $table->string('plan_id');
+            $table->string('gateway');
+            $table->string('gateway_id');
             $table->integer('quantity')->default(1);
             $table->timestamp('trial_ends_at')->nullable();
             $table->timestamp('ends_at')->nullable();

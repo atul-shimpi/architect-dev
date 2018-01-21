@@ -2,7 +2,8 @@
     <div class="admin-table-panel-header">
         <div class="header-inner default" *ngIf="dataSource.selectedRows.isEmpty()">
             <div class="left">
-                <button mat-raised-button color="accent" (click)="showCrupdatePlanModal()" *ngIf="currentUser.hasPermission('plans.create')" trans>Add</button>
+                <button mat-raised-button color="accent" [disabled]="loading" (click)="showCrupdatePlanModal()" *ngIf="currentUser.hasPermission('plans.create')" trans>Add</button>
+                <button mat-button [disabled]="loading" (click)="syncPlans()" *ngIf="currentUser.hasPermission('plans.create')" trans>Sync</button>
             </div>
 
             <div class="right">
