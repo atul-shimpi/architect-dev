@@ -1,8 +1,6 @@
 import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import {Plans} from "../plans/plans.service";
 import {Plan} from "../plans/plan";
 import {Subscriptions} from "../subscriptions/subscriptions.service";
-import {finalize} from "rxjs/operators";
 import {MatStepper} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Settings, Toast} from "../../../../../node_modules/vebto-client/core";
@@ -35,10 +33,17 @@ export class UpgradePageComponent implements OnInit {
 
     public cardModel: CreditCard = {expiration_month: null, expiration_year: null};
 
+    public currencies: object = {};
+
     /**
      * Whether any of the billing plans are marked as "recommended"
      */
     public hasRecommendedPlan: boolean = false;
+
+    /**
+     * Interval (in months) user selected to be charged on.
+     */
+    public selectedSubscriptionInterval: number = 12;
 
     /**
      * SelectPlanModalComponent Constructor.
@@ -57,7 +62,12 @@ export class UpgradePageComponent implements OnInit {
         this.route.data.subscribe(data => {
             this.plans = data.plans;
             this.hasRecommendedPlan = this.plans.filter(plan => plan.recommended).length > 0;
+            this.currencies = data.currencies;
         });
+    }
+
+    public getCurrencySymbol(currency: string) {
+        return this.currencies[currency.toUpperCase()]['symbol'];
     }
 
     public selectPlan(plan: Plan) {

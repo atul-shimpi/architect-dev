@@ -91,7 +91,7 @@ upgrade-page {
     }
   }
   
-  .payment-step {
+  .step-container {
     display: flex;
     position: relative;
     background-color: $site-bg-color-100;
@@ -121,47 +121,78 @@ upgrade-page {
         }
       }
     }
+  }
 
-    .right-col {
-      padding: 0 20px;
-      border-left: 1px solid $site-border-color-200;
-      min-width: 320px;
+  .subscription-period-step {
+    padding: 25px;
 
-      .header {
-        font-weight: 500;
-        font-size: 1.5rem;
-        padding: 20px 20px 0;
-      }
+    .title {
+      font-size: 2.5rem;
+      font-weight: 300;
+      margin-bottom: 40px;
+    }
 
-      plan-features-list {
-        text-align: left;
-      }
-
-      .mat-divider {
-        margin: 20px 0 30px;
-      }
-
-      .secure-shopping {
+    .periods {
+      > .radio-button-wrapper {
         display: flex;
-        align-items: center;
-        padding: 10px;
-        border: 1px solid $site-border-color-200;
-        border-radius: 3px;
+        margin-bottom: 35px;
 
-        .icon-container {
-          margin-right: 15px;
-          background-color: lighten($site-accent-color, 5%);
-          border-radius: 3px;
-          padding: 10px 10px 5px;
+        &.no-label {
+          padding-left: 90px;
+        }
 
-          svg-icon {
-            color: $site-text-color-100;
+        > .savings-label {
+          width: 90px;
+          height: 28px;
+          line-height: 28px;
+          padding-left: 22px;
+          font-size: 1.2rem;
+          font-weight: 500;
+          text-transform: uppercase;
+          background-color: $site-accent-color;
+          color: $site-text-color-100;
+          position: relative;
+
+          &:after {
+            content: " ";
+            left: 100%;
+            top: 50%;
+            height: 0;
+            width: 0;
+            border: 14px solid transparent;
+            border-left-color: $site-accent-color;
+            position: absolute;
+            pointer-events: none;
+            margin-top: -14px;
+          }
+
+          &:before {
+            content: " ";
+            left: 0;
+            top: 50%;
+            height: 0;
+            width: 0;
+            border: 14px solid transparent;
+            border-left-color: $site-bg-color-100;
+            position: absolute;
+            pointer-events: none;
+            margin-top: -14px;
           }
         }
 
-        .text {
-          font-size: 1.6rem;
-          font-weight: 300;
+        > .period {
+          display: block;
+          margin-left: 30px;
+
+          .mat-radio-label-content {
+            display: flex;
+            font-size: 1.5rem;
+
+            > .name {
+              font-weight: 500;
+              padding-right: 5px;
+            }
+          }
         }
       }
     }

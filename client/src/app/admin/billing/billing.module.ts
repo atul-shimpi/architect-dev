@@ -9,7 +9,7 @@ import {AdminModule} from "vebto-client/admin/admin.module";
 import {
     MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDialogModule, MatListModule,
     MatPaginatorModule,
-    MatProgressBarModule,
+    MatProgressBarModule, MatRadioModule,
     MatSnackBarModule,
     MatSortModule, MatStepperModule, MatTableModule, MatTabsModule, MatTooltipModule
 } from "@angular/material";
@@ -22,6 +22,8 @@ import { PlanFeaturesListComponent } from './upgrade-page/plan-features-list/pla
 import { OrderSummaryComponent } from './upgrade-page/order-summary/order-summary.component';
 import { AcceptedPaymentsHeaderComponent } from './upgrade-page/accepted-payments-header/accepted-payments-header.component';
 import { UserSubscriptionPageComponent } from './subscriptions/user-subscription-page/user-subscription-page.component';
+import { UpgradePageAsideComponent } from './upgrade-page/upgrade-page-aside/upgrade-page-aside.component';
+import {CurrenciesListResolver} from "./upgrade-page/currencies-list-resolver.service";
 
 @NgModule({
     imports: [
@@ -49,6 +51,7 @@ import { UserSubscriptionPageComponent } from './subscriptions/user-subscription
         MatProgressBarModule,
         MatTabsModule,
         MatCardModule,
+        MatRadioModule,
     ],
     declarations: [
         PlansListComponent,
@@ -59,6 +62,7 @@ import { UserSubscriptionPageComponent } from './subscriptions/user-subscription
         OrderSummaryComponent,
         AcceptedPaymentsHeaderComponent,
         UserSubscriptionPageComponent,
+        UpgradePageAsideComponent,
     ],
     entryComponents: [
         CrupdatePlanModalComponent,
@@ -67,6 +71,7 @@ import { UserSubscriptionPageComponent } from './subscriptions/user-subscription
         Plans,
         Subscriptions,
         BillingPlansResolver,
+        CurrenciesListResolver,
     ],
     exports: [
         BillingRoutingModule,

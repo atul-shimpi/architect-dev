@@ -5,9 +5,10 @@ import {BillingPlansResolver} from "./upgrade-page/billing-plans-resolver.servic
 import {AccountSettingsResolve} from "../../../../node_modules/vebto-client/account-settings/account-settings-resolve.service";
 import {AuthGuard} from "../../../../node_modules/vebto-client/guards/auth-guard.service";
 import {UserSubscriptionPageComponent} from "./subscriptions/user-subscription-page/user-subscription-page.component";
+import {CurrenciesListResolver} from "./upgrade-page/currencies-list-resolver.service";
 
 export const routes: Route[] = [
-    {path: 'billing/upgrade', component: UpgradePageComponent, resolve: {plans: BillingPlansResolver}},
+    {path: 'billing/upgrade', component: UpgradePageComponent, resolve: {plans: BillingPlansResolver, currencies: CurrenciesListResolver}},
 
     {
         path: 'account/settings/subscription',

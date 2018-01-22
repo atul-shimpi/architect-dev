@@ -1,24 +1,15 @@
 @import "../../../../../scss/variables";
 
 accepted-payments-header {
-  display: flex;
-  align-items: center;
-  position: relative;
+  display: block;
   border-bottom: 1px solid $site-border-color-200;
-  padding: 25px 0;
   margin-bottom: 15px;
 
   > .text {
     font-size: 1.6rem;
+    margin-bottom: 15px;
   }
 
-  > svg-icon {
-    color: $site-accent-color;
-    margin-right: 10px;
-  }
-}
-
-.popover {
   .card-icons {
     display: flex;
     align-items: flex-start;
@@ -28,15 +19,6 @@ accepted-payments-header {
       margin-right: 5px;
       width: 50px;
       height: auto;
-    }
-  }
-
-  .section {
-    margin-bottom: 15px;
-
-    > .title {
-      margin-bottom: 10px;
-      font-size: 1.5rem;
     }
   }
 }

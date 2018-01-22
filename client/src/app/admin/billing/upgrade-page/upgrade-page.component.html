@@ -1,13 +1,13 @@
 <material-navbar></material-navbar>
 
 <mat-horizontal-stepper class="main-content container" [linear]="true">
-    <mat-step label="Select a plan" [completed]="false">
+    <mat-step label="Subscription plan" [completed]="false">
         <div class="plans" [class.has-recommended]="hasRecommendedPlan">
             <div class="plan" *ngFor="let plan of plans" [class.recommended]="plan.recommended">
                 <div class="name">{{plan.name}}</div>
                 <div class="price-box">
                     <div class="amount">
-                        <div class="currency">$</div>
+                        <div class="currency">{{getCurrencySymbol(plan.currency)}}</div>
                         <div class="number">{{plan.amount}}</div>
                     </div>
                     <div class="interval">{{plan.interval}}</div>
@@ -17,8 +17,44 @@
             </div>
         </div>
     </mat-step>
+    <mat-step label="Subscription interval">
+        <div class="subscription-period-step step-container" *ngIf="selectedPlan">
+            <div class="left-col">
+                <div class="title" trans>Select your plan subscription interval</div>
+                <mat-radio-group class="periods" [(ngModel)]="selectedSubscriptionInterval">
+                    <div class="radio-button-wrapper">
+                        <div class="savings-label" trans>Save 35%</div>
+                        <mat-radio-button [ngValue]="24" class="period">
+                            <div class="name" trans>2 years subscription:</div>
+                            <div class="price">{{getCurrencySymbol(selectedPlan.currency)+selectedPlan.amount+'.00'}} x 24 months</div>
+                        </mat-radio-button>
+                    </div>
+                    <div class="radio-button-wrapper">
+                        <div class="savings-label" trans>Save 30%</div>
+                        <mat-radio-button [ngValue]="12" class="period">
+                            <div class="name" trans>Yearly subscription:</div>
+                            <div class="price">{{getCurrencySymbol(selectedPlan.currency)+selectedPlan.amount+'.00'}} x 12 months</div>
+                        </mat-radio-button>
+                    </div>
+                    <div class="radio-button-wrapper no-label">
+                        <mat-radio-button [ngValue]="1" class="period">
+                            <div class="name" trans>Monthly subscription:</div>
+                            <div class="price">{{getCurrencySymbol(selectedPlan.currency)+selectedPlan.amount+'.00'}} month to month</div>
+                        </mat-radio-button>
+                    </div>
+                </mat-radio-group>
+
+                <div class="actions">
+                    <button mat-button trans>Back</button>
+                    <button mat-raised-button color="accent" trans>Select</button>
+                </div>
+            </div>
+
+            <upgrade-page-aside [plan]="selectedPlan" class="right-col"></upgrade-page-aside>
+        </div>
+    </mat-step>
     <mat-step label="Payment" [completed]="false">
-        <div class="payment-step" *ngIf="selectedPlan">
+        <div class="step-container" *ngIf="selectedPlan">
             <div class="left-col">
                 <mat-tab-group [dynamicHeight]="true" color="accent">
                     <mat-tab label="Bank Card">
@@ -76,27 +112,7 @@
                 </mat-tab-group>
             </div>
 
-            <div class="right-col">
-                <accepted-payments-header></accepted-payments-header>
-
-                <div class="selected-plan">
-                    <div class="header">
-                        <span trans>Monthly </span>
-                        <span>{{selectedPlan.name}}</span>
-                        <span trans> Plan</span>
-                    </div>
-                    <plan-features-list [plan]="selectedPlan" [showCheckIcons]="true" [dense]="true"></plan-features-list>
-                </div>
-
-                <mat-divider></mat-divider>
-
-                <div class="secure-shopping">
-                    <div class="icon-container">
-                        <svg-icon name="lock-outline"></svg-icon>
-                    </div>
-                    <div class="text" trans>Secure Shopping</div>
-                </div>
-            </div>
+            <upgrade-page-aside [plan]="selectedPlan" class="right-col"></upgrade-page-aside>
 
             <mat-progress-bar color="accent" mode="indeterminate" *ngIf="loading"></mat-progress-bar>
         </div>
