@@ -5,7 +5,7 @@ import {TemplateColors} from "./template-colors";
 import {Modal} from "vebto-client/core/ui/modal.service";
 import {NewProjectModalComponent} from "./new-project-modal/new-project-modal.component";
 import {BuilderProject, BuilderTemplate} from "../../html-builder/builder-types";
-import {VebtoConfig} from "../../../../node_modules/vebto-client/core/vebto-config.service";
+import {VebtoConfig} from "vebto-client/core/vebto-config.service";
 
 @Component({
     selector: 'new-project-page',

@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {VebtoConfig} from "../../../../../../node_modules/vebto-client/core/vebto-config.service";
-import {ConfirmModalComponent} from "../../../../../../node_modules/vebto-client/core/ui/confirm-modal/confirm-modal.component";
-import {Modal} from "../../../../../../node_modules/vebto-client/core/ui/modal.service";
+import {VebtoConfig} from "vebto-client/core/vebto-config.service";
+import {ConfirmModalComponent} from "vebto-client/core/ui/confirm-modal/confirm-modal.component";
+import {Modal} from "vebto-client/core/ui/modal.service";
 
 @Component({
     selector: 'user-subscription-page',

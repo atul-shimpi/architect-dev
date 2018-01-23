@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit, ViewEncapsulation} from '@angular/core';
-import {Toast} from "../../../../../node_modules/vebto-client/core/ui/toast.service";
+import {Toast} from "vebto-client/core/ui/toast.service";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
-import {CrupdateUserModalComponent} from "../../../../../node_modules/vebto-client/admin/users/crupdate-user-modal/crupdate-user-modal.component";
+import {CrupdateUserModalComponent} from "vebto-client/admin/users/crupdate-user-modal/crupdate-user-modal.component";
 import {Templates} from "../../../templates/templates.service";
 import {BuilderTemplate} from "../../../html-builder/builder-types";
 import {TemplateColors} from "../../../dashboard/new-project-page/template-colors";

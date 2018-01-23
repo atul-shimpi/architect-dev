@@ -3,7 +3,10 @@ export class Plan {
     name: string;
     amount: number;
     currency: string;
-    interval: string;
+    interval: 'day'|'week'|'month'|'year' = 'month';
+    interval_count: number = 1;
+    parent_id: number = null;
+    parent?: Plan;
     permissions: object = {};
     recommended: 0|1 = 0;
     show_permissions: 0|1 = 0;

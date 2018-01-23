@@ -1,6 +1,6 @@
 import {AfterContentInit, Directive, ElementRef, Input} from '@angular/core';
 import * as Sortable from "sortablejs";
-import {utils} from "../../../../../../node_modules/vebto-client/core";
+import {utils} from "vebto-client/core";
 
 @Directive({
     selector: '[reorderPlanFeatures]'

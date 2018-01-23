@@ -3,42 +3,37 @@
 <mat-horizontal-stepper class="main-content container" [linear]="true">
     <mat-step label="Subscription plan" [completed]="false">
         <div class="plans" [class.has-recommended]="hasRecommendedPlan">
-            <div class="plan" *ngFor="let plan of plans" [class.recommended]="plan.recommended">
-                <div class="name">{{plan.name}}</div>
-                <div class="price-box">
-                    <div class="amount">
-                        <div class="currency">{{getCurrencySymbol(plan.currency)}}</div>
-                        <div class="number">{{plan.amount}}</div>
+            <ng-container *ngFor="let plan of plans">
+                <div class="plan" *ngIf="!plan.parent_id" [class.recommended]="plan.recommended">
+                    <div class="name">{{plan.name}}</div>
+                    <div class="price-box">
+                        <div class="amount">
+                            <div class="currency">{{getCurrencySymbol(plan.currency)}}</div>
+                            <div class="number">{{plan.amount}}</div>
+                        </div>
+                        <div class="interval">{{plan.interval}}</div>
                     </div>
-                    <div class="interval">{{plan.interval}}</div>
+                    <plan-features-list [plan]="plan"></plan-features-list>
+                    <button class="select-plan-button" (click)="selectPlan(plan)" mat-raised-button color="accent" trans>Select</button>
                 </div>
-                <plan-features-list [plan]="plan"></plan-features-list>
-                <button class="select-plan-button" (click)="selectPlan(plan)" mat-raised-button color="accent" trans>Select</button>
-            </div>
+            </ng-container>
         </div>
     </mat-step>
     <mat-step label="Subscription interval">
         <div class="subscription-period-step step-container" *ngIf="selectedPlan">
             <div class="left-col">
                 <div class="title" trans>Select your plan subscription interval</div>
-                <mat-radio-group class="periods" [(ngModel)]="selectedSubscriptionInterval">
-                    <div class="radio-button-wrapper">
-                        <div class="savings-label" trans>Save 35%</div>
-                        <mat-radio-button [ngValue]="24" class="period">
-                            <div class="name" trans>2 years subscription:</div>
-                            <div class="price">{{getCurrencySymbol(selectedPlan.currency)+selectedPlan.amount+'.00'}} x 24 months</div>
-                        </mat-radio-button>
-                    </div>
-                    <div class="radio-button-wrapper">
-                        <div class="savings-label" trans>Save 30%</div>
-                        <mat-radio-button [ngValue]="12" class="period">
-                            <div class="name" trans>Yearly subscription:</div>
-                            <div class="price">{{getCurrencySymbol(selectedPlan.currency)+selectedPlan.amount+'.00'}} x 12 months</div>
+                <mat-radio-group class="periods" [(ngModel)]="selectedPlanId" (change)="selectPlanById(selectedPlanId)">
+                    <div class="radio-button-wrapper" *ngFor="let plan of getChildPlans()">
+                        <div class="savings-label" trans>Save {{getPlanSavings(selectedPlan.parent || selectedPlan, plan)}}%</div>
+                        <mat-radio-button [value]="plan.id" class="period">
+                            <div class="name">{{plan.name}} <span trans>subscription:</span></div>
+                            <div class="price">{{getCurrencySymbol(plan.currency)+plan.amount+'.00'}} x {{plan.interval_count}} {{plan.interval}}s</div>
                         </mat-radio-button>
                     </div>
                     <div class="radio-button-wrapper no-label">
-                        <mat-radio-button [ngValue]="1" class="period">
-                            <div class="name" trans>Monthly subscription:</div>
+                        <mat-radio-button [value]="selectedPlan.id" class="period">
+                            <div class="name" trans>1 month subscription:</div>
                             <div class="price">{{getCurrencySymbol(selectedPlan.currency)+selectedPlan.amount+'.00'}} month to month</div>
                         </mat-radio-button>
                     </div>
@@ -117,7 +112,7 @@
             <mat-progress-bar color="accent" mode="indeterminate" *ngIf="loading"></mat-progress-bar>
         </div>
 
-        <p>You authorise Spotify to charge you automatically every month, until you cancel your subscription. You consent to get access to your Spotify subscription immediately, and acknowledge that refunds are only available within 14 days and provided you haven't accessed Spotify. Full terms and instructions on how to cancel are available here.</p>
+        <p>You authorise {{settings.get('branding.site_name')}} to charge you automatically every month, until you cancel your subscription. You consent to get access to your {{settings.get('branding.site_name')}} subscription immediately, and acknowledge that refunds are only available within 14 days and provided you haven't accessed Spotify. Full terms and instructions on how to cancel are available here.</p>
     </mat-step>
 </mat-horizontal-stepper>
 

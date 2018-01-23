@@ -51,7 +51,7 @@ class BillingPlansController extends Controller
     {
         $this->authorize('index', BillingPlan::class);
 
-        return (new Paginator($this->plan))->paginate($this->request->all());
+        return (new Paginator($this->plan))->with('parent')->paginate($this->request->all());
     }
 
     /**

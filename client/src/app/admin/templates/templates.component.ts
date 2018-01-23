@@ -1,12 +1,12 @@
 import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {MatPaginator, MatSort} from "@angular/material";
-import {Modal} from "../../../../node_modules/vebto-client/core/ui/modal.service";
-import {AdminTableDataSource} from "../../../../node_modules/vebto-client/admin/admin-table-data-source";
-import {UrlAwarePaginator} from "../../../../node_modules/vebto-client/admin/pagination/url-aware-paginator.service";
-import {ConfirmModalComponent} from "../../../../node_modules/vebto-client/core/ui/confirm-modal/confirm-modal.component";
+import {Modal} from "vebto-client/core/ui/modal.service";
+import {AdminTableDataSource} from "vebto-client/admin/admin-table-data-source";
+import {UrlAwarePaginator} from "vebto-client/admin/pagination/url-aware-paginator.service";
+import {ConfirmModalComponent} from "vebto-client/core/ui/confirm-modal/confirm-modal.component";
 import {BuilderTemplate} from "../../html-builder/builder-types";
 import {Templates} from "../../templates/templates.service";
-import {CurrentUser} from "../../../../node_modules/vebto-client/auth/current-user";
+import {CurrentUser} from "vebto-client/auth/current-user";
 import {CrupdateTemplateModalComponent} from "./crupdate-template-modal/crupdate-template-modal.component";
 
 @Component({

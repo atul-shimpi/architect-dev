@@ -8,10 +8,10 @@ import {Toast} from "vebto-client/core/ui/toast.service";
 import {Modal} from "vebto-client/core/ui/modal.service";
 import {ConfirmModalComponent} from "vebto-client/core/ui/confirm-modal/confirm-modal.component";
 import {ProjectUrl} from "../html-builder/projects/project-url.service";
-import {VebtoConfig} from "../../../node_modules/vebto-client/core/vebto-config.service";
+import {VebtoConfig} from "vebto-client/core/vebto-config.service";
 import {PublishProjectModalComponent} from "../shared/publish-project-modal/publish-project-modal.component";
 import {FormControl, FormGroup} from "@angular/forms";
-import {UrlAwarePaginator} from "../../../node_modules/vebto-client/admin/pagination/url-aware-paginator.service";
+import {UrlAwarePaginator} from "vebto-client/admin/pagination/url-aware-paginator.service";
 import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 
 @Component({

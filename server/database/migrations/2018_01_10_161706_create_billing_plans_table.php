@@ -18,8 +18,10 @@ class CreateBillingPlansTable extends Migration
             $table->string('name');
             $table->integer('amount');
             $table->string('currency');
-            $table->string('interval');
-            $table->text('permissions');
+            $table->string('interval')->default('month');
+            $table->integer('interval_count')->default(1);
+            $table->integer('parent_id')->nullable();
+            $table->text('permissions')->nullable();
             $table->uuid('uuid');
             $table->boolean('recommended')->default(0);
             $table->boolean('free')->default(0);

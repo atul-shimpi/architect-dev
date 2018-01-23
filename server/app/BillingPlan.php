@@ -1,5 +1,6 @@
 <?php namespace App;
 
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Vebto\Auth\FormatsPermissions;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $amount
  * @property string $currency
  * @property string $interval
+ * @property string $interval_count
  * @property string $uuid
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
@@ -39,5 +41,10 @@ class BillingPlan extends Model
     {
         if (is_string($value)) return;
         $this->attributes['features'] = json_encode($value);
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(BillingPlan::class, 'parent_id');
     }
 }

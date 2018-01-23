@@ -33,7 +33,7 @@ trait Billable
      */
     public function subscribed()
     {
-        $subscription = $this->subscription();
+        $subscription = $this->subscriptions->first();
 
         if (is_null($subscription)) {
             return false;
@@ -50,16 +50,6 @@ trait Billable
     public function billing()
     {
         return $this->hasOne(BillingData::class);
-    }
-
-    /**
-     * Get user subscription.
-     *
-     * @return Subscription
-     */
-    public function subscription()
-    {
-        return $this->subscriptions()->first();
     }
 
     /**

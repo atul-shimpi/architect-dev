@@ -20,4 +20,8 @@ export class PlanFeaturesListComponent {
      * Whether features list should be displayed as dense.
      */
     @Input() dense: boolean = false;
+
+    public getPlan() {
+        return this.plan.parent || this.plan;
+    }
 }

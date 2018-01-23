@@ -3,9 +3,9 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 import {Themes} from "../../../html-builder/themes.service";
 import {Theme} from "../../../../types/models/Theme";
 import {Projects} from "../../../html-builder/projects/projects.service";
-import {Toast} from "../../../../../node_modules/vebto-client/core";
+import {Toast} from "vebto-client/core";
 import {Project} from "../../../../types/models/Project";
-import {utils} from "../../../../../node_modules/vebto-client/core/services/utils";
+import {utils} from "vebto-client/core/services/utils";
 
 @Component({
     selector: 'crupdate-project-modal',

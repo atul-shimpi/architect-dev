@@ -3,7 +3,7 @@ import {Plan} from "../plans/plan";
 import {Subscriptions} from "../subscriptions/subscriptions.service";
 import {MatStepper} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
-import {Settings, Toast} from "../../../../../node_modules/vebto-client/core";
+import {Settings, Toast} from "vebto-client/core";
 
 @Component({
     selector: 'upgrade-page',
@@ -19,7 +19,7 @@ export class UpgradePageComponent implements OnInit {
     public errors: {card: CreditCard} = {card: {}};
 
     /**
-     * All available plans.
+     * All available plans. 
      */
     public plans: Plan[] = [];
 
@@ -43,7 +43,7 @@ export class UpgradePageComponent implements OnInit {
     /**
      * Interval (in months) user selected to be charged on.
      */
-    public selectedSubscriptionInterval: number = 12;
+    public selectedPlanId: number = 12;
 
     /**
      * SelectPlanModalComponent Constructor.
@@ -70,9 +70,26 @@ export class UpgradePageComponent implements OnInit {
         return this.currencies[currency.toUpperCase()]['symbol'];
     }
 
+    /**
+     * Get different versions of main plans
+     * (yearly, weekly, every 2 years etc)
+     */
+    public getChildPlans() {
+        return this.plans.filter(plan => plan.parent_id);
+    }
+
     public selectPlan(plan: Plan) {
         this.selectedPlan = plan;
+        this.selectedPlanId = plan.id;
         this.stepper.next();
+    }
+
+    /**
+     * Select plan by specified ID.
+     */
+    public selectPlanById(id: number) {
+        this.selectedPlan = this.plans.find(plan => plan.id === id);
+        this.selectedPlanId = id;
     }
 
     public submitPurchase() {
@@ -125,6 +142,13 @@ export class UpgradePageComponent implements OnInit {
      */
     public getCardIcon(card: string) {
         return this.settings.getAssetUrl() + 'images/billing/'+card+'.png';
+    }
+
+    /**
+     * Get price decrease percentage between specified plans.
+     */
+    public getPlanSavings(expensive: Plan, cheap: Plan): number {
+        return (expensive.amount-cheap.amount)/expensive.amount * 100;
     }
 }
 

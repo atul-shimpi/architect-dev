@@ -1,9 +1,9 @@
 import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import {UrlAwarePaginator} from "../../../../node_modules/vebto-client/admin/pagination/url-aware-paginator.service";
-import {AdminTableDataSource} from "../../../../node_modules/vebto-client/admin/admin-table-data-source";
-import {Modal} from "../../../../node_modules/vebto-client/core/ui/modal.service";
-import {CurrentUser} from "../../../../node_modules/vebto-client/auth/current-user";
-import {ConfirmModalComponent} from "../../../../node_modules/vebto-client/core/ui/confirm-modal/confirm-modal.component";
+import {UrlAwarePaginator} from "vebto-client/admin/pagination/url-aware-paginator.service";
+import {AdminTableDataSource} from "vebto-client/admin/admin-table-data-source";
+import {Modal} from "vebto-client/core/ui/modal.service";
+import {CurrentUser} from "vebto-client/auth/current-user";
+import {ConfirmModalComponent} from "vebto-client/core/ui/confirm-modal/confirm-modal.component";
 import {MatPaginator, MatSort} from "@angular/material";
 import {Projects} from "../../html-builder/projects/projects.service";
 import {ProjectUrl} from "../../html-builder/projects/project-url.service";

@@ -4,7 +4,7 @@ import {NewProjectModalComponent} from "../../dashboard/new-project-page/new-pro
 import {Projects} from "../../html-builder/projects/projects.service";
 import {ProjectUrl} from "../../html-builder/projects/project-url.service";
 import {Project} from "../../../types/models/Project";
-import {Settings, Toast} from "../../../../node_modules/vebto-client/core";
+import {Settings, Toast} from "vebto-client/core";
 import {Subscription} from "rxjs/Subscription";
 
 @Component({

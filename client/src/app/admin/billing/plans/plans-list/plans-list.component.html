@@ -62,12 +62,12 @@
 
         <ng-container matColumnDef="recommended">
             <mat-header-cell *matHeaderCellDef mat-sort-header trans>Recommended</mat-header-cell>
-            <mat-cell *matCellDef="let plan"> {{plan.recommended ? 'Yes' : 'No' }} </mat-cell>
+            <mat-cell *matCellDef="let plan"> {{plan.parent_id ? '-' : (plan.recommended ? 'Yes' : 'No') }} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="position">
             <mat-header-cell *matHeaderCellDef mat-sort-header trans>Position</mat-header-cell>
-            <mat-cell *matCellDef="let plan"> {{plan.position}} </mat-cell>
+            <mat-cell *matCellDef="let plan"> {{plan.parent_id ? '-' : plan.position}} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="created_at">

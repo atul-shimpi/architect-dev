@@ -38,11 +38,11 @@ class StripePlans implements GatewayPlans
     }
 
     /**
-     * Create a new plan on currently active gateway.
+     * Create a new plan on stripe gateway.
      *
      * @param BillingPlan $plan
-     * @throws GatewayException
      * @return bool
+     * @throws GatewayException
      */
     public function create(BillingPlan $plan)
     {
@@ -51,6 +51,7 @@ class StripePlans implements GatewayPlans
             'amount' => $plan->amount,
             'currency' => $plan->currency,
             'interval' => $plan->interval,
+            'interval_count' => $plan->interval_count,
             'name' => $plan->name,
         ])->send();
 

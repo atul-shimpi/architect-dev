@@ -8,7 +8,7 @@ import {Toast} from "vebto-client/core/ui/toast.service";
 import {Settings} from "vebto-client/core/services/settings.service";
 import {DeviceSwitcherComponent} from "./device-switcher/device-switcher.component";
 import {ContextBoxes} from "../live-preview/context-boxes.service";
-import {Modal} from "../../../../node_modules/vebto-client/core/ui/modal.service";
+import {Modal} from "vebto-client/core/ui/modal.service";
 import {PublishProjectModalComponent} from "../../shared/publish-project-modal/publish-project-modal.component";
 
 @Component({

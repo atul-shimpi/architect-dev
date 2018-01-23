@@ -3,7 +3,7 @@ import {AppHttpClient} from "vebto-client/core/http/app-http-client.service";
 import {Observable} from "rxjs/Observable";
 import {Project} from "../../../types/models/Project";
 import {BuilderProject} from "../builder-types";
-import {PaginationResponse} from "../../../../node_modules/vebto-client/core/types/pagination-response";
+import {PaginationResponse} from "vebto-client/core/types/pagination-response";
 import {FtpDetails} from "../../shared/publish-project-modal/publish-project-modal.component";
 
 @Injectable()

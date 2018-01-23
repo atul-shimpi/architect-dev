@@ -1,12 +1,12 @@
-<mat-list role="list" *ngIf="plan" [class.dense]="dense">
-    <ng-container *ngIf="plan.show_permissions">
-        <mat-list-item role="listitem" *ngFor="let permission of plan.permissions | mapToIterable">
+<mat-list role="list" *ngIf="getPlan()" [class.dense]="dense">
+    <ng-container *ngIf="getPlan().show_permissions">
+        <mat-list-item role="listitem" *ngFor="let permission of getPlan().permissions | mapToIterable">
             <svg-icon class="check-icon" name="check" *ngIf="showCheckIcons" matListIcon></svg-icon>
             <div class="mat-list-text">{{permission.key}}</div>
         </mat-list-item>
     </ng-container>
-    <ng-container *ngIf="plan.features.length">
-        <mat-list-item role="listitem" *ngFor="let feature of plan.features">
+    <ng-container *ngIf="getPlan().features.length">
+        <mat-list-item role="listitem" *ngFor="let feature of getPlan().features">
             <svg-icon class="check-icon" name="check" *ngIf="showCheckIcons" matListIcon></svg-icon>
             <div class="mat-list-text">{{feature}}</div>
         </mat-list-item>

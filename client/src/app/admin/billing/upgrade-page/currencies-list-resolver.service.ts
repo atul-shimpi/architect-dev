@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Resolve, RouterStateSnapshot, ActivatedRouteSnapshot} from '@angular/router';
 import {map} from "rxjs/operators";
-import {ValueLists} from "../../../../../node_modules/vebto-client/core/services/value-lists.service";
+import {ValueLists} from "vebto-client/core/services/value-lists.service";
 
 @Injectable()
 export class CurrenciesListResolver implements Resolve<any> {

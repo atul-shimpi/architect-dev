@@ -3,7 +3,8 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 import {Plans} from "../plans.service";
 import {Plan} from "../plan";
 import {Toast} from "vebto-client/core/ui/toast.service";
-import {utils} from "../../../../../../node_modules/vebto-client/core";
+import {utils} from "vebto-client/core";
+import {ValueLists} from "../../../../../../node_modules/vebto-client/core/services/value-lists.service";
 
 @Component({
     selector: 'crupdate-plan-modal',
@@ -43,20 +44,37 @@ export class CrupdatePlanModalComponent implements OnInit {
      */
     public errors: any = {};
 
+    public currencies: {name: string, symbol: string}[] = [];
+
+    public intervals = ['day', 'week', 'month', 'year'];
+
+    /**
+     * All existing plans.
+     */
+    public allPlans: Plan[];
+
     /**
      * CrupdateUserModalComponent Constructor.
      */
     constructor(
         private dialogRef: MatDialogRef<CrupdatePlanModalComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: {plan?: Plan},
+        @Inject(MAT_DIALOG_DATA) public data: {plan?: Plan, plans: Plan[]},
         public plans: Plans,
         private toast: Toast,
+        private valueLists: ValueLists,
     ) {
         this.resetState();
     }
 
     ngOnInit() {
         this.resetState();
+        this.allPlans = this.data.plans;
+
+        this.valueLists.get('currencies').subscribe(response => {
+            this.currencies = Object.keys(response.currencies).map(key => {
+                return response.currencies[key];
+            });
+        });
 
         if (this.data.plan) {
             this.updating = true;
@@ -136,7 +154,7 @@ export class CrupdatePlanModalComponent implements OnInit {
      * Reset all modal state to default.
      */
     private resetState() {
-        this.model = new Plan();
+        this.model = new Plan({currency: 'USD', interval: 'month', interval_count: 1, position: 1});
         this.features = [];
         this.errors = {};
     }

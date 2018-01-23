@@ -1,15 +1,15 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from "@angular/router";
 import {TemplatesComponent} from "./templates/templates.component";
-import {AuthGuard} from "../../../node_modules/vebto-client/guards/auth-guard.service";
-import {CheckPermissionsGuard} from "../../../node_modules/vebto-client/guards/check-permissions-guard.service";
-import {AdminComponent} from "../../../node_modules/vebto-client/admin/admin.component";
+import {AuthGuard} from "vebto-client/guards/auth-guard.service";
+import {CheckPermissionsGuard} from "vebto-client/guards/check-permissions-guard.service";
+import {AdminComponent} from "vebto-client/admin/admin.component";
 import {ProjectsComponent} from "./projects/projects.component";
 import {BuilderSettingsComponent} from "./settings/builder/builder-settings.component";
-import {SettingsComponent} from "../../../node_modules/vebto-client/admin/settings/settings.component";
-import {SettingsResolve} from "../../../node_modules/vebto-client/admin/settings/settings-resolve.service";
-import {vebtoSettingsRoutes} from "../../../node_modules/vebto-client/admin/settings/settings-routing.module";
-import {vebtoAdminRoutes} from "../../../node_modules/vebto-client/admin/admin-routing.module";
+import {SettingsComponent} from "vebto-client/admin/settings/settings.component";
+import {SettingsResolve} from "vebto-client/admin/settings/settings-resolve.service";
+import {vebtoSettingsRoutes} from "vebto-client/admin/settings/settings-routing.module";
+import {vebtoAdminRoutes} from "vebto-client/admin/admin-routing.module";
 import {PlansListComponent} from "./billing/plans/plans-list/plans-list.component";
 import {BillingSettingsComponent} from "./settings/billing/billing-settings.component";
 
