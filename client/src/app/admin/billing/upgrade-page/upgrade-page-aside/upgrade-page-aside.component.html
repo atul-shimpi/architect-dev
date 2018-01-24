@@ -2,9 +2,8 @@
 
 <div class="selected-plan">
     <div class="header">
-        <span trans>Monthly </span>
+        <span *ngIf="plan.parent">{{plan.parent.name}} </span>
         <span>{{plan.name}}</span>
-        <span trans> Plan</span>
     </div>
     <plan-features-list [plan]="plan" [showCheckIcons]="true" [dense]="true"></plan-features-list>
 </div>

@@ -126,6 +126,15 @@ upgrade-page {
   .subscription-period-step {
     padding: 25px;
 
+    .left-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .actions {
+      margin-top: auto;
+    }
+
     .title {
       font-size: 2.5rem;
       font-weight: 300;

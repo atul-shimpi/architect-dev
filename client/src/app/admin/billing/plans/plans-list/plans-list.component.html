@@ -45,6 +45,11 @@
             <mat-cell *matCellDef="let plan"> {{plan.name}} </mat-cell>
         </ng-container>
 
+        <ng-container matColumnDef="parent">
+            <mat-header-cell *matHeaderCellDef trans>Parent Plan</mat-header-cell>
+            <mat-cell *matCellDef="let plan"> {{plan.parent ? plan.parent.name : '-'}} </mat-cell>
+        </ng-container>
+
         <ng-container matColumnDef="amount">
             <mat-header-cell *matHeaderCellDef mat-sort-header trans>Amount</mat-header-cell>
             <mat-cell *matCellDef="let plan"> {{plan.free ? 'Free' : plan.amount}} </mat-cell>
@@ -84,8 +89,8 @@
             </mat-cell>
         </ng-container>
 
-        <mat-header-row *matHeaderRowDef="['select', 'name', 'amount', 'currency', 'interval', 'recommended', 'position', 'created_at', 'edit']"></mat-header-row>
-        <mat-row *matRowDef="let myRowData; columns: ['select', 'name', 'amount', 'currency', 'interval', 'recommended', 'position', 'created_at', 'edit']"></mat-row>
+        <mat-header-row *matHeaderRowDef="['select', 'name', 'parent', 'amount', 'currency', 'interval', 'recommended', 'position', 'created_at', 'edit']"></mat-header-row>
+        <mat-row *matRowDef="let myRowData; columns: ['select', 'name', 'parent', 'amount', 'currency', 'interval', 'recommended', 'position', 'created_at', 'edit']"></mat-row>
     </mat-table>
 
     <no-results-message *ngIf="dataSource.isEmpty()">

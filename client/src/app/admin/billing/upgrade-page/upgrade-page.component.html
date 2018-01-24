@@ -9,7 +9,7 @@
                     <div class="price-box">
                         <div class="amount">
                             <div class="currency">{{getCurrencySymbol(plan.currency)}}</div>
-                            <div class="number">{{plan.amount}}</div>
+                            <div class="number">{{formatPlanAmount(plan.amount)}}</div>
                         </div>
                         <div class="interval">{{plan.interval}}</div>
                     </div>
@@ -23,25 +23,25 @@
         <div class="subscription-period-step step-container" *ngIf="selectedPlan">
             <div class="left-col">
                 <div class="title" trans>Select your plan subscription interval</div>
-                <mat-radio-group class="periods" [(ngModel)]="selectedPlanId" (change)="selectPlanById(selectedPlanId)">
-                    <div class="radio-button-wrapper" *ngFor="let plan of getChildPlans()">
+                <mat-radio-group class="periods" [(ngModel)]="selectedPlanId">
+                    <div class="radio-button-wrapper" *ngFor="let plan of getChildPlans(selectedPlan)">
                         <div class="savings-label" trans>Save {{getPlanSavings(selectedPlan.parent || selectedPlan, plan)}}%</div>
-                        <mat-radio-button [value]="plan.id" class="period">
+                        <mat-radio-button [value]="plan.id" class="period" (change)="selectChildPlan(plan.id)">
                             <div class="name">{{plan.name}} <span trans>subscription:</span></div>
-                            <div class="price">{{getCurrencySymbol(plan.currency)+plan.amount+'.00'}} x {{plan.interval_count}} {{plan.interval}}s</div>
+                            <div class="price">{{getCurrencySymbol(plan.currency)+formatPlanAmount(plan.amount)+'.00'}} x {{plan.interval_count}} {{plan.interval}}s</div>
                         </mat-radio-button>
                     </div>
                     <div class="radio-button-wrapper no-label">
                         <mat-radio-button [value]="selectedPlan.id" class="period">
                             <div class="name" trans>1 month subscription:</div>
-                            <div class="price">{{getCurrencySymbol(selectedPlan.currency)+selectedPlan.amount+'.00'}} month to month</div>
+                            <div class="price">{{getCurrencySymbol(selectedPlan.currency)+formatPlanAmount(selectedPlan.amount)+'.00'}} month to month</div>
                         </mat-radio-button>
                     </div>
                 </mat-radio-group>
 
                 <div class="actions">
-                    <button mat-button trans>Back</button>
-                    <button mat-raised-button color="accent" trans>Select</button>
+                    <button mat-button matStepperPrevious trans>Back</button>
+                    <button mat-raised-button color="accent" matStepperNext trans>Select</button>
                 </div>
             </div>
 
@@ -90,7 +90,7 @@
                                 </div>
                             </div>
 
-                            <order-summary [plan]="selectedPlan"></order-summary>
+                            <order-summary [plan]="selectedPlan" [childPlan]="selectedPlanChild"></order-summary>
 
                             <button type="submit" mat-raised-button color="accent" [disabled]="loading" trans>Submit Purchase</button>
                         </form>

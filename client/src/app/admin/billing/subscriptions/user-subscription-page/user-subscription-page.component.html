@@ -10,6 +10,7 @@
             Your plan will automatically renew on 2/20/18 and you'll be charged 6.99 EUR
         </mat-card-content>
         <mat-card-actions>
+            <button mat-raised-button color="accent" (click)="resumeSubscription()" trans>Resume</button>
             <button mat-button (click)="maybeCancelSubscription()">Cancel</button>
             <button mat-raised-button color="accent">Change</button>
         </mat-card-actions>

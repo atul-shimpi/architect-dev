@@ -29,8 +29,6 @@ export class UpgradePageComponent implements OnInit {
 
     public years = [2020];
 
-    public selectedPlan: Plan;
-
     public cardModel: CreditCard = {expiration_month: null, expiration_year: null};
 
     public currencies: object = {};
@@ -39,6 +37,16 @@ export class UpgradePageComponent implements OnInit {
      * Whether any of the billing plans are marked as "recommended"
      */
     public hasRecommendedPlan: boolean = false;
+
+    /**
+     * Billing plan user has selected.
+     */
+    public selectedPlan: Plan;
+
+    /**
+     * Child of main plan user has selected, for example yearly plan.
+     */
+    public selectedPlanChild: Plan;
 
     /**
      * Interval (in months) user selected to be charged on.
@@ -51,7 +59,7 @@ export class UpgradePageComponent implements OnInit {
     constructor(
         private subscriptions: Subscriptions,
         private route: ActivatedRoute,
-        private settings: Settings,
+        public settings: Settings,
         private router: Router,
         private toast: Toast,
     ) {}
@@ -71,11 +79,18 @@ export class UpgradePageComponent implements OnInit {
     }
 
     /**
-     * Get different versions of main plans
+     * Format plan amount. For example, convert cents to dollars.
+     */
+    public formatPlanAmount(amount: number): number {
+        return amount / 100;
+    }
+
+    /**
+     * Get different versions of specified plan.
      * (yearly, weekly, every 2 years etc)
      */
-    public getChildPlans() {
-        return this.plans.filter(plan => plan.parent_id);
+    public getChildPlans(parent: Plan) {
+        return this.plans.filter(plan => plan.parent_id === parent.id);
     }
 
     public selectPlan(plan: Plan) {
@@ -85,17 +100,17 @@ export class UpgradePageComponent implements OnInit {
     }
 
     /**
-     * Select plan by specified ID.
+     * Select child plan by specified ID.
      */
-    public selectPlanById(id: number) {
-        this.selectedPlan = this.plans.find(plan => plan.id === id);
+    public selectChildPlan(id: number) {
+        this.selectedPlanChild = this.plans.find(plan => plan.id === id);
         this.selectedPlanId = id;
     }
 
     public submitPurchase() {
         this.loading = true;
 
-        this.subscriptions.createOnStripe({plan_id: this.selectedPlan.id, card: this.cardModel})
+        this.subscriptions.createOnStripe({plan_id: this.selectedPlanId, card: this.cardModel})
             .subscribe(response => {
                 this.loading = false;
                 this.navigateAfterSuccess();
@@ -113,7 +128,7 @@ export class UpgradePageComponent implements OnInit {
     public submitWithPaypal() {
         this.loading = true;
 
-        this.subscriptions.createPaypalAgreement(this.selectedPlan.id).subscribe(response => {
+        this.subscriptions.createPaypalAgreement(this.selectedPlanId).subscribe(response => {
             this.loading = false;
 
             const windowHeight = 650;

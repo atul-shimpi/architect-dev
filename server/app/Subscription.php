@@ -1,7 +1,9 @@
 <?php namespace App;
 
+use App\Services\Billing\Gateways\GatewayFactory;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use LogicException;
 
 class Subscription extends Model
 {
@@ -92,7 +94,7 @@ class Subscription extends Model
      */
     public function cancel()
     {
-        $subscription->cancel(['at_period_end' => true]);
+        $response = $this->asGatewaySubscription()->cancel($this);
 
         // If the user was on trial, we will set the grace period to end when the trial
         // would have ended. Otherwise, we'll retrieve the end of the billing period
@@ -101,12 +103,57 @@ class Subscription extends Model
             $this->ends_at = $this->trial_ends_at;
         } else {
             $this->ends_at = Carbon::createFromTimestamp(
-                $subscription->current_period_end
+                $response->getData()->current_period_end
             );
         }
 
         $this->save();
 
         return $this;
+    }
+
+    /**
+     * Resume the cancelled subscription.
+     *
+     * @return $this
+     *
+     * @throws \LogicException
+     */
+    public function resume()
+    {
+        if ( ! $this->onGracePeriod()) {
+            throw new LogicException('Unable to resume subscription that is not within grace period.');
+        }
+
+        if ($this->onTrial()) {
+            $trialEnd = $this->trial_ends_at->getTimestamp();
+        } else {
+            $trialEnd = 'now';
+        }
+
+        $subscription = $this->asGatewaySubscription();
+
+        // To resume the subscription we need to set the plan parameter on the Stripe
+        // subscription object. This will force Stripe to resume this subscription
+        // where we left off. Then, we'll set the proper trial ending timestamp.
+        $subscription->update($this, ['trial_end' => $trialEnd]);
+
+
+        // Finally, we will remove the ending timestamp from the user's record in the
+        // local database to indicate that the subscription is active again and is
+        // no longer "cancelled". Then we will save this record in the database.
+        $this->fill(['ends_at' => null])->save();
+
+        return $this;
+    }
+
+    /**
+     * Get gateway this subscriptions was created with.
+     * @return mixed
+     *
+     */
+    public function asGatewaySubscription()
+    {
+        return \App::make(GatewayFactory::class)->getSubscriptionGateway($this->gateway);
     }
 }

@@ -41,7 +41,40 @@ class StripeSubscriptions
 
     public function cancel(Subscription $subscription)
     {
-        $this->gateway->cancelSubscription();
+        $response = $this->gateway->cancelSubscription([
+            'subscriptionReference' => $subscription->gateway_id,
+            'customerReference' => $subscription->user->stripe_id,
+            'at_period_end' => true,
+        ])->send();
+
+        if ( ! $response->isSuccessful()) {
+            throw new GatewayException('Could not cancel stripe subscription.');
+        }
+
+        return $response->getData();
+    }
+
+    /**
+     * Update specified subscription.
+     *
+     * @param Subscription $subscription
+     * @param array $params
+     * @return mixed
+     * @throws GatewayException
+     */
+    public function update(Subscription $subscription, $params)
+    {
+        $response = $this->gateway->updateSubscription(array_merge([
+            'plan' => $subscription->plan->uuid,
+            'customerReference' => $subscription->user->stripe_id,
+            'subscriptionReference' => $subscription->gateway_id,
+        ], $params))->send();
+
+        if ( ! $response->isSuccessful()) {
+            throw new GatewayException('Could not update stripe subscription.');
+        }
+
+        return $response->getData();
     }
 
     /**
@@ -54,12 +87,10 @@ class StripeSubscriptions
      */
     public function maybeCreateStripeCustomer(User $user, $cardData)
     {
-        if ($user->billing && $user->billing->stripe_id) {
-            return $user;
-        }
+        if ($user->stripe_id) return $user;
 
         $stripeId = $this->createStripeCustomer($user);
-        $user->billing()->create(['stripe_id' => $stripeId]);
+        $user->fill(['stripe_id' => $stripeId])->save();
 
         $this->createStripeCard($user, $cardData);
 
@@ -77,7 +108,7 @@ class StripeSubscriptions
     private function createStripeSubscription(User $user, BillingPlan $plan)
     {
         $response = $this->gateway->createSubscription([
-            'customerReference' => $user->billing->stripe_id,
+            'customerReference' => $user->stripe_id,
             'plan' => $plan->uuid,
         ])->send();
 
@@ -130,7 +161,7 @@ class StripeSubscriptions
 
         $response = $this->gateway->createCard([
             'card' => $card,
-            'customerReference' => $user->billing->stripe_id,
+            'customerReference' => $user->stripe_id,
         ])->send();
 
         if ( ! $response->isSuccessful()) {

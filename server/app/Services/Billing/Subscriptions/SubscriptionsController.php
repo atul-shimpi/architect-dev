@@ -122,4 +122,32 @@ class SubscriptionsController extends Controller
 
         return $this->success();
     }
+
+    /**
+     * Cancel specified subscription.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function cancel($id)
+    {
+        $subscription = $this->subscription->findOrFail($id);
+        $subscription->cancel();
+
+        return $this->success(['subscription' => $subscription]);
+    }
+
+    /**
+     * Resume specified subscription.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function resume($id)
+    {
+        $subscription = $this->subscription->findOrFail($id);
+        $subscription->resume();
+
+        return $this->success(['subscription' => $subscription]);
+    }
 }

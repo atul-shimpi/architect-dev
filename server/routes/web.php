@@ -74,6 +74,14 @@ Route::group(['prefix' => 'secure'], function () {
     Route::post('billing/subscriptions/paypal/agreement/execute', function() {
         return App::call('App\Services\Billing\Subscriptions\SubscriptionsController@executePaypalAgreement');
     });
+
+    Route::delete('billing/subscriptions/{id}', function($id) {
+        return App::call('App\Services\Billing\Subscriptions\SubscriptionsController@cancel', ['id' => $id]);
+    });
+
+    Route::post('billing/subscriptions/{id}/resume', function($id) {
+        return App::call('App\Services\Billing\Subscriptions\SubscriptionsController@resume', ['id' => $id]);
+    });
 });
 
 //paypal

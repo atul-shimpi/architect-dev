@@ -50,9 +50,13 @@ export class Subscriptions {
     }
 
     /**
-     * Delete subscription matching specified id.
+     * Cancel subscription matching specified id.
      */
-    public delete(params: {ids: number[]}): Observable<any> {
-        return this.http.delete('billing/subscriptions', params);
+    public cancel(id: number): Observable<any> {
+        return this.http.delete('billing/subscriptions/'+id);
+    }
+
+    public resume(id: number): Observable<any> {
+        return this.http.post('billing/subscriptions/'+id+'/resume');
     }
 }
