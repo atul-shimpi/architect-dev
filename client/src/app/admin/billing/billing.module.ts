@@ -24,6 +24,7 @@ import { AcceptedPaymentsHeaderComponent } from './upgrade-page/accepted-payment
 import { UserSubscriptionPageComponent } from './subscriptions/user-subscription-page/user-subscription-page.component';
 import { UpgradePageAsideComponent } from './upgrade-page/upgrade-page-aside/upgrade-page-aside.component';
 import {CurrenciesListResolver} from "./upgrade-page/currencies-list-resolver.service";
+import {BillingFormatter} from "./billing-formatter.service";
 
 @NgModule({
     imports: [
@@ -72,6 +73,7 @@ import {CurrenciesListResolver} from "./upgrade-page/currencies-list-resolver.se
         Subscriptions,
         BillingPlansResolver,
         CurrenciesListResolver,
+        BillingFormatter,
     ],
     exports: [
         BillingRoutingModule,

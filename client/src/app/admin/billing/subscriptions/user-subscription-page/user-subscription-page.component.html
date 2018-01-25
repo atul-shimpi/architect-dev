@@ -1,19 +1,48 @@
 <material-navbar [menuPosition]="vebtoConfig.get().navbar.defaultPosition"></material-navbar>
 
-<div class="content container">
-    <mat-card>
-        <mat-card-title>
-            <svg-icon name="check-circle" class="check-icon"></svg-icon>
-            <span trans>Some Plan Name Here</span>
-        </mat-card-title>
-        <mat-card-content>
-            Your plan will automatically renew on 2/20/18 and you'll be charged 6.99 EUR
-        </mat-card-content>
-        <mat-card-actions>
-            <button mat-raised-button color="accent" (click)="resumeSubscription()" trans>Resume</button>
-            <button mat-button (click)="maybeCancelSubscription()">Cancel</button>
-            <button mat-raised-button color="accent">Change</button>
-        </mat-card-actions>
-    </mat-card>
+<div class="content container mat-elevation-z1">
+    <div class="main">
+        <div class="main-section">
+            <div class="main-section-title" trans>{{getPlanName()}}</div>
+            <div class="main-section-content">
+                <ng-container *ngIf="canCancel()">
+                    <p>Your plan will automatically renew on <strong>{{getFormattedRenewDate()}}</strong> and you'll be charged <strong>{{getPlanPrice()}}</strong></p>
+                </ng-container>
+
+                <ng-container *ngIf="canResume()">
+                    <p trans>You are on a grace period until <strong>{{getFormattedEndDate()}}</strong>. Your subscription will not automatically resume and you will not be charged.</p>
+                    <p trans>You still have access to your plan's features until this date and you can resume your subscription below.</p>
+                    <button mat-raised-button color="accent" (click)="resumeSubscription()" trans>Resume</button>
+                </ng-container>
+            </div>
+        </div>
+
+        <div class="main-section" *ngIf="canCancel()">
+            <div class="main-section-title" trans>Payment Method</div>
+            <div class="main-title-description">Select your preferred payment method below. You can use a credit card or PayPal.</div>
+
+            <p>Current payment Method: Credit Card</p>
+
+            <div class="main-section-actions">
+                <button mat-raised-button color="accent" (click)="maybeCancelSubscription()" trans>Add Card</button>
+            </div>
+        </div>
+
+        <div class="main-section" *ngIf="canCancel()">
+            <div class="main-section-title" trans>Cancel Subscription</div>
+
+            <div class="main-section-content">
+                <p trans>After cancelling subscription, you will have access to your active plan until your billing period end.</p>
+            </div>
+
+            <div class="main-section-actions">
+                <button mat-raised-button color="warn" (click)="maybeCancelSubscription()" trans>Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <upgrade-page-aside [plan]="getPlan()"></upgrade-page-aside>
+
+    <loading-indicator class="overlay" [isVisible]="loading"></loading-indicator>
 </div>
 

@@ -70,4 +70,6 @@ use Vebto\Auth\User as VebtoUser;
 class User extends VebtoUser
 {
     use Billable;
+
+    protected $with = ['subscriptions.plan.parent'];
 }

@@ -31,7 +31,7 @@ class StripeSubscriptions
      * @param User $user
      * @param array $cardData
      * @throws GatewayException
-     * @return string
+     * @return array
      */
     public function create(BillingPlan $plan, User $user, $cardData)
     {
@@ -51,7 +51,7 @@ class StripeSubscriptions
             throw new GatewayException('Could not cancel stripe subscription.');
         }
 
-        return $response->getData();
+        return $response->getData()['current_period_end'];
     }
 
     /**
@@ -102,7 +102,7 @@ class StripeSubscriptions
      *
      * @param User $user
      * @param BillingPlan $plan
-     * @return string
+     * @return array
      * @throws GatewayException
      */
     private function createStripeSubscription(User $user, BillingPlan $plan)
@@ -116,7 +116,7 @@ class StripeSubscriptions
             throw new GatewayException('Could not create stripe subscription.');
         }
 
-        return $response->getSubscriptionReference();
+        return ['reference' => $response->getSubscriptionReference(), 'end_date' => 'current_period_end'];
     }
 
     /**

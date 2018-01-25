@@ -76,8 +76,8 @@ class SubscriptionsController extends Controller
         $user = $this->request->user();
         $plan = $this->billingPlan->findOrFail($this->request->get('plan_id'));
 
-        $subscriptionId = $this->stripe->create($plan, $user, $this->request->get('card'));
-        $user->subscribe('stripe', $subscriptionId, $plan);
+        $sub = $this->stripe->create($plan, $user, $this->request->get('card'));
+        $user->subscribe('stripe', $sub['reference'], $plan, $sub['end_date']);
 
         return $this->success();
     }
@@ -131,6 +131,7 @@ class SubscriptionsController extends Controller
      */
     public function cancel($id)
     {
+        /** @var Subscription $subscription */
         $subscription = $this->subscription->findOrFail($id);
         $subscription->cancel();
 
@@ -145,6 +146,7 @@ class SubscriptionsController extends Controller
      */
     public function resume($id)
     {
+        /** @var Subscription $subscription */
         $subscription = $this->subscription->findOrFail($id);
         $subscription->resume();
 

@@ -52,11 +52,11 @@ export class Subscriptions {
     /**
      * Cancel subscription matching specified id.
      */
-    public cancel(id: number): Observable<any> {
+    public cancel(id: number): Observable<{subscription: Subscription}> {
         return this.http.delete('billing/subscriptions/'+id);
     }
 
-    public resume(id: number): Observable<any> {
+    public resume(id: number): Observable<{subscription: Subscription}> {
         return this.http.post('billing/subscriptions/'+id+'/resume');
     }
 }

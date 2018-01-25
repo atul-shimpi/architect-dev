@@ -5,9 +5,37 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use LogicException;
 
+/**
+ * Class Subscription
+ *
+ * @property \Carbon\Carbon|null $trial_ends_at
+ * @property \Carbon\Carbon|null $ends_at
+ */
 class Subscription extends Model
 {
     protected $guarded = ['id'];
+
+    protected $appends = ['on_grace_period', 'on_trial', 'valid', 'active', 'cancelled'];
+
+    public function getOnGracePeriodAttribute() {
+        return $this->onGracePeriod();
+    }
+
+    public function getOnTrialAttribute() {
+        return $this->onTrial();
+    }
+
+    public function getValidAttribute() {
+        return $this->valid();
+    }
+
+    public function getActiveAttribute() {
+        return $this->active();
+    }
+
+    public function getCancelledAttribute() {
+        return $this->cancelled();
+    }
 
     /**
      * The attributes that should be mutated to dates.
@@ -15,7 +43,7 @@ class Subscription extends Model
      * @var array
      */
     protected $dates = [
-        'trial_ends_at', 'ends_at',
+        'trial_ends_at', 'ends_at', 'renews_at',
         'created_at', 'updated_at',
     ];
 
@@ -80,7 +108,7 @@ class Subscription extends Model
      */
     public function onGracePeriod()
     {
-        if (! is_null($endsAt = $this->ends_at)) {
+        if ( ! is_null($endsAt = $this->ends_at)) {
             return Carbon::now()->lt(Carbon::instance($endsAt));
         } else {
             return false;
@@ -94,7 +122,7 @@ class Subscription extends Model
      */
     public function cancel()
     {
-        $response = $this->asGatewaySubscription()->cancel($this);
+        $endDate = $this->subscriptionGateway()->cancel($this);
 
         // If the user was on trial, we will set the grace period to end when the trial
         // would have ended. Otherwise, we'll retrieve the end of the billing period
@@ -102,9 +130,7 @@ class Subscription extends Model
         if ($this->onTrial()) {
             $this->ends_at = $this->trial_ends_at;
         } else {
-            $this->ends_at = Carbon::createFromTimestamp(
-                $response->getData()->current_period_end
-            );
+            $this->ends_at = Carbon::createFromTimestamp($endDate);
         }
 
         $this->save();
@@ -131,7 +157,7 @@ class Subscription extends Model
             $trialEnd = 'now';
         }
 
-        $subscription = $this->asGatewaySubscription();
+        $subscription = $this->subscriptionGateway();
 
         // To resume the subscription we need to set the plan parameter on the Stripe
         // subscription object. This will force Stripe to resume this subscription
@@ -152,7 +178,7 @@ class Subscription extends Model
      * @return mixed
      *
      */
-    public function asGatewaySubscription()
+    public function subscriptionGateway()
     {
         return \App::make(GatewayFactory::class)->getSubscriptionGateway($this->gateway);
     }

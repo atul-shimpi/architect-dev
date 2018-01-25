@@ -4,6 +4,9 @@ import {ConfirmModalComponent} from "vebto-client/core/ui/confirm-modal/confirm-
 import {Modal} from "vebto-client/core/ui/modal.service";
 import {Subscriptions} from "../subscriptions.service";
 import {CurrentUser} from "../../../../../../node_modules/vebto-client/auth/current-user";
+import {BillingFormatter} from "../../billing-formatter.service";
+import {Plan} from "../../plans/plan";
+import {finalize} from "rxjs/operators";
 
 @Component({
     selector: 'user-subscription-page',
@@ -13,14 +16,44 @@ import {CurrentUser} from "../../../../../../node_modules/vebto-client/auth/curr
 })
 export class UserSubscriptionPageComponent implements OnInit {
 
-    constructor(
-        public vebtoConfig: VebtoConfig,
-        private modal: Modal,
-        private subscriptions: Subscriptions,
-        private currentUser: CurrentUser,
-    ) {}
+    public loading: boolean = false;
+
+    constructor(public vebtoConfig: VebtoConfig,
+                private modal: Modal,
+                private subscriptions: Subscriptions,
+                public currentUser: CurrentUser,
+                public formatter: BillingFormatter,) {
+    }
 
     ngOnInit() {
+    }
+
+    public canResume() {
+        return this.currentUser.onGracePeriod();
+    }
+
+    public canCancel() {
+        return this.currentUser.isSubscribed() && !this.currentUser.onGracePeriod();
+    }
+
+    public getPlanName(): string {
+        return this.formatter.getFullPlanName(this.getPlan());
+    }
+
+    public getFormattedEndDate(): string {
+        return this.currentUser.getSubscription().ends_at.split(' ')[0];
+    }
+
+    public getFormattedRenewDate() {
+        return this.currentUser.getSubscription().renews_at.split(' ')[0];
+    }
+
+    public getPlanPrice(): string {
+        return this.formatter.getFormattedPlanPrice(this.getPlan());
+    }
+
+    public getPlan(): Plan {
+        return this.currentUser.getSubscription().plan;
     }
 
     /**
@@ -30,20 +63,31 @@ export class UserSubscriptionPageComponent implements OnInit {
     public maybeCancelSubscription() {
         this.modal.open(ConfirmModalComponent, {
             title: 'Cancel Subscription',
-            body:  'Are you sure you want to cancel your subscription?',
-            ok:    'Yes, Cancel',
+            body: 'Are you sure you want to cancel your subscription?',
+            ok: 'Yes, Cancel',
             cancel: 'Go Back'
         }).afterClosed().subscribe(confirmed => {
-            if ( ! confirmed) return;
-            this.subscriptions.cancel(this.currentUser.get('subscriptions')[0].id).subscribe(response => {
-                console.log(response);
-            });
+            if (!confirmed) return;
+            this.loading = true;
+
+            this.subscriptions.cancel(this.currentUser.get('subscriptions')[0].id)
+                .pipe(finalize(() => this.loading = false))
+                .subscribe(response => {
+                    this.currentUser.setSubscription(response.subscription);
+                });
         });
     }
 
+    /**
+     * Resume cancelled subscription.
+     */
     public resumeSubscription() {
-        this.subscriptions.resume(this.currentUser.get('subscriptions')[0].id).subscribe(response => {
-            console.log(response);
-        })
+        this.loading = true;
+
+        this.subscriptions.resume(this.currentUser.get('subscriptions')[0].id)
+            .pipe(finalize(() => this.loading = false))
+            .subscribe(response => {
+                this.currentUser.setSubscription(response.subscription);
+            });
     }
 }

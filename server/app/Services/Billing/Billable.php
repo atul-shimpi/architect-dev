@@ -9,21 +9,22 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 trait Billable
 {
-    public function subscribe($gateway, $gatewayId, BillingPlan $plan)
+    public function subscribe($gateway, $gatewayId, BillingPlan $plan, $renewsAt = null)
     {
         //TODO: calc based on plan interval
-        $endsAt = Carbon::now()->addDays(30);
+        if ($renewsAt) {
+            $renewsAt = Carbon::createFromTimestamp($renewsAt);
+        } else {
+            $renewsAt = Carbon::now()->addDays(30);
+        }
 
-        $subscription = $this->subscriptions()->create([
+        return $this->subscriptions()->create([
             'plan_id' => $plan->id,
-            'ends_at' => $endsAt,
+            'ends_at' => null,
+            'renews_at' => $renewsAt,
             'gateway' => $gateway,
             'gateway_id' => $gatewayId,
         ]);
-    }
-
-    public function getIsSubscribedAttribute() {
-        return $this->subscribed();
     }
 
     /**
@@ -40,16 +41,6 @@ trait Billable
         }
 
         return $subscription->valid();
-    }
-
-    /**
-     * User billing data.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function billing()
-    {
-        return $this->hasOne(BillingData::class);
     }
 
     /**
