@@ -3,10 +3,8 @@
 use App;
 use Illuminate\Support\Collection;
 use Vebto\Settings\Settings;
-use App\Services\Billing\Plans\Gateways\StripePlans;
 use App\Services\Billing\Plans\Gateways\PaypalPlans;
-use App\Services\Billing\Subscriptions\Gateways\PaypalSubscriptions;
-use App\Services\Billing\Subscriptions\Gateways\StripeSubscriptions;
+use App\Services\Billing\Gateways\Stripe\StripeGateway;
 
 class GatewayFactory
 {
@@ -15,14 +13,9 @@ class GatewayFactory
      */
     private $settings;
 
-    private $allPlanGateways = [
+    private $gateways = [
         'paypal' => PaypalPlans::class,
-        'stripe' => StripePlans::class,
-    ];
-
-    private $allSubscriptionGateways = [
-        'paypal' => PaypalSubscriptions::class,
-        'stripe' => StripeSubscriptions::class,
+        'stripe' => StripeGateway::class,
     ];
 
     /**
@@ -52,5 +45,16 @@ class GatewayFactory
         })->map(function($namespace) {
             return App::make($namespace);
         });
+    }
+
+    /**
+     * Get gateway by specified name.
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function get($name)
+    {
+        return App::make($this->gateways[$name]);
     }
 }

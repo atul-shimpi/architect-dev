@@ -7,6 +7,9 @@ import {CurrentUser} from "../../../../../../node_modules/vebto-client/auth/curr
 import {BillingFormatter} from "../../billing-formatter.service";
 import {Plan} from "../../plans/plan";
 import {finalize} from "rxjs/operators";
+import {CreditCard} from "../../upgrade-page/upgrade-page.component";
+import {User} from "../../../../../../node_modules/vebto-client/core/types/models/User";
+import {Toast} from "../../../../../../node_modules/vebto-client/core";
 
 @Component({
     selector: 'user-subscription-page',
@@ -18,12 +21,19 @@ export class UserSubscriptionPageComponent implements OnInit {
 
     public loading: boolean = false;
 
-    constructor(public vebtoConfig: VebtoConfig,
-                private modal: Modal,
-                private subscriptions: Subscriptions,
-                public currentUser: CurrentUser,
-                public formatter: BillingFormatter,) {
-    }
+    /**
+     * Whether credit card form is visible.
+     */
+    private cardFormVisible: boolean;
+
+    constructor(
+        public vebtoConfig: VebtoConfig,
+        private modal: Modal,
+        private subscriptions: Subscriptions,
+        public currentUser: CurrentUser,
+        public formatter: BillingFormatter,
+        private toast: Toast,
+    ) {}
 
     ngOnInit() {
     }
@@ -89,5 +99,20 @@ export class UserSubscriptionPageComponent implements OnInit {
             .subscribe(response => {
                 this.currentUser.setSubscription(response.subscription);
             });
+    }
+
+    /**
+     * Fired when user changes active credit card successfully.
+     */
+    public onCardChanged(user: User) {
+        this.currentUser.assignCurrent(user);
+        this.toast.open('Credit card updated.');
+    }
+
+    /**
+     * Toggle visibility of credit card form.
+     */
+    public toggleCardForm() {
+        this.cardFormVisible = !this.cardFormVisible;
     }
 }

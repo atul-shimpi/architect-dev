@@ -1,11 +1,8 @@
-<?php namespace App\Services\Billing\Subscriptions\Gateways;
+<?php namespace App\Services\Billing\Gateways\Paypal;
 
 use App\BillingPlan;
 use App\Services\Billing\GatewayException;
-use App\Services\Billing\Plans\Gateways\PaypalPlans;
-use App\User;
 use Carbon\Carbon;
-use Omnipay\Omnipay;
 use Omnipay\PayPal\RestGateway;
 
 class PaypalSubscriptions
@@ -16,25 +13,12 @@ class PaypalSubscriptions
     private $gateway;
 
     /**
-     * @var PaypalPlans
-     */
-    private $paypalPlans;
-
-    /**
      * PaypalPlans constructor.
-     *
-     * @param PaypalPlans $paypalPlans
+     * @param RestGateway $gateway
      */
-    public function __construct(PaypalPlans $paypalPlans)
+    public function __construct(RestGateway $gateway)
     {
-        $this->paypalPlans = $paypalPlans;
-        $this->gateway = Omnipay::create('PayPal_Rest');
-
-        $this->gateway->initialize(array(
-            'clientId' => config('services.paypal.client_id'),
-            'secret' => config('services.paypal.secret'),
-            'testMode' => true,
-        ));
+        $this->gateway = $gateway;
     }
 
     /**

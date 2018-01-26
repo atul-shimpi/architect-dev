@@ -1,11 +1,12 @@
 <?php namespace App\Services\Billing\Subscriptions;
 
 use App\BillingPlan;
+use App\Services\Billing\Gateways\Stripe\StripeGateway;
 use App\Services\Billing\Subscriptions\Gateways\PaypalSubscriptions;
-use App\Services\Billing\Subscriptions\Gateways\StripeSubscriptions;
 use App\Subscription;
 use App\User;
 use Illuminate\Http\Request;
+use Omnipay\Common\Exception\InvalidCreditCardException;
 use Vebto\Bootstrap\Controller;
 
 class SubscriptionsController extends Controller
@@ -31,7 +32,7 @@ class SubscriptionsController extends Controller
     private $paypal;
 
     /**
-     * @var StripeSubscriptions
+     * @var StripeGateway
      */
     private $stripe;
 
@@ -42,14 +43,14 @@ class SubscriptionsController extends Controller
      * @param BillingPlan $billingPlan
      * @param Subscription $subscription
      * @param PaypalSubscriptions $paypal
-     * @param StripeSubscriptions $stripe
+     * @param StripeGateway $stripe
      */
     public function __construct(
         Request $request,
         BillingPlan $billingPlan,
         Subscription $subscription,
         PaypalSubscriptions $paypal,
-        StripeSubscriptions $stripe
+        StripeGateway $stripe
     )
     {
         $this->paypal = $paypal;
@@ -69,17 +70,36 @@ class SubscriptionsController extends Controller
             'card.number' => 'required|string|min:4',
             'card.expiration_month' => 'required|integer|min:1|max:12',
             'card.expiration_year' => 'required|integer|min:2018|max:2060',
-            'card.cvc' => 'required|integer|min:1|max:999',
+            'card.security_code' => 'required|integer|min:1|max:999',
         ]);
 
         /** @var User $user */
         $user = $this->request->user();
         $plan = $this->billingPlan->findOrFail($this->request->get('plan_id'));
 
-        $sub = $this->stripe->create($plan, $user, $this->request->get('card'));
+        $sub = $this->stripe->subscriptions()->create($plan, $user, $this->request->get('card'));
         $user->subscribe('stripe', $sub['reference'], $plan, $sub['end_date']);
 
         return $this->success();
+    }
+
+    public function addCardOnStripe()
+    {
+        $this->validate($this->request, [
+            'card' => 'required|array|min:4',
+            'card.number' => 'required|string|min:4',
+            'card.expiration_month' => 'required|integer|min:1|max:12',
+            'card.expiration_year' => 'required|integer|min:2018|max:2060',
+            'card.security_code' => 'required|integer|min:1|max:999',
+        ]);
+
+        try {
+            $user = $this->stripe->addCard($this->request->user(), $this->request->get('card'));
+        } catch (InvalidCreditCardException $e) {
+            return $this->error(['general' => $e->getMessage()]);
+        }
+
+        return $this->success(['user' => $user]);
     }
 
     /**

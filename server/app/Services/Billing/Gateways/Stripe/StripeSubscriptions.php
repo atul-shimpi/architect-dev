@@ -1,11 +1,9 @@
-<?php namespace App\Services\Billing\Subscriptions\Gateways;
+<?php namespace App\Services\Billing\Gateways\Stripe;
 
 use App\BillingPlan;
 use App\Services\Billing\GatewayException;
 use App\Subscription;
 use App\User;
-use Omnipay\Common\CreditCard;
-use Omnipay\Omnipay;
 use Omnipay\Stripe\Gateway;
 
 class StripeSubscriptions
@@ -15,13 +13,14 @@ class StripeSubscriptions
      */
     private $gateway;
 
-    public function __construct()
+    /**
+     * StripeSubscriptions constructor.
+     *
+     * @param Gateway $gateway
+     */
+    public function __construct(Gateway $gateway)
     {
-        $this->gateway = Omnipay::create('Stripe');
-
-        $this->gateway->initialize(array(
-            'apiKey' => config('services.stripe.key'),
-        ));
+        $this->gateway = $gateway;
     }
 
     /**
@@ -39,12 +38,12 @@ class StripeSubscriptions
         return $this->createStripeSubscription($user, $plan);
     }
 
-    public function cancel(Subscription $subscription)
+    public function cancel(Subscription $subscription, $params = ['at_period_end' => true])
     {
         $response = $this->gateway->cancelSubscription([
             'subscriptionReference' => $subscription->gateway_id,
             'customerReference' => $subscription->user->stripe_id,
-            'at_period_end' => true,
+            'at_period_end' => $params['at_period_end'],
         ])->send();
 
         if ( ! $response->isSuccessful()) {
@@ -138,34 +137,5 @@ class StripeSubscriptions
 
         /** @var \Omnipay\Stripe\Message\Response $response */
         return $response->getCustomerReference();
-    }
-
-    /**
-     * Create a new card on stripe.
-     *
-     * @param User $user
-     * @param array $cardData
-     * @throws GatewayException
-     */
-    private function createStripeCard(User $user, $cardData)
-    {
-        $card = new CreditCard([
-            'number' => $cardData['number'],
-            'expiryMonth' => $cardData['expiration_month'],
-            'expiryYear' => $cardData['expiration_year'],
-            'cvv' => $cardData['cvc'],
-            'email' => $user->email,
-            'firstName' => $user->first_name,
-            'lastName' => $user->last_name,
-        ]);
-
-        $response = $this->gateway->createCard([
-            'card' => $card,
-            'customerReference' => $user->stripe_id,
-        ])->send();
-
-        if ( ! $response->isSuccessful()) {
-            throw new GatewayException('Could not create stripe credit card.');
-        }
     }
 }

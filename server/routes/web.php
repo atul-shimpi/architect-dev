@@ -82,6 +82,10 @@ Route::group(['prefix' => 'secure'], function () {
     Route::post('billing/subscriptions/{id}/resume', function($id) {
         return App::call('App\Services\Billing\Subscriptions\SubscriptionsController@resume', ['id' => $id]);
     });
+
+    Route::post('billing/stripe/cards/add', function() {
+        return App::call('App\Services\Billing\Subscriptions\SubscriptionsController@addCardOnStripe');
+    });
 });
 
 //paypal

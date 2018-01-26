@@ -23,8 +23,16 @@
 
             <p>Current payment Method: Credit Card</p>
 
+            <div class="card-preview">
+                <div class="icon"><svg-icon name="credit-card"></svg-icon></div>
+                <div class="info">{{currentUser.get('card_brand')}} **** {{currentUser.get('card_last_four')}}</div>
+                <div class="action"><button mat-button (click)="toggleCardForm()" trans>Update</button></div>
+            </div>
+
+            <credit-card-form (created)="onCardChanged($event)" (closed)="toggleCardForm()" *ngIf="cardFormVisible"></credit-card-form>
+
             <div class="main-section-actions">
-                <button mat-raised-button color="accent" (click)="maybeCancelSubscription()" trans>Add Card</button>
+                <button mat-raised-button color="accent" (click)="maybeCancelSubscription()" trans>Change Payment Method to PayPal</button>
             </div>
         </div>
 

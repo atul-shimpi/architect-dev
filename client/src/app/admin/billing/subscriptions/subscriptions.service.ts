@@ -4,6 +4,7 @@ import {Observable} from "rxjs/Observable";
 import {PaginationResponse} from "vebto-client/core/types/pagination-response";
 import {Subscription} from "./subscription";
 import {CreditCard} from "../upgrade-page/upgrade-page.component";
+import {User} from "../../../../types/models/User";
 
 @Injectable()
 export class Subscriptions {
@@ -58,5 +59,9 @@ export class Subscriptions {
 
     public resume(id: number): Observable<{subscription: Subscription}> {
         return this.http.post('billing/subscriptions/'+id+'/resume');
+    }
+
+    public addCard(card: CreditCard): Observable<{user: User}> {
+        return this.http.post('billing/stripe/cards/add', {card});
     }
 }

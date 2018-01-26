@@ -23,13 +23,7 @@ export class UpgradePageComponent implements OnInit {
      */
     public plans: Plan[] = [];
 
-    public months = [1,2,3,4,5,6,7,8,9,10,11,12];
-
     public acceptedCards: string[] = [];
-
-    public years = [2020];
-
-    public cardModel: CreditCard = {expiration_month: null, expiration_year: null};
 
     public currencies: object = {};
 
@@ -168,8 +162,8 @@ export class UpgradePageComponent implements OnInit {
 }
 
 export interface CreditCard {
-    number?: string,
-    expiration_month?: number,
-    expiration_year?: number,
-    cvc?: number,
+    number?: number|string,
+    expiration_month?: number|string,
+    expiration_year?: number|string,
+    security_code?: number|string,
 }

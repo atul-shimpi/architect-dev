@@ -206,46 +206,5 @@ upgrade-page {
       }
     }
   }
-
-  .card-form {
-    > .many-inputs {
-      max-width: 500px;
-    }
-
-    .card-icons {
-      display: flex;
-      align-items: flex-start;
-      margin-bottom: 30px;
-
-      > img {
-        margin-right: 5px;
-        width: 50px;
-        height: auto;
-      }
-    }
-
-    input:not([type=file]), select {
-      max-width: 400px;
-      border-radius: 4px;
-      height: 46px;
-    }
-
-    .expiration-date {
-      display: flex;
-      border: none;
-      padding: 0;
-      margin: 0;
-
-      > select {
-        display: block;
-        flex: 1 1 auto;
-        width: initial;
-      }
-
-      > .expiration-month {
-        margin-right: 10px;
-      }
-    }
-  }
 }
 

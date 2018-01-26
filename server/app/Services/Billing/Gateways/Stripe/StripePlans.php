@@ -1,8 +1,8 @@
-<?php namespace App\Services\Billing\Plans\Gateways;
+<?php namespace App\Services\Billing\Gateways\Stripe;
 
 use App\BillingPlan;
 use App\Services\Billing\GatewayException;
-use Omnipay\Omnipay;
+use App\Services\Billing\Plans\Gateways\GatewayPlans;
 use Omnipay\Stripe\Gateway;
 
 class StripePlans implements GatewayPlans
@@ -13,13 +13,14 @@ class StripePlans implements GatewayPlans
      */
     private $gateway;
 
-    public function __construct()
+    /**
+     * StripePlans constructor.
+     *
+     * @param Gateway $gateway
+     */
+    public function __construct(Gateway $gateway)
     {
-        $this->gateway = Omnipay::create('Stripe');
-
-        $this->gateway->initialize(array(
-            'apiKey' => config('services.stripe.key'),
-        ));
+        $this->gateway = $gateway;
     }
 
     /**

@@ -25,6 +25,7 @@ import { UserSubscriptionPageComponent } from './subscriptions/user-subscription
 import { UpgradePageAsideComponent } from './upgrade-page/upgrade-page-aside/upgrade-page-aside.component';
 import {CurrenciesListResolver} from "./upgrade-page/currencies-list-resolver.service";
 import {BillingFormatter} from "./billing-formatter.service";
+import { CreditCardFormComponent } from './credit-card-form/credit-card-form.component';
 
 @NgModule({
     imports: [
@@ -64,6 +65,7 @@ import {BillingFormatter} from "./billing-formatter.service";
         AcceptedPaymentsHeaderComponent,
         UserSubscriptionPageComponent,
         UpgradePageAsideComponent,
+        CreditCardFormComponent,
     ],
     entryComponents: [
         CrupdatePlanModalComponent,

@@ -1,0 +1,43 @@
+@import "../../../../scss/variables";
+
+credit-card-form {
+  display: block;
+  position: relative;
+
+  .many-inputs {
+    max-width: 500px;
+  }
+
+  .input-container {
+    max-width: 400px;
+
+    input:not([type=file]), select {
+      border-radius: 4px;
+      height: 46px;
+    }
+  }
+
+  .expiration-date {
+    display: flex;
+    border: none;
+    padding: 0;
+    margin: 0;
+
+    > select {
+      display: block;
+      flex: 1 1 auto;
+      width: initial;
+    }
+
+    > .expiration-month {
+      margin-right: 10px;
+    }
+  }
+
+  .close-button {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    color: $danger-bg-color;
+  }
+}

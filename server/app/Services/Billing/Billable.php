@@ -34,13 +34,21 @@ trait Billable
      */
     public function subscribed()
     {
-        $subscription = $this->subscriptions->first();
+        $subscription = $this->activeSubscription();
 
         if (is_null($subscription)) {
             return false;
         }
 
         return $subscription->valid();
+    }
+
+    /**
+     * @return Subscription|null;
+     */
+    public function activeSubscription()
+    {
+        return $subscription = $this->subscriptions->first();
     }
 
     /**
