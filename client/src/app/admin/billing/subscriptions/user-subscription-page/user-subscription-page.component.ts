@@ -7,9 +7,10 @@ import {CurrentUser} from "../../../../../../node_modules/vebto-client/auth/curr
 import {BillingFormatter} from "../../billing-formatter.service";
 import {Plan} from "../../plans/plan";
 import {finalize} from "rxjs/operators";
-import {CreditCard} from "../../upgrade-page/upgrade-page.component";
 import {User} from "../../../../../../node_modules/vebto-client/core/types/models/User";
 import {Toast} from "../../../../../../node_modules/vebto-client/core";
+import {PaypalSubscriptions} from "../paypal-subscriptions";
+import {Subscription} from "../subscription";
 
 @Component({
     selector: 'user-subscription-page',
@@ -33,6 +34,7 @@ export class UserSubscriptionPageComponent implements OnInit {
         public currentUser: CurrentUser,
         public formatter: BillingFormatter,
         private toast: Toast,
+        private paypal: PaypalSubscriptions,
     ) {}
 
     ngOnInit() {
@@ -64,6 +66,13 @@ export class UserSubscriptionPageComponent implements OnInit {
 
     public getPlan(): Plan {
         return this.currentUser.getSubscription().plan;
+    }
+
+    /**
+     * Get gateway on which primary user subscription is created.
+     */
+    public getActiveGateway(): 'paypal'|'stripe' {
+        return this.currentUser.getSubscription().gateway;
     }
 
     /**
@@ -114,5 +123,37 @@ export class UserSubscriptionPageComponent implements OnInit {
      */
     public toggleCardForm() {
         this.cardFormVisible = !this.cardFormVisible;
+    }
+
+    public changeGatewayToPaypal() {
+        this.loading = true;
+
+        this.paypal.subscribe(this.currentUser.getSubscription().plan).then(() => {
+            const sub = this.currentUser.getSubscription({gateway: 'stripe'});
+
+            this.subscriptions.cancel(sub.id).subscribe(response => {
+                this.loading = false;
+                console.log(response);
+            });
+        }).catch(() => {
+            this.loading = false;
+            this.toast.open('There was an issue. Please try again later.');
+        })
+    }
+
+    public changeGatewayToStripe() {
+        this.loading = true;
+
+        this.subscriptions.createOnStripe(this.currentUser.getSubscription().plan).subscribe(() => {
+            const sub = this.currentUser.getSubscription({gateway: 'paypal'});
+
+            this.subscriptions.cancel(sub.id).subscribe(response => {
+                this.loading = false;
+                console.log(response);
+            });
+        }, () => {
+            this.loading = false;
+            this.toast.open('There was an issue. Please try again later.');
+        });
     }
 }

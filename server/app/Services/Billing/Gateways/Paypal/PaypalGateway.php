@@ -1,13 +1,7 @@
-<?php namespace App\Services\Billing\Gateways\Stripe;
+<?php namespace App\Services\Billing\Gateways\Paypal;
 
-use App\Services\Billing\GatewayException;
-use App\Services\Billing\Gateways\Paypal\PaypalPlans;
-use App\Services\Billing\Gateways\Paypal\PaypalSubscriptions;
-use Omnipay\Common\CreditCard;
-use Omnipay\Common\Exception\InvalidCreditCardException;
 use Omnipay\Omnipay;
 use Omnipay\PayPal\RestGateway;
-use Vebto\Auth\User;
 
 class PaypalGateway
 {
@@ -40,7 +34,7 @@ class PaypalGateway
         ));
 
         $this->plans = new PaypalPlans($this->gateway);
-        $this->subscriptions = new PaypalSubscriptions($this->gateway);
+        $this->subscriptions = new PaypalSubscriptions($this->gateway, $this->plans);
     }
 
     public function plans()

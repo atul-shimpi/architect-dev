@@ -21,9 +21,9 @@
             <div class="main-section-title" trans>Payment Method</div>
             <div class="main-title-description">Select your preferred payment method below. You can use a credit card or PayPal.</div>
 
-            <p>Current payment Method: Credit Card</p>
+            <p>Current payment Method: <strong>{{getActiveGateway() === 'paypal' ? 'PayPal' : 'Credit Card'}}</strong></p>
 
-            <div class="card-preview">
+            <div class="card-preview" *ngIf="getActiveGateway() === 'stripe'">
                 <div class="icon"><svg-icon name="credit-card"></svg-icon></div>
                 <div class="info">{{currentUser.get('card_brand')}} **** {{currentUser.get('card_last_four')}}</div>
                 <div class="action"><button mat-button (click)="toggleCardForm()" trans>Update</button></div>
@@ -31,9 +31,7 @@
 
             <credit-card-form (created)="onCardChanged($event)" (closed)="toggleCardForm()" *ngIf="cardFormVisible"></credit-card-form>
 
-            <div class="main-section-actions">
-                <button mat-raised-button color="accent" (click)="maybeCancelSubscription()" trans>Change Payment Method to PayPal</button>
-            </div>
+            <create-subscription-tabs submitText="Change Payment Method"></create-subscription-tabs>
         </div>
 
         <div class="main-section" *ngIf="canCancel()">

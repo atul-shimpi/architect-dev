@@ -2,6 +2,7 @@
 
 use App\BillingPlan;
 use App\Services\Billing\GatewayException;
+use App\Subscription;
 use Carbon\Carbon;
 use Omnipay\PayPal\RestGateway;
 
@@ -13,12 +14,19 @@ class PaypalSubscriptions
     private $gateway;
 
     /**
+     * @var PaypalPlans
+     */
+    private $paypalPlans;
+
+    /**
      * PaypalPlans constructor.
      * @param RestGateway $gateway
+     * @param PaypalPlans $paypalPlans
      */
-    public function __construct(RestGateway $gateway)
+    public function __construct(RestGateway $gateway, PaypalPlans $paypalPlans)
     {
         $this->gateway = $gateway;
+        $this->paypalPlans = $paypalPlans;
     }
 
     /**
@@ -66,5 +74,21 @@ class PaypalSubscriptions
         }
 
         return $response->getTransactionReference();
+    }
+
+    public function cancel(Subscription $subscription)
+    {
+        $response = $this->gateway->cancelSubscription([
+            'transactionReference' => $subscription->gateway_id,
+        ])->send();
+
+        if ( ! $response->isSuccessful()) {
+            throw new GatewayException('Could not cancel paypal subscription.');
+        }
+
+        http_response_code(500);
+        dd($response);
+
+        return $response->getData();
     }
 }

@@ -26,6 +26,8 @@ import { UpgradePageAsideComponent } from './upgrade-page/upgrade-page-aside/upg
 import {CurrenciesListResolver} from "./upgrade-page/currencies-list-resolver.service";
 import {BillingFormatter} from "./billing-formatter.service";
 import { CreditCardFormComponent } from './credit-card-form/credit-card-form.component';
+import {PaypalSubscriptions} from "./subscriptions/paypal-subscriptions";
+import { CreateSubscriptionTabsComponent } from './subscriptions/create-subscription-tabs/create-subscription-tabs.component';
 
 @NgModule({
     imports: [
@@ -66,6 +68,7 @@ import { CreditCardFormComponent } from './credit-card-form/credit-card-form.com
         UserSubscriptionPageComponent,
         UpgradePageAsideComponent,
         CreditCardFormComponent,
+        CreateSubscriptionTabsComponent,
     ],
     entryComponents: [
         CrupdatePlanModalComponent,
@@ -76,6 +79,7 @@ import { CreditCardFormComponent } from './credit-card-form/credit-card-form.com
         BillingPlansResolver,
         CurrenciesListResolver,
         BillingFormatter,
+        PaypalSubscriptions,
     ],
     exports: [
         BillingRoutingModule,

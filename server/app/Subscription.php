@@ -122,7 +122,7 @@ class Subscription extends Model
      */
     public function cancel()
     {
-        $endDate = $this->subscriptionGateway()->cancel($this);
+        $endDate = $this->gateway()->subscriptions()->cancel($this);
 
         // If the user was on trial, we will set the grace period to end when the trial
         // would have ended. Otherwise, we'll retrieve the end of the billing period
@@ -157,7 +157,7 @@ class Subscription extends Model
             $trialEnd = 'now';
         }
 
-        $subscription = $this->subscriptionGateway();
+        $subscription = $this->gateway();
 
         // To resume the subscription we need to set the plan parameter on the Stripe
         // subscription object. This will force Stripe to resume this subscription
@@ -178,7 +178,7 @@ class Subscription extends Model
      * @return mixed
      *
      */
-    public function subscriptionGateway()
+    public function gateway()
     {
         return \App::make(GatewayFactory::class)->getSubscriptionGateway($this->gateway);
     }

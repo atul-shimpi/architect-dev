@@ -35,14 +35,6 @@ export class Subscriptions {
         return this.http.post('billing/subscriptions/stripe', params);
     }
 
-    public createPaypalAgreement(plan_id: number): Observable<{urls: {execute: string, approve: string}}> {
-        return this.http.post('billing/subscriptions/paypal/agreement/create', {plan_id});
-    }
-
-    public executePaypalAgreement(agreement_id: string, plan_id: number) {
-        return this.http.post('billing/subscriptions/paypal/agreement/execute', {agreement_id, plan_id});
-    }
-
     /**
      * Update subscription matching specified id.
      */
@@ -53,7 +45,7 @@ export class Subscriptions {
     /**
      * Cancel subscription matching specified id.
      */
-    public cancel(id: number): Observable<{subscription: Subscription}> {
+    public cancel(id: number): Observable<{user: User}> {
         return this.http.delete('billing/subscriptions/'+id);
     }
 

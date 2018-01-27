@@ -122,35 +122,7 @@ export class UpgradePageComponent implements OnInit {
     public submitWithPaypal() {
         this.loading = true;
 
-        this.subscriptions.createPaypalAgreement(this.selectedPlanId).subscribe(response => {
-            this.loading = false;
 
-            const windowHeight = 650;
-            const windowWidth = 450;
-            const left = (screen.width/2)-(windowWidth/2);
-            const top  = (screen.height/2)-(windowHeight/2);
-
-            window.addEventListener('message', e => {
-                if (this.settings.getBaseUrl().indexOf(e.origin) === -1) return;
-
-                this.subscriptions.executePaypalAgreement(e.data.token, this.selectedPlan.id).subscribe(response => {
-                    this.navigateAfterSuccess();
-                });
-            }, false);
-
-            const popup = window.open(
-                response.urls.approve,
-                'Authenticate PayPal',
-                'menubar=0, location=0, toolbar=0, titlebar=0, status=0, scrollbars=1, width='+windowWidth+', height='+windowHeight+', '+'left='+left+', top='+top
-            );
-        })
-    }
-
-    /**
-     * Get specified credit card's icon url.
-     */
-    public getCardIcon(card: string) {
-        return this.settings.getAssetUrl() + 'images/billing/'+card+'.png';
     }
 
     /**

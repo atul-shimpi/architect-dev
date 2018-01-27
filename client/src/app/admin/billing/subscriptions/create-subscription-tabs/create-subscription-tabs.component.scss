@@ -1,0 +1,17 @@
+@import "../../../../../scss/variables";
+
+create-subscription-tabs {
+  display: block;
+
+  .mat-tab-body {
+    padding: 25px 0;
+  }
+
+  .paypal-tab {
+    > p {
+      background-color: $site-bg-color-200;
+      border-radius: 4px;
+      padding: 15px;
+    }
+  }
+}

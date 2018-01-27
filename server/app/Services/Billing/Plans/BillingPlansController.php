@@ -134,7 +134,7 @@ class BillingPlansController extends Controller
             $plan = $this->plan->find($id);
             $plan->delete();
 
-            $this->factory->getEnabledPlanGateways()->each(function(GatewayPlans $plans) use($plan) {
+            $this->factory->getEnabledGateways()->each(function($plans) use($plan) {
                 $plans->delete($plan);
             });
         }
@@ -149,10 +149,10 @@ class BillingPlansController extends Controller
     {
         $plans = $this->plan->all();
 
-        $this->factory->getEnabledPlanGateways()->each(function(GatewayPlans $gatewayPlans) use($plans) {
-            $plans->each(function(BillingPlan $plan) use($gatewayPlans) {
-                if ( ! is_null($gatewayPlans->find($plan))) return;
-                $gatewayPlans->create($plan);
+        $this->factory->getEnabledGateways()->each(function($gateway) use($plans) {
+            $plans->each(function(BillingPlan $plan) use($gateway) {
+                if ( ! is_null($gateway->plans()->find($plan))) return;
+                $gateway->plans()->create($plan);
             });
         });
 

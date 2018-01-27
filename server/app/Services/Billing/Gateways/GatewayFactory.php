@@ -3,7 +3,7 @@
 use App;
 use Illuminate\Support\Collection;
 use Vebto\Settings\Settings;
-use App\Services\Billing\Plans\Gateways\PaypalPlans;
+use App\Services\Billing\Gateways\Paypal\PaypalGateway;
 use App\Services\Billing\Gateways\Stripe\StripeGateway;
 
 class GatewayFactory
@@ -14,7 +14,7 @@ class GatewayFactory
     private $settings;
 
     private $gateways = [
-        'paypal' => PaypalPlans::class,
+        'paypal' => PaypalGateway::class,
         'stripe' => StripeGateway::class,
     ];
 
@@ -30,7 +30,7 @@ class GatewayFactory
 
     public function getSubscriptionGateway($name)
     {
-        return App::make($this->allSubscriptionGateways[$name]);
+        return App::make($this->gateways[$name]);
     }
 
     /**
@@ -38,9 +38,9 @@ class GatewayFactory
      *
      * @return Collection
      */
-    public function getEnabledPlanGateways()
+    public function getEnabledGateways()
     {
-        return collect($this->allPlanGateways)->filter(function($namespace, $name) {
+        return collect($this->gateways)->filter(function($namespace, $name) {
             return $this->settings->get("billing.$name.enable");
         })->map(function($namespace) {
             return App::make($namespace);

@@ -51,24 +51,9 @@
     <mat-step label="Payment" [completed]="false">
         <div class="step-container" *ngIf="selectedPlan">
             <div class="left-col">
-                <mat-tab-group [dynamicHeight]="true" color="accent">
-                    <mat-tab label="Bank Card">
-                        <credit-card-form></credit-card-form>
-
-                        <order-summary [plan]="selectedPlan" [childPlan]="selectedPlanChild"></order-summary>
-
-                        <button type="submit" mat-raised-button color="accent" [disabled]="loading" trans>Submit Purchase</button>
-                    </mat-tab>
-                    <mat-tab label="Paypal">
-                        <div class="paypal-tab">
-                            <p class="info" trans>
-                                After clicking the button below, you will be redirected to paypal.com to approve the subscription.
-                            </p>
-                            <order-summary [plan]="selectedPlan"></order-summary>
-                            <button mat-raised-button color="accent" (click)="submitWithPaypal()" [disabled]="loading">Pay with paypal</button>
-                        </div>
-                    </mat-tab>
-                </mat-tab-group>
+                <create-subscription-tabs>
+                    <order-summary [plan]="selectedPlan" [childPlan]="selectedPlanChild"></order-summary>
+                </create-subscription-tabs>
             </div>
 
             <upgrade-page-aside [plan]="selectedPlan" class="right-col"></upgrade-page-aside>

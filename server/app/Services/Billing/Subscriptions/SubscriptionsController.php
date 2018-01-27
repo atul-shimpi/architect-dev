@@ -1,8 +1,8 @@
 <?php namespace App\Services\Billing\Subscriptions;
 
 use App\BillingPlan;
+use App\Services\Billing\Gateways\Paypal\PaypalGateway;
 use App\Services\Billing\Gateways\Stripe\StripeGateway;
-use App\Services\Billing\Subscriptions\Gateways\PaypalSubscriptions;
 use App\Subscription;
 use App\User;
 use Illuminate\Http\Request;
@@ -27,7 +27,7 @@ class SubscriptionsController extends Controller
     private $subscription;
 
     /**
-     * @var PaypalSubscriptions
+     * @var PaypalGateway
      */
     private $paypal;
 
@@ -42,14 +42,14 @@ class SubscriptionsController extends Controller
      * @param Request $request
      * @param BillingPlan $billingPlan
      * @param Subscription $subscription
-     * @param PaypalSubscriptions $paypal
+     * @param PaypalGateway $paypal
      * @param StripeGateway $stripe
      */
     public function __construct(
         Request $request,
         BillingPlan $billingPlan,
         Subscription $subscription,
-        PaypalSubscriptions $paypal,
+        PaypalGateway $paypal,
         StripeGateway $stripe
     )
     {
@@ -115,7 +115,7 @@ class SubscriptionsController extends Controller
         ]);
 
         $plan = $this->billingPlan->findOrFail($this->request->get('plan_id'));
-        $urls = $this->paypal->createAgreement($plan);
+        $urls = $this->paypal->subscriptions()->createAgreement($plan);
 
         return $this->success(['urls' => $urls]);
     }
@@ -133,7 +133,7 @@ class SubscriptionsController extends Controller
             'plan_id' => 'required|integer|exists:billing_plans,id',
         ]);
 
-        $subscriptionId = $this->paypal->executeAgreement(
+        $subscriptionId = $this->paypal->subscriptions()->executeAgreement(
             $this->request->get('agreement_id')
         );
 
@@ -155,7 +155,7 @@ class SubscriptionsController extends Controller
         $subscription = $this->subscription->findOrFail($id);
         $subscription->cancel();
 
-        return $this->success(['subscription' => $subscription]);
+        return $this->success(['user' => $subscription->user()->get()]);
     }
 
     /**

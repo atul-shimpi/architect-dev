@@ -111,16 +111,6 @@ upgrade-page {
       bottom: 0;
       left: 0;
     }
-
-    .left-col {
-      .paypal-tab {
-        > p {
-          background-color: $site-bg-color-200;
-          border-radius: 4px;
-          padding: 15px;
-        }
-      }
-    }
   }
 
   .subscription-period-step {

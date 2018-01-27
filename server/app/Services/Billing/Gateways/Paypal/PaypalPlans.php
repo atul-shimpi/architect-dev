@@ -46,10 +46,15 @@ class PaypalPlans implements GatewayPlans
      *
      * @param BillingPlan $plan
      * @return string
+     * @throws GatewayException
      */
     public function getPlanId(BillingPlan $plan)
     {
-        return $plan = $this->find($plan) ? $plan['id'] : null;
+        if ( ! $paypalPlan = $this->find($plan)) {
+            throw new GatewayException("Could not find plan '{$plan->name}' on paypal");
+        }
+
+        return $paypalPlan['id'];
     }
 
     /**
