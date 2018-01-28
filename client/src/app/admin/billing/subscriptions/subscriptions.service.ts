@@ -31,7 +31,7 @@ export class Subscriptions {
     /**
      * Create a new subscription on stripe.
      */
-    public createOnStripe(params: {plan_id: number, card: CreditCard}): Observable<{subscription: Subscription}> {
+    public createOnStripe(params: {plan_id: number, card: CreditCard}): Observable<{user: User}> {
         return this.http.post('billing/subscriptions/stripe', params);
     }
 
@@ -45,8 +45,8 @@ export class Subscriptions {
     /**
      * Cancel subscription matching specified id.
      */
-    public cancel(id: number): Observable<{user: User}> {
-        return this.http.delete('billing/subscriptions/'+id);
+    public cancel(id: number, params: {delete: boolean}): Observable<{user: User}> {
+        return this.http.delete('billing/subscriptions/'+id, params);
     }
 
     public resume(id: number): Observable<{subscription: Subscription}> {

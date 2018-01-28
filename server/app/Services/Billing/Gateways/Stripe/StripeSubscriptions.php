@@ -4,6 +4,7 @@ use App\BillingPlan;
 use App\Services\Billing\GatewayException;
 use App\Subscription;
 use App\User;
+use Carbon\Carbon;
 use Omnipay\Stripe\Gateway;
 
 class StripeSubscriptions
@@ -24,26 +25,40 @@ class StripeSubscriptions
     }
 
     /**
-     * Create a new subscription on currently active gateway.
+     * Create a new subscription on stripe using specified plan.
      *
      * @param BillingPlan $plan
      * @param User $user
-     * @param array $cardData
      * @throws GatewayException
      * @return array
      */
-    public function create(BillingPlan $plan, User $user, $cardData)
+    public function create(BillingPlan $plan, User $user)
     {
-        $user = $this->maybeCreateStripeCustomer($user, $cardData);
-        return $this->createStripeSubscription($user, $plan);
+        if ($user->subscribedTo($plan, 'stripe')) {
+            throw new \LogicException("User already subscribed to '{$plan->name}' plan.");
+        }
+
+        $response = $this->gateway->createSubscription([
+            'customerReference' => $user->stripe_id,
+            'plan' => $plan->uuid,
+        ])->send();
+
+        if ( ! $response->isSuccessful()) {
+            throw new GatewayException('Could not create stripe subscription.');
+        }
+
+        return [
+            'reference' => $response->getSubscriptionReference(),
+            'end_date' => $response->getData()['current_period_end']
+        ];
     }
 
-    public function cancel(Subscription $subscription, $params = ['at_period_end' => true])
+    public function cancel(Subscription $subscription, $atPeriodEnd = true)
     {
         $response = $this->gateway->cancelSubscription([
             'subscriptionReference' => $subscription->gateway_id,
             'customerReference' => $subscription->user->stripe_id,
-            'at_period_end' => $params['at_period_end'],
+            'at_period_end' => $atPeriodEnd,
         ])->send();
 
         if ( ! $response->isSuccessful()) {
@@ -94,28 +109,6 @@ class StripeSubscriptions
         $this->createStripeCard($user, $cardData);
 
         return $user;
-    }
-
-    /**
-     * Subscribe user to specified plan on stripe.
-     *
-     * @param User $user
-     * @param BillingPlan $plan
-     * @return array
-     * @throws GatewayException
-     */
-    private function createStripeSubscription(User $user, BillingPlan $plan)
-    {
-        $response = $this->gateway->createSubscription([
-            'customerReference' => $user->stripe_id,
-            'plan' => $plan->uuid,
-        ])->send();
-
-        if ( ! $response->isSuccessful()) {
-            throw new GatewayException('Could not create stripe subscription.');
-        }
-
-        return ['reference' => $response->getSubscriptionReference(), 'end_date' => 'current_period_end'];
     }
 
     /**

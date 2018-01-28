@@ -53,7 +53,7 @@ export class PaypalSubscriptions {
     private listenForMessages(plan: Plan, resolve: Function) {
         window.addEventListener('message', e => {
             if (this.settings.getBaseUrl().indexOf(e.origin) === -1) return;
-            this.executePaypalAgreement(e.data.token, plan.id).subscribe(() => resolve());
+            this.executePaypalAgreement(e.data.token, plan.id).subscribe(response => resolve(response.user));
         }, false);
     }
 
@@ -66,6 +66,8 @@ export class PaypalSubscriptions {
             top: (screen.height/2)-(this.popupHeight/2)
         });
 
+        console.log(Object.keys(params).map(key => key+'='+params[key]).join(', '));
+
         window.open(
             url,
             'Authenticate PayPal',
@@ -77,7 +79,7 @@ export class PaypalSubscriptions {
         return this.http.post('billing/subscriptions/paypal/agreement/create', {plan_id});
     }
 
-    private executePaypalAgreement(agreement_id: string, plan_id: number) {
+    private executePaypalAgreement(agreement_id: string, plan_id: number): Observable<{user: User}> {
         return this.http.post('billing/subscriptions/paypal/agreement/execute', {agreement_id, plan_id});
     }
 }

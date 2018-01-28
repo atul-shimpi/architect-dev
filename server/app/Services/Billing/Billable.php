@@ -34,21 +34,24 @@ trait Billable
      */
     public function subscribed()
     {
-        $subscription = $this->activeSubscription();
+        $subscription = $this->subscriptions->first(function(Subscription $sub) {
+            return $sub->valid();
+        });
 
-        if (is_null($subscription)) {
-            return false;
-        }
-
-        return $subscription->valid();
+        return ! is_null($subscription);
     }
 
     /**
-     * @return Subscription|null;
+     * Check if user is subscribed to specified plan and gateway.
+     *
+     * @param BillingPlan $plan
+     * @param string $gateway
+     * @return bool
      */
-    public function activeSubscription()
-    {
-        return $subscription = $this->subscriptions->first();
+    public function subscribedTo(BillingPlan $plan, $gateway) {
+        return ! is_null($this->subscriptions->first(function(Subscription $sub) use($plan, $gateway) {
+            return $sub->valid && $sub->plan_id === $plan->id && $sub->gateway === $gateway;
+        }));
     }
 
     /**

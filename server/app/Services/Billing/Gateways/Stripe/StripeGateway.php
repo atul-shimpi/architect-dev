@@ -60,7 +60,7 @@ class StripeGateway
      */
     public function addCard(User $user, $cardData)
     {
-        $card = new CreditCard([
+        $params = ['card' => new CreditCard([
             'number' => $cardData['number'],
             'expiryMonth' => $cardData['expiration_month'],
             'expiryYear' => $cardData['expiration_year'],
@@ -68,12 +68,16 @@ class StripeGateway
             'email' => $user->email,
             'firstName' => $user->first_name,
             'lastName' => $user->last_name,
-        ]);
+        ])];
 
-        $response = $this->gateway->createCard([
-            'card' => $card,
-            'customerReference' => $user->stripe_id,
-        ])->send();
+        //create new stripe customer or attach to existing one
+        if ($user->stripe_id) {
+            $params['customerReference'] = $user->stripe_id;
+        } else {
+            $params['email'] = $user->email;
+        }
+
+        $response = $this->gateway->createCard($params)->send();
 
         if ( ! $response->isSuccessful()) {
             $data = $response->getData();
@@ -86,6 +90,12 @@ class StripeGateway
             throw new GatewayException('Could not create stripe credit card.');
         }
 
+        //store stripe id on user model, if needed
+        if ($user->stripe_id !== $stripeId = $response->getCustomerReference()) {
+            $user->fill(['stripe_id' => $stripeId])->save();
+        }
+
+        //TODO: check if user has more then one card
         $this->setDefaultCustomerSource($user, $response->getCardReference(), $response->getData());
 
         return $user;

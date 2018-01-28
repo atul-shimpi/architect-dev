@@ -4,12 +4,14 @@ import {Subscriptions} from "../subscriptions/subscriptions.service";
 import {MatStepper} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Settings, Toast} from "vebto-client/core";
+import {PageState} from "../../../../../node_modules/vebto-client/core/services/page-state.service";
 
 @Component({
     selector: 'upgrade-page',
     templateUrl: './upgrade-page.component.html',
     styleUrls: ['./upgrade-page.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    providers: [PageState],
 })
 export class UpgradePageComponent implements OnInit {
     @ViewChild(MatStepper) stepper: MatStepper;
@@ -56,6 +58,7 @@ export class UpgradePageComponent implements OnInit {
         public settings: Settings,
         private router: Router,
         private toast: Toast,
+        public state: PageState,
     ) {}
 
     ngOnInit() {
@@ -101,28 +104,9 @@ export class UpgradePageComponent implements OnInit {
         this.selectedPlanId = id;
     }
 
-    public submitPurchase() {
-        this.loading = true;
-
-        this.subscriptions.createOnStripe({plan_id: this.selectedPlanId, card: this.cardModel})
-            .subscribe(response => {
-                this.loading = false;
-                this.navigateAfterSuccess();
-            }, response => {
-                this.errors = response.messages;
-                this.loading = false;
-            });
-    }
-
     private navigateAfterSuccess() {
         this.router.navigate(['/dashboard']);
         this.toast.open('Subscribed to '+this.selectedPlan.name+' successfully');
-    }
-
-    public submitWithPaypal() {
-        this.loading = true;
-
-
     }
 
     /**

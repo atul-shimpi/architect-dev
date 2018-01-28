@@ -76,19 +76,24 @@ class PaypalSubscriptions
         return $response->getTransactionReference();
     }
 
+    /**
+     * Immediately cancel subscription agreement on paypal.
+     *
+     * @param Subscription $subscription
+     * @return bool
+     * @throws GatewayException
+     */
     public function cancel(Subscription $subscription)
     {
         $response = $this->gateway->cancelSubscription([
             'transactionReference' => $subscription->gateway_id,
+            'description' => 'Cancelled by user.'
         ])->send();
 
         if ( ! $response->isSuccessful()) {
             throw new GatewayException('Could not cancel paypal subscription.');
         }
 
-        http_response_code(500);
-        dd($response);
-
-        return $response->getData();
+        return true;
     }
 }

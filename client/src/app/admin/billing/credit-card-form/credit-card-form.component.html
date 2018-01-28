@@ -25,14 +25,11 @@
         <div class="input-container">
             <label for="security_code" trans>Security Code</label>
             <input type="text" id="security_code" name="security_code" [(ngModel)]="cardModel.security_code" required>
-            <mat-progress-bar mode="indeterminate" *ngIf="loading" color="accent"></mat-progress-bar>
             <div class="error" *ngIf="errors['card.security_code']">{{errors['card.security_code']}}</div>
         </div>
     </div>
 
     <div class="error margin-bottom" *ngIf="errors.general">{{errors.general}}</div>
 
-    <button type="submit" *ngIf="showSubmitButton" mat-raised-button color="accent" [disabled]="loading" trans>Submit</button>
+    <button type="submit" *ngIf="showSubmitButton" mat-raised-button color="accent" [disabled]="loading">{{submitButtonText}}</button>
 </form>
-
-<button color="mat-warn" class="close-button" mat-icon-button (click)="closeForm()"><svg-icon name="close"></svg-icon></button>

@@ -3,29 +3,28 @@ import {VebtoConfig} from "vebto-client/core/vebto-config.service";
 import {ConfirmModalComponent} from "vebto-client/core/ui/confirm-modal/confirm-modal.component";
 import {Modal} from "vebto-client/core/ui/modal.service";
 import {Subscriptions} from "../subscriptions.service";
-import {CurrentUser} from "../../../../../../node_modules/vebto-client/auth/current-user";
+import {CurrentUser} from "vebto-client/auth/current-user";
 import {BillingFormatter} from "../../billing-formatter.service";
 import {Plan} from "../../plans/plan";
 import {finalize} from "rxjs/operators";
-import {User} from "../../../../../../node_modules/vebto-client/core/types/models/User";
-import {Toast} from "../../../../../../node_modules/vebto-client/core";
-import {PaypalSubscriptions} from "../paypal-subscriptions";
+import {Toast} from "vebto-client/core";
 import {Subscription} from "../subscription";
+import {SubscriptionCompletedEvent} from "../create-subscription-tabs/create-subscription-tabs.component";
 
 @Component({
     selector: 'user-subscription-page',
     templateUrl: './user-subscription-page.component.html',
     styleUrls: ['./user-subscription-page.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class UserSubscriptionPageComponent implements OnInit {
 
     public loading: boolean = false;
 
     /**
-     * Whether credit card form is visible.
+     * Currently active user's subscription.
      */
-    private cardFormVisible: boolean;
+    public activeSubscription: Subscription;
 
     constructor(
         public vebtoConfig: VebtoConfig,
@@ -34,10 +33,10 @@ export class UserSubscriptionPageComponent implements OnInit {
         public currentUser: CurrentUser,
         public formatter: BillingFormatter,
         private toast: Toast,
-        private paypal: PaypalSubscriptions,
     ) {}
 
     ngOnInit() {
+        this.activeSubscription = this.currentUser.getSubscription();
     }
 
     public canResume() {
@@ -69,13 +68,6 @@ export class UserSubscriptionPageComponent implements OnInit {
     }
 
     /**
-     * Get gateway on which primary user subscription is created.
-     */
-    public getActiveGateway(): 'paypal'|'stripe' {
-        return this.currentUser.getSubscription().gateway;
-    }
-
-    /**
      * Ask user to confirm deletion of selected templates
      * and delete selected templates if user confirms.
      */
@@ -86,14 +78,8 @@ export class UserSubscriptionPageComponent implements OnInit {
             ok: 'Yes, Cancel',
             cancel: 'Go Back'
         }).afterClosed().subscribe(confirmed => {
-            if (!confirmed) return;
-            this.loading = true;
-
-            this.subscriptions.cancel(this.currentUser.get('subscriptions')[0].id)
-                .pipe(finalize(() => this.loading = false))
-                .subscribe(response => {
-                    this.currentUser.setSubscription(response.subscription);
-                });
+            if ( ! confirmed) return;
+            this.cancelSubscription();
         });
     }
 
@@ -110,50 +96,22 @@ export class UserSubscriptionPageComponent implements OnInit {
             });
     }
 
-    /**
-     * Fired when user changes active credit card successfully.
-     */
-    public onCardChanged(user: User) {
-        this.currentUser.assignCurrent(user);
-        this.toast.open('Credit card updated.');
-    }
+    public onPaymentMethodChange(e: SubscriptionCompletedEvent) {
+        //if we've only changed customer card information on same
+        //payment gateway, show success message and bail
+        if (e.status === 'updated') {
+            return this.toast.open('Payment method updated.');
+        }
 
-    /**
-     * Toggle visibility of credit card form.
-     */
-    public toggleCardForm() {
-        this.cardFormVisible = !this.cardFormVisible;
-    }
-
-    public changeGatewayToPaypal() {
         this.loading = true;
 
-        this.paypal.subscribe(this.currentUser.getSubscription().plan).then(() => {
-            const sub = this.currentUser.getSubscription({gateway: 'stripe'});
-
-            this.subscriptions.cancel(sub.id).subscribe(response => {
-                this.loading = false;
-                console.log(response);
+        //otherwise cancel user's subscription on the other gateway
+        this.subscriptions.cancel(this.activeSubscription.id, {delete: true})
+            .pipe(finalize(() => this.loading = false))
+            .subscribe(response => {
+                //set new active subscription, if user had more then one
+                this.currentUser.assignCurrent(response.user);
+                this.activeSubscription = this.currentUser.getSubscription();
             });
-        }).catch(() => {
-            this.loading = false;
-            this.toast.open('There was an issue. Please try again later.');
-        })
-    }
-
-    public changeGatewayToStripe() {
-        this.loading = true;
-
-        this.subscriptions.createOnStripe(this.currentUser.getSubscription().plan).subscribe(() => {
-            const sub = this.currentUser.getSubscription({gateway: 'paypal'});
-
-            this.subscriptions.cancel(sub.id).subscribe(response => {
-                this.loading = false;
-                console.log(response);
-            });
-        }, () => {
-            this.loading = false;
-            this.toast.open('There was an issue. Please try again later.');
-        });
     }
 }

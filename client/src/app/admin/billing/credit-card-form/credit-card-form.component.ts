@@ -1,7 +1,8 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation} from '@angular/core';
+import {Component, EventEmitter, Input, Output, ViewEncapsulation} from '@angular/core';
 import {CreditCard} from "../upgrade-page/upgrade-page.component";
 import {Subscriptions} from "../subscriptions/subscriptions.service";
 import {finalize} from "rxjs/operators";
+import {CurrentUser} from "vebto-client/auth/current-user";
 
 @Component({
     selector: 'credit-card-form',
@@ -9,11 +10,11 @@ import {finalize} from "rxjs/operators";
     styleUrls: ['./credit-card-form.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class CreditCardFormComponent implements OnInit {
+export class CreditCardFormComponent {
 
     @Output() created: EventEmitter<CreditCard> = new EventEmitter();
 
-    @Output() closed = new EventEmitter();
+    @Input() submitButtonText: string = 'Submit';
 
     @Input() showSubmitButton: boolean = true;
 
@@ -27,11 +28,10 @@ export class CreditCardFormComponent implements OnInit {
 
     public cardModel: CreditCard = {expiration_month: '', expiration_year: ''};
 
-    constructor(private subscriptions: Subscriptions) {
-    }
-
-    ngOnInit() {
-    }
+    constructor(
+        private subscriptions: Subscriptions,
+        private currentUser: CurrentUser
+    ) {}
 
     public submitForm() {
         this.loading = true;
@@ -39,13 +39,10 @@ export class CreditCardFormComponent implements OnInit {
         this.subscriptions.addCard(this.cardModel)
             .pipe(finalize(() => this.loading = false))
             .subscribe(response => {
+                this.currentUser.assignCurrent(response.user);
                 this.created.emit(response.user);
             }, response => {
                 this.errors = response.messages;
             });
-    }
-
-    public closeForm() {
-        this.closed.emit();
     }
 }

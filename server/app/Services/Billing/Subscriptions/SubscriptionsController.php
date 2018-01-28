@@ -66,21 +66,16 @@ class SubscriptionsController extends Controller
     {
         $this->validate($this->request, [
             'plan_id' => 'required|integer|exists:billing_plans,id',
-            'card' => 'required|array|min:4',
-            'card.number' => 'required|string|min:4',
-            'card.expiration_month' => 'required|integer|min:1|max:12',
-            'card.expiration_year' => 'required|integer|min:2018|max:2060',
-            'card.security_code' => 'required|integer|min:1|max:999',
         ]);
 
         /** @var User $user */
         $user = $this->request->user();
         $plan = $this->billingPlan->findOrFail($this->request->get('plan_id'));
 
-        $sub = $this->stripe->subscriptions()->create($plan, $user, $this->request->get('card'));
+        $sub = $this->stripe->subscriptions()->create($plan, $user);
         $user->subscribe('stripe', $sub['reference'], $plan, $sub['end_date']);
 
-        return $this->success();
+        return $this->success(['user' => $user]);
     }
 
     public function addCardOnStripe()
@@ -140,7 +135,7 @@ class SubscriptionsController extends Controller
         $plan = $this->billingPlan->findOrFail($this->request->get('plan_id'));
         $this->request->user()->subscribe('paypal', $subscriptionId, $plan);
 
-        return $this->success();
+        return $this->success(['user' => $this->request->user()->load('subscriptions')]);
     }
 
     /**
@@ -148,12 +143,22 @@ class SubscriptionsController extends Controller
      *
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function cancel($id)
     {
+        $this->validate($this->request, [
+            'delete' => 'boolean'
+        ]);
+
         /** @var Subscription $subscription */
         $subscription = $this->subscription->findOrFail($id);
-        $subscription->cancel();
+
+        if ($this->request->get('delete')) {
+            $subscription->cancelAndDelete();
+        } else {
+            $subscription->cancel();
+        }
 
         return $this->success(['user' => $subscription->user()->get()]);
     }

@@ -123,6 +123,7 @@ class Subscription extends Model
     public function cancel()
     {
         $endDate = $this->gateway()->subscriptions()->cancel($this);
+        $endDate = $endDate ? Carbon::createFromTimestamp($endDate) : Carbon::now();
 
         // If the user was on trial, we will set the grace period to end when the trial
         // would have ended. Otherwise, we'll retrieve the end of the billing period
@@ -130,10 +131,24 @@ class Subscription extends Model
         if ($this->onTrial()) {
             $this->ends_at = $this->trial_ends_at;
         } else {
-            $this->ends_at = Carbon::createFromTimestamp($endDate);
+            $this->ends_at = $endDate;
         }
 
         $this->save();
+
+        return $this;
+    }
+
+    /**
+     * Cancel the subscription immediately and delete it from database.
+     *
+     * @return $this
+     * @throws \Exception
+     */
+    public function cancelAndDelete()
+    {
+        $this->cancel();
+        $this->delete();
 
         return $this;
     }
