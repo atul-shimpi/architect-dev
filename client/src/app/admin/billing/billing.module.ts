@@ -28,6 +28,11 @@ import {BillingFormatter} from "./billing-formatter.service";
 import { CreditCardFormComponent } from './credit-card-form/credit-card-form.component';
 import {PaypalSubscriptions} from "./subscriptions/paypal-subscriptions";
 import { CreateSubscriptionTabsComponent } from './subscriptions/create-subscription-tabs/create-subscription-tabs.component';
+import { SelectPlanTableComponent } from './plans/select-plan-table/select-plan-table.component';
+import { SelectPlanModalComponent } from './plans/select-plan-modal/select-plan-modal.component';
+import { SubscribeStepperComponent } from './subscriptions/subscriptions-steps/subscribe-stepper/subscribe-stepper.component';
+import { SubscriptionPeriodStepComponent } from './subscriptions/subscriptions-steps/subscription-period-step/subscription-period-step.component';
+import { SubscriptionPaymentStepComponent } from './subscriptions/subscriptions-steps/subscription-payment-step/subscription-payment-step.component';
 
 @NgModule({
     imports: [
@@ -69,9 +74,15 @@ import { CreateSubscriptionTabsComponent } from './subscriptions/create-subscrip
         UpgradePageAsideComponent,
         CreditCardFormComponent,
         CreateSubscriptionTabsComponent,
+        SelectPlanTableComponent,
+        SelectPlanModalComponent,
+        SubscribeStepperComponent,
+        SubscriptionPeriodStepComponent,
+        SubscriptionPaymentStepComponent,
     ],
     entryComponents: [
         CrupdatePlanModalComponent,
+        SelectPlanModalComponent,
     ],
     providers: [
         Plans,

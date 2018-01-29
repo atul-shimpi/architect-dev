@@ -14,7 +14,7 @@ import {Subject} from "rxjs/Subject";
 export class PaypalSubscriptions {
 
     private popupWidth = 450;
-    private popupHeight: 650;
+    private popupHeight = 650;
 
     /**
      * Params for popup window.
@@ -38,10 +38,10 @@ export class PaypalSubscriptions {
     /**
      * Subscribe to specified plan on paypal.
      */
-    public subscribe(plan: Plan) {
+    public subscribe(params: {plan: Plan, start_date?: string}): Promise<User> {
         return new Promise((resolve, reject) => {
-            this.createPaypalAgreement(plan.id).subscribe(response => {
-                this.listenForMessages(plan, resolve);
+            this.createPaypalAgreement(params).subscribe(response => {
+                this.listenForMessages(params.plan, resolve);
                 this.openPaypalPopup(response.urls.approve);
             }, () => reject());
         });
@@ -66,8 +66,6 @@ export class PaypalSubscriptions {
             top: (screen.height/2)-(this.popupHeight/2)
         });
 
-        console.log(Object.keys(params).map(key => key+'='+params[key]).join(', '));
-
         window.open(
             url,
             'Authenticate PayPal',
@@ -75,8 +73,8 @@ export class PaypalSubscriptions {
         );
     }
 
-    private createPaypalAgreement(plan_id: number): Observable<{urls: {execute: string, approve: string}}> {
-        return this.http.post('billing/subscriptions/paypal/agreement/create', {plan_id});
+    private createPaypalAgreement(params: {plan: Plan, start_date?: string}): Observable<{urls: {execute: string, approve: string}}> {
+        return this.http.post('billing/subscriptions/paypal/agreement/create', {plan_id: params.plan.id, start_date: params.start_date});
     }
 
     private executePaypalAgreement(agreement_id: string, plan_id: number): Observable<{user: User}> {

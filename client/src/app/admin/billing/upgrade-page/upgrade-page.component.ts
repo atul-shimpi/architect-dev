@@ -4,14 +4,12 @@ import {Subscriptions} from "../subscriptions/subscriptions.service";
 import {MatStepper} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Settings, Toast} from "vebto-client/core";
-import {PageState} from "../../../../../node_modules/vebto-client/core/services/page-state.service";
 
 @Component({
     selector: 'upgrade-page',
     templateUrl: './upgrade-page.component.html',
     styleUrls: ['./upgrade-page.component.scss'],
     encapsulation: ViewEncapsulation.None,
-    providers: [PageState],
 })
 export class UpgradePageComponent implements OnInit {
     @ViewChild(MatStepper) stepper: MatStepper;
@@ -30,26 +28,6 @@ export class UpgradePageComponent implements OnInit {
     public currencies: object = {};
 
     /**
-     * Whether any of the billing plans are marked as "recommended"
-     */
-    public hasRecommendedPlan: boolean = false;
-
-    /**
-     * Billing plan user has selected.
-     */
-    public selectedPlan: Plan;
-
-    /**
-     * Child of main plan user has selected, for example yearly plan.
-     */
-    public selectedPlanChild: Plan;
-
-    /**
-     * Interval (in months) user selected to be charged on.
-     */
-    public selectedPlanId: number = 12;
-
-    /**
      * SelectPlanModalComponent Constructor.
      */
     constructor(
@@ -58,7 +36,6 @@ export class UpgradePageComponent implements OnInit {
         public settings: Settings,
         private router: Router,
         private toast: Toast,
-        public state: PageState,
     ) {}
 
     ngOnInit() {
@@ -66,7 +43,6 @@ export class UpgradePageComponent implements OnInit {
 
         this.route.data.subscribe(data => {
             this.plans = data.plans;
-            this.hasRecommendedPlan = this.plans.filter(plan => plan.recommended).length > 0;
             this.currencies = data.currencies;
         });
     }
@@ -75,45 +51,15 @@ export class UpgradePageComponent implements OnInit {
         return this.currencies[currency.toUpperCase()]['symbol'];
     }
 
-    /**
-     * Format plan amount. For example, convert cents to dollars.
-     */
-    public formatPlanAmount(amount: number): number {
-        return amount / 100;
-    }
-
-    /**
-     * Get different versions of specified plan.
-     * (yearly, weekly, every 2 years etc)
-     */
-    public getChildPlans(parent: Plan) {
-        return this.plans.filter(plan => plan.parent_id === parent.id);
-    }
-
     public selectPlan(plan: Plan) {
         this.selectedPlan = plan;
         this.selectedPlanId = plan.id;
         this.stepper.next();
     }
 
-    /**
-     * Select child plan by specified ID.
-     */
-    public selectChildPlan(id: number) {
-        this.selectedPlanChild = this.plans.find(plan => plan.id === id);
-        this.selectedPlanId = id;
-    }
-
     private navigateAfterSuccess() {
         this.router.navigate(['/dashboard']);
         this.toast.open('Subscribed to '+this.selectedPlan.name+' successfully');
-    }
-
-    /**
-     * Get price decrease percentage between specified plans.
-     */
-    public getPlanSavings(expensive: Plan, cheap: Plan): number {
-        return (expensive.amount-cheap.amount)/expensive.amount * 100;
     }
 }
 

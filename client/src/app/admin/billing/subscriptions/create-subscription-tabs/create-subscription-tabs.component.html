@@ -3,7 +3,7 @@
         <credit-card-form (created)="subscribeOnStripe()" [submitButtonText]="submitText"></credit-card-form>
         <ng-content></ng-content>
     </mat-tab>
-    <mat-tab label="Paypal">
+    <mat-tab label="Paypal" [disabled]="disablePaypalTab">
         <div class="paypal-tab">
             <p class="info" trans>After clicking the button below, you will be redirected to paypal.com to approve the subscription.</p>
 

@@ -1,0 +1,9 @@
+@import "../../../../../scss/variables";
+
+.select-plan-modal-container {
+  background-color: $site-bg-color-200;
+
+  .mat-dialog-container {
+    background-color: inherit;
+  }
+}

@@ -24,7 +24,7 @@
 
         <div class="input-container">
             <label for="security_code" trans>Security Code</label>
-            <input type="text" id="security_code" name="security_code" [(ngModel)]="cardModel.security_code" required>
+            <input type="number" id="security_code" name="security_code" [(ngModel)]="cardModel.security_code" required maxlength="4">
             <div class="error" *ngIf="errors['card.security_code']">{{errors['card.security_code']}}</div>
         </div>
     </div>

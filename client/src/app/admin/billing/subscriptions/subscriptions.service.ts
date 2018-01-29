@@ -5,6 +5,7 @@ import {PaginationResponse} from "vebto-client/core/types/pagination-response";
 import {Subscription} from "./subscription";
 import {CreditCard} from "../upgrade-page/upgrade-page.component";
 import {User} from "../../../../types/models/User";
+import {Plan} from "../plans/plan";
 
 @Injectable()
 export class Subscriptions {
@@ -31,7 +32,7 @@ export class Subscriptions {
     /**
      * Create a new subscription on stripe.
      */
-    public createOnStripe(params: {plan_id: number, card: CreditCard}): Observable<{user: User}> {
+    public createOnStripe(params: {plan_id: number, card: CreditCard, start_date?: string}): Observable<{user: User}> {
         return this.http.post('billing/subscriptions/stripe', params);
     }
 
@@ -51,6 +52,10 @@ export class Subscriptions {
 
     public resume(id: number): Observable<{subscription: Subscription}> {
         return this.http.post('billing/subscriptions/'+id+'/resume');
+    }
+
+    public changePlan(id: number, plan: Plan): Observable<{user: User}> {
+        return this.http.post('billing/subscriptions/'+id+'/change-plan', {newPlanId: plan.id});
     }
 
     public addCard(card: CreditCard): Observable<{user: User}> {

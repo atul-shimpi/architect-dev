@@ -83,6 +83,10 @@ Route::group(['prefix' => 'secure'], function () {
         return App::call('App\Services\Billing\Subscriptions\SubscriptionsController@resume', ['id' => $id]);
     });
 
+    Route::post('billing/subscriptions/{id}/change-plan', function($id) {
+        return App::call('App\Services\Billing\Subscriptions\SubscriptionsController@changePlan', ['id' => $id]);
+    });
+
     Route::post('billing/stripe/cards/add', function() {
         return App::call('App\Services\Billing\Subscriptions\SubscriptionsController@addCardOnStripe');
     });

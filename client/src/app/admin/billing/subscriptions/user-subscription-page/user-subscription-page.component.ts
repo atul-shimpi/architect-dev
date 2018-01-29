@@ -10,6 +10,8 @@ import {finalize} from "rxjs/operators";
 import {Toast} from "vebto-client/core";
 import {Subscription} from "../subscription";
 import {SubscriptionCompletedEvent} from "../create-subscription-tabs/create-subscription-tabs.component";
+import {Plans} from "../../plans/plans.service";
+import {SelectPlanModalComponent} from "../../plans/select-plan-modal/select-plan-modal.component";
 
 @Component({
     selector: 'user-subscription-page',
@@ -52,11 +54,11 @@ export class UserSubscriptionPageComponent implements OnInit {
     }
 
     public getFormattedEndDate(): string {
-        return this.currentUser.getSubscription().ends_at.split(' ')[0];
+        return this.activeSubscription.ends_at.split(' ')[0];
     }
 
     public getFormattedRenewDate() {
-        return this.currentUser.getSubscription().renews_at.split(' ')[0];
+        return this.activeSubscription.renews_at.split(' ')[0];
     }
 
     public getPlanPrice(): string {
@@ -64,7 +66,7 @@ export class UserSubscriptionPageComponent implements OnInit {
     }
 
     public getPlan(): Plan {
-        return this.currentUser.getSubscription().plan;
+        return this.activeSubscription.plan;
     }
 
     /**
@@ -84,12 +86,36 @@ export class UserSubscriptionPageComponent implements OnInit {
     }
 
     /**
+     * Show modal for selecting a new billing plan.
+     */
+    public showSelectPlanModal() {
+        this.modal.open(SelectPlanModalComponent).afterClosed().subscribe(plan => {
+            if ( ! plan) return;
+            this.changePlan(plan);
+        });
+    }
+
+    /**
+     * Change user's active subscription plan to specified one.
+     */
+    public changePlan(plan: Plan) {
+        this.loading = true;
+
+        this.subscriptions
+            .changePlan(this.activeSubscription.id, plan)
+            .pipe(finalize(() => this.loading = false))
+            .subscribe(() => {
+                this.toast.open('Subscription plan changed.');
+            });
+    }
+
+    /**
      * Resume cancelled subscription.
      */
     public resumeSubscription() {
         this.loading = true;
 
-        this.subscriptions.resume(this.currentUser.get('subscriptions')[0].id)
+        this.subscriptions.resume(this.activeSubscription.id)
             .pipe(finalize(() => this.loading = false))
             .subscribe(response => {
                 this.currentUser.setSubscription(response.subscription);

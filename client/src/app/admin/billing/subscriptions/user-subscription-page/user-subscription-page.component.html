@@ -9,6 +9,10 @@
                     <p>Your plan will automatically renew on <strong>{{getFormattedRenewDate()}}</strong> and you'll be charged <strong>{{getPlanPrice()}}</strong></p>
                 </ng-container>
 
+                <button mat-raised-button color="accent" (click)="showSelectPlanModal()">Change Plan</button>
+
+                <subscribe-stepper></subscribe-stepper>
+
                 <ng-container *ngIf="canResume()">
                     <p trans>You are on a grace period until <strong>{{getFormattedEndDate()}}</strong>. Your subscription will not automatically resume and you will not be charged.</p>
                     <p trans>You still have access to your plan's features until this date and you can resume your subscription below.</p>
@@ -28,7 +32,14 @@
                 <div class="info">{{currentUser.get('card_brand')}} **** {{currentUser.get('card_last_four')}}</div>
             </div>
 
-            <create-subscription-tabs (completed)="onPaymentMethodChange($event)" (loading)="loading = $event" [plan]="getPlan()" submitText="Change Payment Method"></create-subscription-tabs>
+            <create-subscription-tabs
+                    (completed)="onPaymentMethodChange($event)"
+                    (loading)="loading = $event"
+                    [plan]="getPlan()"
+                    [from]="activeSubscription"
+                    [disablePaypalTab]="activeSubscription.gateway === 'paypal'"
+                    submitText="Change Payment Method"
+            ></create-subscription-tabs>
         </div>
 
         <div class="main-section" *ngIf="canCancel()">

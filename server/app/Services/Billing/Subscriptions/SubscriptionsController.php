@@ -66,14 +66,15 @@ class SubscriptionsController extends Controller
     {
         $this->validate($this->request, [
             'plan_id' => 'required|integer|exists:billing_plans,id',
+            'start_date' => 'string'
         ]);
 
         /** @var User $user */
         $user = $this->request->user();
         $plan = $this->billingPlan->findOrFail($this->request->get('plan_id'));
 
-        $sub = $this->stripe->subscriptions()->create($plan, $user);
-        $user->subscribe('stripe', $sub['reference'], $plan, $sub['end_date']);
+        $sub = $this->stripe->subscriptions()->create($plan, $user, $this->request->get('start_date'));
+        $user->subscribe('stripe', $sub['reference'], $plan);
 
         return $this->success(['user' => $user]);
     }
@@ -106,11 +107,12 @@ class SubscriptionsController extends Controller
     public function createPaypalAgreement()
     {
         $this->validate($this->request, [
-            'plan_id' => 'required|integer|exists:billing_plans,id'
+            'plan_id' => 'required|integer|exists:billing_plans,id',
+            'start_date' => 'string'
         ]);
 
         $plan = $this->billingPlan->findOrFail($this->request->get('plan_id'));
-        $urls = $this->paypal->subscriptions()->createAgreement($plan);
+        $urls = $this->paypal->subscriptions()->createAgreement($plan, $this->request->get('start_date'));
 
         return $this->success(['urls' => $urls]);
     }
@@ -138,6 +140,21 @@ class SubscriptionsController extends Controller
         return $this->success(['user' => $this->request->user()->load('subscriptions')]);
     }
 
+    public function changePlan($id)
+    {
+        $this->validate($this->request, [
+            'newPlanId' => 'required|integer|exists:billing_plans,id'
+        ]);
+
+        /** @var Subscription $subscription */
+        $subscription = $this->subscription->findOrFail($id);
+        $plan = $this->billingPlan->findOrfail($this->request->get('newPlanId'));
+
+        $subscription->changePlan($plan);
+
+        return $this->success(['user' => $subscription->user()->first()]);
+    }
+
     /**
      * Cancel specified subscription.
      *
@@ -160,7 +177,7 @@ class SubscriptionsController extends Controller
             $subscription->cancel();
         }
 
-        return $this->success(['user' => $subscription->user()->get()]);
+        return $this->success(['user' => $subscription->user()->first()]);
     }
 
     /**

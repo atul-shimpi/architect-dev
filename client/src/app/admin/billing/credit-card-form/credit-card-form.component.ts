@@ -3,6 +3,7 @@ import {CreditCard} from "../upgrade-page/upgrade-page.component";
 import {Subscriptions} from "../subscriptions/subscriptions.service";
 import {finalize} from "rxjs/operators";
 import {CurrentUser} from "vebto-client/auth/current-user";
+import {utils} from "../../../../../node_modules/vebto-client/core";
 
 @Component({
     selector: 'credit-card-form',
@@ -31,7 +32,10 @@ export class CreditCardFormComponent {
     constructor(
         private subscriptions: Subscriptions,
         private currentUser: CurrentUser
-    ) {}
+    ) {
+        const year = (new Date).getFullYear();
+        this.years = utils.range(year, year+21);
+    }
 
     public submitForm() {
         this.loading = true;

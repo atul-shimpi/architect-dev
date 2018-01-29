@@ -6,6 +6,7 @@ import {CurrentUser} from "vebto-client/auth/current-user";
 import {PaypalSubscriptions} from "../paypal-subscriptions";
 import {Toast} from "vebto-client/core";
 import {User} from "vebto-client/core/types/models/User";
+import {Subscription} from "../subscription";
 
 @Component({
     selector: 'create-subscription-tabs',
@@ -29,6 +30,17 @@ export class CreateSubscriptionTabsComponent {
      * Text for submit purchase button.
      */
     @Input() submitText = 'Submit Purchase';
+
+    /**
+     * Whether paypal tab should be disabled.
+     */
+    @Input() disablePaypalTab: boolean = false;
+
+    /**
+     * We're changing user subscription from this one.
+     * Used for prorating the new subscription start date.
+     */
+    @Input() from: Subscription;
 
     /**
      * Plan user should be subscribed to.
@@ -66,7 +78,7 @@ export class CreateSubscriptionTabsComponent {
 
         this.startLoading();
 
-        this.subscriptions.createOnStripe({plan_id: this.plan.id, card})
+        this.subscriptions.createOnStripe({plan_id: this.plan.id, card, start_date: this.from.renews_at})
             .subscribe(response => {
                 this.completeSubscription(response.user);
             }, response => {
@@ -86,8 +98,8 @@ export class CreateSubscriptionTabsComponent {
 
         this.startLoading();
 
-        this.paypal.subscribe(this.plan).then(response => {
-            this.completeSubscription(response.user);
+        this.paypal.subscribe({plan: this.plan, start_date: this.from.renews_at}).then(user => {
+            this.completeSubscription(user);
         }).catch(() => {
             this.stopLoading();
             this.toast.open('There was an issue. Please try again later.');

@@ -9,14 +9,10 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 trait Billable
 {
-    public function subscribe($gateway, $gatewayId, BillingPlan $plan, $renewsAt = null)
+    public function subscribe($gateway, $gatewayId, BillingPlan $plan)
     {
         //TODO: calc based on plan interval
-        if ($renewsAt) {
-            $renewsAt = Carbon::createFromTimestamp($renewsAt);
-        } else {
-            $renewsAt = Carbon::now()->addDays(30);
-        }
+        $renewsAt = Carbon::now()->addMonths(1 * $plan->interval_count);
 
         return $this->subscriptions()->create([
             'plan_id' => $plan->id,

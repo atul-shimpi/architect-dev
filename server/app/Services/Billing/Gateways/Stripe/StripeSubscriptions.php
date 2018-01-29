@@ -29,19 +29,24 @@ class StripeSubscriptions
      *
      * @param BillingPlan $plan
      * @param User $user
-     * @throws GatewayException
+     * @param null $startDate
      * @return array
+     * @throws GatewayException
      */
-    public function create(BillingPlan $plan, User $user)
+    public function create(BillingPlan $plan, User $user, $startDate = null)
     {
         if ($user->subscribedTo($plan, 'stripe')) {
             throw new \LogicException("User already subscribed to '{$plan->name}' plan.");
         }
 
-        $response = $this->gateway->createSubscription([
+        $request = $this->gateway->createSubscription([
             'customerReference' => $user->stripe_id,
             'plan' => $plan->uuid,
-        ])->send();
+        ]);
+
+        $data = $request->getData();
+        $data['trial_end'] = $startDate ? Carbon::parse($startDate)->getTimestamp() : 'now';
+        $response = $request->sendData($data);
 
         if ( ! $response->isSuccessful()) {
             throw new GatewayException('Could not create stripe subscription.');

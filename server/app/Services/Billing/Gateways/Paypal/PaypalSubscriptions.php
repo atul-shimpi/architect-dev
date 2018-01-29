@@ -33,16 +33,17 @@ class PaypalSubscriptions
      * Create subscription agreement on paypal.
      *
      * @param BillingPlan $plan
+     * @param string|null $startDate
      * @return array
      * @throws GatewayException
      */
-    public function createAgreement(BillingPlan $plan)
+    public function createAgreement(BillingPlan $plan, $startDate = null)
     {
         $response = $this->gateway->createSubscription([
             'name'        => config('app.name')." subscription: {$plan->name}.",
             'description' => "{$plan->name} subscription on ".config('app.name'),
             'planId' => $this->paypalPlans->getPlanId($plan),
-            'startDate' => Carbon::now()->addMinute(),
+            'startDate' => $startDate ? Carbon::parse($startDate) : Carbon::now()->addMinute(),
             'payerDetails' => ['payment_method' => 'paypal'],
         ])->send();
 

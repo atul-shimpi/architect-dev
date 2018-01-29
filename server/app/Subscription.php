@@ -118,12 +118,12 @@ class Subscription extends Model
     /**
      * Cancel the subscription at the end of the billing period.
      *
+     * @param bool $atPeriodEnd
      * @return $this
      */
-    public function cancel()
+    public function cancel($atPeriodEnd = true)
     {
-        $endDate = $this->gateway()->subscriptions()->cancel($this);
-        $endDate = $endDate ? Carbon::createFromTimestamp($endDate) : Carbon::now();
+        $this->gateway()->subscriptions()->cancel($this, $atPeriodEnd);
 
         // If the user was on trial, we will set the grace period to end when the trial
         // would have ended. Otherwise, we'll retrieve the end of the billing period
@@ -131,9 +131,10 @@ class Subscription extends Model
         if ($this->onTrial()) {
             $this->ends_at = $this->trial_ends_at;
         } else {
-            $this->ends_at = $endDate;
+            $this->ends_at = $this->renews_at;
         }
 
+        $this->renews_at = null;
         $this->save();
 
         return $this;
@@ -147,7 +148,7 @@ class Subscription extends Model
      */
     public function cancelAndDelete()
     {
-        $this->cancel();
+        $this->cancel(false);
         $this->delete();
 
         return $this;
@@ -172,18 +173,31 @@ class Subscription extends Model
             $trialEnd = 'now';
         }
 
-        $subscription = $this->gateway();
-
         // To resume the subscription we need to set the plan parameter on the Stripe
         // subscription object. This will force Stripe to resume this subscription
         // where we left off. Then, we'll set the proper trial ending timestamp.
-        $subscription->update($this, ['trial_end' => $trialEnd]);
+        $this->gateway()->update($this, ['trial_end' => $trialEnd]);
 
 
         // Finally, we will remove the ending timestamp from the user's record in the
         // local database to indicate that the subscription is active again and is
         // no longer "cancelled". Then we will save this record in the database.
         $this->fill(['ends_at' => null])->save();
+
+        return $this;
+    }
+
+    /**
+     * Swap the subscription to a new billing plan.
+     *
+     * @param BillingPlan $plan
+     * @return $this
+     */
+    public function changePlan(BillingPlan $plan)
+    {
+        $this->gateway()->subscriptions()->update($this, ['plan' => $plan->uuid]);
+
+        $this->fill(['plan_id' => $plan->id, 'ends_at' => null])->save();
 
         return $this;
     }

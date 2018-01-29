@@ -1,0 +1,13 @@
+<mat-horizontal-stepper class="main-content container" [linear]="true">
+    <mat-step label="Subscription plan" [completed]="false">
+        <select-plan-table></select-plan-table>
+    </mat-step>
+
+    <mat-step label="Subscription interval">
+        <subscription-period-step></subscription-period-step>
+    </mat-step>
+
+    <mat-step label="Payment" [completed]="false">
+        <subscription-payment-step></subscription-payment-step>
+    </mat-step>
+</mat-horizontal-stepper>
