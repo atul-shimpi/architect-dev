@@ -1,0 +1,27 @@
+<div class="subscription-period-step step-container" *ngIf="state.selectedPlan">
+    <div class="left-col">
+        <div class="title" trans>Select your plan subscription interval</div>
+        <mat-radio-group class="periods" [(ngModel)]="state.selectedPlanId">
+            <div class="radio-button-wrapper" *ngFor="let plan of state.getChildPlans(state.selectedPlan)">
+                <div class="savings-label" trans>Save {{getPlanSavings(state.selectedPlan.parent || state.selectedPlan, plan)}}%</div>
+                <mat-radio-button [value]="plan.id" class="period" (change)="state.selectChildPlan(plan.id)">
+                    <div class="name">{{plan.name}} <span trans>subscription:</span></div>
+                    <div class="price">{{formatter.getCurrencySymbol(plan.currency)+formatPlanAmount(plan.amount)+'.00'}} x {{plan.interval_count}} {{plan.interval}}s</div>
+                </mat-radio-button>
+            </div>
+            <div class="radio-button-wrapper no-label">
+                <mat-radio-button [value]="state.selectedPlan.id" class="period">
+                    <div class="name" trans>1 month subscription:</div>
+                    <div class="price">{{formatter.getCurrencySymbol(state.selectedPlan.currency)+formatPlanAmount(state.selectedPlan.amount)+'.00'}} month to month</div>
+                </mat-radio-button>
+            </div>
+        </mat-radio-group>
+
+        <div class="actions">
+            <button mat-button matStepperPrevious trans>Back</button>
+            <button mat-raised-button color="accent" (click)="selected.emit()" trans>Select</button>
+        </div>
+    </div>
+
+    <upgrade-page-aside *ngIf="showSidebar" [plan]="state.selectedPlan" class="right-col"></upgrade-page-aside>
+</div>

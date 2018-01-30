@@ -4,5 +4,13 @@
 </div>
 
 <div class="mat-dialog-contents" mat-dialog-content>
-    <select-plan-table (selected)="close($event)"></select-plan-table>
+    <mat-horizontal-stepper [linear]="true">
+        <mat-step label="Subscription plan" [completed]="false">
+            <select-plan-panel></select-plan-panel>
+        </mat-step>
+
+        <mat-step label="Subscription interval">
+            <select-plan-period-panel [showSidebar]="false" (selected)="close()"></select-plan-period-panel>
+        </mat-step>
+    </mat-horizontal-stepper>
 </div>

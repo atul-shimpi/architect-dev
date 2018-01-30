@@ -28,11 +28,11 @@ import {BillingFormatter} from "./billing-formatter.service";
 import { CreditCardFormComponent } from './credit-card-form/credit-card-form.component';
 import {PaypalSubscriptions} from "./subscriptions/paypal-subscriptions";
 import { CreateSubscriptionTabsComponent } from './subscriptions/create-subscription-tabs/create-subscription-tabs.component';
-import { SelectPlanTableComponent } from './plans/select-plan-table/select-plan-table.component';
 import { SelectPlanModalComponent } from './plans/select-plan-modal/select-plan-modal.component';
 import { SubscribeStepperComponent } from './subscriptions/subscriptions-steps/subscribe-stepper/subscribe-stepper.component';
-import { SubscriptionPeriodStepComponent } from './subscriptions/subscriptions-steps/subscription-period-step/subscription-period-step.component';
-import { SubscriptionPaymentStepComponent } from './subscriptions/subscriptions-steps/subscription-payment-step/subscription-payment-step.component';
+import {SelectPlanPanelComponent} from "./plans/select-plan-panel/select-plan-panel.component";
+import {SelectPlanPeriodPanelComponent} from "./plans/select-plan-period-panel/select-plan-period-panel.component";
+import {SubscriptionPaymentPanelComponent} from "./subscriptions/subscriptions-steps/subscription-payment-panel/subscription-payment-panel.component";
 
 @NgModule({
     imports: [
@@ -74,11 +74,11 @@ import { SubscriptionPaymentStepComponent } from './subscriptions/subscriptions-
         UpgradePageAsideComponent,
         CreditCardFormComponent,
         CreateSubscriptionTabsComponent,
-        SelectPlanTableComponent,
+        SelectPlanPanelComponent,
         SelectPlanModalComponent,
         SubscribeStepperComponent,
-        SubscriptionPeriodStepComponent,
-        SubscriptionPaymentStepComponent,
+        SelectPlanPeriodPanelComponent,
+        SubscriptionPaymentPanelComponent,
     ],
     entryComponents: [
         CrupdatePlanModalComponent,

@@ -11,8 +11,6 @@
 
                 <button mat-raised-button color="accent" (click)="showSelectPlanModal()">Change Plan</button>
 
-                <subscribe-stepper></subscribe-stepper>
-
                 <ng-container *ngIf="canResume()">
                     <p trans>You are on a grace period until <strong>{{getFormattedEndDate()}}</strong>. Your subscription will not automatically resume and you will not be charged.</p>
                     <p trans>You still have access to your plan's features until this date and you can resume your subscription below.</p>

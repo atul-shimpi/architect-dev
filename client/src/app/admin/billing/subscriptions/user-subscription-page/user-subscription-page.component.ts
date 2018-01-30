@@ -12,6 +12,8 @@ import {Subscription} from "../subscription";
 import {SubscriptionCompletedEvent} from "../create-subscription-tabs/create-subscription-tabs.component";
 import {Plans} from "../../plans/plans.service";
 import {SelectPlanModalComponent} from "../../plans/select-plan-modal/select-plan-modal.component";
+import {SubscriptionStepperState} from "../subscription-stepper-state.service";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
     selector: 'user-subscription-page',
@@ -35,6 +37,7 @@ export class UserSubscriptionPageComponent implements OnInit {
         public currentUser: CurrentUser,
         public formatter: BillingFormatter,
         private toast: Toast,
+        private route: ActivatedRoute,
     ) {}
 
     ngOnInit() {
@@ -89,7 +92,9 @@ export class UserSubscriptionPageComponent implements OnInit {
      * Show modal for selecting a new billing plan.
      */
     public showSelectPlanModal() {
-        this.modal.open(SelectPlanModalComponent).afterClosed().subscribe(plan => {
+        const params = {plans: this.route.snapshot.data.plans};
+
+        this.modal.open(SelectPlanModalComponent, params).afterClosed().subscribe(plan => {
             if ( ! plan) return;
             this.changePlan(plan);
         });

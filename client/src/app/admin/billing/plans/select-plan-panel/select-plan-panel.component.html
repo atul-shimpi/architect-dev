@@ -1,5 +1,5 @@
 <div class="plans" [class.has-recommended]="hasRecommendedPlan">
-    <ng-container *ngFor="let plan of plans">
+    <ng-container *ngFor="let plan of state.plans">
         <div class="plan" *ngIf="!plan.parent_id" [class.recommended]="plan.recommended">
             <div class="name">{{plan.name}}</div>
             <div class="price-box">
@@ -10,13 +10,7 @@
                 <div class="interval">{{plan.interval}}</div>
             </div>
             <plan-features-list [plan]="plan"></plan-features-list>
-            <button class="select-plan-button" (click)="selectPlan(plan)" mat-raised-button color="accent" trans>Select</button>
+            <button class="select-plan-button" (click)="state.selectPlan(plan)" mat-raised-button color="accent" trans>Select</button>
         </div>
     </ng-container>
 </div>
-
-<mat-horizontal-stepper [linear]="true">
-    <mat-step label="Subsc">
-
-    </mat-step>
-</mat-horizontal-stepper>
