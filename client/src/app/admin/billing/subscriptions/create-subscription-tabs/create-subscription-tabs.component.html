@@ -1,14 +1,11 @@
 <mat-tab-group [dynamicHeight]="true" color="accent">
     <mat-tab label="Bank Card">
-        <credit-card-form (created)="subscribeOnStripe()" [submitButtonText]="submitText"></credit-card-form>
-        <ng-content></ng-content>
+        <credit-card-form (created)="subscribeOnStripe()" [submitButtonText]="submitText" [showOrderSummary]="true"></credit-card-form>
     </mat-tab>
     <mat-tab label="Paypal" [disabled]="disablePaypalTab">
         <div class="paypal-tab">
             <p class="info" trans>After clicking the button below, you will be redirected to paypal.com to approve the subscription.</p>
-
-            <ng-content></ng-content>
-
+            <order-summary></order-summary>
             <button mat-raised-button color="accent" (click)="subscribeOnPaypal()" [disabled]="_loading">{{submitText}}</button>
         </div>
     </mat-tab>

@@ -29,10 +29,10 @@ import { CreditCardFormComponent } from './credit-card-form/credit-card-form.com
 import {PaypalSubscriptions} from "./subscriptions/paypal-subscriptions";
 import { CreateSubscriptionTabsComponent } from './subscriptions/create-subscription-tabs/create-subscription-tabs.component';
 import { SelectPlanModalComponent } from './plans/select-plan-modal/select-plan-modal.component';
-import { SubscribeStepperComponent } from './subscriptions/subscriptions-steps/subscribe-stepper/subscribe-stepper.component';
 import {SelectPlanPanelComponent} from "./plans/select-plan-panel/select-plan-panel.component";
 import {SelectPlanPeriodPanelComponent} from "./plans/select-plan-period-panel/select-plan-period-panel.component";
 import {SubscriptionPaymentPanelComponent} from "./subscriptions/subscriptions-steps/subscription-payment-panel/subscription-payment-panel.component";
+import {SubscriptionStepperState} from "./subscriptions/subscription-stepper-state.service";
 
 @NgModule({
     imports: [
@@ -76,7 +76,6 @@ import {SubscriptionPaymentPanelComponent} from "./subscriptions/subscriptions-s
         CreateSubscriptionTabsComponent,
         SelectPlanPanelComponent,
         SelectPlanModalComponent,
-        SubscribeStepperComponent,
         SelectPlanPeriodPanelComponent,
         SubscriptionPaymentPanelComponent,
     ],
@@ -91,6 +90,7 @@ import {SubscriptionPaymentPanelComponent} from "./subscriptions/subscriptions-s
         CurrenciesListResolver,
         BillingFormatter,
         PaypalSubscriptions,
+        SubscriptionStepperState,
     ],
     exports: [
         BillingRoutingModule,

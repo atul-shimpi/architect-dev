@@ -20,9 +20,9 @@ export class SubscriptionStepperState {
     public selectedPlanChild: Plan;
 
     /**
-     * Interval (in months) user selected to be charged on.
+     * ID of currently selected plan interval.
      */
-    public selectedPlanId: number = 12;
+    public selectedChildPlanId: number = 12;
 
     /**
      * Get plan user should be subscribed to.
@@ -32,10 +32,35 @@ export class SubscriptionStepperState {
     }
 
     /**
+     * Check if a plan is selected.
+     */
+    public planIsSelected(): boolean {
+        return this.selectedPlan != null;
+    }
+
+    /**
+     * Check if user has selected plan interval.
+     */
+    public childPlanIsSelected(): boolean {
+        return this.selectedPlanChild != null;
+    }
+
+    /**
      * Select specified plan.
      */
     public selectPlan(plan: Plan) {
+        if (this.selectedPlan === plan) return;
+
         this.selectedPlan = plan;
+
+        const children = this.getChildPlans(plan);
+
+        if (children.length) {
+            this.selectChildPlan(children[0].id);
+        } else {
+            this.selectedPlanChild = null;
+            this.selectedChildPlanId = null;
+        }
     }
 
     /**
@@ -43,7 +68,7 @@ export class SubscriptionStepperState {
      */
     public selectChildPlan(id: number) {
         this.selectedPlanChild = this.plans.find(plan => plan.id === id);
-        this.selectedPlanId = id;
+        this.selectedChildPlanId = id;
     }
 
     /**

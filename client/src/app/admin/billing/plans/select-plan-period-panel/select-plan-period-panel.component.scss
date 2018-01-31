@@ -2,7 +2,6 @@
 
 select-plan-period-panel {
   display: block;
-  padding: 25px;
 
   .left-col {
     display: flex;
@@ -20,6 +19,8 @@ select-plan-period-panel {
   }
 
   .periods {
+    margin-bottom: 40px;
+
     > .radio-button-wrapper {
       display: flex;
       margin-bottom: 35px;

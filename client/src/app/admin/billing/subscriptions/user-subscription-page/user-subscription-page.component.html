@@ -7,13 +7,12 @@
             <div class="main-section-content">
                 <ng-container *ngIf="canCancel()">
                     <p>Your plan will automatically renew on <strong>{{getFormattedRenewDate()}}</strong> and you'll be charged <strong>{{getPlanPrice()}}</strong></p>
+                    <button mat-raised-button color="accent" (click)="showSelectPlanModal()">Change Plan</button>
                 </ng-container>
-
-                <button mat-raised-button color="accent" (click)="showSelectPlanModal()">Change Plan</button>
 
                 <ng-container *ngIf="canResume()">
                     <p trans>You are on a grace period until <strong>{{getFormattedEndDate()}}</strong>. Your subscription will not automatically resume and you will not be charged.</p>
-                    <p trans>You still have access to your plan's features until this date and you can resume your subscription below.</p>
+                    <p trans>You still have access to your plan's features until this date and you can resume your subscription anytime, by clicking button below.</p>
                     <button mat-raised-button color="accent" (click)="resumeSubscription()" trans>Resume</button>
                 </ng-container>
             </div>

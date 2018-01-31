@@ -1,9 +1,8 @@
-import {Component, Inject, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {ConfirmModalComponent} from "vebto-client/core/ui/confirm-modal/confirm-modal.component";
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
+import {MAT_DIALOG_DATA, MatDialogRef, MatHorizontalStepper, MatStepper} from "@angular/material";
 import {Plan} from "../plan";
 import {SubscriptionStepperState} from "../../subscriptions/subscription-stepper-state.service";
-import {confirmModalData} from "../../../../../../node_modules/vebto-client/core/ui/confirm-modal/confirm-modal.component";
 
 @Component({
     selector: 'select-plan-modal',
@@ -13,6 +12,7 @@ import {confirmModalData} from "../../../../../../node_modules/vebto-client/core
     providers: [SubscriptionStepperState],
 })
 export class SelectPlanModalComponent implements OnInit {
+    @ViewChild(MatHorizontalStepper) stepper: MatStepper;
 
     /**
      * SelectPlanModalComponent Constructor.
@@ -32,5 +32,12 @@ export class SelectPlanModalComponent implements OnInit {
      */
     public close() {
         this.dialogRef.close(this.state.getFinalPlan());
+    }
+
+    /**
+     * Move to next "select plan" stepper step.
+     */
+    public nextStep() {
+        this.stepper.next();
     }
 }

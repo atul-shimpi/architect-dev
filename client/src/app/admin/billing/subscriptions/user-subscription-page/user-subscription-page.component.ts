@@ -6,7 +6,7 @@ import {Subscriptions} from "../subscriptions.service";
 import {CurrentUser} from "vebto-client/auth/current-user";
 import {BillingFormatter} from "../../billing-formatter.service";
 import {Plan} from "../../plans/plan";
-import {finalize} from "rxjs/operators";
+import {finalize, share} from "rxjs/operators";
 import {Toast} from "vebto-client/core";
 import {Subscription} from "../subscription";
 import {SubscriptionCompletedEvent} from "../create-subscription-tabs/create-subscription-tabs.component";
@@ -14,6 +14,8 @@ import {Plans} from "../../plans/plans.service";
 import {SelectPlanModalComponent} from "../../plans/select-plan-modal/select-plan-modal.component";
 import {SubscriptionStepperState} from "../subscription-stepper-state.service";
 import {ActivatedRoute} from "@angular/router";
+import {Observable} from "rxjs/Observable";
+import {User} from "../../../../../../node_modules/vebto-client/core/types/models/User";
 
 @Component({
     selector: 'user-subscription-page',
@@ -61,6 +63,7 @@ export class UserSubscriptionPageComponent implements OnInit {
     }
 
     public getFormattedRenewDate() {
+        if ( ! this.activeSubscription.renews_at) return null;
         return this.activeSubscription.renews_at.split(' ')[0];
     }
 
@@ -84,7 +87,9 @@ export class UserSubscriptionPageComponent implements OnInit {
             cancel: 'Go Back'
         }).afterClosed().subscribe(confirmed => {
             if ( ! confirmed) return;
-            this.cancelSubscription();
+            this.cancelSubscription().subscribe(() => {
+                this.toast.open('Subscription cancelled.');
+            });
         });
     }
 
@@ -104,12 +109,15 @@ export class UserSubscriptionPageComponent implements OnInit {
      * Change user's active subscription plan to specified one.
      */
     public changePlan(plan: Plan) {
+        if (this.activeSubscription.plan_id === plan.id) return;
+
         this.loading = true;
 
         this.subscriptions
             .changePlan(this.activeSubscription.id, plan)
             .pipe(finalize(() => this.loading = false))
-            .subscribe(() => {
+            .subscribe(response => {
+                this.currentUser.assignCurrent(response.user);
                 this.toast.open('Subscription plan changed.');
             });
     }
@@ -127,6 +135,9 @@ export class UserSubscriptionPageComponent implements OnInit {
             });
     }
 
+    /**
+     * Called after user payment method for active subscription has been changed successfully.
+     */
     public onPaymentMethodChange(e: SubscriptionCompletedEvent) {
         //if we've only changed customer card information on same
         //payment gateway, show success message and bail
@@ -137,12 +148,27 @@ export class UserSubscriptionPageComponent implements OnInit {
         this.loading = true;
 
         //otherwise cancel user's subscription on the other gateway
-        this.subscriptions.cancel(this.activeSubscription.id, {delete: true})
+        this.cancelSubscription({delete: true}).subscribe(() => {
+            this.toast.open('Payment method updated.');
+        });
+    }
+
+    /**
+     * Cancel currently active user subscription.
+     */
+    private cancelSubscription(params: {delete?: boolean} = {}): Observable<{user: User}> {
+        this.loading = true;
+
+        const request = this.subscriptions.cancel(this.activeSubscription.id, {delete: params.delete})
             .pipe(finalize(() => this.loading = false))
-            .subscribe(response => {
-                //set new active subscription, if user had more then one
-                this.currentUser.assignCurrent(response.user);
-                this.activeSubscription = this.currentUser.getSubscription();
-            });
+            .pipe(share());
+
+        request.subscribe(response => {
+            //set new active subscription, if user had more then one
+            this.currentUser.assignCurrent(response.user);
+            this.activeSubscription = this.currentUser.getSubscription();
+        });
+
+        return request;
     }
 }

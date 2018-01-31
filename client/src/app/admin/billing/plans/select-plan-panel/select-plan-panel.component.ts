@@ -1,8 +1,6 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output, ViewEncapsulation} from '@angular/core';
 import {BillingFormatter} from "../../billing-formatter.service";
 import {Plan} from "../plan";
-import {Plans} from "../plans.service";
-import {map} from "rxjs/operators";
 import {SubscriptionStepperState} from "../../subscriptions/subscription-stepper-state.service";
 
 @Component({
@@ -19,6 +17,11 @@ export class SelectPlanPanelComponent implements OnInit {
     public hasRecommendedPlan: boolean = false;
 
     /**
+     * Fired when user selects a plan.
+     */
+    @Output() selected = new EventEmitter();
+
+    /**
      * SelectPlanTableComponent Constructor.
      */
     constructor(
@@ -31,10 +34,19 @@ export class SelectPlanPanelComponent implements OnInit {
     }
 
     /**
+     * Select specified plan and fire "selected" event.
+     */
+    public selectPlan(plan: Plan) {
+        this.state.selectPlan(plan);
+
+        //fire event on next render to avoid race conditions
+        setTimeout(() => this.selected.emit(plan));
+    }
+
+    /**
      * Format plan amount. For example, convert cents to dollars.
      */
     public formatPlanAmount(amount: number): number {
         return amount / 100;
     }
-
 }

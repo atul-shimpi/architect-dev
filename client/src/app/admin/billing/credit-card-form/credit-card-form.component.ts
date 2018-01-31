@@ -13,11 +13,25 @@ import {utils} from "../../../../../node_modules/vebto-client/core";
 })
 export class CreditCardFormComponent {
 
+    /**
+     * Event fired when form is submitted and card is added successfully on active gateway.
+     */
     @Output() created: EventEmitter<CreditCard> = new EventEmitter();
 
+    /**
+     * Display text for form submit button.
+     */
     @Input() submitButtonText: string = 'Submit';
 
+    /**
+     * Whether form submit button should be shown.
+     */
     @Input() showSubmitButton: boolean = true;
+
+    /**
+     * Whether order summary should be shown in the template.
+     */
+    @Input() showOrderSummary: boolean = false;
 
     public loading: boolean = false;
 

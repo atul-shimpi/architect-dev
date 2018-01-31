@@ -27,15 +27,16 @@ upgrade-page {
     > .left-col {
       flex: 1 1 auto;
     }
+  }
 
-    .mat-tab-body-content {
-      padding: 35px;
-    }
+  select-plan-period-panel .left-col {
+    padding: 30px;
+  }
 
-    .mat-progress-bar {
-      position: absolute;
-      bottom: 0;
-      left: 0;
+  .payment-step {
+    .legal-info {
+      margin-top: 20px;
+      color: $site-text-color-300;
     }
   }
 }

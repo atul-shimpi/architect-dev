@@ -64,15 +64,15 @@ Route::group(['prefix' => 'secure'], function () {
 
     //subs
     Route::post('billing/subscriptions/stripe', function() {
-        return App::call('App\Services\Billing\Subscriptions\SubscriptionsController@createOnStripe');
+        return App::call('App\Services\Billing\Gateways\Stripe\StriperController@createSubscription');
     });
 
     Route::post('billing/subscriptions/paypal/agreement/create', function() {
-        return App::call('App\Services\Billing\Subscriptions\SubscriptionsController@createPaypalAgreement');
+        return App::call('App\Services\Billing\Gateways\Paypal\PaypalController@createSubscriptionAgreement');
     });
 
     Route::post('billing/subscriptions/paypal/agreement/execute', function() {
-        return App::call('App\Services\Billing\Subscriptions\SubscriptionsController@executePaypalAgreement');
+        return App::call('App\Services\Billing\Gateways\Paypal\PaypalController@executeSubscriptionAgreement');
     });
 
     Route::delete('billing/subscriptions/{id}', function($id) {
@@ -88,17 +88,17 @@ Route::group(['prefix' => 'secure'], function () {
     });
 
     Route::post('billing/stripe/cards/add', function() {
-        return App::call('App\Services\Billing\Subscriptions\SubscriptionsController@addCardOnStripe');
+        return App::call('App\Services\Billing\Gateways\Stripe\StripeController@addCard');
     });
 });
 
 //paypal
 Route::get('billing/paypal/callback/approved', function() {
-    return App::call('App\Services\Billing\Gateways\Paypal\PaypalCallbacksController@approved');
+    return App::call('App\Services\Billing\Gateways\Paypal\PaypalController@approvedCallback');
 });
 
 Route::get('billing/paypal/callback/canceled', function() {
-    return App::call('App\Services\Billing\Gateways\Paypal\PaypalCallbacksController@canceled');
+    return App::call('App\Services\Billing\Gateways\Paypal\PaypalController@canceledCallback');
 });
 
 Route::domain('{name}.{domain}.{tls}')->group(function () {

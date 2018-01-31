@@ -176,13 +176,15 @@ class Subscription extends Model
         // To resume the subscription we need to set the plan parameter on the Stripe
         // subscription object. This will force Stripe to resume this subscription
         // where we left off. Then, we'll set the proper trial ending timestamp.
-        $this->gateway()->update($this, ['trial_end' => $trialEnd]);
+        $this->gateway()->subscriptions()->resume($this, ['trial_end' => $trialEnd]);
 
 
         // Finally, we will remove the ending timestamp from the user's record in the
         // local database to indicate that the subscription is active again and is
         // no longer "cancelled". Then we will save this record in the database.
-        $this->fill(['ends_at' => null])->save();
+        $this->renews_at = $this->ends_at;
+        $this->ends_at = null;
+        $this->save();
 
         return $this;
     }

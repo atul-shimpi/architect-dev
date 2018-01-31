@@ -1,7 +1,7 @@
 <div class="subscription-period-step step-container" *ngIf="state.selectedPlan">
     <div class="left-col">
         <div class="title" trans>Select your plan subscription interval</div>
-        <mat-radio-group class="periods" [(ngModel)]="state.selectedPlanId">
+        <mat-radio-group class="periods" [(ngModel)]="state.selectedChildPlanId">
             <div class="radio-button-wrapper" *ngFor="let plan of state.getChildPlans(state.selectedPlan)">
                 <div class="savings-label" trans>Save {{getPlanSavings(state.selectedPlan.parent || state.selectedPlan, plan)}}%</div>
                 <mat-radio-button [value]="plan.id" class="period" (change)="state.selectChildPlan(plan.id)">

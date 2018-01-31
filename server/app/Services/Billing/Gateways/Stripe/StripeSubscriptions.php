@@ -97,6 +97,21 @@ class StripeSubscriptions
     }
 
     /**
+     * Resume specified subscription on stripe.
+     *
+     * @param Subscription $subscription
+     * @param array $params
+     * @return bool
+     * @throws GatewayException
+     */
+    public function resume(Subscription $subscription, $params)
+    {
+        $this->update($subscription, $params);
+
+        return true;
+    }
+
+    /**
      * Create stripe customer for specified user, if not already created.
      *
      * @param User $user

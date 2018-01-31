@@ -31,5 +31,7 @@
 
     <div class="error margin-bottom" *ngIf="errors.general">{{errors.general}}</div>
 
+    <order-summary *ngIf="showOrderSummary"></order-summary>
+
     <button type="submit" *ngIf="showSubmitButton" mat-raised-button color="accent" [disabled]="loading">{{submitButtonText}}</button>
 </form>

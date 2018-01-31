@@ -1,4 +1,6 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {SubscriptionStepperState} from "../../subscription-stepper-state.service";
+import {Settings} from "vebto-client/core/services/settings.service";
 
 @Component({
     selector: 'subscription-payment-panel',
@@ -8,8 +10,13 @@ import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 })
 export class SubscriptionPaymentPanelComponent implements OnInit {
 
-    constructor() {
-    }
+    /**
+     * SubscriptionPaymentPanelComponent Constructor.
+     */
+    constructor(
+        public state: SubscriptionStepperState,
+        public settings: Settings,
+    ) {}
 
     ngOnInit() {
     }

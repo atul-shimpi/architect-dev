@@ -1,13 +1,15 @@
-<div class="line">
-    <div class="summary-left">
-        <span>{{plan.name}} <span trans>plan</span>: </span>
-        <span *ngIf="childPlan">{{childPlan.name}}</span>
-        <span *ngIf="!childPlan">1 {{plan.interval}} <span trans>subscription</span></span>
+<ng-container *ngIf="state.planIsSelected()">
+    <div class="line">
+        <div class="summary-left">
+            <span>{{state.selectedPlan.name}} <span trans>plan</span>: </span>
+            <span *ngIf="state.childPlanIsSelected()">{{state.selectedPlanChild.name}}</span>
+            <span *ngIf="!state.childPlanIsSelected()">1 {{state.selectedPlan.interval}} <span trans>subscription</span></span>
+        </div>
+        <div class="summary-right">{{getPlanTotal(state.selectedPlan)}}</div>
     </div>
-    <div class="summary-right">{{getPlanTotal(plan)}}</div>
-</div>
 
-<div class="line emphasis">
-    <div class="summary-left" trans>Total</div>
-    <div class="summary-right">{{getPlanTotal(plan)}}</div>
-</div>
+    <div class="line emphasis">
+        <div class="summary-left" trans>Total</div>
+        <div class="summary-right">{{getPlanTotal(state.selectedPlan)}}</div>
+    </div>
+</ng-container>

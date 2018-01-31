@@ -4,28 +4,19 @@ import {Subscriptions} from "../subscriptions/subscriptions.service";
 import {MatStepper} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Settings, Toast} from "vebto-client/core";
+import {SubscriptionStepperState} from "../subscriptions/subscription-stepper-state.service";
 
 @Component({
     selector: 'upgrade-page',
     templateUrl: './upgrade-page.component.html',
     styleUrls: ['./upgrade-page.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    providers: [SubscriptionStepperState],
 })
 export class UpgradePageComponent implements OnInit {
     @ViewChild(MatStepper) stepper: MatStepper;
 
     public loading = false;
-
-    public errors: {card: CreditCard} = {card: {}};
-
-    /**
-     * All available plans. 
-     */
-    public plans: Plan[] = [];
-
-    public acceptedCards: string[] = [];
-
-    public currencies: object = {};
 
     /**
      * SelectPlanModalComponent Constructor.
@@ -36,30 +27,25 @@ export class UpgradePageComponent implements OnInit {
         public settings: Settings,
         private router: Router,
         private toast: Toast,
+        public state: SubscriptionStepperState,
     ) {}
 
     ngOnInit() {
-        this.acceptedCards = this.settings.getJson('billing.accepted_cards', []);
-
         this.route.data.subscribe(data => {
-            this.plans = data.plans;
-            this.currencies = data.currencies;
+            this.state.setPlans(data.plans);
         });
     }
 
-    public getCurrencySymbol(currency: string) {
-        return this.currencies[currency.toUpperCase()]['symbol'];
-    }
-
-    public selectPlan(plan: Plan) {
-        this.selectedPlan = plan;
-        this.selectedPlanId = plan.id;
+    /**
+     * Move to next "upgrade" stepper step.
+     */
+    public nextStep() {
         this.stepper.next();
     }
 
-    private navigateAfterSuccess() {
+    public navigateAfterSuccess() {
         this.router.navigate(['/dashboard']);
-        this.toast.open('Subscribed to '+this.selectedPlan.name+' successfully');
+        this.toast.open('Subscribed to '+this.state.getFinalPlan().name+' successfully');
     }
 }
 

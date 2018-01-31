@@ -38,10 +38,10 @@ export class PaypalSubscriptions {
     /**
      * Subscribe to specified plan on paypal.
      */
-    public subscribe(params: {plan: Plan, start_date?: string}): Promise<User> {
+    public subscribe(params: {plan_id: number, start_date?: string}): Promise<User> {
         return new Promise((resolve, reject) => {
             this.createPaypalAgreement(params).subscribe(response => {
-                this.listenForMessages(params.plan, resolve);
+                this.listenForMessages(params.plan_id, resolve);
                 this.openPaypalPopup(response.urls.approve);
             }, () => reject());
         });
@@ -50,10 +50,10 @@ export class PaypalSubscriptions {
     /**
      * Listen for messages from paypal window and execute paypal agreement.
      */
-    private listenForMessages(plan: Plan, resolve: Function) {
+    private listenForMessages(planId: number, resolve: Function) {
         window.addEventListener('message', e => {
             if (this.settings.getBaseUrl().indexOf(e.origin) === -1) return;
-            this.executePaypalAgreement(e.data.token, plan.id).subscribe(response => resolve(response.user));
+            this.executePaypalAgreement(e.data.token, planId).subscribe(response => resolve(response.user));
         }, false);
     }
 
@@ -73,8 +73,8 @@ export class PaypalSubscriptions {
         );
     }
 
-    private createPaypalAgreement(params: {plan: Plan, start_date?: string}): Observable<{urls: {execute: string, approve: string}}> {
-        return this.http.post('billing/subscriptions/paypal/agreement/create', {plan_id: params.plan.id, start_date: params.start_date});
+    private createPaypalAgreement(params: {plan_id: number, start_date?: string}): Observable<{urls: {execute: string, approve: string}}> {
+        return this.http.post('billing/subscriptions/paypal/agreement/create', {plan_id: params.plan_id, start_date: params.start_date});
     }
 
     private executePaypalAgreement(agreement_id: string, plan_id: number): Observable<{user: User}> {

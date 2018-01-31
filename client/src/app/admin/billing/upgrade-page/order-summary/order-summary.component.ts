@@ -1,6 +1,6 @@
-import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, ViewEncapsulation} from '@angular/core';
 import {Plan} from "../../plans/plan";
-import {ValueLists} from "vebto-client/core/services/value-lists.service";
+import {SubscriptionStepperState} from "../../subscriptions/subscription-stepper-state.service";
 
 @Component({
     selector: 'order-summary',
@@ -8,30 +8,12 @@ import {ValueLists} from "vebto-client/core/services/value-lists.service";
     styleUrls: ['./order-summary.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class OrderSummaryComponent implements OnInit {
-
-    /**
-     * Billing plan user has selected.
-     */
-    @Input() plan: Plan;
-
-    /**
-     * Child version of main billing plan user has selected.
-     */
-    @Input() childPlan: Plan;
-
-    public currencies;
+export class OrderSummaryComponent {
 
     /**
      * OrderSummaryComponent constructor.
      */
-    constructor(private valueLists: ValueLists) {}
-
-    ngOnInit() {
-        this.valueLists.get('currencies').subscribe(response => {
-            this.currencies = response.currencies;
-        });
-    }
+    constructor(public state: SubscriptionStepperState) {}
 
     /**
      * Get the total amount user will be billed.
@@ -45,8 +27,7 @@ export class OrderSummaryComponent implements OnInit {
      * Return symbol for specified currency.
      */
     public getCurrencySymbol(currency: string): string {
-        if ( ! this.currencies) return '';
-        return this.currencies[currency.toUpperCase()]['symbol'];
+        return '$';
     }
 
     /**

@@ -78,7 +78,7 @@ export class CreateSubscriptionTabsComponent {
 
         this.startLoading();
 
-        this.subscriptions.createOnStripe({plan_id: this.plan.id, card, start_date: this.from.renews_at})
+        this.subscriptions.createOnStripe(this.getNewSubscriptionPayload({card}))
             .subscribe(response => {
                 this.completeSubscription(response.user);
             }, response => {
@@ -98,12 +98,25 @@ export class CreateSubscriptionTabsComponent {
 
         this.startLoading();
 
-        this.paypal.subscribe({plan: this.plan, start_date: this.from.renews_at}).then(user => {
+        this.paypal.subscribe(this.getNewSubscriptionPayload()).then(user => {
             this.completeSubscription(user);
         }).catch(() => {
             this.stopLoading();
             this.toast.open('There was an issue. Please try again later.');
         });
+    }
+
+    /**
+     * Get payload for backend for creating a new subsctription.
+     */
+    private getNewSubscriptionPayload(params: {card?: CreditCard} = {}): NewSubscriptionPayload {
+       const payload = {plan_id: this.plan.id};
+
+       if (this.from) {
+           payload['start_date'] = this.from.renews_at;
+       }
+
+       return Object.assign({}, payload, params);
     }
 
     /**
@@ -134,4 +147,10 @@ export class CreateSubscriptionTabsComponent {
 
 export interface SubscriptionCompletedEvent {
     status: 'created'|'updated'
+}
+
+interface NewSubscriptionPayload {
+    card?: CreditCard;
+    start_date?: string;
+    plan_id: number;
 }

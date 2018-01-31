@@ -78,6 +78,28 @@ class PaypalSubscriptions
     }
 
     /**
+     * Resume specified subscription on paypal.
+     *
+     * @param Subscription $subscription
+     * @param array $params
+     * @return bool
+     * @throws GatewayException
+     */
+    public function resume(Subscription $subscription, $params)
+    {
+        $response = $this->gateway->reactivateSubscription([
+            'transactionReference' => $subscription->gateway_id,
+            'description' => 'Resumed by user.'
+        ])->send();
+
+        if ( ! $response->isSuccessful()) {
+            throw new GatewayException('Could not resume paypal subscription.');
+        }
+
+        return true;
+    }
+
+    /**
      * Immediately cancel subscription agreement on paypal.
      *
      * @param Subscription $subscription
@@ -86,7 +108,7 @@ class PaypalSubscriptions
      */
     public function cancel(Subscription $subscription)
     {
-        $response = $this->gateway->cancelSubscription([
+        $response = $this->gateway->suspendSubscription([
             'transactionReference' => $subscription->gateway_id,
             'description' => 'Cancelled by user.'
         ])->send();
