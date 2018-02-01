@@ -44,7 +44,7 @@ export class CrupdatePlanModalComponent implements OnInit {
      */
     public errors: any = {};
 
-    public currencies: {name: string, symbol: string}[] = [];
+    public currencies: {name: string, decimal_digits: number, symbol: string}[] = [];
 
     public intervals = ['day', 'week', 'month', 'year'];
 
@@ -111,6 +111,14 @@ export class CrupdatePlanModalComponent implements OnInit {
     public getPayload() {
         let payload = Object.assign({}, this.model);
         payload.features = this.features.map(feature => feature.content);
+
+        const currency = this.currencies.find(curr => curr.name === payload.currency);
+        payload.currency_symbol = currency.symbol;
+
+        //format plan amount for displaying to user
+        //example: 20 to 20.00, based on currency decimal points
+        payload.display_amount = payload.amount + '.' + '0'.repeat(currency.decimal_digits);
+
         return payload;
     }
 

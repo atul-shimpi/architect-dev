@@ -1,8 +1,8 @@
 <?php namespace App\Services\Billing\Gateways;
 
 use App;
-use Illuminate\Support\Collection;
 use Vebto\Settings\Settings;
+use Illuminate\Support\Collection;
 use App\Services\Billing\Gateways\Paypal\PaypalGateway;
 use App\Services\Billing\Gateways\Stripe\StripeGateway;
 
@@ -13,6 +13,11 @@ class GatewayFactory
      */
     private $settings;
 
+    /**
+     * All available billing gateways.
+     *
+     * @var array
+     */
     private $gateways = [
         'paypal' => PaypalGateway::class,
         'stripe' => StripeGateway::class,
@@ -28,7 +33,13 @@ class GatewayFactory
         $this->settings = $settings;
     }
 
-    public function getSubscriptionGateway($name)
+    /**
+     * Get gateway by specified name.
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function get($name)
     {
         return App::make($this->gateways[$name]);
     }
@@ -45,16 +56,5 @@ class GatewayFactory
         })->map(function($namespace) {
             return App::make($namespace);
         });
-    }
-
-    /**
-     * Get gateway by specified name.
-     *
-     * @param string $name
-     * @return mixed
-     */
-    public function get($name)
-    {
-        return App::make($this->gateways[$name]);
     }
 }

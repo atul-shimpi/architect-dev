@@ -67,10 +67,6 @@ export class UserSubscriptionPageComponent implements OnInit {
         return this.activeSubscription.renews_at.split(' ')[0];
     }
 
-    public getPlanPrice(): string {
-        return this.formatter.getFormattedPlanPrice(this.getPlan());
-    }
-
     public getPlan(): Plan {
         return this.activeSubscription.plan;
     }

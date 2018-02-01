@@ -1,14 +1,8 @@
 import {Injectable} from '@angular/core';
 import {AppHttpClient} from "vebto-client/core/http/app-http-client.service";
 import {Observable} from "rxjs/Observable";
-import {PaginationResponse} from "vebto-client/core/types/pagination-response";
-import {Subscription} from "./subscription";
-import {CreditCard} from "../upgrade-page/upgrade-page.component";
-import {User} from "../../../../types/models/User";
-import {Plan} from "../plans/plan";
-import {Settings} from "../../../../../node_modules/vebto-client/core";
-import {Resolve} from "@angular/router";
-import {Subject} from "rxjs/Subject";
+import {Settings} from "vebto-client/core/services/settings.service";
+import {User} from "vebto-client/core/types/models/User";
 
 @Injectable()
 export class PaypalSubscriptions {
@@ -25,7 +19,7 @@ export class PaypalSubscriptions {
         toolbar: 0,
         titlebar: 0,
         status: 0,
-        crollbars: 1,
+        scrollbars: 1,
         width: this.popupWidth,
         height: this.popupHeight
     };

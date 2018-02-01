@@ -42,11 +42,4 @@ export class SelectPlanPanelComponent implements OnInit {
         //fire event on next render to avoid race conditions
         setTimeout(() => this.selected.emit(plan));
     }
-
-    /**
-     * Format plan amount. For example, convert cents to dollars.
-     */
-    public formatPlanAmount(amount: number): number {
-        return amount / 100;
-    }
 }

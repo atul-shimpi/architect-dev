@@ -4,8 +4,8 @@
             <div class="name">{{plan.name}}</div>
             <div class="price-box">
                 <div class="amount">
-                    <div class="currency">{{formatter.getCurrencySymbol(plan.currency)}}</div>
-                    <div class="number">{{formatPlanAmount(plan.amount)}}</div>
+                    <div class="currency">{{plan.currency_symbol}}</div>
+                    <div class="number">{{plan.display_amount}}</div>
                 </div>
                 <div class="interval">{{plan.interval}}</div>
             </div>

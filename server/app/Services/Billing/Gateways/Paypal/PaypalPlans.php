@@ -1,11 +1,11 @@
 <?php namespace App\Services\Billing\Gateways\Paypal;
 
 use App\BillingPlan;
-use App\Services\Billing\GatewayException;
-use App\Services\Billing\Plans\Gateways\GatewayPlans;
 use Omnipay\PayPal\RestGateway;
+use App\Services\Billing\GatewayException;
+use App\Services\Billing\Gateways\Contracts\GatewayPlansInterface;
 
-class PaypalPlans implements GatewayPlans
+class PaypalPlans implements GatewayPlansInterface
 {
     /**
      * @var RestGateway
@@ -111,6 +111,7 @@ class PaypalPlans implements GatewayPlans
      *
      * @param BillingPlan $plan
      * @return bool
+     * @throws GatewayException
      */
     public function delete(BillingPlan $plan)
     {

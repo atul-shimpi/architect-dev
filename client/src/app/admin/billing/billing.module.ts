@@ -33,6 +33,10 @@ import {SelectPlanPanelComponent} from "./plans/select-plan-panel/select-plan-pa
 import {SelectPlanPeriodPanelComponent} from "./plans/select-plan-period-panel/select-plan-period-panel.component";
 import {SubscriptionPaymentPanelComponent} from "./subscriptions/subscriptions-steps/subscription-payment-panel/subscription-payment-panel.component";
 import {SubscriptionStepperState} from "./subscriptions/subscription-stepper-state.service";
+import {UserNotSubscribedGuard} from "./guards/user-not-subscribed-guard.service";
+import {BillingEnabledGuard} from "./guards/billing-enabled-guard.service";
+import {UserSubscribedGuard} from "./guards/user-subscribed-guard.service";
+import {SubscriptionsListComponent} from "./subscriptions/subscriptions-list/subscriptions-list.component";
 
 @NgModule({
     imports: [
@@ -64,6 +68,7 @@ import {SubscriptionStepperState} from "./subscriptions/subscription-stepper-sta
     ],
     declarations: [
         PlansListComponent,
+        SubscriptionsListComponent,
         CrupdatePlanModalComponent,
         UpgradePageComponent,
         ReorderPlanFeaturesDirective,
@@ -91,6 +96,9 @@ import {SubscriptionStepperState} from "./subscriptions/subscription-stepper-sta
         BillingFormatter,
         PaypalSubscriptions,
         SubscriptionStepperState,
+        UserNotSubscribedGuard,
+        BillingEnabledGuard,
+        UserSubscribedGuard,
     ],
     exports: [
         BillingRoutingModule,

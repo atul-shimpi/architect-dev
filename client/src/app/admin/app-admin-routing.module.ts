@@ -12,6 +12,8 @@ import {vebtoSettingsRoutes} from "vebto-client/admin/settings/settings-routing.
 import {vebtoAdminRoutes} from "vebto-client/admin/admin-routing.module";
 import {PlansListComponent} from "./billing/plans/plans-list/plans-list.component";
 import {BillingSettingsComponent} from "./settings/billing/billing-settings.component";
+import {BillingEnabledGuard} from "./billing/guards/billing-enabled-guard.service";
+import {SubscriptionsListComponent} from "./billing/subscriptions/subscriptions-list/subscriptions-list.component";
 
 const routes: Routes = [
     {
@@ -53,7 +55,15 @@ const routes: Routes = [
             {
                 path: 'plans',
                 component: PlansListComponent,
+                canActivate: [BillingEnabledGuard],
                 data: {permissions: ['plans.view']}
+            },
+
+            {
+                path: 'subscriptions',
+                component: SubscriptionsListComponent,
+                canActivate: [BillingEnabledGuard],
+                data: {permissions: ['subscriptions.view']}
             },
         ]
     }

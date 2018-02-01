@@ -2,11 +2,13 @@
 
 use App\BillingPlan;
 use App\Services\Billing\GatewayException;
+use App\Services\Billing\Gateways\Contracts\GatewaySubscriptionsInterface;
 use App\Subscription;
 use Carbon\Carbon;
 use Omnipay\PayPal\RestGateway;
+use Vebto\Auth\User;
 
-class PaypalSubscriptions
+class PaypalSubscriptions implements GatewaySubscriptionsInterface
 {
     /**
      * @var RestGateway
@@ -33,11 +35,12 @@ class PaypalSubscriptions
      * Create subscription agreement on paypal.
      *
      * @param BillingPlan $plan
+     * @param User $user
      * @param string|null $startDate
      * @return array
      * @throws GatewayException
      */
-    public function createAgreement(BillingPlan $plan, $startDate = null)
+    public function create(BillingPlan $plan, User $user, $startDate = null)
     {
         $response = $this->gateway->createSubscription([
             'name'        => config('app.name')." subscription: {$plan->name}.",
@@ -58,23 +61,25 @@ class PaypalSubscriptions
     }
 
     /**
-     * Execute paypal subscription agreement.
+     * Immediately cancel subscription agreement on paypal.
      *
-     * @param string $agreementId
-     * @return string
+     * @param Subscription $subscription
+     * @param bool $atPeriodEnd
+     * @return bool
      * @throws GatewayException
      */
-    public function executeAgreement($agreementId)
+    public function cancel(Subscription $subscription, $atPeriodEnd = false)
     {
-        $response = $this->gateway->completeSubscription([
-            'transactionReference' => $agreementId
+        $response = $this->gateway->suspendSubscription([
+            'transactionReference' => $subscription->gateway_id,
+            'description' => 'Cancelled by user.'
         ])->send();
 
         if ( ! $response->isSuccessful()) {
-            throw new GatewayException('Could not execute subscription agreement on paypal');
+            throw new GatewayException("Paypal sub cancel failed: {$response->getMessage()}");
         }
 
-        return $response->getTransactionReference();
+        return true;
     }
 
     /**
@@ -93,30 +98,29 @@ class PaypalSubscriptions
         ])->send();
 
         if ( ! $response->isSuccessful()) {
-            throw new GatewayException('Could not resume paypal subscription.');
+            throw new GatewayException("Paypal sub resume failed: {$response->getMessage()}");
         }
 
         return true;
     }
 
     /**
-     * Immediately cancel subscription agreement on paypal.
+     * Execute paypal subscription agreement.
      *
-     * @param Subscription $subscription
-     * @return bool
+     * @param string $agreementId
+     * @return string
      * @throws GatewayException
      */
-    public function cancel(Subscription $subscription)
+    public function executeAgreement($agreementId)
     {
-        $response = $this->gateway->suspendSubscription([
-            'transactionReference' => $subscription->gateway_id,
-            'description' => 'Cancelled by user.'
+        $response = $this->gateway->completeSubscription([
+            'transactionReference' => $agreementId
         ])->send();
 
         if ( ! $response->isSuccessful()) {
-            throw new GatewayException('Could not cancel paypal subscription.');
+            throw new GatewayException("Paypal sub agreement execute failed: {$response->getMessage()}");
         }
 
-        return true;
+        return $response->getTransactionReference();
     }
 }

@@ -1,9 +1,9 @@
-<?php namespace App\Services\Billing\Plans\Gateways;
+<?php namespace App\Services\Billing\Gateways\Contracts;
 
 use App\BillingPlan;
 use App\Services\Billing\GatewayException;
 
-interface GatewayPlans
+interface GatewayPlansInterface
 {
     /**
      * Find specified plan on gateway.

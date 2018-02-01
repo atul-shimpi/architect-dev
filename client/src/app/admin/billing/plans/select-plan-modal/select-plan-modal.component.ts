@@ -20,7 +20,7 @@ export class SelectPlanModalComponent implements OnInit {
     constructor(
         private dialogRef: MatDialogRef<ConfirmModalComponent>,
         @Inject(MAT_DIALOG_DATA) public data: {plans: Plan[]},
-        private state: SubscriptionStepperState,
+        public state: SubscriptionStepperState,
     ) {}
 
     ngOnInit() {

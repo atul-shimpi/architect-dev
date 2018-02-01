@@ -28,8 +28,19 @@
             </div>
         </form>
 
-        <a mat-raised-button color="accent" routerLink="/billing/upgrade" trans>Upgrade</a>
-        <a class="new-project-button" mat-raised-button color="accent" routerLink="/dashboard/projects/new" trans>New Project</a>
+        <div class="actions">
+            <ng-container *ngIf="settings.get('billing.enable')">
+                <a class="upgrade-button" mat-raised-button color="accent" routerLink="/account/settings/subscription" *ngIf="currentUser.isSubscribed()">
+                    <svg-icon name="flash-on"></svg-icon>
+                    <span trans>Manage Subscription</span>
+                </a>
+                <a class="upgrade-button" mat-raised-button color="accent" routerLink="/billing/upgrade" *ngIf="!currentUser.isSubscribed()">
+                    <svg-icon name="flash-on"></svg-icon>
+                    <span trans>Upgrade to Premium</span>
+                </a>
+            </ng-container>
+            <a class="new-project-button" mat-raised-button color="accent" routerLink="/dashboard/projects/new" trans>New Project</a>
+        </div>
     </div>
 </div>
 

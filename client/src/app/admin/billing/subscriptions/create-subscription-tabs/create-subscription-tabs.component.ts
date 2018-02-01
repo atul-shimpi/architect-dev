@@ -78,7 +78,7 @@ export class CreateSubscriptionTabsComponent {
 
         this.startLoading();
 
-        this.subscriptions.createOnStripe(this.getNewSubscriptionPayload({card}))
+        this.subscriptions.createOnStripe(this.getNewSubscriptionPayload({card}) as any)
             .subscribe(response => {
                 this.completeSubscription(response.user);
             }, response => {
@@ -107,7 +107,7 @@ export class CreateSubscriptionTabsComponent {
     }
 
     /**
-     * Get payload for backend for creating a new subsctription.
+     * Get payload for backend for creating a new subscription.
      */
     private getNewSubscriptionPayload(params: {card?: CreditCard} = {}): NewSubscriptionPayload {
        const payload = {plan_id: this.plan.id};

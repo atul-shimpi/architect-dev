@@ -63,8 +63,11 @@ class PaypalController extends Controller
             'start_date' => 'string'
         ]);
 
-        $plan = $this->billingPlan->findOrFail($this->request->get('plan_id'));
-        $urls = $this->paypal->subscriptions()->createAgreement($plan, $this->request->get('start_date'));
+        $urls = $this->paypal->subscriptions()->create(
+            $this->billingPlan->findOrFail($this->request->get('plan_id')),
+            $this->request->user(),
+            $this->request->get('start_date')
+        );
 
         return $this->success(['urls' => $urls]);
     }

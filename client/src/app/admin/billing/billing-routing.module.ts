@@ -5,15 +5,26 @@ import {BillingPlansResolver} from "./upgrade-page/billing-plans-resolver.servic
 import {AuthGuard} from "vebto-client/guards/auth-guard.service";
 import {UserSubscriptionPageComponent} from "./subscriptions/user-subscription-page/user-subscription-page.component";
 import {CurrenciesListResolver} from "./upgrade-page/currencies-list-resolver.service";
+import {UserNotSubscribedGuard} from "./guards/user-not-subscribed-guard.service";
+import {BillingEnabledGuard} from "./guards/billing-enabled-guard.service";
+import {UserSubscribedGuard} from "./guards/user-subscribed-guard.service";
 
 export const routes: Route[] = [
-    {path: 'billing/upgrade', component: UpgradePageComponent, resolve: {plans: BillingPlansResolver, currencies: CurrenciesListResolver}},
+    {
+        path: 'billing/upgrade',
+        component: UpgradePageComponent,
+        canActivate: [BillingEnabledGuard, AuthGuard, UserNotSubscribedGuard],
+        resolve: {
+            plans: BillingPlansResolver,
+            currencies: CurrenciesListResolver
+        }
+    },
 
     {
         path: 'account/settings/subscription',
         component: UserSubscriptionPageComponent,
         resolve: {plans: BillingPlansResolver},
-        canActivate: [AuthGuard],
+        canActivate: [BillingEnabledGuard, AuthGuard, UserSubscribedGuard],
         data: {name: 'account-settings-subscription'},
     },
 ];

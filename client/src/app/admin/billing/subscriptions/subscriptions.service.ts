@@ -4,8 +4,8 @@ import {Observable} from "rxjs/Observable";
 import {PaginationResponse} from "vebto-client/core/types/pagination-response";
 import {Subscription} from "./subscription";
 import {CreditCard} from "../upgrade-page/upgrade-page.component";
-import {User} from "../../../../types/models/User";
 import {Plan} from "../plans/plan";
+import {User} from "vebto-client/core/types/models/User";
 
 @Injectable()
 export class Subscriptions {

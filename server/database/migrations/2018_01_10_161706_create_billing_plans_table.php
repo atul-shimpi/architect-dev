@@ -17,7 +17,9 @@ class CreateBillingPlansTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->integer('amount');
+            $table->integer('display_amount');
             $table->string('currency');
+            $table->string('currency_symbol')->default('$');
             $table->string('interval')->default('month');
             $table->integer('interval_count')->default(1);
             $table->integer('parent_id')->nullable();

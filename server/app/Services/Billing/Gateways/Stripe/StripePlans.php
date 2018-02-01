@@ -1,11 +1,11 @@
 <?php namespace App\Services\Billing\Gateways\Stripe;
 
 use App\BillingPlan;
-use App\Services\Billing\GatewayException;
-use App\Services\Billing\Plans\Gateways\GatewayPlans;
 use Omnipay\Stripe\Gateway;
+use App\Services\Billing\GatewayException;
+use App\Services\Billing\Gateways\Contracts\GatewayPlansInterface;
 
-class StripePlans implements GatewayPlans
+class StripePlans implements GatewayPlansInterface
 {
 
     /**

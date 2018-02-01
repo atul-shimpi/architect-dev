@@ -20,7 +20,6 @@
             <mat-progress-bar color="accent" mode="indeterminate" *ngIf="loading"></mat-progress-bar>
         </div>
 
-        <p class="legal-info">You authorise {{settings.get('branding.site_name')}} to charge you automatically every month, until you cancel your subscription. You consent to get access to your {{settings.get('branding.site_name')}} subscription immediately, and acknowledge that refunds are only available within 14 days and provided you haven't accessed Spotify. Full terms and instructions on how to cancel are available here.</p>
+        <p class="legal-info">You authorise {{settings.get('branding.site_name')}} to charge you automatically every month, until you cancel your subscription. You consent to get access to your {{settings.get('branding.site_name')}} subscription immediately, and acknowledge that refunds are only available within 14 days and provided you haven't accessed {{settings.get('branding.site_name')}}. Full terms and instructions on how to cancel are available here.</p>
     </mat-step>
 </mat-horizontal-stepper>
-

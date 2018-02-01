@@ -63,6 +63,10 @@ Route::group(['prefix' => 'secure'], function () {
     });
 
     //subs
+    Route::get('billing/subscriptions', function() {
+        return App::call('App\Services\Billing\Subscriptions\SubscriptionsController@index');
+    });
+
     Route::post('billing/subscriptions/stripe', function() {
         return App::call('App\Services\Billing\Gateways\Stripe\StriperController@createSubscription');
     });

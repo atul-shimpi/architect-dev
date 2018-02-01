@@ -10,6 +10,8 @@ use LogicException;
  *
  * @property \Carbon\Carbon|null $trial_ends_at
  * @property \Carbon\Carbon|null $ends_at
+ * @property \Carbon\Carbon|null $renews_at
+ * @property string|null $gateway
  */
 class Subscription extends Model
 {
@@ -211,6 +213,6 @@ class Subscription extends Model
      */
     public function gateway()
     {
-        return \App::make(GatewayFactory::class)->getSubscriptionGateway($this->gateway);
+        return \App::make(GatewayFactory::class)->get($this->gateway);
     }
 }

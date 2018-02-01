@@ -37,8 +37,8 @@ export class DashboardComponent implements OnInit {
     constructor(
         private route: ActivatedRoute,
         private router: Router,
-        private settings: Settings,
-        private currentUser: CurrentUser,
+        public settings: Settings,
+        public currentUser: CurrentUser,
         private projectsApi: Projects,
         private toast: Toast,
         private modal: Modal,

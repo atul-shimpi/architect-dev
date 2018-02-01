@@ -6,7 +6,7 @@
             <div class="main-section-title" trans>{{getPlanName()}}</div>
             <div class="main-section-content">
                 <ng-container *ngIf="canCancel()">
-                    <p>Your plan will automatically renew on <strong>{{getFormattedRenewDate()}}</strong> and you'll be charged <strong>{{getPlanPrice()}}</strong></p>
+                    <p>Your plan will automatically renew on <strong>{{getFormattedRenewDate()}}</strong> and you'll be charged <strong>{{plan.currency_symbol+plan.display_amount}}</strong></p>
                     <button mat-raised-button color="accent" (click)="showSelectPlanModal()">Change Plan</button>
                 </ng-container>
 

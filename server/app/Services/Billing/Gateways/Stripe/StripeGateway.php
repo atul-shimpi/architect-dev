@@ -1,13 +1,14 @@
 <?php namespace App\Services\Billing\Gateways\Stripe;
 
-use App\Services\Billing\GatewayException;
-use Omnipay\Common\CreditCard;
-use Omnipay\Common\Exception\InvalidCreditCardException;
 use Omnipay\Omnipay;
-use Omnipay\Stripe\Gateway;
 use Vebto\Auth\User;
+use Omnipay\Stripe\Gateway;
+use Omnipay\Common\CreditCard;
+use App\Services\Billing\GatewayException;
+use Omnipay\Common\Exception\InvalidCreditCardException;
+use App\Services\Billing\Gateways\Contracts\GatewayInterface;
 
-class StripeGateway
+class StripeGateway implements GatewayInterface
 {
     /**
      * @var Gateway

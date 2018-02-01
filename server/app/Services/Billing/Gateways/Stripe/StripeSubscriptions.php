@@ -1,13 +1,14 @@
 <?php namespace App\Services\Billing\Gateways\Stripe;
 
-use App\BillingPlan;
-use App\Services\Billing\GatewayException;
-use App\Subscription;
-use App\User;
 use Carbon\Carbon;
+use App\BillingPlan;
+use Vebto\Auth\User;
+use App\Subscription;
 use Omnipay\Stripe\Gateway;
+use App\Services\Billing\GatewayException;
+use App\Services\Billing\Gateways\Contracts\GatewaySubscriptionsInterface;
 
-class StripeSubscriptions
+class StripeSubscriptions implements GatewaySubscriptionsInterface
 {
     /**
      * @var Gateway
@@ -58,6 +59,14 @@ class StripeSubscriptions
         ];
     }
 
+    /**
+     * Cancel specified subscription on stripe.
+     *
+     * @param Subscription $subscription
+     * @param bool $atPeriodEnd
+     * @return bool
+     * @throws GatewayException
+     */
     public function cancel(Subscription $subscription, $atPeriodEnd = true)
     {
         $response = $this->gateway->cancelSubscription([
@@ -70,30 +79,7 @@ class StripeSubscriptions
             throw new GatewayException('Could not cancel stripe subscription.');
         }
 
-        return $response->getData()['current_period_end'];
-    }
-
-    /**
-     * Update specified subscription.
-     *
-     * @param Subscription $subscription
-     * @param array $params
-     * @return mixed
-     * @throws GatewayException
-     */
-    public function update(Subscription $subscription, $params)
-    {
-        $response = $this->gateway->updateSubscription(array_merge([
-            'plan' => $subscription->plan->uuid,
-            'customerReference' => $subscription->user->stripe_id,
-            'subscriptionReference' => $subscription->gateway_id,
-        ], $params))->send();
-
-        if ( ! $response->isSuccessful()) {
-            throw new GatewayException('Could not update stripe subscription.');
-        }
-
-        return $response->getData();
+        return true;
     }
 
     /**
@@ -106,49 +92,16 @@ class StripeSubscriptions
      */
     public function resume(Subscription $subscription, $params)
     {
-        $this->update($subscription, $params);
-
-        return true;
-    }
-
-    /**
-     * Create stripe customer for specified user, if not already created.
-     *
-     * @param User $user
-     * @param array $cardData
-     * @throws GatewayException
-     * @return User
-     */
-    public function maybeCreateStripeCustomer(User $user, $cardData)
-    {
-        if ($user->stripe_id) return $user;
-
-        $stripeId = $this->createStripeCustomer($user);
-        $user->fill(['stripe_id' => $stripeId])->save();
-
-        $this->createStripeCard($user, $cardData);
-
-        return $user;
-    }
-
-    /**
-     * Create a new stripe customer.
-     *
-     * @param User $user
-     * @throws GatewayException
-     * @return string
-     */
-    private function createStripeCustomer(User $user)
-    {
-        $response = $this->gateway->createCustomer([
-            'email' => $user->email,
-        ])->send();
+        $response = $this->gateway->updateSubscription(array_merge([
+            'plan' => $subscription->plan->uuid,
+            'customerReference' => $subscription->user->stripe_id,
+            'subscriptionReference' => $subscription->gateway_id,
+        ], $params))->send();
 
         if ( ! $response->isSuccessful()) {
-            throw new GatewayException('Could not create stripe customer.');
+            throw new GatewayException('Could not update stripe subscription.');
         }
 
-        /** @var \Omnipay\Stripe\Message\Response $response */
-        return $response->getCustomerReference();
+        return true;
     }
 }

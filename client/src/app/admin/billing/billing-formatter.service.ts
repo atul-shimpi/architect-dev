@@ -6,8 +6,6 @@ import {Translations} from "vebto-client/translations/translations.service";
 @Injectable()
 export class BillingFormatter {
 
-    private currencies: object;
-
     constructor(private valueLists: ValueLists, private i18n: Translations) {}
 
     public getFullPlanName(plan: Plan) {
@@ -15,13 +13,5 @@ export class BillingFormatter {
         name += ' ' + this.i18n.t('Plan');
         if (plan.parent) name += ': ' + plan.name;
         return name;
-    }
-
-    public getFormattedPlanPrice(plan: Plan): string {
-        return this.getCurrencySymbol(plan.currency)+(plan.amount / 100)+'.00';
-    }
-
-    public getCurrencySymbol(currency: string) {
-       return '$';
     }
 }

@@ -1,13 +1,10 @@
 <?php namespace App\Services\Billing\Subscriptions;
 
 use App\BillingPlan;
-use App\Services\Billing\Gateways\Paypal\PaypalGateway;
-use App\Services\Billing\Gateways\Stripe\StripeGateway;
 use App\Subscription;
-use App\User;
 use Illuminate\Http\Request;
-use Omnipay\Common\Exception\InvalidCreditCardException;
 use Vebto\Bootstrap\Controller;
+use Vebto\Database\Paginator;
 
 class SubscriptionsController extends Controller
 {
@@ -27,34 +24,18 @@ class SubscriptionsController extends Controller
     private $subscription;
 
     /**
-     * @var PaypalGateway
-     */
-    private $paypal;
-
-    /**
-     * @var StripeGateway
-     */
-    private $stripe;
-
-    /**
      * SubscriptionsController constructor.
      *
      * @param Request $request
      * @param BillingPlan $billingPlan
      * @param Subscription $subscription
-     * @param PaypalGateway $paypal
-     * @param StripeGateway $stripe
      */
     public function __construct(
         Request $request,
         BillingPlan $billingPlan,
-        Subscription $subscription,
-        PaypalGateway $paypal,
-        StripeGateway $stripe
+        Subscription $subscription
     )
     {
-        $this->paypal = $paypal;
-        $this->stripe = $stripe;
         $this->request = $request;
         $this->billingPlan = $billingPlan;
         $this->subscription = $subscription;
@@ -62,6 +43,25 @@ class SubscriptionsController extends Controller
         $this->middleware('auth');
     }
 
+    /**
+     * Paginate all existing subscriptions.
+     *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function index()
+    {
+        $this->authorize('index', Subscription::class);
+
+        return (new Paginator($this->subscription))->with('user')->paginate($this->request->all());
+    }
+
+    /**
+     * Change plan of specified subscription.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function changePlan($id)
     {
         $this->validate($this->request, [
