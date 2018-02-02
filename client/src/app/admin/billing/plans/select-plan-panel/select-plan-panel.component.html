@@ -7,7 +7,7 @@
                     <div class="currency">{{plan.currency_symbol}}</div>
                     <div class="number">{{plan.display_amount}}</div>
                 </div>
-                <div class="interval">{{plan.interval}}</div>
+                <div class="interval">/{{plan.interval}}</div>
             </div>
             <plan-features-list [plan]="plan"></plan-features-list>
             <button class="select-plan-button" (click)="selectPlan(plan)" mat-raised-button color="accent" trans>Select</button>

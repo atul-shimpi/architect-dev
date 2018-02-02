@@ -1,10 +1,7 @@
 <accepted-payments-header></accepted-payments-header>
 
 <div class="selected-plan">
-    <div class="header">
-        <span *ngIf="plan.parent">{{plan.parent.name}} </span>
-        <span>{{plan.name}}</span>
-    </div>
+    <div class="header"><full-plan-name [plan]="plan"></full-plan-name></div>
     <plan-features-list [plan]="plan" [showCheckIcons]="true" [dense]="true"></plan-features-list>
 </div>
 

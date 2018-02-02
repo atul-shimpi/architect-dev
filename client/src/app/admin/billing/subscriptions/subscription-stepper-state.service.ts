@@ -10,65 +10,42 @@ export class SubscriptionStepperState {
     public plans: Plan[] = [];
 
     /**
+     * Model for plan period radio group.
+     */
+    public radioGroupModel: number;
+
+    /**
+     * Base plan, selected in the first step.
+     */
+    public initialPlan: Plan;
+
+    /**
      * Billing plan user has selected.
      */
     public selectedPlan: Plan;
 
     /**
-     * Child of main plan user has selected, for example yearly plan.
+     * Select initial "base" plan.
      */
-    public selectedPlanChild: Plan;
-
-    /**
-     * ID of currently selected plan interval.
-     */
-    public selectedChildPlanId: number = 12;
-
-    /**
-     * Get plan user should be subscribed to.
-     */
-    public getFinalPlan() {
-        return this.selectedPlanChild || this.selectedPlan;
-    }
-
-    /**
-     * Check if a plan is selected.
-     */
-    public planIsSelected(): boolean {
-        return this.selectedPlan != null;
-    }
-
-    /**
-     * Check if user has selected plan interval.
-     */
-    public childPlanIsSelected(): boolean {
-        return this.selectedPlanChild != null;
-    }
-
-    /**
-     * Select specified plan.
-     */
-    public selectPlan(plan: Plan) {
-        if (this.selectedPlan === plan) return;
-
+    public selectInitialPlan(plan: Plan) {
+        this.initialPlan = plan;
         this.selectedPlan = plan;
 
         const children = this.getChildPlans(plan);
 
-        if (children.length) {
-            this.selectChildPlan(children[0].id);
+        if (children && children[0]) {
+            this.radioGroupModel = children[0].id;
+            this.selectedPlan = children[0]
         } else {
-            this.selectedPlanChild = null;
-            this.selectedChildPlanId = null;
+            this.selectedPlan = plan;
         }
     }
 
     /**
-     * Select child plan by specified ID.
+     * Select plan by specified ID.
      */
-    public selectChildPlan(id: number) {
-        this.selectedPlanChild = this.plans.find(plan => plan.id === id);
-        this.selectedChildPlanId = id;
+    public selectPlanById(id: number) {
+        this.selectedPlan = this.plans.find(plan => plan.id === id);
     }
 
     /**

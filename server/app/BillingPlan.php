@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $uuid
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
+ * @property-read BillingPlan $parent
  * @method static \Illuminate\Database\Eloquent\Builder|\App\BillingPlan whereAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\BillingPlan whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\BillingPlan whereCurrency($value)

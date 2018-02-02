@@ -116,8 +116,8 @@ export class CrupdatePlanModalComponent implements OnInit {
         payload.currency_symbol = currency.symbol;
 
         //format plan amount for displaying to user
-        //example: 20 to 20.00, based on currency decimal points
-        payload.display_amount = payload.amount + '.' + '0'.repeat(currency.decimal_digits);
+        //example: 20 to $20.00, based on currency decimal points
+        payload.display_amount = currency.symbol + payload.amount + '.' + '0'.repeat(currency.decimal_digits);
 
         return payload;
     }

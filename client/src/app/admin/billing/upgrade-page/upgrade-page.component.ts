@@ -1,5 +1,4 @@
 import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import {Plan} from "../plans/plan";
 import {Subscriptions} from "../subscriptions/subscriptions.service";
 import {MatStepper} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -16,6 +15,9 @@ import {SubscriptionStepperState} from "../subscriptions/subscription-stepper-st
 export class UpgradePageComponent implements OnInit {
     @ViewChild(MatStepper) stepper: MatStepper;
 
+    /**
+     * Whether server request is in progress.
+     */
     public loading = false;
 
     /**
@@ -43,9 +45,12 @@ export class UpgradePageComponent implements OnInit {
         this.stepper.next();
     }
 
-    public navigateAfterSuccess() {
+    /**
+     * Fired when user subscribed to one of the plans sucessfully.
+     */
+    public onCompleted() {
         this.router.navigate(['/dashboard']);
-        this.toast.open('Subscribed to '+this.state.getFinalPlan().name+' successfully');
+        this.toast.open('Subscribed to '+this.state.selectedPlan.name+' successfully');
     }
 }
 

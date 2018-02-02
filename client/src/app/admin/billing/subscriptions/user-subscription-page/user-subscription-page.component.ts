@@ -4,18 +4,15 @@ import {ConfirmModalComponent} from "vebto-client/core/ui/confirm-modal/confirm-
 import {Modal} from "vebto-client/core/ui/modal.service";
 import {Subscriptions} from "../subscriptions.service";
 import {CurrentUser} from "vebto-client/auth/current-user";
-import {BillingFormatter} from "../../billing-formatter.service";
 import {Plan} from "../../plans/plan";
 import {finalize, share} from "rxjs/operators";
 import {Toast} from "vebto-client/core";
 import {Subscription} from "../subscription";
-import {SubscriptionCompletedEvent} from "../create-subscription-tabs/create-subscription-tabs.component";
-import {Plans} from "../../plans/plans.service";
 import {SelectPlanModalComponent} from "../../plans/select-plan-modal/select-plan-modal.component";
-import {SubscriptionStepperState} from "../subscription-stepper-state.service";
 import {ActivatedRoute} from "@angular/router";
 import {Observable} from "rxjs/Observable";
-import {User} from "../../../../../../node_modules/vebto-client/core/types/models/User";
+import {User} from "vebto-client/core/types/models/User";
+import {SubscriptionCompletedEvent} from "../create-subscription-panel/create-subscription-panel.component";
 
 @Component({
     selector: 'user-subscription-page',
@@ -37,7 +34,6 @@ export class UserSubscriptionPageComponent implements OnInit {
         private modal: Modal,
         private subscriptions: Subscriptions,
         public currentUser: CurrentUser,
-        public formatter: BillingFormatter,
         private toast: Toast,
         private route: ActivatedRoute,
     ) {}
@@ -54,11 +50,8 @@ export class UserSubscriptionPageComponent implements OnInit {
         return this.currentUser.isSubscribed() && !this.currentUser.onGracePeriod();
     }
 
-    public getPlanName(): string {
-        return this.formatter.getFullPlanName(this.getPlan());
-    }
-
     public getFormattedEndDate(): string {
+        if ( ! this.activeSubscription.ends_at) return null;
         return this.activeSubscription.ends_at.split(' ')[0];
     }
 
@@ -128,6 +121,7 @@ export class UserSubscriptionPageComponent implements OnInit {
             .pipe(finalize(() => this.loading = false))
             .subscribe(response => {
                 this.currentUser.setSubscription(response.subscription);
+                this.toast.open('Subscription resumed.');
             });
     }
 

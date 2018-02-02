@@ -1,5 +1,4 @@
 import {Component, EventEmitter, OnInit, Output, ViewEncapsulation} from '@angular/core';
-import {BillingFormatter} from "../../billing-formatter.service";
 import {Plan} from "../plan";
 import {SubscriptionStepperState} from "../../subscriptions/subscription-stepper-state.service";
 
@@ -24,10 +23,7 @@ export class SelectPlanPanelComponent implements OnInit {
     /**
      * SelectPlanTableComponent Constructor.
      */
-    constructor(
-        public formatter: BillingFormatter,
-        public state: SubscriptionStepperState,
-    ) {}
+    constructor(public state: SubscriptionStepperState) {}
 
     ngOnInit() {
         this.hasRecommendedPlan = this.state.plans.filter(plan => plan.recommended).length > 0;
@@ -37,7 +33,7 @@ export class SelectPlanPanelComponent implements OnInit {
      * Select specified plan and fire "selected" event.
      */
     public selectPlan(plan: Plan) {
-        this.state.selectPlan(plan);
+        this.state.selectInitialPlan(plan);
 
         //fire event on next render to avoid race conditions
         setTimeout(() => this.selected.emit(plan));

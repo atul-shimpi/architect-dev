@@ -1,9 +1,7 @@
-<ng-container *ngIf="state.planIsSelected()">
+<ng-container *ngIf="state.selectedPlan">
     <div class="line">
         <div class="summary-left">
-            <span>{{state.selectedPlan.name}} <span trans>plan</span>: </span>
-            <span *ngIf="state.childPlanIsSelected()">{{state.selectedPlanChild.name}}</span>
-            <span *ngIf="!state.childPlanIsSelected()">1 {{state.selectedPlan.interval}} <span trans>subscription</span></span>
+            <full-plan-name [plan]="state.selectedPlan"></full-plan-name>
         </div>
         <div class="summary-right">{{getPlanTotal(state.selectedPlan)}}</div>
     </div>

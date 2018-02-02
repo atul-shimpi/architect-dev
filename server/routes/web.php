@@ -68,7 +68,7 @@ Route::group(['prefix' => 'secure'], function () {
     });
 
     Route::post('billing/subscriptions/stripe', function() {
-        return App::call('App\Services\Billing\Gateways\Stripe\StriperController@createSubscription');
+        return App::call('App\Services\Billing\Gateways\Stripe\StripeController@createSubscription');
     });
 
     Route::post('billing/subscriptions/paypal/agreement/create', function() {

@@ -20,14 +20,7 @@ export class OrderSummaryComponent {
      */
     public getPlanTotal(plan: Plan) {
         const amount = plan.amount * plan.interval_count;
-        return this.getCurrencySymbol(plan.currency)+this.formatPlanAmount(amount)
-    }
-
-    /**
-     * Return symbol for specified currency.
-     */
-    public getCurrencySymbol(currency: string): string {
-        return '$';
+        return plan.currency_symbol+this.formatPlanAmount(amount)
     }
 
     /**

@@ -56,7 +56,6 @@ class StripeController extends Controller
      * Create a new subscription on stripe.
      *
      * @return \Illuminate\Http\JsonResponse
-     * @throws \App\Services\Billing\GatewayException
      */
     public function createSubscription()
     {
@@ -88,7 +87,7 @@ class StripeController extends Controller
             'card.number' => 'required|string|min:4',
             'card.expiration_month' => 'required|integer|min:1|max:12',
             'card.expiration_year' => 'required|integer|min:2018|max:2060',
-            'card.security_code' => 'required|integer|min:1|max:999',
+            'card.security_code' => 'required|integer|min:1',
         ]);
 
         try {

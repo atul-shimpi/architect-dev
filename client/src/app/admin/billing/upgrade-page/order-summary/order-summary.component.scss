@@ -5,6 +5,10 @@ order-summary {
   margin: 45px 0 35px;
   border-top: 1px solid $site-border-color-200;
   border-bottom: 1px solid $site-border-color-200;
+  
+  &:empty {
+    display: none;
+  }
 
   .line {
     display: flex;

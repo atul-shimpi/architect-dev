@@ -24,19 +24,18 @@ import { AcceptedPaymentsHeaderComponent } from './upgrade-page/accepted-payment
 import { UserSubscriptionPageComponent } from './subscriptions/user-subscription-page/user-subscription-page.component';
 import { UpgradePageAsideComponent } from './upgrade-page/upgrade-page-aside/upgrade-page-aside.component';
 import {CurrenciesListResolver} from "./upgrade-page/currencies-list-resolver.service";
-import {BillingFormatter} from "./billing-formatter.service";
 import { CreditCardFormComponent } from './credit-card-form/credit-card-form.component';
 import {PaypalSubscriptions} from "./subscriptions/paypal-subscriptions";
-import { CreateSubscriptionTabsComponent } from './subscriptions/create-subscription-tabs/create-subscription-tabs.component';
 import { SelectPlanModalComponent } from './plans/select-plan-modal/select-plan-modal.component';
 import {SelectPlanPanelComponent} from "./plans/select-plan-panel/select-plan-panel.component";
 import {SelectPlanPeriodPanelComponent} from "./plans/select-plan-period-panel/select-plan-period-panel.component";
-import {SubscriptionPaymentPanelComponent} from "./subscriptions/subscriptions-steps/subscription-payment-panel/subscription-payment-panel.component";
 import {SubscriptionStepperState} from "./subscriptions/subscription-stepper-state.service";
 import {UserNotSubscribedGuard} from "./guards/user-not-subscribed-guard.service";
 import {BillingEnabledGuard} from "./guards/billing-enabled-guard.service";
 import {UserSubscribedGuard} from "./guards/user-subscribed-guard.service";
 import {SubscriptionsListComponent} from "./subscriptions/subscriptions-list/subscriptions-list.component";
+import {CreateSubscriptionPanelComponent} from "./subscriptions/create-subscription-panel/create-subscription-panel.component";
+import { FullPlanNameComponent } from './plans/full-plan-name/full-plan-name.component';
 
 @NgModule({
     imports: [
@@ -78,11 +77,11 @@ import {SubscriptionsListComponent} from "./subscriptions/subscriptions-list/sub
         UserSubscriptionPageComponent,
         UpgradePageAsideComponent,
         CreditCardFormComponent,
-        CreateSubscriptionTabsComponent,
+        CreateSubscriptionPanelComponent,
         SelectPlanPanelComponent,
         SelectPlanModalComponent,
         SelectPlanPeriodPanelComponent,
-        SubscriptionPaymentPanelComponent,
+        FullPlanNameComponent,
     ],
     entryComponents: [
         CrupdatePlanModalComponent,
@@ -93,7 +92,6 @@ import {SubscriptionsListComponent} from "./subscriptions/subscriptions-list/sub
         Subscriptions,
         BillingPlansResolver,
         CurrenciesListResolver,
-        BillingFormatter,
         PaypalSubscriptions,
         SubscriptionStepperState,
         UserNotSubscribedGuard,

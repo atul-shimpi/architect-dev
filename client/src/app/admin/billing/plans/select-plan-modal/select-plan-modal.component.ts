@@ -31,7 +31,7 @@ export class SelectPlanModalComponent implements OnInit {
      * Close the modal.
      */
     public close() {
-        this.dialogRef.close(this.state.getFinalPlan());
+        this.dialogRef.close(this.state.selectedPlan);
     }
 
     /**

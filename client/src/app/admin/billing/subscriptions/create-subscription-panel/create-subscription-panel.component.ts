@@ -9,12 +9,12 @@ import {User} from "vebto-client/core/types/models/User";
 import {Subscription} from "../subscription";
 
 @Component({
-    selector: 'create-subscription-tabs',
-    templateUrl: './create-subscription-tabs.component.html',
-    styleUrls: ['./create-subscription-tabs.component.scss'],
+    selector: 'create-subscription-panel',
+    templateUrl: './create-subscription-panel.component.html',
+    styleUrls: ['./create-subscription-panel.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class CreateSubscriptionTabsComponent {
+export class CreateSubscriptionPanelComponent {
 
     /**
      * Whether subscription creation is in progress.
@@ -125,6 +125,7 @@ export class CreateSubscriptionTabsComponent {
     private completeSubscription(user: User) {
         this._loading = false;
         this.currentUser.assignCurrent(user);
+        console.log(this.currentUser.isSubscribed());
         this.completed.emit({status: 'created'})
     }
 

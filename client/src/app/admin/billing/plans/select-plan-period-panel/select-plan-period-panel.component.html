@@ -1,18 +1,18 @@
-<div class="subscription-period-step step-container" *ngIf="state.selectedPlan">
+<div class="subscription-period-step step-container" *ngIf="state.initialPlan">
     <div class="left-col">
         <div class="title" trans>Select the duration of your plan. Longer plans offer better discounts!</div>
-        <mat-radio-group class="periods" [(ngModel)]="state.selectedChildPlanId">
-            <div class="radio-button-wrapper" *ngFor="let plan of state.getChildPlans(state.selectedPlan)">
+        <mat-radio-group class="periods" [(ngModel)]="state.radioGroupModel" (change)="state.selectPlanById(state.radioGroupModel)">
+            <div class="radio-button-wrapper" *ngFor="let plan of state.getChildPlans(state.initialPlan)">
                 <div class="savings-label" trans>Save {{getPlanSavings(state.selectedPlan.parent || state.selectedPlan, plan)}}%</div>
-                <mat-radio-button [value]="plan.id" class="period" (change)="state.selectChildPlan(plan.id)">
+                <mat-radio-button [value]="plan.id" class="period">
                     <div class="name">{{plan.name}} <span trans>subscription:</span></div>
                     <div class="price">{{plan.currency_symbol+plan.display_amount}} x {{plan.interval_count}} {{plan.interval}}s</div>
                 </mat-radio-button>
             </div>
             <div class="radio-button-wrapper no-label">
-                <mat-radio-button [value]="state.selectedPlan.id" class="period">
+                <mat-radio-button [value]="state.initialPlan.id" class="period">
                     <div class="name" trans>1 month subscription:</div>
-                    <div class="price">{{state.selectedPlan.currency_symbol+state.selectedPlan.display_amount}} month to month</div>
+                    <div class="price">{{state.initialPlan.currency_symbol+state.initialPlan.display_amount}} month to month</div>
                 </mat-radio-button>
             </div>
         </mat-radio-group>

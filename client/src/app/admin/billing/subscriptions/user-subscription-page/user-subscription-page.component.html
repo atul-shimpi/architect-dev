@@ -3,10 +3,16 @@
 <div class="content container mat-elevation-z1">
     <div class="main">
         <div class="main-section">
-            <div class="main-section-title" trans>{{getPlanName()}}</div>
+            <div class="main-section-title"><full-plan-name [plan]="activeSubscription.plan"></full-plan-name></div>
             <div class="main-section-content">
                 <ng-container *ngIf="canCancel()">
-                    <p>Your plan will automatically renew on <strong>{{getFormattedRenewDate()}}</strong> and you'll be charged <strong>{{plan.currency_symbol+plan.display_amount}}</strong></p>
+                    <p>
+                        Your plan will automatically renew on
+                        <strong>{{getFormattedRenewDate()}}</strong>
+                        and you'll be charged
+                        <strong>{{activeSubscription.plan.currency_symbol+activeSubscription.plan.display_amount}}</strong>.
+                    </p>
+
                     <button mat-raised-button color="accent" (click)="showSelectPlanModal()">Change Plan</button>
                 </ng-container>
 
@@ -29,14 +35,14 @@
                 <div class="info">{{currentUser.get('card_brand')}} **** {{currentUser.get('card_last_four')}}</div>
             </div>
 
-            <create-subscription-tabs
+            <create-subscription-panel
                     (completed)="onPaymentMethodChange($event)"
                     (loading)="loading = $event"
                     [plan]="getPlan()"
                     [from]="activeSubscription"
                     [disablePaypalTab]="activeSubscription.gateway === 'paypal'"
                     submitText="Change Payment Method"
-            ></create-subscription-tabs>
+            ></create-subscription-panel>
         </div>
 
         <div class="main-section" *ngIf="canCancel()">
