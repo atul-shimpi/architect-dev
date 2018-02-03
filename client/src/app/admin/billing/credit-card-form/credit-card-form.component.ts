@@ -33,22 +33,41 @@ export class CreditCardFormComponent {
      */
     @Input() showOrderSummary: boolean = false;
 
+    /**
+     * Whether backend request is in progress.
+     */
     public loading: boolean = false;
 
-    public errors: {card: CreditCard, general?: string} = {card: {}};
+    /**
+     * Errors returned from backend.
+     */
+    public errors: {card: CreditCard, general?: string};
 
+    /**
+     * Months for credit card expiration select.
+     */
     public months = [1,2,3,4,5,6,7,8,9,10,11,12];
 
-    public years = [2020];
+    /**
+     * Years for credit card expiration select.
+     */
+    public years = [];
 
-    public cardModel: CreditCard = {expiration_month: '', expiration_year: ''};
+    /**
+     * Credit card form model.
+     */
+    public cardModel: CreditCard;
 
+    /**
+     * CreditCardFormComponent Constructor.
+     */
     constructor(
         private subscriptions: Subscriptions,
         private currentUser: CurrentUser
     ) {
-        const year = (new Date).getFullYear();
-        this.years = utils.range(year, year+21);
+        this.resetForm();
+        const currentYear = (new Date).getFullYear();
+        this.years = utils.range(currentYear, currentYear+21);
     }
 
     public submitForm() {
@@ -57,10 +76,19 @@ export class CreditCardFormComponent {
         this.subscriptions.addCard(this.cardModel)
             .pipe(finalize(() => this.loading = false))
             .subscribe(response => {
+                this.resetForm();
                 this.currentUser.assignCurrent(response.user);
                 this.created.emit(this.cardModel);
             }, response => {
                 this.errors = response.messages;
             });
+    }
+
+    /**
+     * Reset credit card form.
+     */
+    private resetForm() {
+        this.cardModel = {expiration_month: '', expiration_year: ''};
+        this.errors = {card: {}};
     }
 }

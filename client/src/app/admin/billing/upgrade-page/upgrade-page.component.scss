@@ -16,6 +16,11 @@ upgrade-page {
   .mat-horizontal-stepper-content {
     padding: 5px;
     margin-top: 25px;
+
+    &[aria-expanded=false] {
+      padding: 0;
+      margin: 0;
+    }
   }
   
   .step-container {

@@ -38,4 +38,11 @@ export class SelectPlanPanelComponent implements OnInit {
         //fire event on next render to avoid race conditions
         setTimeout(() => this.selected.emit(plan));
     }
+
+    /**
+     * Get all plan that are not children and not free.
+     */
+    public getAllPlans() {
+        return this.state.plans.filter(plan => !plan.free && !plan.parent_id);
+    }
 }

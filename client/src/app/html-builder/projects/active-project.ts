@@ -12,6 +12,7 @@ import {Toast} from "vebto-client/core/ui/toast.service";
 import {Subject} from "rxjs/Subject";
 import {Theme} from "../../../types/models/Theme";
 import {LocalStorage} from "vebto-client/core/services/local-storage.service";
+import {debounceTime} from "rxjs/operators";
 
 @Injectable()
 export class ActiveProject {
@@ -258,9 +259,8 @@ export class ActiveProject {
      * Auto save and update project pages on builder document change event.
      */
     private bindToBuilderDocumentChangeEvent() {
-        this.builderDocument.contentChanged.debounceTime(1000).subscribe(source => {
+        this.builderDocument.contentChanged.pipe(debounceTime(1000)).subscribe(source => {
             if (source === 'activeProject') return;
-            console.log('activeProject: '+source);
 
             this.pages[this.activePage].html = this.builderDocument.getOuterHtml();
 

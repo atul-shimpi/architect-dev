@@ -54,7 +54,7 @@ export class Subscriptions {
         return this.http.post('billing/subscriptions/'+id+'/resume');
     }
 
-    public changePlan(id: number, plan: Plan): Observable<{user: User}> {
+    public changePlan(id: number, plan: Plan): Observable<{user: User}|{links: {approve: string}}> {
         return this.http.post('billing/subscriptions/'+id+'/change-plan', {newPlanId: plan.id});
     }
 

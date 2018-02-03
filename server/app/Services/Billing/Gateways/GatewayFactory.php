@@ -37,7 +37,7 @@ class GatewayFactory
      * Get gateway by specified name.
      *
      * @param string $name
-     * @return mixed
+     * @return App\Services\Billing\Gateways\Contracts\GatewayInterface
      */
     public function get($name)
     {

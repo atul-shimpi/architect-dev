@@ -105,6 +105,21 @@ class PaypalSubscriptions implements GatewaySubscriptionsInterface
     }
 
     /**
+     * Change billing plan of specified subscription.
+     *
+     * @param Subscription $subscription
+     * @param BillingPlan $newPlan
+     * @return array
+     */
+    public function changePlan(Subscription $subscription, BillingPlan $newPlan)
+    {
+        //TODO: implement when paypal fully supports billing agreement plan change. In the meantime
+        // it's done on the front-end by cancelling user subscription and then creating a new one.
+
+        return [];
+    }
+
+    /**
      * Execute paypal subscription agreement.
      *
      * @param string $agreementId

@@ -46,11 +46,20 @@ export class UpgradePageComponent implements OnInit {
     }
 
     /**
-     * Fired when user subscribed to one of the plans sucessfully.
+     * Fired when user subscribed to one of the plans successfully.
      */
     public onCompleted() {
+        this.loading = false;
         this.router.navigate(['/dashboard']);
-        this.toast.open('Subscribed to '+this.state.selectedPlan.name+' successfully');
+        this.toast.open('Subscribed to "'+this.getSelectedOrParentPlanName()+'" plan successfully.');
+    }
+
+    /**
+     * Get name of selected plan or it's parent.
+     */
+    private getSelectedOrParentPlanName(): string {
+        const plan = this.state.selectedPlan.parent ? this.state.selectedPlan.parent : this.state.selectedPlan;
+        return plan.name;
     }
 }
 

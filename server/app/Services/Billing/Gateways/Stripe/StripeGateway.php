@@ -51,6 +51,19 @@ class StripeGateway implements GatewayInterface
     }
 
     /**
+     * Check if specified event exists on stripe.
+     *
+     * @param int|string $eventId
+     * @return bool
+     */
+    public function eventExists($eventId)
+    {
+        return ! is_null($this->gateway->fetchEvent(
+            ['eventReference' => $eventId]
+        )->send()->getEventReference());
+    }
+
+    /**
      * Add a new card to customer on stripe.
      *
      * @param User $user

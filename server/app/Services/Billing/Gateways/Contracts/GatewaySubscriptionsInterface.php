@@ -37,4 +37,13 @@ interface GatewaySubscriptionsInterface
      * @throws \LogicException
      */
     public function create(BillingPlan $plan, User $user, $startDate = null);
+
+    /**
+     * Change billing plan of specified subscription.
+     *
+     * @param Subscription $subscription
+     * @param BillingPlan $newPlan
+     * @return mixed
+     */
+    public function changePlan(Subscription $subscription, BillingPlan $newPlan);
 }

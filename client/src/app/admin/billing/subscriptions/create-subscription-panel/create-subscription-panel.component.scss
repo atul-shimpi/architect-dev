@@ -8,10 +8,13 @@ create-subscription-panel {
   }
 
   .paypal-tab {
+    padding-bottom: 5px;
+
     > p {
       background-color: $site-bg-color-200;
       border-radius: 4px;
       padding: 15px;
+      border: 1px solid $site-border-color-100;
     }
   }
 }

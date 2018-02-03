@@ -125,7 +125,6 @@ export class CreateSubscriptionPanelComponent {
     private completeSubscription(user: User) {
         this._loading = false;
         this.currentUser.assignCurrent(user);
-        console.log(this.currentUser.isSubscribed());
         this.completed.emit({status: 'created'})
     }
 

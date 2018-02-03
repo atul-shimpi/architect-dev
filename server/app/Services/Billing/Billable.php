@@ -14,13 +14,15 @@ trait Billable
         //TODO: calc based on plan interval
         $renewsAt = Carbon::now()->addMonths(1 * $plan->interval_count);
 
-        return $this->subscriptions()->create([
+        $this->subscriptions()->create([
             'plan_id' => $plan->id,
             'ends_at' => null,
             'renews_at' => $renewsAt,
             'gateway' => $gateway,
             'gateway_id' => $gatewayId,
         ]);
+
+        $this->load('subscriptions');
     }
 
     /**

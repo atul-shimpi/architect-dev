@@ -13,6 +13,7 @@ import {ActivatedRoute} from "@angular/router";
 import {Observable} from "rxjs/Observable";
 import {User} from "vebto-client/core/types/models/User";
 import {SubscriptionCompletedEvent} from "../create-subscription-panel/create-subscription-panel.component";
+import {PaypalSubscriptions} from "../paypal-subscriptions";
 
 @Component({
     selector: 'user-subscription-page',
@@ -36,6 +37,7 @@ export class UserSubscriptionPageComponent implements OnInit {
         public currentUser: CurrentUser,
         private toast: Toast,
         private route: ActivatedRoute,
+        private paypalSubscriptions: PaypalSubscriptions,
     ) {}
 
     ngOnInit() {
@@ -102,13 +104,21 @@ export class UserSubscriptionPageComponent implements OnInit {
 
         this.loading = true;
 
-        this.subscriptions
-            .changePlan(this.activeSubscription.id, plan)
-            .pipe(finalize(() => this.loading = false))
-            .subscribe(response => {
-                this.currentUser.assignCurrent(response.user);
+        if (this.activeSubscription.gateway === 'paypal') {
+            this.paypalSubscriptions.changePlan(this.activeSubscription, plan).then(user => {
+                this.loading = false;
+                this.updateUserAndSubscription(user);
                 this.toast.open('Subscription plan changed.');
-            });
+            })
+        } else {
+            this.subscriptions
+                .changePlan(this.activeSubscription.id, plan)
+                .pipe(finalize(() => this.loading = false))
+                .subscribe(response => {
+                    this.updateUserAndSubscription(response.user);
+                    this.toast.open('Subscription plan changed.');
+                });
+        }
     }
 
     /**
@@ -121,6 +131,7 @@ export class UserSubscriptionPageComponent implements OnInit {
             .pipe(finalize(() => this.loading = false))
             .subscribe(response => {
                 this.currentUser.setSubscription(response.subscription);
+                this.activeSubscription = this.currentUser.getSubscription();
                 this.toast.open('Subscription resumed.');
             });
     }
@@ -155,10 +166,17 @@ export class UserSubscriptionPageComponent implements OnInit {
 
         request.subscribe(response => {
             //set new active subscription, if user had more then one
-            this.currentUser.assignCurrent(response.user);
-            this.activeSubscription = this.currentUser.getSubscription();
+            this.updateUserAndSubscription(response.user);
         });
 
         return request;
+    }
+
+    /**
+     * Update current user and active subscription.
+     */
+    private updateUserAndSubscription(user: User) {
+        this.currentUser.assignCurrent(user);
+        this.activeSubscription = this.currentUser.getSubscription();
     }
 }

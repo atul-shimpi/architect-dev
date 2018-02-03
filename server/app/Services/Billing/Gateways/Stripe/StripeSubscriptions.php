@@ -50,7 +50,7 @@ class StripeSubscriptions implements GatewaySubscriptionsInterface
         $response = $request->sendData($data);
 
         if ( ! $response->isSuccessful()) {
-            throw new GatewayException('Could not create stripe subscription.');
+            throw new GatewayException("Stripe subscription creation failed: {$response->getMessage()}");
         }
 
         return [
@@ -76,7 +76,7 @@ class StripeSubscriptions implements GatewaySubscriptionsInterface
         ])->send();
 
         if ( ! $response->isSuccessful()) {
-            throw new GatewayException('Could not cancel stripe subscription.');
+            throw new GatewayException("Stripe subscription cancel failed: {$response->getMessage()}");
         }
 
         return true;
@@ -99,7 +99,30 @@ class StripeSubscriptions implements GatewaySubscriptionsInterface
         ], $params))->send();
 
         if ( ! $response->isSuccessful()) {
-            throw new GatewayException('Could not update stripe subscription.');
+            throw new GatewayException("Stripe subscription resume failed: {$response->getMessage()}");
+        }
+
+        return true;
+    }
+
+    /**
+     * Change billing plan of specified subscription.
+     *
+     * @param Subscription $subscription
+     * @param BillingPlan $newPlan
+     * @return boolean
+     * @throws GatewayException
+     */
+    public function changePlan(Subscription $subscription, BillingPlan $newPlan)
+    {
+        $response = $this->gateway->updateSubscription([
+            'plan' => $newPlan->uuid,
+            'customerReference' => $subscription->user->stripe_id,
+            'subscriptionReference' => $subscription->gateway_id,
+        ])->send();
+
+        if ( ! $response->isSuccessful()) {
+            throw new GatewayException("Stripe subscription plan change failed: {$response->getMessage()}");
         }
 
         return true;

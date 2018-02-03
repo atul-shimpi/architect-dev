@@ -1,5 +1,6 @@
 <?php namespace App;
 
+use App\Services\Billing\Gateways\Contracts\GatewayInterface;
 use App\Services\Billing\Gateways\GatewayFactory;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +12,9 @@ use LogicException;
  * @property \Carbon\Carbon|null $trial_ends_at
  * @property \Carbon\Carbon|null $ends_at
  * @property \Carbon\Carbon|null $renews_at
- * @property string|null $gateway
+ * @property-read \Vebto\Auth\User $user
+ * @property string $gateway
+ * @property string $gateway_id
  */
 class Subscription extends Model
 {
@@ -143,6 +146,17 @@ class Subscription extends Model
     }
 
     /**
+     * Mark subscription as cancelled on local database
+     * only, without interacting with payment gateway.
+     *
+     * @return void
+     */
+    public function markAsCancelled()
+    {
+        $this->fill(['ends_at' => $this->renews_at, 'renews_at' => null])->save();
+    }
+
+    /**
      * Cancel the subscription immediately and delete it from database.
      *
      * @return $this
@@ -160,8 +174,8 @@ class Subscription extends Model
      * Resume the cancelled subscription.
      *
      * @return $this
-     *
      * @throws \LogicException
+     * @throws Services\Billing\GatewayException
      */
     public function resume()
     {
@@ -199,7 +213,7 @@ class Subscription extends Model
      */
     public function changePlan(BillingPlan $plan)
     {
-        $this->gateway()->subscriptions()->update($this, ['plan' => $plan->uuid]);
+        $this->gateway()->subscriptions()->changePlan($this, $plan);
 
         $this->fill(['plan_id' => $plan->id, 'ends_at' => null])->save();
 
@@ -208,7 +222,7 @@ class Subscription extends Model
 
     /**
      * Get gateway this subscriptions was created with.
-     * @return mixed
+     * @return GatewayInterface
      *
      */
     public function gateway()

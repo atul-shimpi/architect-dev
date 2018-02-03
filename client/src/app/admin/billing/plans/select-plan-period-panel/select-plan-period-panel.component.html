@@ -5,7 +5,7 @@
             <div class="radio-button-wrapper" *ngFor="let plan of state.getChildPlans(state.initialPlan)">
                 <div class="savings-label" trans>Save {{getPlanSavings(state.selectedPlan.parent || state.selectedPlan, plan)}}%</div>
                 <mat-radio-button [value]="plan.id" class="period">
-                    <div class="name">{{plan.name}} <span trans>subscription:</span></div>
+                    <div class="name">{{plan.name}}:</div>
                     <div class="price">{{plan.currency_symbol+plan.display_amount}} x {{plan.interval_count}} {{plan.interval}}s</div>
                 </mat-radio-button>
             </div>

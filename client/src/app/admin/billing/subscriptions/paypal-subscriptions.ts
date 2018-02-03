@@ -3,6 +3,9 @@ import {AppHttpClient} from "vebto-client/core/http/app-http-client.service";
 import {Observable} from "rxjs/Observable";
 import {Settings} from "vebto-client/core/services/settings.service";
 import {User} from "vebto-client/core/types/models/User";
+import {Subscription} from "./subscription";
+import {Plan} from "../plans/plan";
+import {Subscriptions} from "./subscriptions.service";
 
 @Injectable()
 export class PaypalSubscriptions {
@@ -27,7 +30,11 @@ export class PaypalSubscriptions {
     /**
      * PaypalSubscriptions constructor.
      */
-    constructor(private http: AppHttpClient, private settings: Settings) {}
+    constructor(
+        private http: AppHttpClient,
+        private settings: Settings,
+        private subscriptions: Subscriptions
+    ) {}
 
     /**
      * Subscribe to specified plan on paypal.
@@ -38,6 +45,17 @@ export class PaypalSubscriptions {
                 this.listenForMessages(params.plan_id, resolve);
                 this.openPaypalPopup(response.urls.approve);
             }, () => reject());
+        });
+    }
+
+    /**
+     * Change plan of subscription to specified one.
+     */
+    public changePlan(subscription: Subscription, plan: Plan): Promise<User> {
+        return new Promise(resolve => {
+            this.subscriptions.cancel(subscription.id, {delete: true}).subscribe(() => {
+                this.subscribe({plan_id: plan.id, start_date: subscription.renews_at}).then(user => resolve(user));
+            });
         });
     }
 

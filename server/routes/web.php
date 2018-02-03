@@ -105,6 +105,12 @@ Route::get('billing/paypal/callback/canceled', function() {
     return App::call('App\Services\Billing\Gateways\Paypal\PaypalController@canceledCallback');
 });
 
+//stripe webhook
+Route::post('billing/stripe/webhook', function() {
+    return App::call('App\Services\Billing\Webhooks\StripeWebhookController@handleWebhook');
+});
+
+//user site domains
 Route::domain('{name}.{domain}.{tls}')->group(function () {
     Route::get('/{page?}', 'UserSiteController@show')->name('user-site-subdomain');
 });
