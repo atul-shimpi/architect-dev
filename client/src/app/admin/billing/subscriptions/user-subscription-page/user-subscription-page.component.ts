@@ -115,7 +115,7 @@ export class UserSubscriptionPageComponent implements OnInit {
                 .changePlan(this.activeSubscription.id, plan)
                 .pipe(finalize(() => this.loading = false))
                 .subscribe(response => {
-                    this.updateUserAndSubscription(response.user);
+                    this.updateUserAndSubscription(response.user as User);
                     this.toast.open('Subscription plan changed.');
                 });
         }

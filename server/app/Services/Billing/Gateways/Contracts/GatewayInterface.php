@@ -11,4 +11,12 @@ interface GatewayInterface
      * @return GatewayPlansInterface
      */
     public function plans();
+
+    /**
+     * Check if specified webhook is valid.
+     *
+     * @param array $payload
+     * @return bool
+     */
+    public function webhookIsValid($payload);
 }

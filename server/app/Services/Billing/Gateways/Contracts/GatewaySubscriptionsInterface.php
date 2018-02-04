@@ -8,6 +8,14 @@ use Vebto\Auth\User;
 interface GatewaySubscriptionsInterface
 {
     /**
+     * Fetch specified subscription's details from gateway.
+     *
+     * @param Subscription $subscription
+     * @return array
+     */
+    public function find(Subscription $subscription);
+
+    /**
      * Cancel specified subscription on gateway.
      *
      * @param Subscription $subscription

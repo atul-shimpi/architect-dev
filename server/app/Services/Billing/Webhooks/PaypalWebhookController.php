@@ -1,15 +1,15 @@
 <?php namespace App\Services\Billing\Webhooks;
 
+use App\Services\Billing\Gateways\Paypal\PaypalGateway;
 use App\Subscription;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use App\Services\Billing\Gateways\GatewayFactory;
-use App\Services\Billing\Gateways\Stripe\StripeGateway;
 
-class StripeWebhookController extends Controller
+class PaypalWebhookController extends Controller
 {
     /**
-     * @var StripeGateway
+     * @var PaypalGateway
      */
     private $gateway;
 
@@ -26,7 +26,7 @@ class StripeWebhookController extends Controller
      */
     public function __construct(GatewayFactory $gatewayFactory, Subscription $subscription)
     {
-        $this->gateway = $gatewayFactory->get('stripe');
+        $this->gateway = $gatewayFactory->get('paypal');
         $this->subscription = $subscription;
     }
 
@@ -42,13 +42,13 @@ class StripeWebhookController extends Controller
 
         if ($this->gateway->webhookIsValid(($payload))) return null;
 
-        switch ($payload['type']) {
-            case 'customer.subscription.deleted':
+        switch ($payload['event_type']) {
+            case 'BILLING.SUBSCRIPTION.CANCELLED':
                 return $this->handleSubscriptionDeleted($payload);
-            case 'invoice.payment_succeeded':
+            case 'PAYMENT.SALE.COMPLETED':
                 return $this->handleSubscriptionRenewed($payload);
             default:
-                return response();
+                return response('Webhook Handled', 200);
         }
     }
 
@@ -60,7 +60,7 @@ class StripeWebhookController extends Controller
      */
     protected function handleSubscriptionDeleted($payload)
     {
-        $gatewayId = $payload['data']['object']['id'];
+        $gatewayId = $payload['resource']['id'];
 
         $subscription = $this->subscription->where('gateway_id', $gatewayId)->first();
 
@@ -79,7 +79,11 @@ class StripeWebhookController extends Controller
      */
     protected function handleSubscriptionRenewed($payload)
     {
-        $gatewayId = $payload['data']['object']['subscription'];
+        if ( ! isset($payload['resource']['billing_agreement_id'])) {
+            return response('Webhook Handled', 200);
+        }
+
+        $gatewayId = $payload['resource']['billing_agreement_id'];
 
         $subscription = $this->subscription->where('gateway_id', $gatewayId)->first();
 

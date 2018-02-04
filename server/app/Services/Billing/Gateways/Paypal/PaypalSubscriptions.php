@@ -32,6 +32,28 @@ class PaypalSubscriptions implements GatewaySubscriptionsInterface
     }
 
     /**
+     * Fetch specified subscription's details from paypal.
+     *
+     * @param Subscription $subscription
+     * @return array
+     * @throws GatewayException
+     */
+    public function find(Subscription $subscription)
+    {
+        $response = $this->gateway->createRequest(PaypalFetchBillingAgreementRequest::class, [
+            'transactionReference' => $subscription->gateway_id
+        ])->send();
+
+        if ( ! $response->isSuccessful()) {
+            throw new GatewayException("Could not find paypal subscription: {$response->getMessage()}");
+        }
+
+        return [
+            'renews_at' => $response->getData()['agreement_details']['next_billing_date']
+        ];
+    }
+
+    /**
      * Create subscription agreement on paypal.
      *
      * @param BillingPlan $plan

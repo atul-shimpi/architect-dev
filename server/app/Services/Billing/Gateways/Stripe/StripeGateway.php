@@ -51,15 +51,15 @@ class StripeGateway implements GatewayInterface
     }
 
     /**
-     * Check if specified event exists on stripe.
+     * Check if specified webhook is valid.
      *
-     * @param int|string $eventId
+     * @param array $payload
      * @return bool
      */
-    public function eventExists($eventId)
+    public function webhookIsValid($payload)
     {
         return ! is_null($this->gateway->fetchEvent(
-            ['eventReference' => $eventId]
+            ['eventReference' => $payload['id']]
         )->send()->getEventReference());
     }
 

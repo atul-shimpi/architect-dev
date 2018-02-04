@@ -57,4 +57,15 @@ class PaypalGateway implements GatewayInterface
     {
         return $this->subscriptions;
     }
+
+    /**
+     * Check if specified webhook is valid.
+     *
+     * @param array $payload
+     * @return bool
+     */
+    public function webhookIsValid($payload)
+    {
+        return true;
+    }
 }

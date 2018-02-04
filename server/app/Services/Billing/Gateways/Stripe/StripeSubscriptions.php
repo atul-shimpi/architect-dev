@@ -26,6 +26,29 @@ class StripeSubscriptions implements GatewaySubscriptionsInterface
     }
 
     /**
+     * Fetch specified subscription's details from gateway.
+     *
+     * @param Subscription $subscription
+     * @return array
+     * @throws GatewayException
+     */
+    public function find(Subscription $subscription)
+    {
+        $response = $this->gateway->fetchSubscription([
+            'subscriptionReference' => $subscription->gateway_id,
+            'customerReference' => $subscription->user->stripe_id,
+        ])->send();
+
+        if ( ! $response->isSuccessful()) {
+            throw new GatewayException("Could not find stripe subscription: {$response->getMessage()}");
+        }
+
+        return [
+            'renews_at' => $response->getData()['current_period_end']
+        ];
+    }
+
+    /**
      * Create a new subscription on stripe using specified plan.
      *
      * @param BillingPlan $plan

@@ -110,6 +110,10 @@ Route::post('billing/stripe/webhook', function() {
     return App::call('App\Services\Billing\Webhooks\StripeWebhookController@handleWebhook');
 });
 
+Route::post('billing/paypal/webhook', function() {
+    return App::call('App\Services\Billing\Webhooks\PaypalWebhookController@handleWebhook');
+});
+
 //user site domains
 Route::domain('{name}.{domain}.{tls}')->group(function () {
     Route::get('/{page?}', 'UserSiteController@show')->name('user-site-subdomain');
