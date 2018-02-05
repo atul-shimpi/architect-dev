@@ -1,0 +1,16 @@
+@import "~vebto-client/scss/_variables";
+
+crupdate-subscription-modal {
+  display: block;
+
+  .date-picker-input-container {
+    position: relative;
+    cursor: pointer;
+
+    .mat-datepicker-toggle {
+      position: absolute;
+      top: 25px;
+      right: 0;
+    }
+  }
+}

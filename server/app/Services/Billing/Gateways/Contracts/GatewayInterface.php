@@ -1,5 +1,7 @@
 <?php namespace App\Services\Billing\Gateways\Contracts;
 
+use Illuminate\Http\Request;
+
 interface GatewayInterface
 {
     /**
@@ -15,8 +17,8 @@ interface GatewayInterface
     /**
      * Check if specified webhook is valid.
      *
-     * @param array $payload
+     * @param Request $request
      * @return bool
      */
-    public function webhookIsValid($payload);
+    public function webhookIsValid(Request $request);
 }

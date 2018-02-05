@@ -111,7 +111,7 @@ Route::post('billing/stripe/webhook', function() {
 });
 
 Route::post('billing/paypal/webhook', function() {
-    return App::call('App\Services\Billing\Webhooks\PaypalWebhookController@handleWebhook');
+    return App::call('App\Services\Billing\Gateways\Paypal\PaypalWebhookController@handleWebhook');
 });
 
 //user site domains

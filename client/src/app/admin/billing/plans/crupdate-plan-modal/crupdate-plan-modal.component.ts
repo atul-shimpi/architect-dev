@@ -4,7 +4,7 @@ import {Plans} from "../plans.service";
 import {Plan} from "../plan";
 import {Toast} from "vebto-client/core/ui/toast.service";
 import {utils} from "vebto-client/core";
-import {ValueLists} from "../../../../../../node_modules/vebto-client/core/services/value-lists.service";
+import {ValueLists} from "vebto-client/core/services/value-lists.service";
 
 @Component({
     selector: 'crupdate-plan-modal',

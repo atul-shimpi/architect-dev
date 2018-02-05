@@ -1,0 +1,43 @@
+<div class="modal-header">
+    <h2 class="modal-title" mat-dialog-title *ngIf="updating" trans>Update Subscription Details</h2>
+    <h2 class="modal-title" mat-dialog-title *ngIf="!updating" trans>Create a New Subscription</h2>
+    <button type="button" (click)="close()" class="close-button no-style icon-button"><svg-icon name="close"></svg-icon></button>
+</div>
+
+<form autocomplete="off" (ngSubmit)="confirm()" ngNativeValidate>
+    <div class="many-inputs mat-dialog-content" mat-dialog-content>
+        <div class="input-container">
+            <label for="description" trans>Description</label>
+            <textarea id="description" name="description" [(ngModel)]="model.description"></textarea>
+            <div class="error" *ngIf="errors.description">{{errors.description}}</div>
+        </div>
+
+        <div class="input-container date-picker-input-container" (click)="toggleDatePicker(renewsAtDatePicker)">
+            <label for="renews_at" trans>Renews At</label>
+            <input id="renews_at" name="renews_at" [(ngModel)]="model.renews_at" [matDatepicker]="renewsAtDatePicker" disabled>
+            <mat-datepicker-toggle [for]="renewsAtDatePicker"></mat-datepicker-toggle>
+            <p trans>This will only change local records. User will continue to be billed on their original cycle on the payment gateway.</p>
+            <mat-datepicker #renewsAtDatePicker [disabled]="false"></mat-datepicker>
+        </div>
+
+        <div class="input-container date-picker-input-container" (click)="toggleDatePicker(endsAtDatePicker)">
+            <label for="ends_at" trans>Ends At</label>
+            <input id="ends_at" name="ends_at" [(ngModel)]="model.ends_at" [matDatepicker]="endsAtDatePicker" disabled>
+            <p trans>This will only change local records. User will continue to be billed on their original cycle on the payment gateway.</p>
+            <mat-datepicker-toggle [for]="endsAtDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #endsAtDatePicker [disabled]="false"></mat-datepicker>
+        </div>
+
+        <div class="no-input-error" *ngIf="errors.general">{{errors.general}}</div>
+    </div>
+
+    <div class="buttons right mat-dialog-actions" mat-dialog-actions>
+        <button (click)="close()" type="button" mat-button class="button cancel" trans>Cancel</button>
+        <button type="submit" class="button primary" mat-raised-button color="accent" [disabled]="loading">
+            <span *ngIf="updating" trans>Update Subscription</span>
+            <span *ngIf="!updating" trans>Create Subscription</span>
+        </button>
+    </div>
+</form>
+
+<loading-indicator class="overlay" [isVisible]="loading"></loading-indicator>

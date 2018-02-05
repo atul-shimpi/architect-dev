@@ -44,7 +44,7 @@ class StripeSubscriptions implements GatewaySubscriptionsInterface
         }
 
         return [
-            'renews_at' => $response->getData()['current_period_end']
+            'renews_at' => Carbon::parse($response->getData()['current_period_end']),
         ];
     }
 

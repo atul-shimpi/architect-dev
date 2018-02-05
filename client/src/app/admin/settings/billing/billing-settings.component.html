@@ -26,6 +26,11 @@
                 <input name="billing.paypal.secret" id="billing.paypal.secret" [(ngModel)]="state.server['paypal_secret']" required>
             </div>
 
+            <div class="input-container">
+                <label for="billing.paypal.webhook_id" trans>Paypal Webhook ID</label>
+                <input name="billing.paypal.webhook_id" id="billing.paypal.webhook_id" [(ngModel)]="state.server['paypal_webhook_id']" required>
+            </div>
+
             <div class="setting-toggle-container">
                 <mat-slide-toggle name="billing.paypal.test_mode" id="billing.paypal.test_mode" [(ngModel)]="state.client['billing.paypal.test_mode']" trans>Paypal Test Mode</mat-slide-toggle>
                 <p trans>Allows testing PayPal payments with sandbox accounts.</p>

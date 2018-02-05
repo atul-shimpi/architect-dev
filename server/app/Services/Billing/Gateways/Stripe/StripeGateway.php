@@ -1,5 +1,6 @@
 <?php namespace App\Services\Billing\Gateways\Stripe;
 
+use Illuminate\Http\Request;
 use Omnipay\Omnipay;
 use Vebto\Auth\User;
 use Omnipay\Stripe\Gateway;
@@ -53,13 +54,13 @@ class StripeGateway implements GatewayInterface
     /**
      * Check if specified webhook is valid.
      *
-     * @param array $payload
+     * @param Request $request
      * @return bool
      */
-    public function webhookIsValid($payload)
+    public function webhookIsValid(Request $request)
     {
         return ! is_null($this->gateway->fetchEvent(
-            ['eventReference' => $payload['id']]
+            ['eventReference' => $request->get('id')]
         )->send()->getEventReference());
     }
 

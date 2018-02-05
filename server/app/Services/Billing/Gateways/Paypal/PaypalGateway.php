@@ -1,7 +1,9 @@
 <?php namespace App\Services\Billing\Gateways\Paypal;
 
 use Omnipay\Omnipay;
+use Illuminate\Http\Request;
 use Omnipay\PayPal\RestGateway;
+use App\Services\Billing\GatewayException;
 use App\Services\Billing\Gateways\Contracts\GatewayInterface;
 
 class PaypalGateway implements GatewayInterface
@@ -61,11 +63,29 @@ class PaypalGateway implements GatewayInterface
     /**
      * Check if specified webhook is valid.
      *
-     * @param array $payload
+     * @param Request $request
      * @return bool
+     * @throws GatewayException
+     * @throws \Omnipay\Common\Exception\InvalidResponseException
      */
-    public function webhookIsValid($payload)
+    public function webhookIsValid(Request $request)
     {
-        return true;
+        $payload = [
+            'auth_algo' => $request->header('PAYPAL-AUTH-ALGO'),
+            'cert_url' => $request->header('PAYPAL-CERT-URL'),
+            'transmission_id' => $request->header('PAYPAL-TRANSMISSION-ID'),
+            'transmission_sig' => $request->header('PAYPAL-TRANSMISSION-SIG'),
+            'transmission_time' => $request->header('PAYPAL-TRANSMISSION-TIME'),
+            'webhook_id' => config('services.paypal.webhook_id'),
+            'webhook_event' => $request->all(),
+        ];
+
+        $response = $this->gateway->createRequest(PaypalVerifyWebhookRequest::class)->sendData($payload);
+
+        if ( ! $response->isSuccessful()) {
+            throw new GatewayException("Could not validate paypal webhook: {$response->getMessage()}");
+        }
+
+        return $response->getData()['verification_status'] === 'SUCCESS';
     }
 }

@@ -9,6 +9,7 @@ import {finalize} from "rxjs/operators";
 import {Toast} from "vebto-client/core";
 import {Subscription} from "../subscription";
 import {Subscriptions} from "../subscriptions.service";
+import {CrupdateSubscriptionModalComponent} from "../crupdate-subscription-modal/crupdate-subscription-modal.component";
 
 @Component({
     selector: 'subscriptions-list',
@@ -90,6 +91,18 @@ export class SubscriptionsListComponent implements OnInit {
             .subscribe(response => {
                 this.paginator.refresh(); 
                 this.toast.open('Subscription cancelled.');
+            });
+    }
+
+    /**
+     * Open modal for editing existing or creating a new subscription.
+     */
+    public openCrupdateSubscriptionModal(subscription: Subscription) {
+        this.modal.open(CrupdateSubscriptionModalComponent, {subscription})
+            .afterClosed()
+            .subscribe(subscription => {
+                if ( ! subscription) return;
+                this.paginator.refresh();
             });
     }
 }

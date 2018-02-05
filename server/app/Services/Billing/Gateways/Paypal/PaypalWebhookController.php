@@ -1,15 +1,15 @@
-<?php namespace App\Services\Billing\Webhooks;
+<?php namespace App\Services\Billing\Gateways\Paypal;
 
 use App\Subscription;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use App\Services\Billing\Gateways\GatewayFactory;
-use App\Services\Billing\Gateways\Stripe\StripeGateway;
+use Illuminate\Support\Arr;
 
-class StripeWebhookController extends Controller
+class PaypalWebhookController extends Controller
 {
     /**
-     * @var StripeGateway
+     * @var PaypalGateway
      */
     private $gateway;
 
@@ -19,48 +19,51 @@ class StripeWebhookController extends Controller
     private $subscription;
 
     /**
-     * StripeWebhookController constructor.
+     * PaypalWebhookController constructor.
      *
      * @param GatewayFactory $gatewayFactory
      * @param Subscription $subscription
      */
     public function __construct(GatewayFactory $gatewayFactory, Subscription $subscription)
     {
-        $this->gateway = $gatewayFactory->get('stripe');
+        $this->gateway = $gatewayFactory->get('paypal');
         $this->subscription = $subscription;
     }
 
     /**
-     * Handle a Stripe webhook call.
+     * Handle a paypal webhook call.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function handleWebhook(Request $request)
     {
-        $payload = json_decode($request->getContent(), true);
+        $payload = $request->all();
 
-        if ($this->gateway->webhookIsValid(($payload))) return null;
+        if ( ! $this->gateway->webhookIsValid($request)) {
+            return response('Webhook validation failed', 422);
+        };
 
-        switch ($payload['type']) {
-            case 'customer.subscription.deleted':
-                return $this->handleSubscriptionDeleted($payload);
-            case 'invoice.payment_succeeded':
+        switch ($payload['event_type']) {
+            case 'BILLING.SUBSCRIPTION.CANCELLED':
+            case 'BILLING.SUBSCRIPTION.EXPIRED':
+                return $this->handleSubscriptionCancelled($payload);
+            case 'PAYMENT.SALE.COMPLETED':
                 return $this->handleSubscriptionRenewed($payload);
             default:
-                return response();
+                return response('Webhook Handled', 200);
         }
     }
 
     /**
-     * Handle a cancelled customer from a Stripe subscription.
+     * Handle a cancelled customer from a paypal subscription.
      *
      * @param  array  $payload
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    protected function handleSubscriptionDeleted($payload)
+    protected function handleSubscriptionCancelled($payload)
     {
-        $gatewayId = $payload['data']['object']['id'];
+        $gatewayId = $payload['resource']['id'];
 
         $subscription = $this->subscription->where('gateway_id', $gatewayId)->first();
 
@@ -79,13 +82,13 @@ class StripeWebhookController extends Controller
      */
     protected function handleSubscriptionRenewed($payload)
     {
-        $gatewayId = $payload['data']['object']['subscription'];
+        $gatewayId = Arr::get($payload, 'resource.billing_agreement_id');
 
         $subscription = $this->subscription->where('gateway_id', $gatewayId)->first();
 
         if ($subscription) {
-            $stripeSubscription = $this->gateway->subscriptions()->find($subscription);
-            $subscription->fill(['renews_at' => $stripeSubscription['renews_at']])->save();
+            $paypalSubscription = $this->gateway->subscriptions()->find($subscription);
+            $subscription->fill(['renews_at' => $paypalSubscription['renews_at']])->save();
         }
 
         return response('Webhook Handled', 200);

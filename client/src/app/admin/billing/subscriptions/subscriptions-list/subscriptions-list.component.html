@@ -73,6 +73,7 @@
             <mat-header-cell *matHeaderCellDef></mat-header-cell>
             <mat-cell *matCellDef="let subscription">
                 <ng-container *ngIf="currentUser.hasPermission('subscriptions.delete')">
+                    <button mat-icon-button (click)="openCrupdateSubscriptionModal(subscription)" matTooltip="Edit"><svg-icon name="edit"></svg-icon></button>
                     <button mat-icon-button (click)="maybeCancelSubscription(subscription)" matTooltip="Cancel/Suspend"><svg-icon name="pause"></svg-icon></button>
                     <button mat-icon-button (click)="maybeDeleteSubscription(subscription)" matTooltip="Delete"><svg-icon name="delete"></svg-icon></button>
                 </ng-container>

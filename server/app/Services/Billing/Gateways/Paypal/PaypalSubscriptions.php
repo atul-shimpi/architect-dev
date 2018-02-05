@@ -49,7 +49,7 @@ class PaypalSubscriptions implements GatewaySubscriptionsInterface
         }
 
         return [
-            'renews_at' => $response->getData()['agreement_details']['next_billing_date']
+            'renews_at' => Carbon::parse($response->getData()['agreement_details']['next_billing_date']),
         ];
     }
 

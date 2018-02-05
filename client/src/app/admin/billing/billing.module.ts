@@ -7,7 +7,8 @@ import {PlansListComponent} from "./plans/plans-list/plans-list.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AdminModule} from "vebto-client/admin/admin.module";
 import {
-    MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDialogModule, MatListModule,
+    MatButtonModule, MatCheckboxModule, MatChipsModule, MatDatepickerModule,
+    MatDialogModule, MatListModule, MatNativeDateModule,
     MatPaginatorModule,
     MatProgressBarModule, MatRadioModule,
     MatSnackBarModule,
@@ -36,6 +37,7 @@ import {UserSubscribedGuard} from "./guards/user-subscribed-guard.service";
 import {SubscriptionsListComponent} from "./subscriptions/subscriptions-list/subscriptions-list.component";
 import {CreateSubscriptionPanelComponent} from "./subscriptions/create-subscription-panel/create-subscription-panel.component";
 import { FullPlanNameComponent } from './plans/full-plan-name/full-plan-name.component';
+import {CrupdateSubscriptionModalComponent} from "./subscriptions/crupdate-subscription-modal/crupdate-subscription-modal.component";
 
 @NgModule({
     imports: [
@@ -51,19 +53,22 @@ import { FullPlanNameComponent } from './plans/full-plan-name/full-plan-name.com
         //material
         MatButtonModule,
         MatSnackBarModule,
-        MatTableModule,
         MatCheckboxModule,
-        MatPaginatorModule,
-        MatSortModule,
         MatTooltipModule,
         MatDialogModule,
-        MatChipsModule,
         MatListModule,
         MatStepperModule,
         MatProgressBarModule,
         MatTabsModule,
-        MatCardModule,
         MatRadioModule,
+
+        //admin material
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatSortModule,
+        MatChipsModule,
+        MatPaginatorModule,
+        MatTableModule,
     ],
     declarations: [
         PlansListComponent,
@@ -82,9 +87,11 @@ import { FullPlanNameComponent } from './plans/full-plan-name/full-plan-name.com
         SelectPlanModalComponent,
         SelectPlanPeriodPanelComponent,
         FullPlanNameComponent,
+        CrupdateSubscriptionModalComponent,
     ],
     entryComponents: [
         CrupdatePlanModalComponent,
+        CrupdateSubscriptionModalComponent,
         SelectPlanModalComponent,
     ],
     providers: [
