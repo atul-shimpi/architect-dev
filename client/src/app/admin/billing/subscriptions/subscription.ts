@@ -12,6 +12,7 @@ export class Subscription {
     plan?: Plan;
     trial_ends_at: string;
     ends_at: string;
+    description: string;
     renews_at: string;
 
     constructor(params: Object = {}) {

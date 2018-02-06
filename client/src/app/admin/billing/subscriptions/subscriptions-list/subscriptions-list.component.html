@@ -2,7 +2,7 @@
     <div class="admin-table-panel-header">
         <div class="header-inner default" *ngIf="dataSource.selectedRows.isEmpty()">
             <div class="left">
-                <button mat-raised-button color="accent" [disabled]="loading" (click)="showCrupdatePlanModal()" *ngIf="currentUser.hasPermission('subscriptions.create')" trans>Add</button>
+                <button mat-raised-button color="accent" [disabled]="loading" (click)="openCrupdateSubscriptionModal()" *ngIf="currentUser.hasPermission('subscriptions.create')" trans>Add</button>
             </div>
 
             <div class="right">

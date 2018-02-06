@@ -57,6 +57,52 @@ class SubscriptionsController extends Controller
     }
 
     /**
+     * Create a new subscription.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function store()
+    {
+        $this->authorize('update', Subscription::class);
+
+        $this->validate($this->request, [
+            'user_id' => 'required|exists:users,id|unique:subscriptions',
+            'renews_at' => 'required_without: ends_at|string|nullable',
+            'ends_at' => 'required_without: renews_at|string|nullable',
+            'description' => 'string|nullable',
+        ]);
+
+        $subscription = $this->subscription->create($this->request->all());
+
+        return $this->success(['subscription' => $subscription]);
+    }
+
+    /**
+     * Update existing subscription.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function update($id)
+    {
+        $this->authorize('update', Subscription::class);
+
+        $this->validate($this->request, [
+            'renews_at' => 'string|nullable',
+            'ends_at' => 'string|nullable',
+            'description' => 'string|nullable'
+        ]);
+
+        $subscription = $this->subscription->findOrFail($id);
+
+        $subscription->fill($this->request->all())->save();
+
+        return $this->success(['subscription' => $subscription]);
+    }
+
+    /**
      * Change plan of specified subscription.
      *
      * @param int $id
@@ -107,6 +153,7 @@ class SubscriptionsController extends Controller
      *
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
+     * @throws \App\Services\Billing\GatewayException
      */
     public function resume($id)
     {

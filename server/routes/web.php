@@ -67,6 +67,10 @@ Route::group(['prefix' => 'secure'], function () {
         return App::call('App\Services\Billing\Subscriptions\SubscriptionsController@index');
     });
 
+    Route::post('billing/subscriptions', function() {
+        return App::call('App\Services\Billing\Subscriptions\SubscriptionsController@store');
+    });
+
     Route::post('billing/subscriptions/stripe', function() {
         return App::call('App\Services\Billing\Gateways\Stripe\StripeController@createSubscription');
     });
@@ -81,6 +85,10 @@ Route::group(['prefix' => 'secure'], function () {
 
     Route::delete('billing/subscriptions/{id}', function($id) {
         return App::call('App\Services\Billing\Subscriptions\SubscriptionsController@cancel', ['id' => $id]);
+    });
+
+    Route::put('billing/subscriptions/{id}', function($id) {
+        return App::call('App\Services\Billing\Subscriptions\SubscriptionsController@update', ['id' => $id]);
     });
 
     Route::post('billing/subscriptions/{id}/resume', function($id) {

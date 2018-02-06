@@ -7,12 +7,13 @@ import {PlansListComponent} from "./plans/plans-list/plans-list.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AdminModule} from "vebto-client/admin/admin.module";
 import {
+    MAT_DATE_FORMATS, MatAutocompleteModule,
     MatButtonModule, MatCheckboxModule, MatChipsModule, MatDatepickerModule,
-    MatDialogModule, MatListModule, MatNativeDateModule,
+    MatDialogModule, MatListModule,
     MatPaginatorModule,
     MatProgressBarModule, MatRadioModule,
     MatSnackBarModule,
-    MatSortModule, MatStepperModule, MatTableModule, MatTabsModule, MatTooltipModule
+    MatSortModule, MatStepperModule, MatTableModule, MatTabsModule, MatTooltipModule,
 } from "@angular/material";
 import {Subscriptions} from "./subscriptions/subscriptions.service";
 import {UpgradePageComponent} from "./upgrade-page/upgrade-page.component";
@@ -38,6 +39,16 @@ import {SubscriptionsListComponent} from "./subscriptions/subscriptions-list/sub
 import {CreateSubscriptionPanelComponent} from "./subscriptions/create-subscription-panel/create-subscription-panel.component";
 import { FullPlanNameComponent } from './plans/full-plan-name/full-plan-name.component';
 import {CrupdateSubscriptionModalComponent} from "./subscriptions/crupdate-subscription-modal/crupdate-subscription-modal.component";
+import {MomentDateModule} from "@angular/material-moment-adapter";
+
+export const MY_FORMATS = {
+    display: {
+        dateInput: 'YYYY-MM-DD',
+        monthYearLabel: 'MMM YYYY',
+        dateA11yLabel: 'LL',
+        monthYearA11yLabel: 'MMMM YYYY',
+    },
+};
 
 @NgModule({
     imports: [
@@ -64,11 +75,12 @@ import {CrupdateSubscriptionModalComponent} from "./subscriptions/crupdate-subsc
 
         //admin material
         MatDatepickerModule,
-        MatNativeDateModule,
+        MomentDateModule,
         MatSortModule,
         MatChipsModule,
         MatPaginatorModule,
         MatTableModule,
+        MatAutocompleteModule,
     ],
     declarations: [
         PlansListComponent,
@@ -104,6 +116,7 @@ import {CrupdateSubscriptionModalComponent} from "./subscriptions/crupdate-subsc
         UserNotSubscribedGuard,
         BillingEnabledGuard,
         UserSubscribedGuard,
+        {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
     ],
     exports: [
         BillingRoutingModule,

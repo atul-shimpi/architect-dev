@@ -44,6 +44,13 @@ export class Subscriptions {
     }
 
     /**
+     * Create a new subscription.
+     */
+    public create(params: object): Observable<{subscription: Subscription}> {
+        return this.http.post('billing/subscriptions', params);
+    }
+
+    /**
      * Cancel subscription matching specified id.
      */
     public cancel(id: number, params: {delete: boolean}): Observable<{user: User}> {
