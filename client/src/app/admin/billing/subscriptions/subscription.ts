@@ -1,4 +1,5 @@
 import {Plan} from "../plans/plan";
+import {User} from "../../../../../node_modules/vebto-client/core/types/models/User";
 
 export class Subscription {
     id: number;
@@ -14,6 +15,7 @@ export class Subscription {
     ends_at: string;
     description: string;
     renews_at: string;
+    user?: User;
 
     constructor(params: Object = {}) {
         for (let name in params) {

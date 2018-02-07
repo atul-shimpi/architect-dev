@@ -50,23 +50,28 @@
         </ng-container>
 
         <ng-container matColumnDef="cancelled">
-            <mat-header-cell *matHeaderCellDef mat-sort-header trans>Cancelled</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef trans>Cancelled</mat-header-cell>
             <mat-cell *matCellDef="let subscription"> {{subscription.cancelled ? 'Yes' : 'No' }} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="on_grace_period">
-            <mat-header-cell *matHeaderCellDef mat-sort-header trans>On Grace Period</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef trans>On Grace Period</mat-header-cell>
             <mat-cell *matCellDef="let subscription"> {{subscription.on_grace_period ? 'Yes' : 'No' }} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="renews_at">
             <mat-header-cell *matHeaderCellDef mat-sort-header trans>Renews At</mat-header-cell>
-            <mat-cell *matCellDef="let subscription"> {{subscription.renews_at ? subscription.renews_at : '-'}} </mat-cell>
+            <mat-cell *matCellDef="let subscription"> {{subscription.renews_at ? (subscription.renews_at | formattedDate) : '-'}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="ends_at">
+            <mat-header-cell *matHeaderCellDef mat-sort-header trans>Ends At</mat-header-cell>
+            <mat-cell *matCellDef="let subscription"> {{subscription.ends_at ? (subscription.ends_at | formattedDate) : '-'}} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="created_at">
             <mat-header-cell *matHeaderCellDef mat-sort-header trans>Created At</mat-header-cell>
-            <mat-cell *matCellDef="let subscription"> {{subscription.created_at}} </mat-cell>
+            <mat-cell *matCellDef="let subscription"> {{subscription.created_at | formattedDate}} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="edit">
@@ -80,8 +85,8 @@
             </mat-cell>
         </ng-container>
 
-        <mat-header-row *matHeaderRowDef="['select', 'avatar', 'user', 'gateway', 'cancelled', 'on_grace_period', 'renews_at', 'created_at', 'edit']"></mat-header-row>
-        <mat-row *matRowDef="let myRowData; columns: ['select', 'avatar', 'user', 'gateway', 'cancelled', 'on_grace_period', 'renews_at', 'created_at', 'edit']"></mat-row>
+        <mat-header-row *matHeaderRowDef="['select', 'avatar', 'user', 'gateway', 'cancelled', 'on_grace_period', 'renews_at', 'ends_at', 'created_at', 'edit']"></mat-header-row>
+        <mat-row *matRowDef="let myRowData; columns: ['select', 'avatar', 'user', 'gateway', 'cancelled', 'on_grace_period', 'renews_at', 'ends_at', 'created_at', 'edit']"></mat-row>
     </mat-table>
 
     <no-results-message *ngIf="dataSource.isEmpty()">

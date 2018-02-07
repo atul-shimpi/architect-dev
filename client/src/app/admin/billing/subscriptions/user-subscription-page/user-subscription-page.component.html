@@ -10,7 +10,7 @@
                         Your plan will automatically renew on
                         <strong>{{getFormattedRenewDate()}}</strong>
                         and you'll be charged
-                        <strong>{{activeSubscription.plan.currency_symbol+activeSubscription.plan.display_amount}}</strong>.
+                        <strong>{{activeSubscription.plan.amount | currency:activeSubscription.plan.currency}}</strong>.
                     </p>
 
                     <button mat-raised-button color="accent" (click)="showSelectPlanModal()">Change Plan</button>

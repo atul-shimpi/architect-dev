@@ -1,6 +1,8 @@
 import {Component, ViewEncapsulation} from '@angular/core';
+import { LOCALE_ID } from '@angular/core';
 import {Plan} from "../../plans/plan";
 import {SubscriptionStepperState} from "../../subscriptions/subscription-stepper-state.service";
+import {CurrencyPipe} from "@angular/common";
 
 @Component({
     selector: 'order-summary',
@@ -20,13 +22,6 @@ export class OrderSummaryComponent {
      */
     public getPlanTotal(plan: Plan) {
         const amount = plan.amount * plan.interval_count;
-        return plan.currency_symbol+this.formatPlanAmount(amount)
-    }
-
-    /**
-     * Format plan amount. For example, convert cents to dollars.
-     */
-    public formatPlanAmount(amount: number): number {
-        return amount / 100;
+        return new CurrencyPipe(LOCALE_ID.toString()).transform(amount, plan.currency);
     }
 }

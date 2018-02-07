@@ -10,6 +10,8 @@ import {Users} from "vebto-client/auth/users.service";
 import {Observable} from "rxjs/Observable";
 import {User} from "vebto-client/core/types/models/User";
 import {Subject} from "rxjs/Subject";
+import {Plans} from "../../plans/plans.service";
+import {Plan} from "../../plans/plan";
 
 @Component({
     selector: 'crupdate-subscription-modal',
@@ -39,9 +41,20 @@ export class CrupdateSubscriptionModalComponent implements OnInit {
      */
     public errors: any = {};
 
+    /**
+     * Form control for user autocomplete input.
+     */
     public userAutocomplete: FormControl = new FormControl(null);
 
+    /**
+     * Users returned from autocomplete query.
+     */
     public filteredUsers: Observable<User[]> = new Subject();
+
+    /**
+     * All existing billing plans.
+     */
+    public plans: Plan[] = [];
 
     /**
      * CrupdateUserModalComponent Constructor.
@@ -52,40 +65,15 @@ export class CrupdateSubscriptionModalComponent implements OnInit {
         public subscriptions: Subscriptions,
         private toast: Toast,
         private users: Users,
+        private plansApi: Plans,
     ) {
         this.resetState();
     }
 
-    // /**
-    //  * Perform a search when user types into search input.
-    //  */
-    // private bindToSearchQuery() {
-    //     this.searchQuery.valueChanges
-    //         .debounceTime(400)
-    //         .distinctUntilChanged()
-    //         .switchMap(query => {
-    //             this.searching = true;
-    //             if ( ! query) return Observable.of(this.getEmptyResultSet());
-    //             return this.search.everything(query, {limit: 3}).catch(() => {
-    //                 this.searching = false;
-    //                 return Observable.of(this.getEmptyResultSet());
-    //             });
-    //         }).subscribe(response => {
-    //         this.results = response;
-    //         this.noResults = !this.responseHasResults(response);
-    //         this.searching = false;
-    //         if (this.searchQuery.value) this.open();
-    //     });
-    // }
-
     ngOnInit() {
         this.resetState();
-
-        this.filteredUsers = this.userAutocomplete.valueChanges
-            .pipe(
-                debounceTime(400),
-                switchMap(val => this.findUsers(val))
-            );
+        this.bindToUserAutocomplete();
+        this.fetchPlans();
 
         if (this.data.subscription) {
             this.updating = true;
@@ -93,10 +81,6 @@ export class CrupdateSubscriptionModalComponent implements OnInit {
         } else {
             this.updating = false;
         }
-    }
-
-    private findUsers(query: string): Observable<User[]> {
-        return this.users.getAll({query});
     }
 
     /**
@@ -113,7 +97,6 @@ export class CrupdateSubscriptionModalComponent implements OnInit {
         }
 
         request.subscribe(response => {
-            console.log(response);
             this.close(response.subscription);
             let action = this.updating ? 'updated' : 'created';
             this.toast.open('Subscription has been '+action);
@@ -141,6 +124,10 @@ export class CrupdateSubscriptionModalComponent implements OnInit {
      */
     private hydrateModel(subscription: Subscription) {
         this.model = Object.assign({}, subscription);
+
+        if (subscription.user_id) {
+            this.userAutocomplete.setValue(subscription.user);
+        }
     }
 
     /**
@@ -150,6 +137,7 @@ export class CrupdateSubscriptionModalComponent implements OnInit {
         let payload = {
             renews_at: this.momentToMysql(this.model.renews_at as any),
             ends_at: this.momentToMysql(this.model.ends_at as any),
+            plan_id: this.model.plan_id,
             description: this.model.description,
         };
 
@@ -186,5 +174,32 @@ export class CrupdateSubscriptionModalComponent implements OnInit {
         } else {
             datePicker.open();
         }
+    }
+
+    /**
+     * Suggest matching users when autocomplete form control's value changes.
+     */
+    private bindToUserAutocomplete() {
+        this.filteredUsers = this.userAutocomplete.valueChanges.pipe(
+            debounceTime(400),
+            switchMap(query => {
+                if ( ! query) return Observable.of([]);
+                return this.users.getAll({query});
+            })
+        );
+    }
+
+    /**
+     * Fetch all existing billing plans.
+     */
+    private fetchPlans() {
+        this.plansApi.all().subscribe(response => {
+           this.plans = response.data;
+
+           //select first plan, if none is selected yet
+           if ( ! this.model.plan_id) {
+               this.model.plan_id = this.plans[0].id;
+           }
+        });
     }
 }

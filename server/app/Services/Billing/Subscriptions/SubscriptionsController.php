@@ -68,8 +68,9 @@ class SubscriptionsController extends Controller
 
         $this->validate($this->request, [
             'user_id' => 'required|exists:users,id|unique:subscriptions',
-            'renews_at' => 'required_without: ends_at|string|nullable',
-            'ends_at' => 'required_without: renews_at|string|nullable',
+            'renews_at' => 'required_without:ends_at|string|nullable',
+            'ends_at' => 'required_without:renews_at|string|nullable',
+            'plan_id' => 'required|integer|exists:billing_plans,id',
             'description' => 'string|nullable',
         ]);
 
@@ -90,8 +91,10 @@ class SubscriptionsController extends Controller
         $this->authorize('update', Subscription::class);
 
         $this->validate($this->request, [
+            'user_id' => 'exists:users,id|unique:subscriptions',
             'renews_at' => 'string|nullable',
             'ends_at' => 'string|nullable',
+            'plan_id' => 'integer|exists:billing_plans,id',
             'description' => 'string|nullable'
         ]);
 
