@@ -49,7 +49,7 @@ class StripePlans implements GatewayPlansInterface
     {
         $response = $this->gateway->createPlan([
             'id' => $plan->uuid,
-            'amount' => $plan->amount,
+            'amount' => $plan->amount * 100,
             'currency' => $plan->currency,
             'interval' => $plan->interval,
             'interval_count' => $plan->interval_count,

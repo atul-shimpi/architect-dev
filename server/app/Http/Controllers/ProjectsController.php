@@ -98,8 +98,8 @@ class ProjectsController extends Controller {
 
         $this->validate($this->request, [
             'name' => 'string|min:1|max:255',
-            'css' => 'nullable|string|min:1|max:255',
-            'js' => 'nullable|string|min:1|max:255',
+            'css' => 'nullable|string|min:1',
+            'js' => 'nullable|string|min:1',
             'template' => 'nullable|string|min:1|max:255',
             'framework' => 'nullable|string|min:1|max:255',
             'theme' => 'nullable|string|min:1|max:255',

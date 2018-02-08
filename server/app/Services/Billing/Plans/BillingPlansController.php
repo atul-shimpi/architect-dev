@@ -1,6 +1,7 @@
 <?php namespace App\Services\Billing\Plans;
 
 use App\BillingPlan;
+use App\Services\Billing\Gateways\Contracts\GatewayInterface;
 use App\Services\Billing\Gateways\GatewayFactory;
 use App\Services\Billing\Plans\Gateways\GatewayPlans;
 use App\Services\Billing\Plans\Gateways\PaypalPlans;
@@ -81,8 +82,8 @@ class BillingPlansController extends Controller
 
         $plan = $this->plan->create($data);
 
-        $this->factory->getEnabledPlanGateways()->each(function(GatewayPlans $plans) use($plan) {
-            $plans->create($plan);
+        $this->factory->getEnabledGateways()->each(function(GatewayInterface $gateway) use($plan) {
+            $gateway->plans()->create($plan);
         });
 
         return $this->success(['plan' => $plan]);
@@ -104,12 +105,12 @@ class BillingPlansController extends Controller
             'currency' => 'string|max:255',
             'interval' => 'string|max:255',
             'amount' => 'integer|min:0',
-            'permissions' => 'array|min:1',
+            'permissions' => 'array',
             'show_permissions' => 'in:0,1',
             'recommended' => 'in:0,1',
         ]);
 
-        $plan = $this->plan->findOrFail($id)->fill($this->request->all());
+        $plan = $this->plan->findOrFail($id)->fill($this->request->except('parent'));
         $plan->save();
 
         return $this->success(['plan' => $plan]);
@@ -132,10 +133,12 @@ class BillingPlansController extends Controller
 
         foreach ($this->request->get('ids') as $id) {
             $plan = $this->plan->find($id);
+            if (is_null($plan)) continue;
+
             $plan->delete();
 
-            $this->factory->getEnabledGateways()->each(function($plans) use($plan) {
-                $plans->delete($plan);
+            $this->factory->getEnabledGateways()->each(function(GatewayInterface $gateway) use($plan) {
+                $gateway->plans()->delete($plan);
             });
         }
 

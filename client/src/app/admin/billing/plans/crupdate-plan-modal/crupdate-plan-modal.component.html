@@ -26,7 +26,7 @@
            <div class="input-container">
                <label for="amount" trans>Amount</label>
                <input type="number" id="amount" name="amount" [(ngModel)]="model.amount" required min="0">
-               <p trans>How much subscribers of this plan should be charged. Lowest denominator of currency, usually cents.</p>
+               <p trans>How much subscribers of this plan should be charged. Dollars, euros etc.</p>
                <div class="error" *ngIf="errors.amount">{{errors.amount}}</div>
            </div>
 
@@ -104,7 +104,7 @@
 
                 <form (ngSubmit)="addFeature()" class="many-inputs" ngNativeValidate>
                     <div class="input-container">
-                        <input type="text" name="new-feature" placeholder="+New Feature" [(ngModel)]="newFeature" required>
+                        <input type="text" name="new-feature" placeholder="+New Feature" [(ngModel)]="newFeature" autocomplete="false" required>
                     </div>
                     <button type="submit" mat-raised-button color="accent" trans>Add</button>
                 </form>

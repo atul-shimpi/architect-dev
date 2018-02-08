@@ -52,7 +52,7 @@
 
         <ng-container matColumnDef="amount">
             <mat-header-cell *matHeaderCellDef mat-sort-header trans>Amount</mat-header-cell>
-            <mat-cell *matCellDef="let plan"> {{plan.free ? 'Free' : plan.amount}} </mat-cell>
+            <mat-cell *matCellDef="let plan"> {{plan.free ? 'Free' : (plan.amount | currency:plan.currency)}} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="currency">
@@ -77,7 +77,7 @@
 
         <ng-container matColumnDef="created_at">
             <mat-header-cell *matHeaderCellDef trans>Created At</mat-header-cell>
-            <mat-cell *matCellDef="let plan"> {{plan.created_at}} </mat-cell>
+            <mat-cell *matCellDef="let plan"> {{plan.created_at | formattedDate}} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="edit">

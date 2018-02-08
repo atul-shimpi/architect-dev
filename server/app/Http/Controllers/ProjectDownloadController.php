@@ -34,7 +34,7 @@ class ProjectDownloadController extends Controller
     {
         $project = $this->projectRepository->findOrFail($id);
 
-        $this->authorize('show', $project);
+        $this->authorize('download', $project);
 
         $source = config('filesystems.disks.public.root').'/'.$this->projectRepository->getProjectPath($project);
         $destination = "$source/$project->name.zip";

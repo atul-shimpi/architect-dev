@@ -10,6 +10,16 @@ class ProjectPolicy
 {
     use HandlesAuthorization;
 
+    public function publish(User $user, Project $project)
+    {
+        return $user->hasPermission('projects.publish') && $this->show($user, $project);
+    }
+
+    public function download(User $user, Project $project)
+    {
+        return $user->hasPermission('projects.download') && $this->show($user, $project);
+    }
+
     public function index(User $user, $userId)
     {
         return $user->id === (int) $userId || $user->hasPermission('projects.view');

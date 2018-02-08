@@ -2,7 +2,6 @@ export class Plan {
     id: number;
     name: string;
     amount: number;
-    display_amount: string|number;
     currency: string;
     currency_symbol: string = '$';
     interval: 'day'|'week'|'month'|'year' = 'month';

@@ -112,12 +112,8 @@ export class CrupdatePlanModalComponent implements OnInit {
         let payload = Object.assign({}, this.model);
         payload.features = this.features.map(feature => feature.content);
 
-        const currency = this.currencies.find(curr => curr.name === payload.currency);
+        const currency = this.currencies.find(curr => curr.code === payload.currency);
         payload.currency_symbol = currency.symbol;
-
-        //format plan amount for displaying to user
-        //example: 20 to $20.00, based on currency decimal points
-        payload.display_amount = currency.symbol + payload.amount + '.' + '0'.repeat(currency.decimal_digits);
 
         return payload;
     }

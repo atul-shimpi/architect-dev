@@ -4,7 +4,7 @@
         <div class="price-box">
             <div class="amount">
                 <div class="currency">{{plan.currency_symbol}}</div>
-                <div class="number">{{plan.display_amount}}</div>
+                <div class="number">{{plan.amount | number:'1.2'}}</div>
             </div>
             <div class="interval">/{{plan.interval}}</div>
         </div>

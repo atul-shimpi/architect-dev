@@ -10,6 +10,7 @@ import {DeviceSwitcherComponent} from "./device-switcher/device-switcher.compone
 import {ContextBoxes} from "../live-preview/context-boxes.service";
 import {Modal} from "vebto-client/core/ui/modal.service";
 import {PublishProjectModalComponent} from "../../shared/publish-project-modal/publish-project-modal.component";
+import {CurrentUser} from "../../../../node_modules/vebto-client/auth/current-user";
 
 @Component({
     selector: 'inspector',
@@ -34,6 +35,7 @@ export class InspectorComponent implements OnInit {
         private settings: Settings,
         private contextBoxes: ContextBoxes,
         private modal: Modal,
+        public currentUser: CurrentUser,
     ) {}
 
     ngOnInit() {

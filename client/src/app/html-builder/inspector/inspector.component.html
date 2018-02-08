@@ -24,7 +24,7 @@
             <svg-icon name="settings-custom"></svg-icon>
             <span class="name" trans>Settings</span>
         </button>
-        <button mat-button class="panel-nav-item" (click)="toggleCodeEditor()">
+        <button mat-button class="panel-nav-item" (click)="toggleCodeEditor()" [disabled]="!currentUser.hasPermission('editors.enable')">
             <svg-icon name="source-code-custom"></svg-icon>
             <span class="name" trans>Code Edtr</span>
         </button>
@@ -56,8 +56,8 @@
     <div class="actions">
         <mat-progress-bar mode="indeterminate" *ngIf="activeProject.saving" color="accent"></mat-progress-bar>
         <button (click)="openPreview()" [disabled]="activeProject.saving" mat-button matTooltip="Preview"><svg-icon name="visibility"></svg-icon></button>
-        <button (click)="downloadProject()" mat-button matTooltip="Download"><svg-icon name="file-download"></svg-icon></button>
-        <button (click)="openPublishProjectModal()" mat-button matTooltip="Publish"><svg-icon name="publish"></svg-icon></button>
+        <button (click)="downloadProject()" [disabled]="!currentUser.hasPermission('projects.download')" mat-button matTooltip="Download"><svg-icon name="file-download"></svg-icon></button>
+        <button (click)="openPublishProjectModal()" [disabled]="!currentUser.hasPermission('projects.publish')" mat-button matTooltip="Publish"><svg-icon name="publish"></svg-icon></button>
         <button (click)="toggleDeviceSwitcher()" mat-button matTooltip="Change device"><svg-icon name="phone-android"></svg-icon></button>
         <button (click)="saveProject()" [disabled]="activeProject.saving" mat-button matTooltip="Save project"><svg-icon name="save"></svg-icon></button>
     </div>

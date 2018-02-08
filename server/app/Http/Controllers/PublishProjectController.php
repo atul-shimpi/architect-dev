@@ -53,7 +53,7 @@ class PublishProjectController extends Controller
     {
         $project = $this->project->findOrFail($id);
 
-        $this->authorize('show', $project);
+        $this->authorize('publish', $project);
 
         $this->validate($this->request, [
             'host' => 'required|string|min:1',
