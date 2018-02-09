@@ -44,7 +44,7 @@ export class CrupdatePlanModalComponent implements OnInit {
      */
     public errors: any = {};
 
-    public currencies: {name: string, decimal_digits: number, symbol: string}[] = [];
+    public currencies: {name: string, decimal_digits: number, symbol: string, code: string}[] = [];
 
     public intervals = ['day', 'week', 'month', 'year'];
 

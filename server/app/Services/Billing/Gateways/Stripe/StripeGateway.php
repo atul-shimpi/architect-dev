@@ -102,7 +102,7 @@ class StripeGateway implements GatewayInterface
                 throw new InvalidCreditCardException($data['error']['message']);
             }
 
-            throw new GatewayException('Could not create stripe credit card.');
+            throw new GatewayException($response->getMessage());
         }
 
         //store stripe id on user model, if needed

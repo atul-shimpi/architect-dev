@@ -11,26 +11,26 @@ class BillingPlanPolicy
 
     public function index(User $user)
     {
-        return $user->hasPermission('billing-plans.view');
+        return $user->hasPermission('plans.view');
     }
 
     public function show(User $user)
     {
-        return $user->hasPermission('billing-plans.view');
+        return $user->hasPermission('plans.view');
     }
 
     public function store(User $user)
     {
-        return $user->hasPermission('billing-plans.create');
+        return $user->hasPermission('plans.create');
     }
 
     public function update(User $user)
     {
-        return $user->hasPermission('billing-plans.update');
+        return $user->hasPermission('plans.update');
     }
 
     public function destroy(User $user)
     {
-        return $user->hasPermission('billing-plans.delete');
+        return $user->hasPermission('plans.delete');
     }
 }
