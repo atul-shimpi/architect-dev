@@ -2,6 +2,7 @@ import {Component, EventEmitter, OnInit, Output, ViewEncapsulation} from '@angul
 import {HttpCacheClient} from "vebto-client/core/http/http-cache-client";
 import {FormControl} from "@angular/forms";
 import {BuilderDocument} from "../../../../builder-document.service";
+import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 
 @Component({
     selector: 'google-fonts-panel',
@@ -115,8 +116,7 @@ export class GoogleFontsPanelComponent implements OnInit {
      */
     private bindToSearchQuery() {
         this.searchControl.valueChanges
-            .debounceTime(100)
-            .distinctUntilChanged()
+            .pipe(debounceTime(100), distinctUntilChanged())
             .subscribe(query => {
                 if ( ! query) this.filteredFonts = this.originalFonts;
 

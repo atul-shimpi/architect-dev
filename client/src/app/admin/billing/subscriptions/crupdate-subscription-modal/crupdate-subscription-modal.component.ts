@@ -152,9 +152,9 @@ export class CrupdateSubscriptionModalComponent implements OnInit {
     /**
      * Format moment instance into mysql timestamp format.
      */
-    private momentToMysql(moment: moment.Moment) {
-        if ( ! moment) return null;
-        return moment.endOf('day').format('YYYY-MM-DD HH:mm:ss');
+    private momentToMysql(date: moment.Moment|string) {
+        if ( ! date || typeof date === 'string') return date;
+        return (moment as moment.Moment).endOf('day').format('YYYY-MM-DD HH:mm:ss');
     }
 
     /**
