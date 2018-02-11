@@ -41,14 +41,14 @@
         <input type="text" name="id" id="id" [(ngModel)]="id" (ngModelChange)="changeElId($event)">
     </div>
 
-    <mat-chip-list #chipList class="input-container">
+    <mat-chip-list #chipList class="input-container" [selectable]="false">
         <label for="class" trans>Class</label>
         <input placeholder="+New Class..."
                trans-placeholder
                id="class"
                [matChipInputFor]="chipList"
                [matChipInputAddOnBlur]="true"
-               (matChipInputTokenEnd)="addClass([$event.value]); $event.input.value = ''" />
+               (matChipInputTokenEnd)="addClass([$event.value]); $event.input.value = ''"/>
         <ng-container *ngFor="let className of classes">
             <mat-chip *ngIf="!shouldClassBeHidden(className)" (remove)="removeClass([className])" [removable]="true">
                 {{className}}

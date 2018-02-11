@@ -48,7 +48,7 @@ export class PageDocument {
     /**
      * Generate page document from specified markup.
      */
-    public generate(html: string = '', template?: BuilderTemplate): PageDocument {
+    public generate(html: string = '', template?: BuilderTemplate, framework?: string): PageDocument {
         this.pageDocument = new DOMParser().parseFromString(this.trim(html), 'text/html');
 
         //remove old link/script nodes to frameworks, icons, templates etc.
@@ -60,7 +60,7 @@ export class PageDocument {
         });
 
         this.addBaseElement();
-        this.useFramework(template.config.framework);
+        this.useFramework(framework || template.config.framework);
         this.addIconsLink();
 
         //theme

@@ -43,8 +43,4 @@
     </div>
 </div>
 
-<div class="text-color" [(colorPicker)]="styles.color"
-     [style.backgroundColor]="styles.color"
-     (colorPickerChange)="applyTextStyle('color', false)"
-     matTooltip="text color"
-></div>
+<div class="text-color" #origin (click)="openColorpickerPanel(origin)" [style.backgroundColor]="styles.color" matTooltip="text color"></div>

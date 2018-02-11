@@ -154,7 +154,7 @@ export class CrupdateSubscriptionModalComponent implements OnInit {
      */
     private momentToMysql(date: moment.Moment|string) {
         if ( ! date || typeof date === 'string') return date;
-        return (moment as moment.Moment).endOf('day').format('YYYY-MM-DD HH:mm:ss');
+        return (date as moment.Moment).endOf('day').format('YYYY-MM-DD HH:mm:ss');
     }
 
     /**

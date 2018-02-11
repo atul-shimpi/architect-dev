@@ -94,15 +94,16 @@ spacing-panel {
       }
 
       > .input-container {
-        height: 35px;
+        height: 36px;
       }
 
-      > .right-input {
+      > .right-input, > .left-input {
         width: 49%;
+        margin-top: 1.8px;
       }
 
-      > .left-input {
-        width: 49%;
+      > .bottom-input {
+        margin-top: auto;
       }
     }
   }

@@ -49,6 +49,11 @@ export class LayoutPanelComponent implements OnInit {
         this.layoutPanel.selectContainer(cloned);
     }
 
+    public cloneRow(row: HTMLElement) {
+        const cloned = this.builderDocument.actions.cloneNode(row);
+        this.layoutPanel.selectRow(cloned, true);
+    }
+
     public removeItem(node: HTMLElement) {
         this.builderDocument.actions.removeNode(node);
     }

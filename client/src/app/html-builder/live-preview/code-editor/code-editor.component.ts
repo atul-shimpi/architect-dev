@@ -6,8 +6,9 @@ import {aceThemes} from "./ace-themes";
 import {Observable} from "rxjs/Observable";
 import {SelectedElement} from "../selected-element.service";
 import {BuilderDocument} from "../../builder-document.service";
-import htmlBeautify from 'html-beautify'
+import * as htmlBeautify from 'html-beautify'
 import {Subscription} from "rxjs/Subscription";
+import {debounceTime} from "rxjs/operators";
 
 declare let ace: any;
 
@@ -57,7 +58,6 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
         private activeProject: ActiveProject,
         private selectedElement: SelectedElement,
         private builderDocument: BuilderDocument,
-        private el: ElementRef,
     ) {}
 
     ngOnInit() {
@@ -136,7 +136,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
      * Update project html when code editor contents are changed by user.
      */
     private bindToEditorChangeEvent() {
-        const sub = this.contentsChange.debounceTime(800).subscribe(() => {
+        const sub = this.contentsChange.pipe(debounceTime(800)).subscribe(() => {
             let shouldReload = false;
 
             if (this.activeEditor === 'html') {
@@ -165,7 +165,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
      */
     private bindToBuilderDocumentChangeEvent() {
         const sub = this.builderDocument.contentChanged
-            .debounceTime(500)
+            .pipe(debounceTime(500))
             .subscribe(source => {
                 //if dom change was initiated by code editor, bail to avoid infinite loops
                 if (source === 'codeEditor') return;

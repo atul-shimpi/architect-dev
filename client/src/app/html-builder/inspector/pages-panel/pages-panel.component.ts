@@ -71,7 +71,11 @@ export class PagesPanelComponent implements OnInit {
             name += ' Copy';
         }
 
-        const html = new PageDocument().setBaseUrl(this.activeProject.getBaseUrl()).generate().getOuterHtml();
+        const html = new PageDocument()
+            .setBaseUrl(this.activeProject.getBaseUrl())
+            .generate('', null, this.activeProject.get().model.framework)
+            .getOuterHtml();
+
         this.selectedPage = this.activeProject.addPage({name: name, html: html});
 
         console.log(this.activeProject.getPages());

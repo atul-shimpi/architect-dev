@@ -7,6 +7,7 @@ import {Modal} from "vebto-client/core/ui/modal.service";
 import {ActiveProject} from "../../projects/active-project";
 import {LinkEditor} from "../../live-preview/link-editor/link-editor.service";
 import {Elements} from "../../elements/elements.service";
+import {SelectedElement} from "../../live-preview/selected-element.service";
 
 @Component({
     selector: 'inspector-panel',
@@ -21,6 +22,7 @@ export class InspectorPanelComponent {
      */
     constructor(
         public livePreview: LivePreview,
+        public selected: SelectedElement,
         private layout: LayoutPanel,
         private inspector: Inspector,
         private modal: Modal,

@@ -69,5 +69,10 @@
         </div>
     </div>
 
+    <no-results-message *ngIf="!projects.length">
+        <span primary-text trans>You have not created any projects yet.</span>
+        <span secondary-text trans>Nothing to show. <a routerLink="/dashboard/projects/new">Create a project?</a></span>
+    </no-results-message>
+
     <ad-host [slot]="siteConfig.get().admin.ads[1].slot" class="ad-host-bottom"></ad-host>
 </div>

@@ -9,10 +9,11 @@ attributes-panel {
 
     > button {
       padding: 12px 15px;
-      background-color: $site-bg-color-200;
+      background-color: darken($site-bg-color-200, 2%);
+      border: 1px solid $site-border-color-200;
       color: inherit;
       border-radius: 3px;
-      margin: 0 4px;
+      margin: 0 3px;
 
       &.active {
         background-color: $site-bg-color-100;
@@ -43,9 +44,12 @@ attributes-panel {
 
   .mat-chip-list-wrapper > .mat-chip {
     margin-top: 7px !important;
-    background-color: $site-bg-color-200;
     color: inherit;
     padding: 4px 12px;
+
+    &:last-of-type {
+      margin-bottom: 5px;
+    }
 
     > .mat-chip-remove {
       color: inherit;

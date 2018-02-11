@@ -4,6 +4,7 @@ import {InspectorFloatingPanel} from "../../inspector-floating-panel.service";
 import {GoogleFontsPanelComponent} from "./google-fonts-panel/google-fonts-panel.component";
 import {SelectedElement} from "../../../live-preview/selected-element.service";
 import {BuilderDocumentActions} from "../../../builder-document-actions.service";
+import {ColorPickerPanel} from "vebto-client/core/ui/color-picker/color-picker-panel.service";
 
 @Component({
     selector: 'text-style-panel',
@@ -27,6 +28,7 @@ export class TextStylePanelComponent implements OnInit {
         private selectedElement: SelectedElement,
         private panel: InspectorFloatingPanel,
         private builderActions: BuilderDocumentActions,
+        private colorPicker: ColorPickerPanel,
     ) {}
 
     ngOnInit() {
@@ -55,6 +57,13 @@ export class TextStylePanelComponent implements OnInit {
      */
     public textStyleIs(name: string, value: string) {
         return this.selectedElement.getStyle(name).indexOf(value) > -1;
+    }
+
+    public openColorpickerPanel(origin: HTMLElement) {
+        this.colorPicker.open(new ElementRef(origin), {position: 'right'}).selected.subscribe(color => {
+            this.styles.color = color;
+            this.applyTextStyle('color', false);
+        });
     }
 
     public openGoogleFontsPanel() {

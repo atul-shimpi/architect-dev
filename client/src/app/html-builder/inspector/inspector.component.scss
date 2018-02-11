@@ -73,6 +73,10 @@ inspector {
     text-align: center;
     padding: 20px 0;
 
+    > .back-button {
+      color: inherit;
+    }
+
     > .panel-nav {
       margin-top: 50px;
 
