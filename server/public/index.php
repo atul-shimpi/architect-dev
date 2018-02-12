@@ -1,5 +1,7 @@
 <?php
 
+if ( ! file_exists(__DIR__.'/../.env') && file_exists(__DIR__.'/install_files')) { require_once __DIR__.'/install_files/install.php'; exit; }
+
 /**
  * Laravel - A PHP Framework For Web Artisans
  *

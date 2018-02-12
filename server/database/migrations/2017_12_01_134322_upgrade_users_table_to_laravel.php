@@ -14,7 +14,9 @@ class UpgradeUsersTableToLaravel extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->rememberToken();
+            if ( ! Schema::hasColumn('users', 'remember_token')) {
+                $table->rememberToken();
+            }
         });
     }
 
