@@ -2,8 +2,9 @@
 
 namespace App\Console;
 
-use App\Console\Commands\ConvertLegacyTemplates;
 use App\Console\Commands\GenerateTsClasses;
+use App\Console\Commands\MigrateLegacyProjects;
+use App\Console\Commands\MigrateLegacyTemplates;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -16,7 +17,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         GenerateTsClasses::class,
-        ConvertLegacyTemplates::class,
+        MigrateLegacyProjects::class,
+        MigrateLegacyTemplates::class,
     ];
 
     /**

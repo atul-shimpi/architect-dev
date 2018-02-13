@@ -41,6 +41,10 @@ Route::group(['prefix' => 'secure'], function () {
     //elements
     Route::get('elements/custom', 'ElementsController@custom');
 
+    //update
+    Route::get('update', 'UpdateController@show');
+    Route::post('update/run', 'UpdateController@update');
+
     //billing plans
     Route::get('billing/plans', function() {
         return App::call('App\Services\Billing\Plans\BillingPlansController@index');

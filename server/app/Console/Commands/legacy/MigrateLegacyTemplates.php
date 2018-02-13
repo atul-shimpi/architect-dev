@@ -5,23 +5,22 @@ namespace App\Console\Commands;
 use File;
 use App\BuilderPage;
 use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Collection;
 
-class ConvertLegacyTemplates extends Command
+class MigrateLegacyTemplates extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'legacy:fix_templates';
+    protected $signature = 'legacy:templates';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Migrate legacy templates to to version.';
 
     /**
      * @var BuilderPage
