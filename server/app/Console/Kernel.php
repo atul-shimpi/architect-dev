@@ -3,8 +3,8 @@
 namespace App\Console;
 
 use App\Console\Commands\GenerateTsClasses;
-use App\Console\Commands\MigrateLegacyProjects;
-use App\Console\Commands\MigrateLegacyTemplates;
+use App\Console\Commands\Legacy\MigrateLegacyProjects;
+use App\Console\Commands\Legacy\MigrateLegacyTemplates;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 

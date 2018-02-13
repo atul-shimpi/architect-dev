@@ -219,6 +219,7 @@ export class ActiveProject {
 
     /**
      * Get project's base static files url.
+     * Get project's base static files url.
      */
     public getBaseUrl(relative: boolean = false) {
         return this.projectUrl.getBaseUrl(this.project.model.uuid, relative);

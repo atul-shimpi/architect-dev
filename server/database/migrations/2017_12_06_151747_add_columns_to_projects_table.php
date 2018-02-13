@@ -15,7 +15,6 @@ class AddColumnsToProjectsTable extends Migration
     {
         Schema::table('projects', function (Blueprint $table) {
             $table->uuid('uuid')->nullable();
-            $table->integer('theme_id')->nullable();
             $table->string('template')->nullable();
             $table->string('framework')->default('bootstrap-3');
             $table->string('theme')->nullable();

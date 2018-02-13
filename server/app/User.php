@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Services\Billing\Billable;
 use Vebto\Auth\User as VebtoUser;
 
 /**

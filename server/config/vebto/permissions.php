@@ -6,6 +6,7 @@ return [
             'projects.create' => 1,
             'editors.enable' => 1,
             'plans.view' => 1,
+            'templates.view',
         ]
     ],
     'all' => [

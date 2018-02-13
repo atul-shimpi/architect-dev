@@ -56,6 +56,7 @@ class UpdateController extends Controller {
 
         Artisan::call('migrate', ['--force' => 'true']);
         Artisan::call('db:seed', ['--force' => 'true']);
+        Artisan::call('vebto:seed');
 
         //migrate versions prior to 2.0
         if ( ! config('vebto.site.version')) {

@@ -1,5 +1,6 @@
 <?php namespace App\Services;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Storage;
 
@@ -128,12 +129,14 @@ class TemplateLoader
     private function getTemplateConfig($name)
     {
         $path = "templates/$name/config.json";
+        $config = [];
 
         if ($this->storage->exists($path)) {
-            return json_decode($this->storage->get($path), true);
+            $config = json_decode($this->storage->get($path), true);
         }
 
-        return [];
-    }
+        $config['framework'] = Arr::get($config, 'framework', 'bootstrap-3');
 
+        return $config;
+    }
 }

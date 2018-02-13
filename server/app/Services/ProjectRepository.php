@@ -182,6 +182,9 @@ class ProjectRepository
             'uuid' => $data['uuid']
         ])->fresh();
 
+        //attach to user
+        $project->users()->attach(Auth::user()->id);
+
         $projectPath = $this->getProjectPath($project);
 
         $this->applyFramework($projectPath, $project->framework);
@@ -210,9 +213,6 @@ class ProjectRepository
         if (isset($data['pages'])) {
             $this->updatePages($project, $data['pages']);
         }
-
-        //attach to user
-        $project->users()->attach(Auth::user()->id);
 
         return $project;
     }
