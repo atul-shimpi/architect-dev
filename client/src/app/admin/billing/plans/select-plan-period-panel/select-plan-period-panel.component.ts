@@ -28,7 +28,13 @@ export class SelectPlanPeriodPanelComponent {
     /**
      * Get price decrease percentage between specified plans.
      */
-    public getPlanSavings(expensive: Plan, cheap: Plan): number {
-        return (expensive.amount-cheap.amount)/expensive.amount * 100;
+    public getPlanSavings(base: Plan, parent: Plan): number {
+        const amount = this.getPlanPerMonthAmount(parent);
+        const savings = (base.amount-amount)/base.amount * 100;
+        return Math.ceil(savings);
+    }
+
+    public getPlanPerMonthAmount(plan: Plan) {
+        return plan.amount / plan.interval_count;
     }
 }

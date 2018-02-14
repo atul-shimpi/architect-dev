@@ -29,7 +29,7 @@ class ElementsController extends Controller
     {
         $elements = array();
 
-        $files = $this->fs->files(resource_path('builder/elements'));
+        $files = $this->fs->files(public_path('builder/elements'));
 
         foreach ($files as $file) {
             $contents = $this->fs->get($file);

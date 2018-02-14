@@ -67,12 +67,12 @@
                    [matChipInputFor]="chipList"
                    [matChipInputAddOnBlur]="true"
                    (matChipInputTokenEnd)="addCard($event.value); $event.input.value = ''" />
-            <ng-container *ngFor="let card of acceptedCards">
-                <mat-chip (remove)="removeCard(card)" [removable]="true">
+            <div class="chips-container">
+                <mat-chip (remove)="removeCard(card)" [removable]="true" *ngFor="let card of acceptedCards">
                     {{card}}
                     <svg-icon name="cancel" matChipRemove></svg-icon>
                 </mat-chip>
-            </ng-container>
+            </div>
         </mat-chip-list>
     </ng-container>
 

@@ -99,6 +99,9 @@ export class ActiveProject {
 
         if ( ! options.params) options.params = {};
 
+        //update html of active page, so it's synced with the builder
+        this.pages[this.activePage].html = this.builderDocument.getOuterHtml();
+
         const payload = Object.assign({}, options.params, {
             name: this.project.model.name,
             css: this.project.css,
@@ -218,7 +221,6 @@ export class ActiveProject {
     }
 
     /**
-     * Get project's base static files url.
      * Get project's base static files url.
      */
     public getBaseUrl(relative: boolean = false) {

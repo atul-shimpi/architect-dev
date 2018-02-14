@@ -90,7 +90,7 @@ class PaypalPlans implements GatewayPlansInterface
         ])->send();
 
         if ( ! $response->isSuccessful()) {
-            throw new GatewayException('Could not create subscription plan on paypal');
+            throw new GatewayException($response->getMessage());
         }
 
         //set plan to active on paypal
@@ -100,7 +100,7 @@ class PaypalPlans implements GatewayPlansInterface
         ])->send();
 
         if ( ! $response->isSuccessful()) {
-            throw new GatewayException('Could not create subscription plan on paypal');
+            throw new GatewayException($response->getMessage());
         }
 
         return true;

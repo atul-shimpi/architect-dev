@@ -145,6 +145,13 @@ export class CrupdatePlanModalComponent implements OnInit {
     }
 
     /**
+     * Get all base plans.
+     */
+    public getBasePlans(): Plan[] {
+        return this.allPlans.filter(plan => !plan.parent_id);
+    }
+
+    /**
      * Populate plan model with given data.
      */
     private hydrateModel(plan: Plan) {

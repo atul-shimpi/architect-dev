@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Omnipay\PayPal\RestGateway;
 use App\Services\Billing\GatewayException;
 use App\Services\Billing\Gateways\Contracts\GatewayInterface;
+use Vebto\Settings\Settings;
 
 class PaypalGateway implements GatewayInterface
 {
@@ -24,16 +25,17 @@ class PaypalGateway implements GatewayInterface
     private $subscriptions;
 
     /**
-     * StripeGateway constructor.
+     * PaypalGateway constructor.
+     * @param Settings $settings
      */
-    public function __construct()
+    public function __construct(Settings $settings)
     {
         $this->gateway = Omnipay::create('PayPal_Rest');
 
         $this->gateway->initialize(array(
             'clientId' => config('services.paypal.client_id'),
             'secret' => config('services.paypal.secret'),
-            'testMode' => true,
+            'testMode' => $settings->get('billing.paypal_test_mode'),
         ));
 
         $this->plans = new PaypalPlans($this->gateway);

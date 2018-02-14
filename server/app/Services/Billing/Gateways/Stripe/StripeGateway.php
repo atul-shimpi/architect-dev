@@ -132,7 +132,7 @@ class StripeGateway implements GatewayInterface
         ])->sendData(['default_source' => $cardReference]);
 
         if ( ! $response->isSuccessful()) {
-            throw new GatewayException('Could not create stripe credit card.');
+            throw new GatewayException($response->getMessage());
         }
 
         $user->fill([

@@ -6,13 +6,13 @@
                 <div class="savings-label" trans>Save {{getPlanSavings(state.selectedPlan.parent || state.selectedPlan, plan)}}%</div>
                 <mat-radio-button [value]="plan.id" class="period">
                     <div class="name">{{plan.name}}:</div>
-                    <div class="price">{{plan.amount | currency:plan.currency}} x {{plan.interval_count}} {{plan.interval}}s</div>
+                    <div class="price">{{getPlanPerMonthAmount(plan) | currency:plan.currency}}/{{state.initialPlan.interval}}</div>
                 </mat-radio-button>
             </div>
             <div class="radio-button-wrapper no-label">
                 <mat-radio-button [value]="state.initialPlan.id" class="period">
-                    <div class="name" trans>1 month subscription:</div>
-                    <div class="price">{{state.initialPlan.amount | currency:state.initialPlan.currency}} month to month</div>
+                    <div class="name" trans>1 {{state.initialPlan.interval}} subscription:</div>
+                    <div class="price">{{state.initialPlan.amount | currency:state.initialPlan.currency}}/{{state.initialPlan.interval}}</div>
                 </mat-radio-button>
             </div>
         </mat-radio-group>

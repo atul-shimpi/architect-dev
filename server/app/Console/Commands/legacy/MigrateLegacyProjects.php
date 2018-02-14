@@ -75,7 +75,7 @@ class MigrateLegacyProjects extends Command
 
         $this->project->with('pages', 'users')->orderBy('id')->chunk(100, function(Collection $projects)  {
             $projects->each(function(Project $project) {
-                //if ($project->uuid) return;
+                if ($project->uuid) return;
 
                 //add uuid to legacy projects
                 $project->fill(['uuid' => str_random(36), 'framework' => 'temp', 'template' => 'temp'])->save();
@@ -91,7 +91,7 @@ class MigrateLegacyProjects extends Command
 
                     //try to extract template name from project page csss
                     $data['template'] = $templateNames->first(function($name) use($project) {
-                        return str_contains($project->pages->first()->css, $name);
+                        return str_contains(strtolower($project->pages->first()->css), $name);
                     }, $data['template']);
                 }
 

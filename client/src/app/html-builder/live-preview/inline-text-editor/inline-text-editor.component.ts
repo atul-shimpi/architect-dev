@@ -135,7 +135,7 @@ export class InlineTextEditorComponent implements OnInit, OnDestroy {
         if (document.head.querySelector('#font-awesome')) return;
 
         document.head.appendChild(
-            DomHelpers.createLink(this.settings.getBaseUrl(true)+'storage/css/font-awesome.min.css', 'font-awesome')
+            DomHelpers.createLink(this.settings.getBaseUrl(true)+'builder/css/font-awesome.min.css', 'font-awesome')
         );
     }
 

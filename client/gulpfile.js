@@ -244,7 +244,7 @@ function getIconNames() {
     var names = extractIconNamesFromHtmlFiles(htmlFiles);
 
     var tsFiles = getFilesInPath('./src/app/html-builder/elements/definitions', '.ts');
-    tsFiles = tsFiles.concat(getFilesInPath('./../server/resources/builder/elements', '.html'));
+    tsFiles = tsFiles.concat(getFilesInPath('./../server/public/builder/elements', '.html'));
 
     names = names.concat(extractIconNamesFromTsFiles(tsFiles));
 

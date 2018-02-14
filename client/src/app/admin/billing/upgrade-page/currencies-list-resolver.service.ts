@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Resolve, RouterStateSnapshot, ActivatedRouteSnapshot} from '@angular/router';
-import {map} from "rxjs/operators";
+import {map} from "rxjs/operators/map";
 import {ValueLists} from "vebto-client/core/services/value-lists.service";
 
 @Injectable()

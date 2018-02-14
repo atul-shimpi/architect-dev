@@ -7,4 +7,10 @@ return [
 
     //menus
     ['name' => 'menus', 'value' => json_encode([])],
+
+    //billing
+    ['name' => 'billing.enable', 'value' => true],
+    ['name' => 'billing.paypal_test_mode', 'value' => true],
+    ['name' => 'billing.stripe_test_mode', 'value' => true],
+    ['name' => 'billing.accepted_card', 'value' => ['visa', 'mastercard', 'american-express', 'discover']],
 ];

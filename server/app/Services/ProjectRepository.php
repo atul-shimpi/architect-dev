@@ -260,22 +260,22 @@ class ProjectRepository
         //add framework
         $this->storage->put(
             "$projectPath/css/framework.css",
-            File::get(resource_path("builder/frameworks/$framework/styles.min.css"))
+            File::get(public_path("builder/frameworks/$framework/styles.min.css"))
         );
 
         $this->storage->put(
             "$projectPath/js/framework.js",
-            File::get(resource_path("builder/frameworks/$framework/scripts.min.js"))
+            File::get(public_path("builder/frameworks/$framework/scripts.min.js"))
         );
 
         //font awesome
         $this->storage->put(
             "$projectPath/css/font-awesome.css",
-            File::get(resource_path("builder/css/font-awesome.min.css"))
+            File::get(public_path("builder/css/font-awesome.min.css"))
         );
 
         //fonts
-        collect(File::files(resource_path("builder/fonts")))->each(function($path) use($projectPath) {
+        collect(File::files(public_path("builder/fonts")))->each(function($path) use($projectPath) {
             $this->storage->put(
                 "$projectPath/fonts/".basename($path),
                 File::get($path)
@@ -285,7 +285,7 @@ class ProjectRepository
         //jquery
         $this->storage->put(
             "$projectPath/js/jquery.min.js",
-            File::get(resource_path("builder/js/jquery.min.js"))
+            File::get(public_path("builder/js/jquery.min.js"))
         );
     }
 
@@ -370,7 +370,7 @@ class ProjectRepository
         if (isset($templateData['config']['libraries'])) {
             collect($templateData['config']['libraries'])->each(function($library) use($projectPath) {
                 $name = strtolower(kebab_case($library));
-                $content = File::get(resource_path("builder/js/libraries/$name.js"));
+                $content = File::get(public_path("builder/js/libraries/$name.js"));
                 $this->storage->put("$projectPath/js/$name.js", $content);
             });
         }

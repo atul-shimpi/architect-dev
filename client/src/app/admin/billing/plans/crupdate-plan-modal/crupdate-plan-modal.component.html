@@ -15,10 +15,10 @@
         <div class="input-container">
             <label for="parent_id" trans>Parent Plan</label>
             <select id="parent_id" name="parent_id" [(ngModel)]="model.parent_id" required>
-                <option [value]="null" trans>None</option>
-                <option [value]="plan.id" *ngFor="let plan of allPlans">{{plan.name}}</option>
+                <option [ngValue]="null" trans>None</option>
+                <option [value]="plan.id" *ngFor="let plan of getBasePlans()">{{plan.name}}</option>
             </select>
-            <p trans>Child plans will inherit their parent permissions/features. Best used for creating yearly, weekly etc versions of base plan.</p>
+            <p trans>Used for creating yearly, weekly etc versions of base plan. Child plans will inherit their parent permissions/features.</p>
             <div class="error" *ngIf="errors.parent_id">{{errors.parent_id}}</div>
         </div>
 
@@ -27,6 +27,7 @@
                <label for="amount" trans>Amount</label>
                <input type="number" id="amount" name="amount" [(ngModel)]="model.amount" required min="0">
                <p trans>How much subscribers of this plan should be charged. Dollars, euros etc.</p>
+               <p trans>For example, Amount=100, Interval=Year and Interval Count=1, will charge user 100 dollars every year.</p>
                <div class="error" *ngIf="errors.amount">{{errors.amount}}</div>
            </div>
 
@@ -38,7 +39,7 @@
                <div class="error" *ngIf="errors.currency">{{errors.currency}}</div>
            </div>
 
-           <div class="input-container">
+           <div class="input-container" *ngIf="!model.parent_id">
                <label for="interval" trans>Interval</label>
                <select id="interval" name="interval" [(ngModel)]="model.interval" required>
                    <option [value]="interval" *ngFor="let interval of intervals">{{interval}}</option>

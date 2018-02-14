@@ -4,6 +4,7 @@ import {SettingsPanelComponent} from "vebto-client/admin/settings/settings-panel
 @Component({
     selector: 'billing-settings',
     templateUrl: './billing-settings.component.html',
+    styleUrls: ['./billing-settings.component.scss'],
     encapsulation: ViewEncapsulation.None,
 })
 export class BillingSettingsComponent extends SettingsPanelComponent implements OnInit {

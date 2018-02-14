@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-    <link rel="stylesheet" href="{{ asset('storage/css/update.css?v1') }}">
+    <link rel="stylesheet" href="{{ asset('update.css?v1') }}">
     <link href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,400italic' rel='stylesheet'
           type='text/css'>
 </head>

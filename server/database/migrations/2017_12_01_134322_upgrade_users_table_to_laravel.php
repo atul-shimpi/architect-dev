@@ -16,6 +16,8 @@ class UpgradeUsersTableToLaravel extends Migration
         Schema::table('users', function (Blueprint $table) {
             if ( ! Schema::hasColumn('users', 'remember_token')) {
                 $table->rememberToken();
+                $table->string('card_brand')->nullable();
+                $table->string('card_last_four')->nullable();
             }
         });
     }
@@ -29,6 +31,8 @@ class UpgradeUsersTableToLaravel extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropRememberToken();
+            $table->dropColumn('card_brand');
+            $table->dropColumn('card_last_four');
         });
     }
 }
