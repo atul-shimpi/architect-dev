@@ -34,7 +34,7 @@ class StripeGateway implements GatewayInterface
         $this->gateway = Omnipay::create('Stripe');
 
         $this->gateway->initialize(array(
-            'apiKey' => config('services.stripe.key'),
+            'apiKey' => config('services.stripe.secret'),
         ));
 
         $this->plans = new StripePlans($this->gateway);
@@ -68,22 +68,14 @@ class StripeGateway implements GatewayInterface
      * Add a new card to customer on stripe.
      *
      * @param User $user
-     * @param array $cardData
+     * @param string $token
      * @return User
      * @throws GatewayException
      * @throws InvalidCreditCardException
      */
-    public function addCard(User $user, $cardData)
+    public function addCard(User $user, $token)
     {
-        $params = ['card' => new CreditCard([
-            'number' => $cardData['number'],
-            'expiryMonth' => $cardData['expiration_month'],
-            'expiryYear' => $cardData['expiration_year'],
-            'cvv' => $cardData['security_code'],
-            'email' => $user->email,
-            'firstName' => $user->first_name,
-            'lastName' => $user->last_name,
-        ])];
+        $params['token'] = $token;
 
         //create new stripe customer or attach to existing one
         if ($user->stripe_id) {

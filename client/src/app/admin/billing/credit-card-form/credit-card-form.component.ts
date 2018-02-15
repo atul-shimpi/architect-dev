@@ -1,9 +1,10 @@
-import {Component, EventEmitter, Input, Output, ViewEncapsulation} from '@angular/core';
-import {CreditCard} from "../upgrade-page/upgrade-page.component";
+import {Component, EventEmitter, Input, NgZone, OnDestroy, Output, ViewEncapsulation} from '@angular/core';
 import {Subscriptions} from "../subscriptions/subscriptions.service";
-import {finalize} from "rxjs/operators";
+import {finalize} from "rxjs/operators/finalize";
 import {CurrentUser} from "vebto-client/auth/current-user";
 import {utils} from "vebto-client/core/services/utils";
+import {Settings} from "vebto-client/core/services/settings.service";
+import {User} from "vebto-client/core/types/models/User";
 
 @Component({
     selector: 'credit-card-form',
@@ -11,12 +12,12 @@ import {utils} from "vebto-client/core/services/utils";
     styleUrls: ['./credit-card-form.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class CreditCardFormComponent {
+export class CreditCardFormComponent implements OnDestroy {
 
     /**
      * Event fired when form is submitted and card is added successfully on active gateway.
      */
-    @Output() created: EventEmitter<CreditCard> = new EventEmitter();
+    @Output() created: EventEmitter<User> = new EventEmitter();
 
     /**
      * Display text for form submit button.
@@ -41,54 +42,110 @@ export class CreditCardFormComponent {
     /**
      * Errors returned from backend.
      */
-    public errors: {card: CreditCard, general?: string};
+    public error: string;
 
     /**
-     * Months for credit card expiration select.
+     * Mounted stripe elements.
      */
-    public months = [1,2,3,4,5,6,7,8,9,10,11,12];
+    private stripeElements: stripe.elements.Element[] = [];
 
     /**
-     * Years for credit card expiration select.
+     * Stripe.js instance.
      */
-    public years = [];
-
-    /**
-     * Credit card form model.
-     */
-    public cardModel: CreditCard;
+    stripe: stripe.Stripe;
 
     /**
      * CreditCardFormComponent Constructor.
      */
     constructor(
         private subscriptions: Subscriptions,
-        private currentUser: CurrentUser
+        private currentUser: CurrentUser,
+        private utils: utils,
+        private settings: Settings,
+        private zone: NgZone,
     ) {
         this.resetForm();
-        const currentYear = (new Date).getFullYear();
-        this.years = utils.range(currentYear, currentYear+21);
     }
 
-    public submitForm() {
+    ngAfterViewInit() {
+        this.initStripe();
+    }
+
+    ngOnDestroy() {
+        this.destroyStripe();
+    }
+
+    /**
+     * Submit stripe elements credit card form.
+     */
+    public async submitForm() {
         this.loading = true;
 
-        this.subscriptions.addCard(this.cardModel)
+        const {token, error} = await this.stripe.createToken(this.stripeElements[0]);
+
+        if (error) {
+            this.error = error.message;
+            this.loading = false;
+        } else {
+            this.addCardToUser(token);
+        }
+    }
+
+    public addCardToUser(stripeToken: stripe.Token) {
+        this.loading = true;
+
+        this.subscriptions.addCard(stripeToken.id)
             .pipe(finalize(() => this.loading = false))
             .subscribe(response => {
                 this.resetForm();
                 this.currentUser.assignCurrent(response.user);
-                this.created.emit(this.cardModel);
+                this.created.emit(response.user);
             }, response => {
-                this.errors = response.messages;
+                this.error = response.messages.general;
             });
+    }
+
+    /**
+     * Initiate stripe elements credit card form.
+     */
+    private initStripe() {
+        this.utils.loadScript('https://js.stripe.com/v3').then(() => {
+            const fields = ['cardNumber', 'cardExpiry', 'cardCvc'];
+            this.stripe = Stripe(this.settings.get('billing.stripe_public_key'));
+            const elements = this.stripe.elements();
+
+            fields.forEach(field => {
+                let el = elements.create(field);
+                el.mount('#'+field);
+                el.on('change', this.onChange.bind(this));
+                this.stripeElements.push(el);
+            });
+        });
+    }
+
+    /**
+     * Destroy all stripe elements instances.
+     */
+    private destroyStripe() {
+        this.stripeElements.forEach(el => {
+            el.unmount();
+            el.destroy();
+        });
+    }
+
+    /**
+     * Fired on stripe element "change" event.
+     */
+    private onChange(change: stripe.elements.ElementChangeResponse) {
+        this.zone.run(() => {
+            this.error = change.error ? change.error.message : null;
+        });
     }
 
     /**
      * Reset credit card form.
      */
     private resetForm() {
-        this.cardModel = {expiration_month: '', expiration_year: ''};
-        this.errors = {card: {}};
+        this.error = null;
     }
 }

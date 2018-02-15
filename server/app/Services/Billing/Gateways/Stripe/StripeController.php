@@ -75,7 +75,7 @@ class StripeController extends Controller
     }
 
     /**
-     * Add a new bank card to user on stripe.
+     * Add a new bank card to user using stripe token.
      *
      * @return \Illuminate\Http\JsonResponse
      * @throws \App\Services\Billing\GatewayException
@@ -83,15 +83,11 @@ class StripeController extends Controller
     public function addCard()
     {
         $this->validate($this->request, [
-            'card' => 'required|array|min:4',
-            'card.number' => 'required|string|min:4',
-            'card.expiration_month' => 'required|integer|min:1|max:12',
-            'card.expiration_year' => 'required|integer|min:2018|max:2060',
-            'card.security_code' => 'required|integer|min:1',
+            'token' => 'required|string',
         ]);
 
         try {
-            $user = $this->stripe->addCard($this->request->user(), $this->request->get('card'));
+            $user = $this->stripe->addCard($this->request->user(), $this->request->get('token'));
         } catch (InvalidCreditCardException $e) {
             return $this->error(['general' => $e->getMessage()]);
         }

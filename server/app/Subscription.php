@@ -22,6 +22,8 @@ class Subscription extends Model
 
     protected $appends = ['on_grace_period', 'on_trial', 'valid', 'active', 'cancelled'];
 
+    protected $casts = ['id' => 'integer', 'plan_id' => 'integer', 'quantity' => 'integer'];
+
     public function getOnGracePeriodAttribute() {
         return $this->onGracePeriod();
     }

@@ -32,7 +32,7 @@ export class Subscriptions {
     /**
      * Create a new subscription on stripe.
      */
-    public createOnStripe(params: {plan_id: number, card: CreditCard, start_date?: string}): Observable<{user: User}> {
+    public createOnStripe(params: {plan_id: number, start_date?: string}): Observable<{user: User}> {
         return this.http.post('billing/subscriptions/stripe', params);
     }
 
@@ -65,7 +65,7 @@ export class Subscriptions {
         return this.http.post('billing/subscriptions/'+id+'/change-plan', {newPlanId: plan.id});
     }
 
-    public addCard(card: CreditCard): Observable<{user: User}> {
-        return this.http.post('billing/stripe/cards/add', {card});
+    public addCard(token: string): Observable<{user: User}> {
+        return this.http.post('billing/stripe/cards/add', {token});
     }
 }

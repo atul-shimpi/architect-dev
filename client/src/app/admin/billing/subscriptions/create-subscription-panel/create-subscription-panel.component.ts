@@ -4,7 +4,7 @@ import {Plan} from "../../plans/plan";
 import {CreditCard} from "../../upgrade-page/upgrade-page.component";
 import {CurrentUser} from "vebto-client/auth/current-user";
 import {PaypalSubscriptions} from "../paypal-subscriptions";
-import {Toast} from "vebto-client/core";
+import {Settings, Toast} from "vebto-client/core";
 import {User} from "vebto-client/core/types/models/User";
 import {Subscription} from "../subscription";
 
@@ -65,12 +65,13 @@ export class CreateSubscriptionPanelComponent {
         private currentUser: CurrentUser,
         private paypal: PaypalSubscriptions,
         private toast: Toast,
+        public settings: Settings,
     ) {}
 
     /**
      * Subscribe user to current plan on stripe gateway.
      */
-    public subscribeOnStripe(card: CreditCard) {
+    public subscribeOnStripe() {
         //if user is already subscribed to this plan, fire "updated" event and bail
         if (this.currentUser.getSubscription({gateway: 'stripe', planId: this.plan.id})) {
             return this.completed.emit({status: 'updated'});
@@ -78,7 +79,7 @@ export class CreateSubscriptionPanelComponent {
 
         this.startLoading();
 
-        this.subscriptions.createOnStripe(this.getNewSubscriptionPayload({card}) as any)
+        this.subscriptions.createOnStripe(this.getNewSubscriptionPayload())
             .subscribe(response => {
                 this.completeSubscription(response.user);
             }, response => {
@@ -109,14 +110,14 @@ export class CreateSubscriptionPanelComponent {
     /**
      * Get payload for backend for creating a new subscription.
      */
-    private getNewSubscriptionPayload(params: {card?: CreditCard} = {}): NewSubscriptionPayload {
+    private getNewSubscriptionPayload(): NewSubscriptionPayload {
        const payload = {plan_id: this.plan.id};
 
        if (this.from) {
            payload['start_date'] = this.from.renews_at;
        }
 
-       return Object.assign({}, payload, params);
+       return payload
     }
 
     /**

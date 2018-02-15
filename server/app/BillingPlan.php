@@ -13,7 +13,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $currency
  * @property string $interval
  * @property string $interval_count
+ * @property integer $parent_id
  * @property string $uuid
+ * @property string $features
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  * @property-read BillingPlan $parent
@@ -35,6 +37,19 @@ class BillingPlan extends Model
 
     public function getFeaturesAttribute($value)
     {
+        if ($this->parent_id) {
+            return $this->parent->features;
+        }
+
+        return json_decode($value, true) ?: [];
+    }
+
+    public function getPermissionsAttribute($value)
+    {
+        if ($this->parent_id) {
+            return $this->parent->getPermissionsAttribute($value);
+        }
+
         return json_decode($value, true) ?: [];
     }
 
