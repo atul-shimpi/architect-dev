@@ -3,7 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 import {Themes} from "../../../html-builder/themes.service";
 import {Theme} from "../../../../types/models/Theme";
 import {Projects} from "../../../html-builder/projects/projects.service";
-import {Toast} from "vebto-client/core";
+import {Toast} from "vebto-client/core/ui/toast.service";
 import {Project} from "../../../../types/models/Project";
 import {utils} from "vebto-client/core/services/utils";
 

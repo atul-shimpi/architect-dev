@@ -4,8 +4,9 @@ import {Plan} from "../../plans/plan";
 import {CreditCard} from "../../upgrade-page/upgrade-page.component";
 import {CurrentUser} from "vebto-client/auth/current-user";
 import {PaypalSubscriptions} from "../paypal-subscriptions";
-import {Settings, Toast} from "vebto-client/core";
+import {Settings} from "vebto-client/core/services/settings.service";
 import {User} from "vebto-client/core/types/models/User";
+import {Toast} from "vebto-client/core/ui/toast.service";
 import {Subscription} from "../subscription";
 
 @Component({

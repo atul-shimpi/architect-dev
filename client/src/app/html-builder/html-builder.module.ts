@@ -9,7 +9,7 @@ import {Templates} from "../templates/templates.service";
 import {PreviewDragAndDropDirective} from './live-preview/drag-and-drop/preview-drag-and-drop.directive';
 import {Elements} from "./elements/elements.service";
 import { ElementsPanelComponent } from './inspector/elements-panel/elements-panel.component';
-import {CoreModule} from "vebto-client/core";
+import {CoreModule} from "vebto-client/core/core.module";
 import {Inspector} from "./inspector/inspector.service";
 import {UndoManager} from "./undo-manager/undo-manager.service";
 import { InspectorPanelComponent } from './inspector/inspector-panel/inspector-panel.component';

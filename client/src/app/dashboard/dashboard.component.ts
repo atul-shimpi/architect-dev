@@ -12,7 +12,8 @@ import {VebtoConfig} from "vebto-client/core/vebto-config.service";
 import {PublishProjectModalComponent} from "../shared/publish-project-modal/publish-project-modal.component";
 import {FormControl, FormGroup} from "@angular/forms";
 import {UrlAwarePaginator} from "vebto-client/admin/pagination/url-aware-paginator.service";
-import {debounceTime, distinctUntilChanged} from "rxjs/operators";
+import {debounceTime} from "rxjs/operators/debounceTime";
+import {distinctUntilChanged} from "rxjs/operators/distinctUntilChanged";
 
 @Component({
     selector: 'dashboard',

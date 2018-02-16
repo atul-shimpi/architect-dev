@@ -4,8 +4,9 @@ import {NewProjectModalComponent} from "../../dashboard/new-project-page/new-pro
 import {Projects} from "../../html-builder/projects/projects.service";
 import {ProjectUrl} from "../../html-builder/projects/project-url.service";
 import {Project} from "../../../types/models/Project";
-import {Settings, Toast} from "vebto-client/core";
 import {Subscription} from "rxjs/Subscription";
+import {Settings} from "vebto-client/core/services/settings.service";
+import {Toast} from "vebto-client/core/ui/toast.service";
 
 @Component({
     selector: 'publish-project-modal',

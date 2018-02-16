@@ -12,7 +12,8 @@ import {Toast} from "vebto-client/core/ui/toast.service";
 import {Subject} from "rxjs/Subject";
 import {Theme} from "../../../types/models/Theme";
 import {LocalStorage} from "vebto-client/core/services/local-storage.service";
-import {debounceTime, share} from "rxjs/operators";
+import {debounceTime} from "rxjs/operators/debounceTime";
+import {share} from "rxjs/operators/share";
 
 @Injectable()
 export class ActiveProject {

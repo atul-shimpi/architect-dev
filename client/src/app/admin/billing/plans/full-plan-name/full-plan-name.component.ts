@@ -1,7 +1,7 @@
 import {Component, Input, ViewEncapsulation} from '@angular/core';
 import {Plan} from "../plan";
 import {Translations} from "vebto-client/translations/translations.service";
-import {utils} from "../../../../../../node_modules/vebto-client/core";
+import {utils} from "vebto-client/core/services/utils";
 
 @Component({
     selector: 'full-plan-name',

@@ -35,6 +35,15 @@ class BillingPlan extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'amount' => 'integer',
+        'interval_count' => 'integer',
+        'recommended' => 'boolean',
+        'free' => 'boolean',
+        'show_permissions' => 'boolean',
+        'position' => 'integer'
+    ];
+
     public function getFeaturesAttribute($value)
     {
         if ($this->parent_id) {

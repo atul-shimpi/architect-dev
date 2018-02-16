@@ -7,6 +7,7 @@ const routes: Routes = [
     {path: '', component: LoginComponent, canActivate: [GuestGuard]},
     {path: 'builder', loadChildren: 'app/html-builder/html-builder.module#HtmlBuilderModule'},
     {path: 'admin', loadChildren: 'app/admin/app-admin.module#AppAdminModule'},
+    {path: 'billing', loadChildren: 'app/admin/billing/billing.module#BillingModule'},
 ];
 
 @NgModule({

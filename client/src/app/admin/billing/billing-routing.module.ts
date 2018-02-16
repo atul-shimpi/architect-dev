@@ -11,7 +11,7 @@ import {UserSubscribedGuard} from "./guards/user-subscribed-guard.service";
 
 export const routes: Route[] = [
     {
-        path: 'billing/upgrade',
+        path: 'upgrade',
         component: UpgradePageComponent,
         canActivate: [BillingEnabledGuard, AuthGuard, UserNotSubscribedGuard],
         resolve: {

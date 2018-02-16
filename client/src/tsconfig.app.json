@@ -5,11 +5,12 @@
     "baseUrl": "./",
     "module": "es2015",
     "types": [
-      "hammerjs"
+      "hammerjs",
+      "stripe-v3"
     ]
   },
   "angularCompilerOptions": {
-    "preserveWhitespaces": false,
+    "preserveWhitespaces": false
   },
   "exclude": [
     "test.ts",

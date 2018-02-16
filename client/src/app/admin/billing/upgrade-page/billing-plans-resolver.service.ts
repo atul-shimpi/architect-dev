@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Resolve, RouterStateSnapshot, ActivatedRouteSnapshot} from '@angular/router';
 import {Plans} from "../plans/plans.service";
 import {Plan} from "../plans/plan";
-import {map} from "rxjs/operators";
+import {map} from "rxjs/operators/map";
 
 @Injectable()
 export class BillingPlansResolver implements Resolve<Plan[]> {

@@ -8,8 +8,8 @@ import {Modal} from "vebto-client/core/ui/modal.service";
 import {CurrentUser} from "vebto-client/auth/current-user";
 import {ConfirmModalComponent} from "vebto-client/core/ui/confirm-modal/confirm-modal.component";
 import {CrupdatePlanModalComponent} from "../crupdate-plan-modal/crupdate-plan-modal.component";
-import {finalize} from "rxjs/operators";
-import {Toast} from "vebto-client/core";
+import {Toast} from "vebto-client/core/ui/toast.service";
+import {finalize} from "rxjs/operators/finalize";
 
 @Component({
     selector: 'plans-list',

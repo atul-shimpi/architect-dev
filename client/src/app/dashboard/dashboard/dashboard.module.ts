@@ -12,7 +12,7 @@ import {ProjectsResolver} from "../projects-resolver.service";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {CoreModule} from "vebto-client/core/core.module";
 import {DashboardRoutingModule} from "../dashboard-routing.module";
-import {BillingModule} from "../../admin/billing/billing.module";
+import {PublishProjectModalComponent} from "../../shared/publish-project-modal/publish-project-modal.component";
 
 @NgModule({
     imports: [
@@ -22,15 +22,16 @@ import {BillingModule} from "../../admin/billing/billing.module";
         MaterialModule,
         CoreModule,
         DashboardRoutingModule,
-        BillingModule,
     ],
     declarations: [
         DashboardComponent,
         NewProjectPageComponent,
-        NewProjectModalComponent
+        NewProjectModalComponent,
+        PublishProjectModalComponent,
     ],
     entryComponents: [
         NewProjectModalComponent,
+        PublishProjectModalComponent,
     ],
     providers: [
         Projects,

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot, CanActivateChild} from '@angular/router';
-import {Settings} from "vebto-client/core";
+import {Settings} from "vebto-client/core/services/settings.service";
 
 @Injectable()
 export class BillingEnabledGuard implements CanActivate, CanActivateChild {

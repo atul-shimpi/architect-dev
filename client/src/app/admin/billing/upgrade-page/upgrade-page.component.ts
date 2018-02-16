@@ -2,7 +2,8 @@ import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Subscriptions} from "../subscriptions/subscriptions.service";
 import {MatStepper} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
-import {Settings, Toast} from "vebto-client/core";
+import {Settings} from "vebto-client/core/services/settings.service";
+import {Toast} from "vebto-client/core/ui/toast.service";
 import {SubscriptionStepperState} from "../subscriptions/subscription-stepper-state.service";
 
 @Component({

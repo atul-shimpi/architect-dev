@@ -2,7 +2,7 @@ import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {ActiveProject} from "../../projects/active-project";
 import {Page} from "vebto-client/core/types/models/Page";
 import {Projects} from "../../projects/projects.service";
-import {Toast} from "vebto-client/core";
+import {Toast} from "vebto-client/core/ui/toast.service";
 import {BuilderPage} from "../../builder-types";
 import {BuilderDocument} from "../../builder-document.service";
 import {PageDocument} from "../../page-document";

@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import {utils} from 'vebto-client/core';
+import {utils} from 'vebto-client/core/services/utils';
 import {Subject} from "rxjs/Subject";
 import {ActiveProject} from "../../projects/active-project";
 import {aceThemes} from "./ace-themes";
@@ -8,7 +8,7 @@ import {SelectedElement} from "../selected-element.service";
 import {BuilderDocument} from "../../builder-document.service";
 import * as htmlBeautify from 'html-beautify'
 import {Subscription} from "rxjs/Subscription";
-import {debounceTime} from "rxjs/operators";
+import {debounceTime} from "rxjs/operators/debounceTime";
 
 declare let ace: any;
 

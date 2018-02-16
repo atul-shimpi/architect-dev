@@ -1,10 +1,10 @@
 import {Component, EventEmitter, Input, NgZone, OnDestroy, Output, ViewEncapsulation} from '@angular/core';
 import {Subscriptions} from "../subscriptions/subscriptions.service";
-import {finalize} from "rxjs/operators/finalize";
 import {CurrentUser} from "vebto-client/auth/current-user";
 import {utils} from "vebto-client/core/services/utils";
 import {Settings} from "vebto-client/core/services/settings.service";
 import {User} from "vebto-client/core/types/models/User";
+import {finalize} from "rxjs/operators/finalize";
 
 @Component({
     selector: 'credit-card-form',
@@ -52,7 +52,7 @@ export class CreditCardFormComponent implements OnDestroy {
     /**
      * Stripe.js instance.
      */
-    stripe: stripe.Stripe;
+    private stripe: stripe.Stripe;
 
     /**
      * CreditCardFormComponent Constructor.
@@ -110,12 +110,12 @@ export class CreditCardFormComponent implements OnDestroy {
      */
     private initStripe() {
         this.utils.loadScript('https://js.stripe.com/v3').then(() => {
-            const fields = ['cardNumber', 'cardExpiry', 'cardCvc'];
+            const fields = ['cardNumber', 'cardExpiry', 'cardCvc'] as stripe.elements.elementsType[];
             this.stripe = Stripe(this.settings.get('billing.stripe_public_key'));
             const elements = this.stripe.elements();
 
             fields.forEach(field => {
-                let el = elements.create(field);
+                let el = elements.create(field, {classes: {base: 'base'}});
                 el.mount('#'+field);
                 el.on('change', this.onChange.bind(this));
                 this.stripeElements.push(el);

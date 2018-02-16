@@ -1,6 +1,10 @@
 <material-navbar></material-navbar>
 
 <mat-horizontal-stepper class="container main-content" [linear]="true">
+    <ng-template matStepperIcon="edit">
+        <svg-icon name="edit" class="size-16"></svg-icon>
+    </ng-template>
+
     <mat-step label="Subscription plan" [completed]="state.initialPlan">
         <select-plan-panel (selected)="nextStep()"></select-plan-panel>
     </mat-step>
@@ -10,7 +14,7 @@
     </mat-step>
 
     <mat-step label="Payment" [completed]="false">
-        <div class="step-container payment-step" *ngIf="state.selectedPlan">
+        <div class="step-container payment-step">
             <div class="left-col">
                 <create-subscription-panel [plan]="state.selectedPlan" (loading)="loading = $event" (completed)="onCompleted()"></create-subscription-panel>
             </div>

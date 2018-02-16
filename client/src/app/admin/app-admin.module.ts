@@ -9,15 +9,18 @@ import { CrupdateProjectModalComponent } from './projects/crupdate-project-modal
 import {BuilderSettingsComponent} from "./settings/builder/builder-settings.component";
 import {BillingModule} from "./billing/billing.module";
 import {BillingSettingsComponent} from "./settings/billing/billing-settings.component";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 @NgModule({
     imports: [
         CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
         AdminModule,
         AppAdminRoutingModule,
 
         //import into vebto-client admin mode after billing is done
-        BillingModule,
+        //BillingModule,
     ],
     declarations: [
         TemplatesComponent,

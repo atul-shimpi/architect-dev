@@ -2,7 +2,8 @@ import {Component, EventEmitter, OnInit, Output, ViewEncapsulation} from '@angul
 import {HttpCacheClient} from "vebto-client/core/http/http-cache-client";
 import {FormControl} from "@angular/forms";
 import {BuilderDocument} from "../../../../builder-document.service";
-import {debounceTime, distinctUntilChanged} from "rxjs/operators";
+import {debounceTime} from "rxjs/operators/debounceTime";
+import {distinctUntilChanged} from "rxjs/operators/distinctUntilChanged";
 
 @Component({
     selector: 'google-fonts-panel',

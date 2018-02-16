@@ -20,7 +20,7 @@ export class SubscriptionStepperState {
     public initialPlan: Plan;
 
     /**
-     * Billing plan user has selected.
+     * Final billing plan user has selected (base or yearly alternative)
      */
     public selectedPlan: Plan;
 
