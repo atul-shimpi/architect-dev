@@ -5,7 +5,6 @@ import {HtmlBuilderRoutingModule} from "./html-builder-routing.module";
 import { InspectorComponent } from './inspector/inspector.component';
 import { LivePreviewComponent } from './live-preview/live-preview.component';
 import {LivePreview} from "./live-preview.service";
-import {Templates} from "../templates/templates.service";
 import {PreviewDragAndDropDirective} from './live-preview/drag-and-drop/preview-drag-and-drop.directive';
 import {Elements} from "./elements/elements.service";
 import { ElementsPanelComponent } from './inspector/elements-panel/elements-panel.component';
@@ -15,7 +14,6 @@ import {UndoManager} from "./undo-manager/undo-manager.service";
 import { InspectorPanelComponent } from './inspector/inspector-panel/inspector-panel.component';
 import { AttributesPanelComponent } from './inspector/inspector-panel/attributes-panel/attributes-panel.component';
 import { SpacingPanelComponent } from './inspector/inspector-panel/spacing-panel/spacing-panel.component';
-import {MaterialModule} from "../shared/material.module";
 import { BorderStyleControlsComponent } from './inspector/inspector-panel/border-style-controls/border-style-controls.component';
 import { SideControlBorderComponent } from './inspector/inspector-panel/spacing-panel/side-control-border/side-control-border.component';
 import { TextStylePanelComponent } from './inspector/inspector-panel/text-style-panel/text-style-panel.component';
@@ -31,7 +29,6 @@ import { DragVisualHelperComponent } from './live-preview/drag-and-drop/drag-vis
 import { LayoutPanelComponent } from './inspector/layout-panel/layout-panel.component';
 import { ColumnPresetsComponent } from './inspector/layout-panel/column-presets/column-presets.component';
 import {LayoutPanel} from "./inspector/layout-panel/layout-panel.service";
-import {DomHelpers} from "./dom-helpers.service";
 import {ReorderLayoutItemsDirective} from "./inspector/layout-panel/reorder-layout-items.directive";
 import {DragElementsDirective} from "./live-preview/drag-and-drop/drag-elements.directive";
 import { InlineTextEditorComponent } from './live-preview/inline-text-editor/inline-text-editor.component';
@@ -43,7 +40,6 @@ import { LivePreviewContextMenuComponent } from './live-preview/live-preview-con
 import {ContextBoxes} from "./live-preview/context-boxes.service";
 import {SelectedElement} from "./live-preview/selected-element.service";
 import {BuilderDocument} from "./builder-document.service";
-import {Projects} from "./projects/projects.service";
 import { PagesPanelComponent } from './inspector/pages-panel/pages-panel.component';
 import {ProjectResolver} from "./project-resolver.service";
 import {BuilderDocumentActions} from "./builder-document-actions.service";
@@ -58,13 +54,30 @@ import {LivePreviewLoader} from "./live-preview/live-preview-loader.service";
 import {Themes} from "./themes.service";
 import {DragVisualHelper} from "./live-preview/drag-and-drop/drag-visual-helper/drag-visual-helper.service";
 import { DeviceSwitcherComponent } from './inspector/device-switcher/device-switcher.component';
+import {Projects} from '../shared/projects/projects.service';
+import {MaterialModule} from '../material.module';
+import {SharedModule} from '../shared/shared.module';
+import {MatChipsModule, MatExpansionModule, MatRadioModule, MatSidenavModule, MatSliderModule, MatTabsModule} from '@angular/material';
+import {PortalModule} from '@angular/cdk/portal';
+import {OverlayModule} from '@angular/cdk/overlay';
+import {Templates} from "../shared/templates/templates.service";
 
 @NgModule({
     imports: [
         CommonModule,
         CoreModule,
-        HtmlBuilderRoutingModule,
+        SharedModule,
         MaterialModule,
+        HtmlBuilderRoutingModule,
+
+        MatSidenavModule,
+        MatExpansionModule,
+        MatSliderModule,
+        MatChipsModule,
+        PortalModule,
+        OverlayModule,
+        MatTabsModule,
+        MatRadioModule,
     ],
     declarations: [
         HtmlBuilderComponent,
@@ -120,7 +133,6 @@ import { DeviceSwitcherComponent } from './inspector/device-switcher/device-swit
         ElementsApi,
         CustomElementsResolver,
         LayoutPanel,
-        DomHelpers,
         InlineTextEditor,
         CodeEditor,
         ActiveProject,

@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
 import {Subject} from "rxjs/Subject";
 import {BuilderDocumentActions} from "./builder-document-actions.service";
-import {PageDocument} from "./page-document";
-import {DomHelpers} from "./dom-helpers.service";
 import {Settings} from "vebto-client/core/services/settings.service";
-import {BuilderTemplate} from "./builder-types";
 import {ContextBoxes} from "./live-preview/context-boxes.service";
 import {utils} from "vebto-client/core/services/utils";
+import {BuilderTemplate} from '../shared/builder-types';
+import {PageDocument} from '../shared/page-document';
+import {DomHelpers} from '../shared/dom-helpers.service';
 
 export type changeSources = 'builder' | 'codeEditor' | 'activeProject';
 

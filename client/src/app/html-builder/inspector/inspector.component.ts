@@ -2,15 +2,15 @@ import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angu
 import {Inspector} from "./inspector.service";
 import {UndoManager} from "../undo-manager/undo-manager.service";
 import {CodeEditor} from "../live-preview/code-editor/code-editor.service";
-import {Projects} from "../projects/projects.service";
 import {ActiveProject} from "../projects/active-project";
 import {Toast} from "vebto-client/core/ui/toast.service";
 import {Settings} from "vebto-client/core/services/settings.service";
 import {DeviceSwitcherComponent} from "./device-switcher/device-switcher.component";
 import {ContextBoxes} from "../live-preview/context-boxes.service";
 import {Modal} from "vebto-client/core/ui/modal.service";
-import {PublishProjectModalComponent} from "../../shared/publish-project-modal/publish-project-modal.component";
-import {CurrentUser} from "../../../../node_modules/vebto-client/auth/current-user";
+import {Projects} from '../../shared/projects/projects.service';
+import {CurrentUser} from 'vebto-client/auth/current-user';
+import {PublishProjectModalComponent} from '../../shared/projects/publish-project-modal/publish-project-modal.component';
 
 @Component({
     selector: 'inspector',

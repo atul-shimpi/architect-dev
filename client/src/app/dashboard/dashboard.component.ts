@@ -1,19 +1,19 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {Project} from "../../types/models/Project";
 import {Settings} from "vebto-client/core/services/settings.service";
 import {CurrentUser} from "vebto-client/auth/current-user";
-import {Projects} from "../html-builder/projects/projects.service";
 import {Toast} from "vebto-client/core/ui/toast.service";
 import {Modal} from "vebto-client/core/ui/modal.service";
 import {ConfirmModalComponent} from "vebto-client/core/ui/confirm-modal/confirm-modal.component";
-import {ProjectUrl} from "../html-builder/projects/project-url.service";
 import {VebtoConfig} from "vebto-client/core/vebto-config.service";
-import {PublishProjectModalComponent} from "../shared/publish-project-modal/publish-project-modal.component";
 import {FormControl, FormGroup} from "@angular/forms";
 import {UrlAwarePaginator} from "vebto-client/admin/pagination/url-aware-paginator.service";
 import {debounceTime} from "rxjs/operators/debounceTime";
 import {distinctUntilChanged} from "rxjs/operators/distinctUntilChanged";
+import {Project} from '../shared/projects/Project';
+import {Projects} from '../shared/projects/projects.service';
+import {ProjectUrl} from '../shared/projects/project-url.service';
+import {PublishProjectModalComponent} from '../shared/projects/publish-project-modal/publish-project-modal.component';
 
 @Component({
     selector: 'dashboard',

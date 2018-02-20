@@ -4,10 +4,10 @@ import {Modal} from "vebto-client/core/ui/modal.service";
 import {AdminTableDataSource} from "vebto-client/admin/admin-table-data-source";
 import {UrlAwarePaginator} from "vebto-client/admin/pagination/url-aware-paginator.service";
 import {ConfirmModalComponent} from "vebto-client/core/ui/confirm-modal/confirm-modal.component";
-import {BuilderTemplate} from "../../html-builder/builder-types";
-import {Templates} from "../../templates/templates.service";
 import {CurrentUser} from "vebto-client/auth/current-user";
 import {CrupdateTemplateModalComponent} from "./crupdate-template-modal/crupdate-template-modal.component";
+import {BuilderTemplate} from '../../shared/builder-types';
+import {Templates} from '../../shared/templates/templates.service';
 
 @Component({
     selector: 'templates',

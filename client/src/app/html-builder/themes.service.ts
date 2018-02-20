@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Observable} from "rxjs/Observable";
-import {Theme} from "../../types/models/Theme";
 import {HttpCacheClient} from "vebto-client/core/http/http-cache-client";
+import {Theme} from '../shared/themes/Theme';
 
 @Injectable()
 export class Themes {

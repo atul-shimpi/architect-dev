@@ -1,11 +1,11 @@
 import {Component, Inject, ViewEncapsulation} from '@angular/core';
-import {Projects} from "../../../html-builder/projects/projects.service";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
-import {Templates} from "../../../templates/templates.service";
-import {PageDocument} from "../../../html-builder/page-document";
 import {utils} from "vebto-client/core/services/utils";
-import {ProjectUrl} from "../../../html-builder/projects/project-url.service";
-import {BuilderTemplate} from "../../../html-builder/builder-types";
+import {Projects} from '../../../shared/projects/projects.service';
+import {ProjectUrl} from '../../../shared/projects/project-url.service';
+import {BuilderTemplate} from '../../../shared/builder-types';
+import {PageDocument} from '../../../shared/page-document';
+import {Templates} from "../../../shared/templates/templates.service";
 
 @Component({
     selector: 'new-project-modal',

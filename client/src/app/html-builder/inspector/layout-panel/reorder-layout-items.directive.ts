@@ -4,8 +4,8 @@ import {LivePreview} from "../../live-preview.service";
 import {LayoutPanel} from "./layout-panel.service";
 import * as Sortable from "sortablejs";
 import {utils} from "vebto-client/core/services/utils";
-import {DomHelpers} from "../../dom-helpers.service";
 import {BuilderDocument} from "../../builder-document.service";
+import {DomHelpers} from '../../../shared/dom-helpers.service';
 
 @Directive({
     selector: '[reorderLayoutItems]'

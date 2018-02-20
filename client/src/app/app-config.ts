@@ -1,4 +1,4 @@
-import {environment} from './../environments/environment';
+import {environment} from "../environments/environment";
 
 export const appConfig = {
     environment: environment.production ? 'production' : 'dev',

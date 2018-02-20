@@ -2,17 +2,16 @@ import {Component, Inject, OnInit, ViewEncapsulation} from '@angular/core';
 import {Toast} from "vebto-client/core/ui/toast.service";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 import {CrupdateUserModalComponent} from "vebto-client/admin/users/crupdate-user-modal/crupdate-user-modal.component";
-import {Templates} from "../../../templates/templates.service";
-import {BuilderTemplate} from "../../../html-builder/builder-types";
-import {TemplateColors} from "../../../dashboard/new-project-page/template-colors";
-import {Themes} from "../../../html-builder/themes.service";
-import {Theme} from "../../../../types/models/Theme";
+import {Templates} from '../../../shared/templates/templates.service';
+import {TemplateColors} from '../../../shared/templates/template-colors';
+import {Theme} from '../../../shared/themes/Theme';
+import {BuilderTemplate} from '../../../shared/builder-types';
+import {Themes} from '../../../shared/themes/themes.service';
 
 @Component({
     selector: 'crupdate-template-modal',
     templateUrl: './crupdate-template-modal.component.html',
     styleUrls: ['./crupdate-template-modal.component.scss'],
-    providers: [Themes],
     encapsulation: ViewEncapsulation.None
 })
 export class CrupdateTemplateModalComponent implements OnInit {

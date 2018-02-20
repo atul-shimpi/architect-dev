@@ -1,19 +1,19 @@
 import {Injectable} from "@angular/core";
 import {Settings} from "vebto-client/core/services/settings.service";
 import {BuilderDocument} from "../builder-document.service";
-import {ProjectUrl} from "./project-url.service";
-import {BuilderPage, BuilderProject, BuilderTemplate} from "../builder-types";
-import {Projects} from "./projects.service";
 import {Observable} from "rxjs/Observable";
 import * as html2canvas from "html2canvas";
-import {Templates} from "../../templates/templates.service";
-import {PageDocument} from "../page-document";
 import {Toast} from "vebto-client/core/ui/toast.service";
 import {Subject} from "rxjs/Subject";
-import {Theme} from "../../../types/models/Theme";
 import {LocalStorage} from "vebto-client/core/services/local-storage.service";
 import {debounceTime} from "rxjs/operators/debounceTime";
 import {share} from "rxjs/operators/share";
+import {ProjectUrl} from '../../shared/projects/project-url.service';
+import {Projects} from '../../shared/projects/projects.service';
+import {Theme} from '../../shared/themes/Theme';
+import {BuilderPage, BuilderProject, BuilderTemplate} from '../../shared/builder-types';
+import {PageDocument} from '../../shared/page-document';
+import {Templates} from "../../shared/templates/templates.service";
 
 @Injectable()
 export class ActiveProject {

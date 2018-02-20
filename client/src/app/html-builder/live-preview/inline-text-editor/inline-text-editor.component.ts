@@ -2,10 +2,10 @@ import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {baseFonts, fontWeights} from "../../text-style-values";
 import {fontAwesomeIconsList} from "../../font-awesome-icons-list";
 import {Settings} from "vebto-client/core/services/settings.service";
-import {DomHelpers} from "../../dom-helpers.service";
 import {UndoManager} from "../../undo-manager/undo-manager.service";
 import {BuilderDocument} from "../../builder-document.service";
 import {OverlayRef} from "@angular/cdk/overlay";
+import {DomHelpers} from '../../../shared/dom-helpers.service';
 
 @Component({
     selector: 'inline-text-editor',

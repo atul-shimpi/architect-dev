@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Resolve, RouterStateSnapshot, ActivatedRouteSnapshot, Router} from '@angular/router';
-import {Projects} from "./projects/projects.service";
-import {BuilderProject} from "./builder-types";
+import {Projects} from '../shared/projects/projects.service';
+import {BuilderProject} from '../shared/builder-types';
 
 @Injectable()
 export class ProjectResolver implements Resolve<BuilderProject> {

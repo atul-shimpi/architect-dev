@@ -1,13 +1,12 @@
-import {DragVisualHelperComponent} from "./drag-visual-helper/drag-visual-helper.component";
 import {AfterContentInit, NgZone, Renderer2} from "@angular/core";
 import {LivePreview} from "../../live-preview.service";
 import {UndoManager} from "../../undo-manager/undo-manager.service";
 import {Elements} from "../../elements/elements.service";
 import {LivePreviewScroller} from "./live-preview-scroller";
-import {DomHelpers} from "../../dom-helpers.service";
 import {BuilderDocument} from "../../builder-document.service";
 import {SelectedElement} from "../selected-element.service";
 import {DragVisualHelper} from "./drag-visual-helper/drag-visual-helper.service";
+import {DomHelpers} from '../../../shared/dom-helpers.service';
 
 export abstract class BaseDragAndDrop implements AfterContentInit {
 

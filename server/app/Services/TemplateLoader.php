@@ -1,5 +1,6 @@
 <?php namespace App\Services;
 
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Storage;
@@ -11,20 +12,21 @@ class TemplateLoader
      */
     private $templatesPath;
 
-    /**
-     * @var \Illuminate\Filesystem\FilesystemAdapter
-     */
-    private $storage;
-
     const DEFAULT_THUMBNAIL = 'client/assets/images/default_project_thumbnail.png';
 
     /**
-     * TemplateLoader constructor.
+     * @var Filesystem
      */
-    public function __construct()
+    private $filesystem;
+
+    /**
+     * TemplateLoader constructor.
+     * @param Filesystem $filesystem
+     */
+    public function __construct(Filesystem $filesystem)
     {
-        $this->storage = Storage::disk('public');
-        $this->templatesPath = config('filesystems.disks.public.root').'/templates';
+        $this->templatesPath = public_path('builder/templates');
+        $this->filesystem = $filesystem;
     }
 
     /**
@@ -34,13 +36,15 @@ class TemplateLoader
      */
     public function loadAll()
     {
-        $paths = $this->storage->directories("templates");
+        $paths = $this->filesystem->directories($this->templatesPath);
 
         return collect($paths)->map(function($path) {
+            $name = basename($path);
+
             return [
-                'name' => basename($path),
+                'name' => $name,
                 'config' => $this->getTemplateConfig(basename($path)),
-                'thumbnail' => $this->getTemplateImagePath("$path/thumbnail.png", self::DEFAULT_THUMBNAIL)
+                'thumbnail' => $this->getTemplateImagePath($name, self::DEFAULT_THUMBNAIL)
             ];
         });
     }
@@ -54,24 +58,24 @@ class TemplateLoader
      */
     public function load($name)
     {
-        $paths = $this->storage->files("templates/$name");
+        $paths = $this->filesystem->files("$this->templatesPath/$name");
 
         $pages = collect($paths)->filter(function($path) {
             return str_contains($path, '.html');
         })->map(function($path) use($name) {
             return [
                 'name' => basename($path, '.html'),
-                'html' => $this->storage->get($path),
+                'html' => $this->filesystem->get($path),
             ];
         })->values();
 
         return [
             'name' => $name,
             'config' => $this->getTemplateConfig($name),
-            'thumbnail' => $this->getTemplateImagePath("storage/templates/$name/thumbnail.png", self::DEFAULT_THUMBNAIL),
+            'thumbnail' => $this->getTemplateImagePath($name, self::DEFAULT_THUMBNAIL),
             'pages' => $pages,
-            'css' => $this->getTemplateAsset("templates/$name/css/styles.css"),
-            'js' => $this->getTemplateAsset("templates/$name/js/scripts.js"),
+            'css' => $this->getTemplateAsset("$this->templatesPath/$name/css/styles.css"),
+            'js' => $this->getTemplateAsset("$this->templatesPath/$name/js/scripts.js"),
         ];
     }
 
@@ -83,7 +87,7 @@ class TemplateLoader
      */
     public function exists($name)
     {
-        return $this->storage->exists("templates/$name");
+        return $this->filesystem->exists("$this->templatesPath/$name");
     }
 
     /**
@@ -96,8 +100,8 @@ class TemplateLoader
      */
     private function getTemplateAsset($path, $default = '')
     {
-        if ($this->storage->exists($path)) {
-            return $this->storage->get($path);
+        if ($this->filesystem->exists($path)) {
+            return $this->filesystem->get($path);
         }
 
         return $default;
@@ -106,14 +110,16 @@ class TemplateLoader
     /**
      * Get template image path or default.
      *
-     * @param string $path
+     * @param string $name
      * @param string $default
      * @return string
      */
-    private function getTemplateImagePath($path, $default = '')
+    private function getTemplateImagePath($name, $default = '')
     {
-        if ($this->storage->exists($path)) {
-            return $path;
+        $path = "$this->templatesPath/$name/thumbnail.png";
+
+        if ($this->filesystem->exists($path)) {
+            return str_replace(public_path('/'), '', $path);
         }
 
         return $default;
@@ -128,11 +134,11 @@ class TemplateLoader
      */
     private function getTemplateConfig($name)
     {
-        $path = "templates/$name/config.json";
+        $path = "$this->templatesPath/$name/config.json";
         $config = [];
 
-        if ($this->storage->exists($path)) {
-            $config = json_decode($this->storage->get($path), true);
+        if ($this->filesystem->exists($path)) {
+            $config = json_decode($this->filesystem->get($path), true);
         }
 
         $config['framework'] = Arr::get($config, 'framework', 'bootstrap-3');

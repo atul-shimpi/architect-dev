@@ -1,13 +1,12 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {ConfirmModalComponent} from "vebto-client/core/ui/confirm-modal/confirm-modal.component";
-import {BuilderTemplate} from "../../../builder-types";
 import {Themes} from "../../../themes.service";
-import {Theme} from "../../../../../types/models/Theme";
 import {LivePreviewLoader} from "../../../live-preview/live-preview-loader.service";
 import {InspectorDrawer} from "../../inspector-drawer.service";
 import {ActiveProject} from "../../../projects/active-project";
 import {Toast} from "vebto-client/core/ui/toast.service";
 import {Settings} from "vebto-client/core/services/settings.service";
+import {Theme} from '../../../../shared/themes/Theme';
+import {BuilderTemplate} from '../../../../shared/builder-types';
 
 @Component({
     selector: 'themes-panel',

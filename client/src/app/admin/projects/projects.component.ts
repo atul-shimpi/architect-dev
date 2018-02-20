@@ -5,10 +5,10 @@ import {Modal} from "vebto-client/core/ui/modal.service";
 import {CurrentUser} from "vebto-client/auth/current-user";
 import {ConfirmModalComponent} from "vebto-client/core/ui/confirm-modal/confirm-modal.component";
 import {MatPaginator, MatSort} from "@angular/material";
-import {Projects} from "../../html-builder/projects/projects.service";
-import {ProjectUrl} from "../../html-builder/projects/project-url.service";
 import {CrupdateProjectModalComponent} from "./crupdate-project-modal/crupdate-project-modal.component";
-import {Project} from "../../../types/models/Project";
+import {Projects} from '../../shared/projects/projects.service';
+import {Project} from '../../shared/projects/Project';
+import {ProjectUrl} from '../../shared/projects/project-url.service';
 
 @Component({
     selector: 'projects',

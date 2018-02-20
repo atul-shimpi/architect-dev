@@ -14,7 +14,7 @@ import {ContextBoxes} from "./live-preview/context-boxes.service";
 import {BuilderDocument} from "./builder-document.service";
 import {LivePreviewLoader} from "./live-preview/live-preview-loader.service";
 import {LinkEditor} from "./live-preview/link-editor/link-editor.service";
-import {DomHelpers} from "./dom-helpers.service";
+import {DomHelpers} from '../shared/dom-helpers.service';
 
 @Injectable()
 export class LivePreview {

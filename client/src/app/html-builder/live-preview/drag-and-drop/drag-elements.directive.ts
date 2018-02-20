@@ -3,11 +3,11 @@ import {LivePreview} from "../../live-preview.service";
 import {UndoManager} from "../../undo-manager/undo-manager.service";
 import {Elements} from "../../elements/elements.service";
 import {BaseDragAndDrop} from "./base-drag-and-drop";
-import {DomHelpers} from "../../dom-helpers.service";
 import {SelectedElement} from "../selected-element.service";
 import {BuilderDocument} from "../../builder-document.service";
 import {ActiveProject} from "../../projects/active-project";
 import {DragVisualHelper} from "./drag-visual-helper/drag-visual-helper.service";
+import {DomHelpers} from '../../../shared/dom-helpers.service';
 
 @Directive({
     selector: '[dragElements]'

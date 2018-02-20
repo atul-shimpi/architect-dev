@@ -1,17 +1,16 @@
 import {Component, Inject, OnInit, ViewEncapsulation} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
-import {Themes} from "../../../html-builder/themes.service";
-import {Theme} from "../../../../types/models/Theme";
-import {Projects} from "../../../html-builder/projects/projects.service";
 import {Toast} from "vebto-client/core/ui/toast.service";
-import {Project} from "../../../../types/models/Project";
 import {utils} from "vebto-client/core/services/utils";
+import {Theme} from '../../../shared/themes/Theme';
+import {Themes} from '../../../shared/themes/themes.service';
+import {Project} from '../../../shared/projects/Project';
+import {Projects} from '../../../shared/projects/projects.service';
 
 @Component({
     selector: 'crupdate-project-modal',
     templateUrl: './crupdate-project-modal.component.html',
     styleUrls: ['./crupdate-project-modal.component.scss'],
-    providers: [Themes],
     encapsulation: ViewEncapsulation.None
 })
 export class CrupdateProjectModalComponent implements OnInit {

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Resolve, RouterStateSnapshot, ActivatedRouteSnapshot, Router} from '@angular/router';
-import {Templates} from "../../templates/templates.service";
-import {BuilderTemplate} from "../../html-builder/builder-types";
+import {BuilderTemplate} from '../../shared/builder-types';
+import {Templates} from "../../shared/templates/templates.service";
 
 @Injectable()
 export class TemplatesResolver implements Resolve<BuilderTemplate[]> {

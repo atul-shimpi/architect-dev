@@ -1,13 +1,13 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {Templates} from "../../../../templates/templates.service";
 import {Settings} from "vebto-client/core/services/settings.service";
 import {ActiveProject} from "../../../projects/active-project";
 import {Modal} from "vebto-client/core/ui/modal.service";
 import {ConfirmModalComponent} from "vebto-client/core/ui/confirm-modal/confirm-modal.component";
-import {BuilderTemplate} from "../../../builder-types";
 import {Toast} from "vebto-client/core/ui/toast.service";
 import {InspectorDrawer} from "../../inspector-drawer.service";
 import {LivePreviewLoader} from "../../../live-preview/live-preview-loader.service";
+import {BuilderTemplate} from '../../../../shared/builder-types';
+import {Templates} from "../../../../shared/templates/templates.service";
 
 @Component({
     selector: 'templates-panel',
@@ -72,6 +72,6 @@ export class TemplatesPanelComponent implements OnInit {
      * Get absolute url for specified template's thumbnail.
      */
     public getThumbnailUrl(template: BuilderTemplate) {
-        return this.settings.getBaseUrl(true) + 'storage/' + template.thumbnail;
+        return this.settings.getBaseUrl(true) + '/' + template.thumbnail;
     }
 }
