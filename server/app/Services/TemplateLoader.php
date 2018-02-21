@@ -10,7 +10,7 @@ class TemplateLoader
     /**
      * @var string
      */
-    private $templatesPath;
+    public $templatesPath;
 
     const DEFAULT_THUMBNAIL = 'client/assets/images/default_project_thumbnail.png';
 

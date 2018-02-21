@@ -4,6 +4,7 @@ use Auth;
 use App\Project;
 use File;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Storage;
@@ -33,18 +34,24 @@ class ProjectRepository
     private $templateLoader;
 
     /**
+     * @var Filesystem
+     */
+    private $filesystem;
+
+    /**
      * ProjectRepository Constructor.
      *
      * @param TemplateLoader $templateLoader
      * @param Project $project
+     * @param Filesystem $filesystem
      */
-    public function __construct(TemplateLoader $templateLoader, Project $project)
+    public function __construct(TemplateLoader $templateLoader, Project $project, Filesystem $filesystem)
     {
         $this->project = $project;
         $this->storage = Storage::disk('public');
         $this->templateLoader = $templateLoader;
-
-        $this->templatesPath = config('filesystems.disks.public.root').'/templates';
+        $this->templatesPath = $templateLoader->templatesPath;
+        $this->filesystem = $filesystem;
     }
 
     /**
@@ -352,14 +359,15 @@ class ProjectRepository
         $templateName = strtolower(kebab_case($templateData['name']));
 
         //copy template files recursively
-        foreach ($this->storage->allFiles("templates/$templateName") as $path) {
-            $innerPath = str_replace("templates/$templateName", $projectPath, $path);
+        foreach ($this->filesystem->allFiles("$this->templatesPath/$templateName") as $fileInfo) {
+            $filePath = $fileInfo->getRealPath();
+            $innerPath = str_replace("$this->templatesPath/$templateName", $projectPath, $filePath);
 
             if ($this->storage->exists($innerPath)) {
                 $this->storage->delete($innerPath);
             }
 
-            $this->storage->copy($path, $innerPath);
+            $this->storage->put($innerPath, $this->filesystem->get($filePath));
         }
 
         //copy template css and js
@@ -370,13 +378,13 @@ class ProjectRepository
         if (isset($templateData['config']['libraries'])) {
             collect($templateData['config']['libraries'])->each(function($library) use($projectPath) {
                 $name = strtolower(kebab_case($library));
-                $content = File::get(public_path("builder/js/libraries/$name.js"));
+                $content = $this->filesystem->get(public_path("builder/js/libraries/$name.js"));
                 $this->storage->put("$projectPath/js/$name.js", $content);
             });
         }
 
         //thumbnail
-        $this->storage->put("$projectPath/thumbnail.png", File::get($templateData['thumbnail']));
+        $this->storage->put("$projectPath/thumbnail.png", $this->filesystem->get($templateData['thumbnail']));
     }
 
     /**

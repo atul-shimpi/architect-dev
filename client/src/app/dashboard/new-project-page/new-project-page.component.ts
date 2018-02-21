@@ -66,7 +66,7 @@ export class NewProjectPageComponent implements OnInit {
     }
 
     public getTemplateThumbnail(template: BuilderTemplate) {
-        return this.settings.getBaseUrl(true) + 'storage/' + template.thumbnail;
+        return this.settings.getBaseUrl(true) + '/' + template.thumbnail;
     }
 
     /**

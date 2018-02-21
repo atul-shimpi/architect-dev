@@ -200,7 +200,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     private initEditor(language: 'js'|'html'|'css' = 'html') {
         this.loading = true;
 
-        return this.utils.loadScript('assets/js/ace/ace.js').then(() => {
+        return this.utils.loadScript('js/ace/ace.js').then(() => {
             this.editor = ace.edit(this.editorEl.nativeElement);
             this.changeEditorMode(language);
             this.useTheme('chrome');

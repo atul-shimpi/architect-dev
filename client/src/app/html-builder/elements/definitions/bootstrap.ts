@@ -577,7 +577,7 @@ bootstrapElements.push({
     name: 'image',
     nodes: ['img'],
     frameworks: ['bootstrap'],
-    html: '<img src="templates/bolt/images/05.jpg" class="img-responsive">',
+    html: '<img src=/client/builder/images/default.jpg" class="img-responsive">',
     types: ['flow', 'phrasing', 'embedded', 'interactive', 'form-associated'],
     validChildren: false,
     category: 'media',

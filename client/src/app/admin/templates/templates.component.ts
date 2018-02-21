@@ -80,6 +80,6 @@ export class TemplatesComponent implements OnInit {
      * Get relative url for specified template's thumbnail.
      */
     public getTemplateThumbnail(template: BuilderTemplate) {
-        return 'storage/'+template.thumbnail;
+        return '/'+template.thumbnail;
     }
 }
