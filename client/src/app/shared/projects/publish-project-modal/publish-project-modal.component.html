@@ -7,9 +7,9 @@
 
 <form (ngSubmit)="confirm()" ngNativeValidate>
 
-    <div class="project-url">
+    <div class="project-url" *ngIf="settings.get('builder.routing_type') !== 'none'">
         <a [href]="getProjectUrl()" target="_blank">{{getProjectUrl()}}</a>
-        <mat-slide-toggle name="ssl" [checked]="!!data.project.published" [disabled]="loading" (change)="toggleProjectState($event)">Public</mat-slide-toggle>
+        <mat-slide-toggle name="ssl" [checked]="!!data.project.published" [disabled]="loading" (change)="toggleProjectState($event)" trans>Public</mat-slide-toggle>
     </div>
 
     <div class="mat-dialog-content many-inputs" mat-dialog-content>

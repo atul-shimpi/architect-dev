@@ -8,6 +8,7 @@ import {CurrentUser} from "vebto-client/auth/current-user";
 import {CrupdateTemplateModalComponent} from "./crupdate-template-modal/crupdate-template-modal.component";
 import {BuilderTemplate} from '../../shared/builder-types';
 import {Templates} from '../../shared/templates/templates.service';
+import {Settings} from "vebto-client/core/services/settings.service";
 
 @Component({
     selector: 'templates',
@@ -30,6 +31,7 @@ export class TemplatesComponent implements OnInit {
         private templates: Templates,
         private modal: Modal,
         public currentUser: CurrentUser,
+        private settings: Settings,
     ) {}
 
     ngOnInit() {
@@ -80,6 +82,6 @@ export class TemplatesComponent implements OnInit {
      * Get relative url for specified template's thumbnail.
      */
     public getTemplateThumbnail(template: BuilderTemplate) {
-        return '/'+template.thumbnail;
+        return this.settings.getBaseUrl(true)+template.thumbnail;
     }
 }

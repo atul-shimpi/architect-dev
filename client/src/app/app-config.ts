@@ -18,10 +18,10 @@ export const appConfig = {
         ],
         analytics: {
           stats: [
-              {name: 'users', icon: 'group'},
+              {name: 'users', icon: 'people'},
               {name: 'projects', icon: 'dashboard'},
               {name: 'templates', icon: 'web-design-custom'},
-              {name: 'pages', icon: 'description'},
+              {name: 'pages', icon: 'insert-drive-file'},
           ]
         },
         ads: [

@@ -70,6 +70,6 @@ class ProjectThumbnailController extends Controller
 
         $image = $this->imagine->load(base64_decode($string));
 
-        return (string) $image->crop(new Point(0, 0), new Box($image->getSize()->getWidth(), 500))->thumbnail($size, $mode);
+        return (string) $image->crop(new Point(0, 0), new Box($image->getSize()->getWidth(), 1000))->resize($size);
     }
 }

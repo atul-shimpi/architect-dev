@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild, ViewContainerRef, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, NgZone, OnInit, ViewChild, ViewContainerRef, ViewEncapsulation} from '@angular/core';
 import {ContextMenu} from "vebto-client/core/ui/context-menu/context-menu.service";
 import {Settings} from "vebto-client/core/services/settings.service";
 import {AppHttpClient} from "vebto-client/core/http/app-http-client.service";
@@ -24,6 +24,7 @@ export class AppComponent implements OnInit {
         private httpClient: AppHttpClient,
         private vebtoConfig: VebtoConfig,
         private router: Router,
+        private zone: NgZone,
     ) {}
 
     ngOnInit() {
@@ -39,6 +40,6 @@ export class AppComponent implements OnInit {
     private setInjectorOnAppearanceEditorIframe() {
         if (window.top === window.self) return;
         if (window.top.location.origin !== this.settings.getBaseUrl().replace(/\/$/, '')) return;
-        window['previewAngular'] = {settings: this.settings, router: this.router};
+        window['previewAngular'] = {settings: this.settings, router: this.router, zone: this.zone};
     }
 }

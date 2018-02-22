@@ -44,7 +44,7 @@ export class PublishProjectModalComponent implements OnInit {
         @Inject(MAT_DIALOG_DATA) public data: {project: Project},
         private projects: Projects,
         private projectUrl: ProjectUrl,
-        private settings: Settings,
+        public settings: Settings,
         private toast: Toast,
     ) {}
 
