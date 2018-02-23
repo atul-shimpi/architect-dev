@@ -28,7 +28,7 @@
 	<div class="header">
 		<div class="container">
 			<div class="left">
-				<div class="logo"><img class="img-responsive" src="client/assets/images/logo.png" alt="logo"></div>
+				<div class="logo"><img class="img-responsive" src="client/assets/images/logo-light.png" alt="logo"></div>
 				<h2 class="current-step">{{ currentStep }}</h2>
 			</div>
 

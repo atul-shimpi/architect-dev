@@ -105,6 +105,11 @@ class PublishProjectController extends Controller
         foreach ($manager->listContents("local://$projectRoot", true) as $file) {
             if ($file['type'] !== 'file') continue;
             $filePath = str_replace($projectRoot, $directory, $file['path']);
+
+            //delete old files from ftp
+            if ($ftp->has($filePath)) $ftp->delete($filePath);
+
+            //copy file from local disk to ftp
             $manager->copy('local://'.$file['path'], 'ftp://'.$filePath);
         }
     }

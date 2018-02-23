@@ -4,8 +4,10 @@ import {Settings} from "vebto-client/core/services/settings.service";
 import {AppHttpClient} from "vebto-client/core/http/app-http-client.service";
 import {CustomHomepage} from "vebto-client/core/services/custom-homepage.service";
 import {VebtoConfig} from "vebto-client/core/vebto-config.service";
-import {Router} from "@angular/router";
+import {NavigationEnd, Router} from "@angular/router";
 import {appConfig} from "./app-config";
+import * as svg4everybody from 'svg4everybody';
+import {filter} from "rxjs/operators/filter";
 
 @Component({
     selector: 'app-root',
@@ -35,11 +37,29 @@ export class AppComponent implements OnInit {
         this.vebtoConfig.merge(appConfig);
 
         this.setInjectorOnAppearanceEditorIframe();
+
+        //svg icons polyfill
+        svg4everybody();
+
+        //google analytics
+        if (this.settings.get('analytics.tracking_code')) {
+            this.triggerAnalyticsPageView();
+        }
     }
 
     private setInjectorOnAppearanceEditorIframe() {
         if (window.top === window.self) return;
         if (window.top.location.origin !== this.settings.getBaseUrl().replace(/\/$/, '')) return;
         window['previewAngular'] = {settings: this.settings, router: this.router, zone: this.zone};
+    }
+
+    private triggerAnalyticsPageView() {
+        this.router.events
+            .pipe(filter(e => e instanceof NavigationEnd))
+            .subscribe((event: NavigationEnd) => {
+                if ( ! window['ga']) return;
+                window['ga']('set', 'page', event.urlAfterRedirects);
+                window['ga']('send', 'pageview');
+            });
     }
 }

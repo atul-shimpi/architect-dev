@@ -13,6 +13,8 @@ class RenamePagesTableToBuilderPages extends Migration
      */
     public function up()
     {
+        if ( ! Schema::hasTable('pages')) return;
+
         Schema::table('pages', function (Blueprint $table) {
             $table->rename('builder_pages');
         });

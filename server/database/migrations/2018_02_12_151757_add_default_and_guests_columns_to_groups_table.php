@@ -14,8 +14,13 @@ class AddDefaultAndGuestsColumnsToGroupsTable extends Migration
     public function up()
     {
         Schema::table('groups', function (Blueprint $table) {
-            $table->boolean('default')->default(0)->unsigned()->index();
-            $table->boolean('guests')->default(0)->unsigned()->index();
+            if ( ! Schema::hasColumn('groups', 'default')) {
+                $table->boolean('default')->default(0)->unsigned()->index();
+            }
+
+            if ( ! Schema::hasColumn('groups', 'guests')) {
+                $table->boolean('guests')->default(0)->unsigned()->index();
+            }
         });
     }
 

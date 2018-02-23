@@ -9,8 +9,14 @@ return [
     ['name' => 'menus', 'value' => json_encode([])],
 
     //billing
-    ['name' => 'billing.enable', 'value' => true],
+    ['name' => 'billing.enable', 'value' => false],
     ['name' => 'billing.paypal_test_mode', 'value' => true],
     ['name' => 'billing.stripe_test_mode', 'value' => true],
-    ['name' => 'billing.accepted_card', 'value' => ['visa', 'mastercard', 'american-express', 'discover']],
+    ['name' => 'billing.accepted_cards', 'value' => json_encode(['visa', 'mastercard', 'american-express', 'discover'])],
+
+    //branding
+    ['name' => 'branding.site_name', 'value' => 'Architect'],
+
+    //builder
+    ['name' => 'builder.routing_type', 'value' => 'regular'],
 ];
