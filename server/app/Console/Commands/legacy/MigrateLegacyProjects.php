@@ -6,7 +6,6 @@ use App\BuilderPage;
 use App\Project;
 use App\Services\ProjectRepository;
 use App\Services\TemplateLoader;
-use App\Services\TemplateRepository;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -78,24 +77,65 @@ class MigrateLegacyProjects extends Command
                 if ($project->uuid) return;
 
                 //add uuid to legacy projects
-                $project->fill(['uuid' => str_random(36), 'framework' => 'temp', 'template' => 'temp'])->save();
+                $project->fill(['uuid' => str_random(36)])->save();
 
                 $templateNames = $this->templateLoader->loadAll()->pluck('name');
 
                 $data = $project->toArray();
-                $data['template'] = 'wonder';
                 $data['framework'] = 'bootstrap-3';
 
                 if ($project->pages->isNotEmpty()) {
                     $data['theme'] = $project->pages->first()->theme;
 
-                    //try to extract template name from project page csss
+                    //try to extract template name from project page css
                     $data['template'] = $templateNames->first(function($name) use($project) {
                         return str_contains(strtolower($project->pages->first()->css), $name);
-                    }, $data['template']);
+                    });
+
+                    //remove "templates/name" references from html
+                    if (isset($data['template']) && $data['template']) {
+                        $data['pages'] = array_map(function($page) use($data) {
+                            $page['html'] = str_replace("templates/{$data['template']}/", '', $page['html']);
+                            return $page;
+                        }, $data['pages']);
+                    }
+
+                    //compile css of all pages into single string
+                    //that should be inserted into custom_css file
+                    $data['css'] = $project->pages->map(function($page) {
+                        return $page->css;
+                    })->implode("\n");
+
+                    //remove "templates/name" references from css
+                    if (isset($data['template']) && $data['template']) {
+                        $data['css'] = str_replace("templates/{$data['template']}/", '../', $data['css']);
+                    }
+
+                    //compile js of all pages into single string
+                    //that should be inserted into custom_js file
+                    $data['js'] = $project->pages->map(function($page) {
+                        return $page->js;
+                    })->implode("\n");
+
+                    //need to include css of all custom elements
+                    $files = \File::files(public_path('builder/elements'));
+
+                    $customElementsCss = array_map(function($path) {
+                        $contents = \File::get($path);
+                        preg_match('/<style.*?>(.+?)<\/style>/s', $contents, $css);
+                        return isset($css[1]) ? trim($css[1]) : '';
+                    }, $files);
+
+                    $data['custom_element_css'] = implode("\n", $customElementsCss);
                 }
 
-                $this->repository->update($project, $data);
+                $this->repository->update($project, $data, false);
+
+                //store default thumbnail, if needed
+                $thumbnailPath = $this->repository->getProjectPath($project->fresh()) . '\thumbnail.png';
+                if ( ! \Storage::disk('public')->exists($thumbnailPath)) {
+                    \Storage::disk('public')->put($thumbnailPath, \File::get(public_path(TemplateLoader::DEFAULT_THUMBNAIL)));
+                }
             });
         });
 

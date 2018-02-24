@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers;
 
+use App\User;
 use DB;
 use Cache;
 use Artisan;
@@ -19,17 +20,24 @@ class UpdateController extends Controller {
     private $setting;
 
     /**
+     * @var User
+     */
+    private $user;
+
+    /**
      * UpdateController constructor.
      *
      * @param DotEnvEditor $dotEnvEditor
      * @param Setting $setting
+     * @param User $user
      */
-	public function __construct(DotEnvEditor $dotEnvEditor, Setting $setting)
+	public function __construct(DotEnvEditor $dotEnvEditor, Setting $setting, User $user)
 	{
 	    if ( ! config('vebto.site.disable_update_auth')) {
             $this->middleware('auth');
         }
 
+        $this->user = $user;
         $this->setting = $setting;
         $this->dotEnvEditor = $dotEnvEditor;
     }
@@ -59,7 +67,8 @@ class UpdateController extends Controller {
         Artisan::call('vebto:seed');
 
         //migrate versions prior to 2.0
-        if ( ! config('vebto.site.version')) {
+        if (version_compare(config('vebto.site.version'), '2.0.0', '<=')) {
+            $this->user->where('permissions', '{"superuser":1}')->update(['permissions' => '{"superuser":1, "admin": 1}']);
             Artisan::call('legacy:projects');
         }
 

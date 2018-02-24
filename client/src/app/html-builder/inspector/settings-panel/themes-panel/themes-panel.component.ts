@@ -54,7 +54,7 @@ export class ThemesPanelComponent implements OnInit {
      * Get absolute url for specified theme's thumbnail.
      */
     public getThumbnailUrl(theme: BuilderTemplate) {
-        return this.settings.getBaseUrl(true) + 'storage/themes/' + theme.name + '/image.png';
+        return this.settings.getAssetUrl() + 'themes/' + theme.name + '/image.png';
     }
 
     /**

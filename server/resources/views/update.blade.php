@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>BeMusic - Update</title>
+    <title>Architect - Update</title>
 
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -15,7 +15,7 @@
 
 <div class="container cont-pad-bottom" id="content">
 
-    <div class="row logo"><img class="img-responsive" src="{{ asset('client/assets/images/logo.png')  }}" alt="logo"></div>
+    <div class="row logo"><img class="img-responsive" src="{{ asset('client/assets/images/logo-dark.png')  }}" alt="logo"></div>
 
     @if (session('status'))
         <div id="compat-check" class="step-panel">

@@ -76,11 +76,6 @@ dashboard {
     padding-top: 35px;
     padding-bottom: 35px;
 
-    &:after {
-      content: "";
-      flex: auto;
-    }
-
     > .project {
       height: 266px;
       flex: 0 0 100%;
@@ -93,7 +88,7 @@ dashboard {
 
       @media only screen and (min-width: $tablet) {
         flex: 0 0 auto;
-        width: calc(33.33% - 14x);
+        width: calc(33.33% - 14px);
         margin: 0 7px 14px;
       }
 

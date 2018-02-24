@@ -79,3 +79,4 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
  */
 
 import 'polyfills/before-after-polyfill'
+import 'polyfills/element-matches-polyfill';

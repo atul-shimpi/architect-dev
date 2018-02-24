@@ -131,7 +131,7 @@ class ProjectRepository
         return $this->storage->get($pagePath);
     }
 
-    public function update(Project $project, $data)
+    public function update(Project $project, $data, $overrideFiles = true)
     {
         $projectPath = $this->getProjectPath($project);
 
@@ -140,7 +140,7 @@ class ProjectRepository
         }
 
         if (Arr::get($data, 'template', $project->template) !== $project->template) {
-            $this->updateTemplate($project, $data['template']);
+            $this->updateTemplate($project, $data['template'], $overrideFiles);
         }
 
         if (Arr::get($data, 'framework', $project->framework) !== $project->framework) {
@@ -267,18 +267,18 @@ class ProjectRepository
         //add framework
         $this->storage->put(
             "$projectPath/css/framework.css",
-            File::get(public_path("builder/frameworks/$framework/styles.min.css"))
+            $this->getBuilderAsset("frameworks/$framework/styles.min.css")
         );
 
         $this->storage->put(
             "$projectPath/js/framework.js",
-            File::get(public_path("builder/frameworks/$framework/scripts.min.js"))
+            $this->getBuilderAsset("frameworks/$framework/scripts.min.js")
         );
 
         //font awesome
         $this->storage->put(
             "$projectPath/css/font-awesome.css",
-            File::get(public_path("builder/css/font-awesome.min.css"))
+            $this->getBuilderAsset("css/font-awesome.min.css")
         );
 
         //fonts
@@ -292,7 +292,7 @@ class ProjectRepository
         //jquery
         $this->storage->put(
             "$projectPath/js/jquery.min.js",
-            File::get(public_path("builder/js/jquery.min.js"))
+            $this->getBuilderAsset("js/jquery.min.js")
         );
     }
 
@@ -305,7 +305,7 @@ class ProjectRepository
      */
     private function applyTheme($projectPath, $themeName = null)
     {
-        $contents = is_null($themeName) ? '' :  $this->storage->get("themes/$themeName/stylesheet.css");
+        $contents = is_null($themeName) ? '' :  $this->getBuilderAsset("themes/$themeName/stylesheet.css");
         $this->storage->put("$projectPath/css/theme.css", $contents);
     }
 
@@ -314,9 +314,10 @@ class ProjectRepository
      *
      * @param Project $project
      * @param string $templateName
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @param bool $overrideFiles
+     * @throws FileNotFoundException
      */
-    private function updateTemplate(Project $project, $templateName)
+    private function updateTemplate(Project $project, $templateName, $overrideFiles = true)
     {
         $oldTemplatePath = "$this->templatesPath/$templateName";
         $projectPath = $this->getProjectPath($project);
@@ -351,10 +352,10 @@ class ProjectRepository
         }
 
         //apply new template
-        $this->applyTemplate($template, $projectPath);
+        $this->applyTemplate($template, $projectPath, $overrideFiles);
     }
 
-    private function applyTemplate($templateData, $projectPath)
+    public function applyTemplate($templateData, $projectPath, $overrideFiles = true)
     {
         $templateName = strtolower(kebab_case($templateData['name']));
 
@@ -363,9 +364,7 @@ class ProjectRepository
             $filePath = $fileInfo->getRealPath();
             $innerPath = str_replace("$this->templatesPath/$templateName", $projectPath, $filePath);
 
-            if ($this->storage->exists($innerPath)) {
-                $this->storage->delete($innerPath);
-            }
+            if ($this->storage->exists($innerPath) && ! $overrideFiles) continue;
 
             $this->storage->put($innerPath, $this->filesystem->get($filePath));
         }
@@ -378,7 +377,7 @@ class ProjectRepository
         if (isset($templateData['config']['libraries'])) {
             collect($templateData['config']['libraries'])->each(function($library) use($projectPath) {
                 $name = strtolower(kebab_case($library));
-                $content = $this->filesystem->get(public_path("builder/js/libraries/$name.js"));
+                $content = $this->getBuilderAsset("js/libraries/$name.js");
                 $this->storage->put("$projectPath/js/$name.js", $content);
             });
         }
@@ -424,5 +423,18 @@ class ProjectRepository
         $contents = "$contents\n$customElementCss";
 
         $this->storage->put($path, $contents);
+    }
+
+    /**
+     * Get contents of specified builder asset file.
+     *
+     * @param string $path
+     * @return string
+     * @throws FileNotFoundException
+     */
+    private function getBuilderAsset($path)
+    {
+        $path = strtolower($path);
+        return $this->filesystem->get(public_path("builder/$path"));
     }
 }
