@@ -27,6 +27,7 @@ export class ReorderLayoutItemsDirective implements AfterContentInit {
     ngAfterContentInit() {
         new Sortable(this.el.nativeElement, {
             draggable: '.'+this.type+'-drag-wrapper',
+            handle: '.mat-expansion-panel-header',
             animation: 250,
             onUpdate: (e) => {
                 let oldOrder = this.getNodeList(),

@@ -42,11 +42,12 @@ export class LayoutPanel {
      */
     public loadContainers() {
         this.containers = [];
-        this.nodeListToArray(this.builderDocument.findAll('.container')).forEach(node => {
-            const rows = this.nodeListToArray(node.querySelectorAll('.row'));
-            this.containers.push({node: node as HTMLElement, rows: rows, id: utils.randomString()});
-            if (this.selectedContainer) this.selectContainer(this.selectedContainer.node);
+        Array.from(this.builderDocument.findAll('.container')).forEach((node: HTMLElement) => {
+            const rows = Array.from(node.querySelectorAll('.row')) as HTMLElement[];
+            this.containers.push({node, rows, id: utils.randomString()});
         });
+
+        if (this.selectedContainer) this.selectContainer(this.selectedContainer.node);
     }
 
     /**
@@ -119,12 +120,12 @@ export class LayoutPanel {
      * Select specified row.
      */
     public selectRow(node: HTMLElement, selectNode = true) {
-        if ( ! node || (this.selectedRow && this.selectedRow.node === node)) return;
+        if ( ! node) return;
 
         if (selectNode) this.selected.selectNode(node);
 
         const columns = this.getColumns(node),
-            preset  = columns.map(col => col.span);
+              preset  = columns.map(col => col.span);
 
         this.builderDocument.scrollIntoView(node);
 

@@ -65,6 +65,6 @@ export class ColumnPresetsComponent implements OnChanges {
      */
     private presetIsValid(preset: number[]) {
         let validSpans = preset.filter(span => span > 0 && span <= 12);
-        return validSpans.reduce((sum, x) => sum + x) === 12;
+        return validSpans.length && validSpans.reduce((sum, x) => sum + x) === 12;
     }
 }

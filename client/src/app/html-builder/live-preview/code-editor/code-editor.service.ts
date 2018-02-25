@@ -46,7 +46,11 @@ export class CodeEditor {
 
         if (this.overlayRef) this.overlayRef.dispose();
 
-        this.overlayRef = this.overlay.create({positionStrategy: strategy});
+        const rect = document.querySelector('live-preview').getBoundingClientRect();
+        const width = rect.width - 50;
+        const height = rect.height - 30;
+
+        this.overlayRef = this.overlay.create({positionStrategy: strategy, width, height});
         this.componentRef = this.overlayRef.attach(new ComponentPortal(CodeEditorComponent)) as ComponentRef<CodeEditorComponent>;
 
         this.componentRef.instance.onClose().subscribe(() => {

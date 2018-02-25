@@ -7,6 +7,13 @@ layout-panel {
     padding: 10px;
   }
 
+  .drag-handle {
+    color: $icon-color-dark;
+    margin-right: 8px;
+    cursor: move;
+    vertical-align: middle;
+  }
+
   .mat-action-row, .row-actions {
     padding: 0;
 

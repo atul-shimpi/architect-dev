@@ -7,7 +7,6 @@ import {ActiveProject} from "./projects/active-project";
 import {ContextMenu} from "vebto-client/core/ui/context-menu/context-menu.service";
 import {LivePreviewContextMenuComponent} from "./live-preview/live-preview-context-menu/live-preview-context-menu.component";
 import {Overlay} from "@angular/cdk/overlay";
-import {CodeEditor} from "./live-preview/code-editor/code-editor.service";
 import {Keybinds} from "vebto-client/core/keybinds/keybinds.service";
 import {SelectedElement} from "./live-preview/selected-element.service";
 import {ContextBoxes} from "./live-preview/context-boxes.service";
@@ -45,7 +44,6 @@ export class LivePreview {
     constructor(
         private zone: NgZone,
         private elements: Elements,
-        private codeEditor: CodeEditor,
         private undoManager: UndoManager,
         private inlineTextEditor: InlineTextEditor,
         private parsedProject: ActiveProject,

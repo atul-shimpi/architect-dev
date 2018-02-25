@@ -28,7 +28,6 @@ export class LayoutPanelComponent implements OnInit {
     ngOnInit() {
         this.builderDocument.contentChanged.subscribe(e => {
             if ( ! this.inspector.activePanelIs('layout')) return;
-            console.log('layoutPanel: ', e);
             this.layoutPanel.loadContainers();
         });
 

@@ -60,7 +60,7 @@ export class PageDocument {
         });
 
         this.addBaseElement();
-        this.useFramework(framework || template.config.framework);
+        this.useFramework(framework || (template && template.config.framework));
         this.addIconsLink();
 
         //theme

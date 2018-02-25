@@ -8,6 +8,7 @@ use App\Services\ProjectRepository;
 use App\Services\TemplateLoader;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Arr;
 
 class MigrateLegacyProjects extends Command
 {
@@ -46,6 +47,18 @@ class MigrateLegacyProjects extends Command
     private $templateLoader;
 
     /**
+     * Map for matching template css to template name.
+     * @var array
+     */
+    private $templateCssMap = [
+        'capital-city' => 'move special fonts to html head for better performance',
+        'pratt' => '#features .ac a',
+        'storystrap' => 'h1,h2,h3,.highlight,.navbar a,#masthead h4',
+        'minimal-blog' => '#head a.logo,#head a.logo:hover',
+        'product-launch' => '.icon-home a, .icon-home a:hover, .icon-home a:focus',
+    ];
+
+    /**
      * Create a new command instance.
      *
      * @param Project $project
@@ -77,7 +90,7 @@ class MigrateLegacyProjects extends Command
                 if ($project->uuid) return;
 
                 //add uuid to legacy projects
-                $project->fill(['uuid' => str_random(36)])->save();
+                $project->fill(['uuid' => str_random(36), 'framework' => 'temp'])->save();
 
                 $templateNames = $this->templateLoader->loadAll()->pluck('name');
 
@@ -86,14 +99,26 @@ class MigrateLegacyProjects extends Command
 
                 if ($project->pages->isNotEmpty()) {
                     $data['theme'] = $project->pages->first()->theme;
+                    $css = strtolower($project->pages->first()->css);
 
-                    //try to extract template name from project page css
-                    $data['template'] = $templateNames->first(function($name) use($project) {
-                        return str_contains(strtolower($project->pages->first()->css), $name);
+                    //extract template name from project css
+                    $data['template'] = $templateNames->first(function($name) use($project, $css) {
+                        if ($name === 'grayscale') $name = 'grayscale bootstrap theme';
+                        if ($name === 'minimal-dark') $name = 'project name: minimal';
+                        return str_contains($css, str_replace('-', ' ', $name));
                     });
 
+                    //match templates that don't have their name in css
+                   if ( ! Arr::get($data, 'template')) {
+                       foreach ($this->templateCssMap as $name => $cssPart) {
+                           if (str_contains($css, $cssPart)) {
+                               $data['template'] = $name; break;
+                           }
+                       }
+                   }
+
                     //remove "templates/name" references from html
-                    if (isset($data['template']) && $data['template']) {
+                    if (Arr::get($data, 'template')) {
                         $data['pages'] = array_map(function($page) use($data) {
                             $page['html'] = str_replace("templates/{$data['template']}/", '', $page['html']);
                             return $page;
@@ -107,7 +132,7 @@ class MigrateLegacyProjects extends Command
                     })->implode("\n");
 
                     //remove "templates/name" references from css
-                    if (isset($data['template']) && $data['template']) {
+                    if (Arr::get($data, 'template')) {
                         $data['css'] = str_replace("templates/{$data['template']}/", '../', $data['css']);
                     }
 

@@ -37,6 +37,6 @@
 </button>
 
 <div class="custom-span-panel input-container" *ngIf="customPanelOpen">
-    <input type="text" [(ngModel)]="customSpan" (ngModelChange)="selectPresetFromCustomSpan($event)">
+    <input type="text" [(ngModel)]="customSpan" (ngModelChange)="selectPresetFromCustomSpan($event)" placeholder="4 + 4 + 4">
     <div class="error" *ngIf="!customPresetIsValid" trans>This preset is not valid.</div>
 </div>
