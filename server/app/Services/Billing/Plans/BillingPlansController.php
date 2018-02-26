@@ -101,7 +101,7 @@ class BillingPlansController extends Controller
         $this->authorize('update', BillingPlan::class);
 
         $this->validate($this->request, [
-            'name' => ['string', 'max:250', Rule::unique('billing_plans')->ignore($id)],
+            'name' => 'required|string|max:250',
             'currency' => 'string|max:255',
             'interval' => 'string|max:255',
             'amount' => 'integer|min:0',

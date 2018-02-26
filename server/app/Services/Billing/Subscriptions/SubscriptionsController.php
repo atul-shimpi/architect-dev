@@ -161,7 +161,7 @@ class SubscriptionsController extends Controller
     public function resume($id)
     {
         /** @var Subscription $subscription */
-        $subscription = $this->subscription->findOrFail($id);
+        $subscription = $this->subscription->with('plan')->findOrFail($id);
         $subscription->resume();
 
         return $this->success(['subscription' => $subscription]);

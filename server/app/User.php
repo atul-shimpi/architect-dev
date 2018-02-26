@@ -61,6 +61,7 @@ use Vebto\Auth\User as VebtoUser;
  * @property string|null $card_last_four
  * @property string|null $trial_ends_at
  * @property-read \Illuminate\Database\Eloquent\Collection $subscriptions
+ * @property-read \Illuminate\Database\Eloquent\Collection $projects
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereCardBrand($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereCardLastFour($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereStripeId($value)
@@ -69,4 +70,12 @@ use Vebto\Auth\User as VebtoUser;
 class User extends VebtoUser
 {
     protected $with = ['subscriptions.plan.parent'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function projects()
+    {
+        return $this->belongsToMany(Project::class);
+    }
 }

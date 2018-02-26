@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Console\Commands\GenerateTsClasses;
 use App\Console\Commands\Legacy\MigrateLegacyProjects;
 use App\Console\Commands\Legacy\MigrateLegacyTemplates;
+use App\Console\Commands\ResetDemoAdminAccount;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -29,8 +30,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        if (config('vebto.site.demo')) {
+            $schedule->command(ResetDemoAdminAccount::class)->daily();
+        }
     }
 
     /**

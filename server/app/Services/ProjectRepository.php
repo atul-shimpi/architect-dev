@@ -236,6 +236,7 @@ class ProjectRepository
         $path = $this->getProjectPath($project);
 
         $this->storage->deleteDirectory($path);
+        $project->users()->detach();
         return $project->delete();
     }
 

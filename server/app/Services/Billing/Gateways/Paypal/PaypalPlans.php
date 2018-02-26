@@ -74,8 +74,8 @@ class PaypalPlans implements GatewayPlansInterface
                 [
                     'name'               => $plan->name.' definition',
                     'type'               => RestGateway::PAYMENT_REGULAR,
-                    'frequency'          => RestGateway::BILLING_PLAN_FREQUENCY_MONTH,
-                    'frequency_interval' => 1,
+                    'frequency'          => strtoupper($plan->interval),
+                    'frequency_interval' => $plan->interval_count,
                     'cycles'             => 0,
                     'amount'             => ['value' => $plan->amount, 'currency' => strtoupper($plan->currency)],
                 ],

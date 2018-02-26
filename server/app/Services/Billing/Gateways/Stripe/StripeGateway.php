@@ -103,7 +103,7 @@ class StripeGateway implements GatewayInterface
         }
 
         //TODO: check if user has more then one card
-        $this->setDefaultCustomerSource($user, $response->getCardReference(), $response->getData());
+        $this->setDefaultCustomerSource($user, $response->getCardReference());
 
         return $user;
     }
@@ -113,15 +113,19 @@ class StripeGateway implements GatewayInterface
      *
      * @param User $user
      * @param string $cardReference
-     * @param array $cardData
      * @return null|string
      * @throws GatewayException
      */
-    public function setDefaultCustomerSource(User $user, $cardReference, $cardData)
+    public function setDefaultCustomerSource(User $user, $cardReference)
     {
         $response = $this->gateway->updateCustomer([
             'customerReference' => $user->stripe_id,
         ])->sendData(['default_source' => $cardReference]);
+
+        //default source
+        $cardData = array_first($response->getData()['sources']['data'], function($card) use($cardReference) {
+            return $card['id'] === $cardReference;
+        });
 
         if ( ! $response->isSuccessful()) {
             throw new GatewayException($response->getMessage());

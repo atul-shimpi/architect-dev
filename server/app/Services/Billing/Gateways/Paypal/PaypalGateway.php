@@ -32,11 +32,11 @@ class PaypalGateway implements GatewayInterface
     {
         $this->gateway = Omnipay::create('PayPal_Rest');
 
-        $this->gateway->initialize(array(
+        $this->gateway->initialize([
             'clientId' => config('services.paypal.client_id'),
             'secret' => config('services.paypal.secret'),
             'testMode' => $settings->get('billing.paypal_test_mode'),
-        ));
+        ]);
 
         $this->plans = new PaypalPlans($this->gateway);
         $this->subscriptions = new PaypalSubscriptions($this->gateway, $this->plans);
