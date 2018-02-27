@@ -38,7 +38,7 @@ export class TemplatesPanelComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.templatesApi.all().subscribe(response => {
+        this.templatesApi.all({per_page: 25}).subscribe(response => {
             this.templates = response.data;
         });
     }

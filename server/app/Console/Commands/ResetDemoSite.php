@@ -2,10 +2,12 @@
 
 use App\Project;
 use App\Services\ProjectRepository;
+use Carbon\Carbon;
 use Hash;
 use Artisan;
 use App\User;
 use Illuminate\Console\Command;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Vebto\Localizations\Localization;
 
@@ -45,14 +47,20 @@ class ResetDemoSite extends Command {
     private $project;
 
     /**
+     * @var Filesystem
+     */
+    private $filesystem;
+
+    /**
      * ResetDemoAdminAccount constructor.
      *
      * @param User $user
      * @param Localization $localization
      * @param ProjectRepository $projectRepository
      * @param Project $project
+     * @param Filesystem $filesystem
      */
-    public function __construct(User $user, Localization $localization, ProjectRepository $projectRepository, Project $project)
+    public function __construct(User $user, Localization $localization, ProjectRepository $projectRepository, Project $project, Filesystem $filesystem)
 	{
         parent::__construct();
 
@@ -60,6 +68,7 @@ class ResetDemoSite extends Command {
         $this->localization = $localization;
         $this->projectRepository = $projectRepository;
         $this->project = $project;
+        $this->filesystem = $filesystem;
     }
 
     /**
@@ -70,11 +79,12 @@ class ResetDemoSite extends Command {
      */
 	public function handle()
 	{
-        /** @var User $admin */
+        if ( ! config('vebto.site.demo')) return;
+
+	    /** @var User $admin */
 	    $admin = $this->user->where('email', 'admin@admin.com')->firstOrFail();
 
         $admin->avatar = null;
-        $admin->username = null;
         $admin->password = Hash::make('admin');
         $admin->permissions = ['admin' => 1, 'superAdmin' => 1];
         $admin->save();
@@ -87,6 +97,26 @@ class ResetDemoSite extends Command {
         });
 
         //create some demo projects
+        $demoProjectsPath = base_path('../demo-projects');
+        $projectsPath = public_path("storage/projects/{$admin->id}");
+
+        foreach ($this->filesystem->directories($demoProjectsPath) as $key => $demoProjectPath) {
+            $templateName = basename($demoProjectPath);
+            $config = json_decode($this->filesystem->get("$demoProjectPath/config.json"), true);
+            preg_match("/projects\/[0-9]\/(.+?)\/css/", $this->filesystem->get("$demoProjectPath/index.html"), $matches);
+
+            $project = $admin->projects()->create([
+                'name' => 'Demo '.(8 - $key),
+                'uuid' => $matches[1],
+                'theme' => $config['theme'],
+                'template' => $templateName,
+                'framework' => 'bootstrap-3',
+                'updated_at' => Carbon::now()->addMinute($key),
+            ]);
+
+            $this->filesystem->copyDirectory($demoProjectPath, "$projectsPath/$templateName");
+            $this->filesystem->moveDirectory("$projectsPath/$templateName", "$projectsPath/{$project->uuid}");
+        }
 
 
         //delete localizations

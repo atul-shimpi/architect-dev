@@ -5,7 +5,7 @@ namespace App\Console;
 use App\Console\Commands\GenerateTsClasses;
 use App\Console\Commands\Legacy\MigrateLegacyProjects;
 use App\Console\Commands\Legacy\MigrateLegacyTemplates;
-use App\Console\Commands\ResetDemoAdminAccount;
+use App\Console\Commands\ResetDemoSite;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -20,6 +20,7 @@ class Kernel extends ConsoleKernel
         GenerateTsClasses::class,
         MigrateLegacyProjects::class,
         MigrateLegacyTemplates::class,
+        ResetDemoSite::class,
     ];
 
     /**
@@ -31,7 +32,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         if (config('vebto.site.demo')) {
-            $schedule->command(ResetDemoAdminAccount::class)->daily();
+            $schedule->command(ResetDemoSite::class)->daily();
         }
     }
 

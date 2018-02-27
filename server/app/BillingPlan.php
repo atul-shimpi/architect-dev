@@ -46,7 +46,7 @@ class BillingPlan extends Model
 
     public function getFeaturesAttribute($value)
     {
-        if ($this->parent_id) {
+        if ($this->parent_id && $this->parent) {
             return $this->parent->features;
         }
 

@@ -19,7 +19,6 @@ class CreateProjectsTable extends Migration
             $table->increments('id');
             $table->string('name')->index();
             $table->boolean('published')->default(1);
-            $table->boolean('public')->default(0);
             $table->timestamps();
         });
     }
