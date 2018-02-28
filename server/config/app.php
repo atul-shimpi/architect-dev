@@ -171,7 +171,6 @@ return [
         Vebto\VebtoServiceProvider::class,
         Sentry\SentryLaravel\SentryLaravelServiceProvider::class,
         Fideloper\Proxy\TrustedProxyServiceProvider::class,
-        Laravel\Cashier\CashierServiceProvider::class,
 
         /*
          * Application Service Providers...
