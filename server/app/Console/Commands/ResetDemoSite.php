@@ -116,6 +116,13 @@ class ResetDemoSite extends Command {
 
             $this->filesystem->copyDirectory($demoProjectPath, "$projectsPath/$templateName");
             $this->filesystem->moveDirectory("$projectsPath/$templateName", "$projectsPath/{$project->uuid}");
+
+            foreach ($this->filesystem->allFiles("$projectsPath/{$project->uuid}") as $fileInfo) {
+                if ( ! in_array($fileInfo->getExtension(), ['html', 'css', 'js'])) continue;
+
+                $content = $this->filesystem->get($fileInfo->getRealPath());
+                $this->filesystem->put($fileInfo->getRealPath(), str_replace('http://localhost:4200', config('app.url'), $content));
+            }
         }
 
 

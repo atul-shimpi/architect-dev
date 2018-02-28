@@ -14,12 +14,6 @@ return [
         ]
     ])],
 
-    //billing
-    ['name' => 'billing.enable', 'value' => false],
-    ['name' => 'billing.paypal_test_mode', 'value' => true],
-    ['name' => 'billing.stripe_test_mode', 'value' => true],
-    ['name' => 'billing.accepted_cards', 'value' => json_encode(['visa', 'mastercard', 'american-express', 'discover'])],
-
     //branding
     ['name' => 'branding.site_name', 'value' => 'Architect'],
 
