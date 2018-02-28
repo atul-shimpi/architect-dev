@@ -131,7 +131,7 @@ export class PageDocument {
      * Add font awesome icons link to the document.
      */
     protected addIconsLink() {
-        const link = DomHelpers.createLink('http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css', 'font-awesome');
+        const link = DomHelpers.createLink('https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css', 'font-awesome');
         this.pageDocument.head.appendChild(link);
     }
 
