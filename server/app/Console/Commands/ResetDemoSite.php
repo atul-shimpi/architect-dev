@@ -121,7 +121,9 @@ class ResetDemoSite extends Command {
                 if ( ! in_array($fileInfo->getExtension(), ['html', 'css', 'js'])) continue;
 
                 $content = $this->filesystem->get($fileInfo->getRealPath());
-                $this->filesystem->put($fileInfo->getRealPath(), str_replace('http://localhost:4200', config('app.url'), $content));
+                $content = str_replace('http://localhost:4200', config('app.url'), $content);
+                $content = str_replace('http://', 'https://', $content);
+                $this->filesystem->put($fileInfo->getRealPath(), $content);
             }
         }
 
