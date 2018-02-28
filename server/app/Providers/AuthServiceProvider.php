@@ -2,14 +2,14 @@
 
 namespace App\Providers;
 
-use App\BillingPlan;
+use Vebto\Billing\BillingPlan;
 use App\BuilderPage;
 use App\Policies\BillingPlanPolicy;
 use App\Policies\BuilderPagePolicy;
 use App\Policies\ProjectPolicy;
 use App\Policies\SubscriptionPolicy;
 use App\Project;
-use App\Subscription;
+use Vebto\Billing\Subscription;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider

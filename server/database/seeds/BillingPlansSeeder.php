@@ -1,18 +1,18 @@
 <?php
 
-use App\BillingPlan;
+use Vebto\Billing\BillingPlan;
 use Illuminate\Database\Seeder;
 
 class BillingPlansSeeder extends Seeder
 {
     /**
-     * @var \App\BillingPlan
+     * @var \Vebto\Billing\BillingPlan
      */
     private $plan;
 
     /**
      * BillingPlansSeeder constructor.
-     * @param \App\BillingPlan $plan
+     * @param \Vebto\Billing\BillingPlan $plan
      */
     public function __construct(BillingPlan $plan)
     {
