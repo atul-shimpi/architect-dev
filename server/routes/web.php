@@ -128,6 +128,8 @@ Route::post('billing/paypal/webhook', function() {
 
 //user site domains
 Route::domain('{name}.{domain}.{tls}')->group(function () {
+    $settings = App::make(Vebto\Settings\Settings::class);
+    if (substr_count(config('app.url'), '.') > 1 || $settings->get('builder.routing_type') !== 'subdomain') return;
     Route::get('/{page?}', 'UserSiteController@show')->name('user-site-subdomain');
 });
 
