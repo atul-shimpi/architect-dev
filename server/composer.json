@@ -38,10 +38,6 @@
     }
   ],
   "autoload": {
-    "classmap": [
-      "database",
-      "vendor/vebto-server/src/Database/Seeds"
-    ],
     "psr-4": {
       "App\\": "app/"
     }

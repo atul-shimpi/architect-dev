@@ -97,7 +97,7 @@ class ResetDemoSite extends Command {
         });
 
         //create some demo projects
-        $demoProjectsPath = base_path('../demo-projects');
+        $demoProjectsPath = file_exists(base_path('../../demo-projects')) ? base_path('../../demo-projects') : base_path('../demo-projects');
         $projectsPath = public_path("storage/projects/{$admin->id}");
 
         foreach ($this->filesystem->directories($demoProjectsPath) as $key => $demoProjectPath) {
