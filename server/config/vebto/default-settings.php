@@ -9,10 +9,10 @@ return [
     ['name' => 'menus', 'value' => json_encode([
         [
             'position' => 'dashboard',
-            'name' => 'Dashboard'],
+            'name' => 'Dashboard',
             'items' => [['type' => 'route','order' => 1,'condition' => 'admin','position' => 0,'label' => 'Admin Area','action' => 'admin']],
         ]
-    )],
+    ])],
 
     //billing
     ['name' => 'billing.enable', 'value' => false],
