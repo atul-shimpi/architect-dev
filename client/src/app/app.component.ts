@@ -48,9 +48,9 @@ export class AppComponent implements OnInit {
     }
 
     private setInjectorOnAppearanceEditorIframe() {
-        if (window.top === window.self) return;
-        if (window.top.location.origin !== this.settings.getBaseUrl().replace(/\/$/, '')) return;
-        window['previewAngular'] = {settings: this.settings, router: this.router, zone: this.zone};
+        if (window.location.search.indexOf('token='+this.settings.csrfToken) > -1) {
+            window['previewAngular'] = {settings: this.settings, router: this.router, zone: this.zone};
+        }
     }
 
     private triggerAnalyticsPageView() {

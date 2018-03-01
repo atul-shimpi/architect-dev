@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Vebto\Bootstrap\Controller;
 use Illuminate\Database\Eloquent\Builder;
 use Vebto\Database\Paginator;
+use Vebto\Database\Seeds\SettingsTableSeeder;
 
 class ProjectsController extends Controller {
 

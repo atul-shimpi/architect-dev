@@ -8,6 +8,7 @@ import {AccountSettingsModule} from 'vebto-client/account-settings/account-setti
 import {SharedModule} from './shared/shared.module';
 import {DashboardModule} from './dashboard/dashboard.module';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {WildcardRoutingModule} from "vebto-client/core/wildcard-routing.module";
 
 @NgModule({
     declarations: [
@@ -22,6 +23,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
         DashboardModule,
         AccountSettingsModule,
         SharedModule,
+        WildcardRoutingModule,
     ],
     providers: [],
     bootstrap: [AppComponent]
