@@ -82,7 +82,7 @@ export class DashboardComponent implements OnInit {
      */
     public openPublishProjectModal(project: Project) {
         this.modal.open(PublishProjectModalComponent, {project}).afterClosed().subscribe(project => {
-            if ( ! project) return;
+            if ( ! project || ! project.model) return;
             const i = this.projects.findIndex(curr => curr.id === project.model.id);
             this.projects[i] = project.model;
         });

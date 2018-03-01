@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Auth;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -32,6 +33,13 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $exception)
     {
+        if (app()->bound('sentry') && $this->shouldReport($exception) && config('app.env') === 'production') {
+            if ($user = Auth::user()) {
+                app('sentry')->set_user_data($user->id, $user->email, $user->toArray());
+            }
+            app('sentry')->captureException($exception);
+        }
+
         parent::report($exception);
     }
 
