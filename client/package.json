@@ -72,6 +72,7 @@
     "gulp-rename": "^1.2.2",
     "gulp-svgmin": "^1.2.4",
     "gulp-svgstore": "^6.1.0",
-    "material-design-icons": "^3.0.1"
+    "material-design-icons": "^3.0.1",
+    "rimraf": "^2.6.2"
   }
 }

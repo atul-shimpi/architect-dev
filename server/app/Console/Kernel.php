@@ -32,7 +32,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         if (config('vebto.site.demo')) {
-            $schedule->command(ResetDemoSite::class)->daily();
+            $schedule->command(ResetDemoSite::class)->cron('0 */2 * * *');
         }
     }
 

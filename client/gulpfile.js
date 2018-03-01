@@ -7,6 +7,7 @@ var clean  = require('gulp-clean');
 var fs     = require('fs');
 var cheerio = require('cheerio');
 var ts = require('typescript');
+var rimraf = require('rimraf');
 
 function extractTranslationsFromTsFiles() {
     var files = getFilesInPath('./src/app', '.ts');
@@ -148,7 +149,8 @@ gulp.task('i18n-extract', function() {
 gulp.task('dist', function() {
 
     //remove old dist files from laravel public folder
-    gulp.src('./../server/public/client', {read: false}).pipe(clean({force: true}));
+    //gulp.src('./../server/public/client', {read: false}).pipe(clean({force: true}));
+    rimraf.sync('./../server/public/client');
 
     //copy dist folder into laravel public folder
     gulp.src(['./../dist/**/*', '!./../dist/index.html', '!./../dist/stats.json']).pipe(gulp.dest('./../server/public/client'));
@@ -169,13 +171,13 @@ gulp.task('dist', function() {
 
     //js scripts replace regex
     var jsSearch = /{{--angular scripts begin--}}[\s\S]*{{--angular scripts end--}}/;
-    var jsReplaceStr = '{{--angular scripts begin--}}' + "\n\t\t" + scripts.join("\n\t\t") + "\n\t\t{{--angular scripts end--}}";
+    var jsReplaceStr = '{{--angular scripts begin--}}' + "\n\t\t" + scripts.join("\n\t\t") + "\n\t{{--angular scripts end--}}";
 
     //css styles replace regex
     var cssSearch = /{{--angular styles begin--}}[\s\S]*{{--angular styles end--}}/;
-    var cssReplaceStr = '{{--angular styles begin--}}' + "\n\t\t" + styles.join("\n\t\t") + "\n\t\t{{--angular styles end--}}";
+    var cssReplaceStr = '{{--angular styles begin--}}' + "\n\t\t" + styles.join("\n\t\t") + "\n\t{{--angular styles end--}}";
 
-    var laravelViewPath = './../server/vendor/vebto-server/src/views/main.blade.php';
+    var laravelViewPath = './../server/resources/views/app.blade.php';
 
     //replace app stylesheet links and js script tags with new ones
     var content = fs.readFileSync(laravelViewPath, 'utf8');
