@@ -26,7 +26,7 @@ class ThemesController extends Controller {
 	{
 		$this->request = $request;
         $this->loader = $loader;
-    } 
+    }
 
     /**
      * Return all available templates.
