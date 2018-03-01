@@ -1,6 +1,6 @@
 export class Theme {
-	id: number;
 	name: string;
+	thumbnail: string;
 
 	constructor(params: Object = {}) {
         for (let name in params) {

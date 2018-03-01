@@ -1,7 +1,7 @@
 <?php namespace App\Http\Controllers;
 
-use App\Theme;
 use Illuminate\Http\Request;
+use App\Services\ThemesLoader;
 use Vebto\Bootstrap\Controller;
 
 class ThemesController extends Controller {
@@ -12,21 +12,21 @@ class ThemesController extends Controller {
     private $request;
 
     /**
-     * @var Theme
+     * @var ThemesLoader
      */
-    private $theme;
+    private $loader;
 
     /**
      * Create new ThemesController instance.
      *
      * @param Request $request
-     * @param Theme $theme
+     * @param ThemesLoader $loader
      */
-	public function __construct(Request $request, Theme $theme)
+	public function __construct(Request $request, ThemesLoader $loader)
 	{
-        $this->theme = $theme;
 		$this->request = $request;
-    }
+        $this->loader = $loader;
+    } 
 
     /**
      * Return all available templates.
@@ -35,7 +35,7 @@ class ThemesController extends Controller {
      */
 	public function index()
 	{
-	    $themes = $this->theme->all();
+	    $themes = $this->loader->loadAll();
 
 	    return $this->success(['themes' => $themes]);
 	}

@@ -6,7 +6,6 @@ import {ActiveProject} from "../../../projects/active-project";
 import {Toast} from "vebto-client/core/ui/toast.service";
 import {Settings} from "vebto-client/core/services/settings.service";
 import {Theme} from '../../../../shared/themes/Theme';
-import {BuilderTemplate} from '../../../../shared/builder-types';
 
 @Component({
     selector: 'themes-panel',
@@ -53,8 +52,8 @@ export class ThemesPanelComponent implements OnInit {
     /**
      * Get absolute url for specified theme's thumbnail.
      */
-    public getThumbnailUrl(theme: BuilderTemplate) {
-        return this.settings.getAssetUrl() + 'themes/' + theme.name + '/image.png';
+    public getThumbnailUrl(theme: Theme) {
+        return this.settings.getBaseUrl(true) + '/' + theme.thumbnail;
     }
 
     /**
