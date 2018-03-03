@@ -92,7 +92,7 @@ class UpdateController extends Controller {
         try {
             return $this->dotEnvEditor->load(base_path('.env.example'))['app_version'];
         } catch (Exception $e) {
-            return '2.0.0';
+            return '2.0.1';
         }
     }
 }

@@ -66,7 +66,7 @@ class ProjectsController extends Controller {
     }
 
     /**
-     * Find a project by id.
+     * Find a project by ID.
      *
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
