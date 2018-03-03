@@ -69,8 +69,6 @@ use Vebto\Auth\User as VebtoUser;
  */
 class User extends VebtoUser
 {
-    protected $with = ['subscriptions.plan.parent'];
-
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */

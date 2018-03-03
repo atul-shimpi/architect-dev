@@ -16,5 +16,6 @@ class VerifyCsrfToken extends BaseVerifier
         'billing/paypal/webhook',
         'secure/auth/login',
         'secure/auth/register',
+        'secure/auth/logout',
     ];
 }

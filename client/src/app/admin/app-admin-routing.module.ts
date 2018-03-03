@@ -15,8 +15,9 @@ const routes: Routes = [
     {
         path: '',
         component: AdminComponent,
-        canActivate: [AuthGuard],
+        canActivate: [AuthGuard, CheckPermissionsGuard],
         canActivateChild: [AuthGuard, CheckPermissionsGuard],
+        data: {permissions: ['admin.access']},
         children: [
             {
                 path: 'templates',
