@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {Elements} from "../elements/elements.service";
 import {ActivatedRoute} from "@angular/router";
 import {ActiveProject} from "../projects/active-project";
@@ -6,6 +6,7 @@ import {MatDrawer} from "@angular/material";
 import {InspectorDrawer} from "../inspector/inspector-drawer.service";
 import {DragVisualHelperComponent} from "../live-preview/drag-and-drop/drag-visual-helper/drag-visual-helper.component";
 import {DragVisualHelper} from "../live-preview/drag-and-drop/drag-visual-helper/drag-visual-helper.service";
+import {LivePreviewLoader} from "../live-preview/live-preview-loader.service";
 
 @Component({
     selector: 'html-builder',
@@ -16,6 +17,7 @@ import {DragVisualHelper} from "../live-preview/drag-and-drop/drag-visual-helper
 export class HtmlBuilderComponent implements OnInit {
     @ViewChild('inspectorDrawer') drawer: MatDrawer;
     @ViewChild('dragHelper') dragHelper: DragVisualHelperComponent;
+    @ViewChild('loaderEl') loaderEl: ElementRef;
 
     /**
      * HtmlBuilderComponent Constructor.
@@ -26,9 +28,12 @@ export class HtmlBuilderComponent implements OnInit {
         private activeProject: ActiveProject,
         public inspectorDrawer: InspectorDrawer,
         private dragVisualHelper: DragVisualHelper,
+        public loader: LivePreviewLoader,
     ) {}
 
     ngOnInit() {
+        this.loader.setLoader(this.loaderEl);
+
         this.route.data.subscribe(data => {
             this.activeProject.setProject(data.project);
             this.elements.init(data.customElements);

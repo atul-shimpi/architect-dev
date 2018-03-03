@@ -84,6 +84,8 @@ export class UndoManager {
      * Wrap specified changes to dom in undo command.
      */
     public wrapDomChanges(parent: HTMLElement|Node, callback: Function|null, options: {before?: HTMLElement, after?: HTMLElement} = {}) {
+        if ( ! parent) return;
+
         const before = options.before || parent.cloneNode(true);
 
         callback && callback();
