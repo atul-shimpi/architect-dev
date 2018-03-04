@@ -172,6 +172,7 @@ export class ActiveProject {
         this.pages = project.pages;
         this.activeTemplate = project.template;
         this.builderDocument.setTemplate(this.activeTemplate);
+        this.builderDocument.setFramework(project.model.framework);
     }
 
     public applyTemplate(name: string) {
@@ -225,7 +226,7 @@ export class ActiveProject {
      * Get project's base static files url.
      */
     public getBaseUrl(relative: boolean = false) {
-        return this.projectUrl.getBaseUrl(this.project.model.uuid, relative);
+        return this.projectUrl.getBaseUrl(this.project.model, relative);
     }
 
     /**

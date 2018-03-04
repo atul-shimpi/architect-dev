@@ -36,6 +36,11 @@ export class BuilderDocument {
     private template: BuilderTemplate;
 
     /**
+     * Framework that should be applied to the document.
+     */
+    private framework: string = 'bootstrap-4';
+
+    /**
      * BuilderDocument Constructor.
      */
     constructor(
@@ -132,12 +137,15 @@ export class BuilderDocument {
     public update(options: {html: string, template?: BuilderTemplate, framework?: string, theme?: string, source?: changeSources}) {
         options = Object.assign({}, {
             template: this.template,
+            framework: this.framework,
             source: 'builderDocument'
         }, options);
 
-        this.template = options.template;
+        this.template = options.template || this.template;
+        this.framework = options.framework || this.framework;
+
         this.contextBoxes.hideBoxes();
-        this.setInnerHtml(this.transformHtml(options.html, options.template));
+        this.setInnerHtml(this.transformHtml(options.html, this.template, this.framework));
         this.addIframeCss();
         this.contentChanged.next(options.source);
 
@@ -150,10 +158,10 @@ export class BuilderDocument {
     /**
      * Transform specified html string into production ready document html.
      */
-    private transformHtml(html: string, template: BuilderTemplate): string {
+    private transformHtml(html: string, template: BuilderTemplate, framework: string): string {
         const doc = new PageDocument();
         doc.setBaseUrl(this.baseUrl);
-        return doc.generate(html, template).getInnerHtml();
+        return doc.generate(html, template, framework).getInnerHtml();
     }
 
     public reload(source: changeSources = 'builder') {
@@ -196,6 +204,13 @@ export class BuilderDocument {
      */
     public setTemplate(template: BuilderTemplate) {
         this.template = template;
+    }
+
+    /**
+     * Set  framework that is currently applied to project.
+     */
+    public setFramework(framework: string) {
+        this.framework = framework;
     }
 
     /**

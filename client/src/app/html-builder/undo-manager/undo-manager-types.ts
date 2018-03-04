@@ -4,7 +4,6 @@ export default interface commandParams {
     newNode?: HTMLElement|Node,
     undoParent?: Node,
     redoParent?: Node,
-    parentContents?: NodeList,
     undoIndex?: number,
     redoIndex?: number,
     undo?: Function,

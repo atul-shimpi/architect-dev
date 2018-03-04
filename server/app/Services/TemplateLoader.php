@@ -120,7 +120,7 @@ class TemplateLoader
 
         if ($this->filesystem->exists($path)) {
             //only need relative path: 'builder/templates/name/thumbnail.png'
-            return 'builder'.explode('builder', $path)[1];
+            return str_replace(public_path('/'), '', $path);
         }
 
         return $default;

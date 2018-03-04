@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {baseElements} from "./definitions/base";
 import {bootstrapElements} from "./definitions/bootstrap";
-import {ActiveElement} from "../live-preview/active-element";
+import {Translations} from "../../../../node_modules/vebto-client/translations/translations.service";
 
 @Injectable()
 export class Elements {
@@ -50,6 +50,11 @@ export class Elements {
             }
         },
     ];
+
+    /**
+     * Elements service constructor.
+     */
+    constructor(private i18n: Translations) {}
 
     public getAll() {
         return this.elements;
@@ -123,7 +128,7 @@ export class Elements {
 
     public isColumn(node: HTMLElement): boolean {
         if ( ! node) return false;
-        return node.className.indexOf('col-') > -1
+        return node.className && node.className.indexOf('col-') > -1
     }
 
     public checkForSpecialCases(node: HTMLElement): HTMLElement|boolean {
@@ -259,10 +264,7 @@ export class Elements {
     public addElement(config) {
         //merge defaults and passed in element config objects
         const el = Object.assign({}, this.defaults, config);
-
-        //we'll need both snake case and camel case names for the element
-        //el.camelName = config.name.toCamelCase();
-        el.snakeName = config.name.replace(/([A-Z])/g, function($1){return "-"+$1.toLowerCase();});
+        el.name = this.i18n.t(el.name);
 
         //push newly created element to all elements object
         this.elements.push(el);

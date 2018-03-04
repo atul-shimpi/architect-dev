@@ -1,3 +1,5 @@
+import {User} from "vebto-client/core/types/models/User";
+
 export class Project {
     id: number;
     name: string;
@@ -7,6 +9,7 @@ export class Project {
     framework: string = '';
     theme: string = '';
     template: string = '';
+    users?: User[];
 
     constructor(params: Object = {}) {
         for (let name in params) {

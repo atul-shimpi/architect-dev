@@ -3,7 +3,6 @@ import {ActiveElement} from "./active-element";
 import {Elements} from "../elements/elements.service";
 import {ContextBoxes} from "./context-boxes.service";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {BuilderDocument} from "../builder-document.service";
 
 @Injectable()
 export class SelectedElement extends ActiveElement {
@@ -78,7 +77,6 @@ export class SelectedElement extends ActiveElement {
         //cache some more references about the node for later use
         this.element = this.elements.match(this.node, 'select', true);
         this.parent = this.node.parentNode as HTMLElement;
-        this.parentContents = this.parent.childNodes;
 
         //position select box on top of the newly selected node
         this.contextBoxes.repositionBox('selected', this.node, this.element);
@@ -91,7 +89,7 @@ export class SelectedElement extends ActiveElement {
         //create an array from all parents of this node
         let el = this.node;
         this.path = [];
-        while (el.nodeType === Node.ELEMENT_NODE && el.nodeName.toLowerCase() !== 'body') {
+        while (el && el.nodeType === Node.ELEMENT_NODE && el.nodeName.toLowerCase() !== 'body') {
             this.path.unshift({node: el, name: this.elements.getDisplayName(this.elements.match(el), el)});
             el = el.parentNode as HTMLElement;
         }

@@ -9,8 +9,6 @@ export class ActiveElement {
 
     public parent: HTMLElement;
 
-    public parentContents?: NodeList;
-
     public locked?: boolean;
 
     public isImage: boolean = false;

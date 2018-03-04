@@ -12,8 +12,8 @@ return [
     'all' => [
         'builder' => [
             [
-                'name' => 'projects.export',
-                'description' => 'Allow user to export projects to their own FTP server.'
+                'name' => 'projects.publish',
+                'description' => 'Allow user to publish projects to their own FTP server.'
             ],
             [
                 'name' => 'editors.enable',

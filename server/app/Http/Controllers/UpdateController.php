@@ -35,6 +35,7 @@ class UpdateController extends Controller {
 	{
 	    if ( ! config('vebto.site.disable_update_auth')) {
             $this->middleware('auth');
+            if ( ! \Auth::user()->hasPermission('admin')) abort(403);
         }
 
         $this->user = $user;
@@ -92,7 +93,7 @@ class UpdateController extends Controller {
         try {
             return $this->dotEnvEditor->load(base_path('.env.example'))['app_version'];
         } catch (Exception $e) {
-            return '2.0.1';
+            return '2.0.2';
         }
     }
 }

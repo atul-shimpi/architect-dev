@@ -202,7 +202,7 @@ export class LivePreview {
     }
 
     private handleLinkClick(e: MouseEvent) {
-        const node = e.target as HTMLElement;
+        let node = e.target as HTMLElement;
 
         //clicked node is not a link
         if ( ! node.matches('a, a *')) return;
@@ -210,9 +210,14 @@ export class LivePreview {
         e.preventDefault();
         e.stopPropagation();
 
+        //if element is not a link, find first link parent
+        if (node.tagName.toLowerCase() !== 'a') {
+            node = node.closest('a') as HTMLLinkElement;
+        }
+
         //get relative url of for the link
         const link = node as HTMLLinkElement,
-            href = link.href.replace(this.activeProject.getBaseUrl(), '');
+              href = link.href ? link.href.replace(this.activeProject.getBaseUrl(), '') : '';
 
         //link just scrolls to a node on the page, bail
         if (href.indexOf('#') === 0) return;

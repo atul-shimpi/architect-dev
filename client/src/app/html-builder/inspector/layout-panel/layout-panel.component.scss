@@ -7,13 +7,6 @@ layout-panel {
     padding: 10px;
   }
 
-  .drag-handle {
-    color: $icon-color-dark;
-    margin-right: 8px;
-    cursor: move;
-    vertical-align: middle;
-  }
-
   .mat-action-row, .row-actions {
     padding: 0;
 
@@ -74,6 +67,7 @@ layout-panel {
       border: 1px solid $site-border-color-200;
       margin-bottom: 5px;
       cursor: move;
+      user-select: none;
 
       > .row-name {
         padding: 10px 0 10px 10px;

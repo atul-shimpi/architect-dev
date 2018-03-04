@@ -82,6 +82,6 @@ export class ProjectsComponent implements OnInit {
      * Get relative url for specified project's thumbnail.
      */
     public getProjectThumbnail(project: Project) {
-        return this.projectUrl.getBaseUrl(project.uuid)+'thumbnail.png';
+        return this.projectUrl.getBaseUrl(project)+'thumbnail.png';
     }
 }

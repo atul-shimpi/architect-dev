@@ -97,6 +97,8 @@ export class LayoutPanel {
     }
 
     public selectContainer(container: Container|HTMLElement, selectRow = true) {
+        if ( ! container) return;
+
         if (container['nodeType']) {
             this.selectedContainer = this.containers.find(cont => cont.node === container);
         } else {

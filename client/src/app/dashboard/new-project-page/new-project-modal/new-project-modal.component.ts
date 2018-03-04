@@ -43,7 +43,7 @@ export class NewProjectModalComponent {
         private projectUrl: ProjectUrl,
     ) {
         this.newProject.uuid = utils.randomString(36);
-        this.pageDocument.setBaseUrl(this.projectUrl.getBaseUrl(this.newProject.uuid));
+        this.pageDocument.setBaseUrl(this.projectUrl.getBaseUrl((this.newProject) as any));
     }
 
     /**

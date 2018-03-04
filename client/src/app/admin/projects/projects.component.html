@@ -49,6 +49,11 @@
             <mat-cell *matCellDef="let project"> {{project.name}} </mat-cell>
         </ng-container>
 
+        <ng-container matColumnDef="user">
+            <mat-header-cell *matHeaderCellDef trans>User</mat-header-cell>
+            <mat-cell *matCellDef="let project"> {{project.users[0].display_name}} </mat-cell>
+        </ng-container>
+
         <ng-container matColumnDef="published">
             <mat-header-cell *matHeaderCellDef mat-sort-header trans>Published</mat-header-cell>
             <mat-cell *matCellDef="let project"> {{project.published ? 'Yes' : 'No'}} </mat-cell>
@@ -78,8 +83,8 @@
             </mat-cell>
         </ng-container>
 
-        <mat-header-row *matHeaderRowDef="['select', 'image', 'name', 'published', 'template', 'framework', 'created_at', 'edit']"></mat-header-row>
-        <mat-row *matRowDef="let myRowData; columns: ['select', 'image', 'name', 'published', 'template', 'framework', 'created_at', 'edit']"></mat-row>
+        <mat-header-row *matHeaderRowDef="['select', 'image', 'name', 'user', 'published', 'template', 'framework', 'created_at', 'edit']"></mat-header-row>
+        <mat-row *matRowDef="let myRowData; columns: ['select', 'image', 'name', 'user', 'published', 'template', 'framework', 'created_at', 'edit']"></mat-row>
     </mat-table>
 
     <no-results-message *ngIf="dataSource.isEmpty()">

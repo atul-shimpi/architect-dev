@@ -67,7 +67,7 @@ export class DashboardComponent implements OnInit {
      * Get absolute url for specified project's thumbnail image.
      */
     public getProjectImage(project: Project) {
-        return this.projectUrl.getBaseUrl(project.uuid)+'thumbnail.png';
+        return this.projectUrl.getBaseUrl(project)+'thumbnail.png';
     }
 
     /**

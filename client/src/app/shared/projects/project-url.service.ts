@@ -14,12 +14,23 @@ export class ProjectUrl {
     /**
      * Get specified project's base url for the builder.
      */
-    public getBaseUrl(uuid: string, relative: boolean = false): string {
-        const uri = 'projects/'+this.currentUser.get('id')+'/'+uuid+'/';
+    public getBaseUrl(project: Project, relative: boolean = false): string {
+        const uri = 'projects/'+this.getProjectUserId(project)+'/'+project.uuid+'/';
 
         if (relative) return uri;
 
         return this.settings.getBaseUrl()+'storage/' + uri;
+    }
+
+    /**
+     * Get ID of specified project's creator.
+     */
+    private getProjectUserId(project: Project): number|string {
+        if ( ! project.users || ! project.users.length) {
+            return this.currentUser.get('id');
+        }
+
+        return project.users[0].id;
     }
 
     /**
