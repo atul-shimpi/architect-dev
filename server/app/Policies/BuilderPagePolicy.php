@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\Project;
-use App\User;
+use Vebto\Auth\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class BuilderPagePolicy

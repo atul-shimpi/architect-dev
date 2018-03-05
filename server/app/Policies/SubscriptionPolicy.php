@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\User;
+use Vebto\Auth\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class SubscriptionPolicy

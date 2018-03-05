@@ -3,7 +3,7 @@
 use App\Project;
 use App\Services\TemplateLoader;
 use Cache;
-use App\User;
+use Vebto\Auth\User;
 use Carbon\Carbon;
 use Vebto\Pages\Page;
 use Vebto\Bootstrap\Controller;
