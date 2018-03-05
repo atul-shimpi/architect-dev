@@ -69,7 +69,3 @@ form:empty:before {
 [contenteditable=true] {
     outline: #404040 solid 2px
 }
-
-html, body {
-    height: 100%;
-}

@@ -81,7 +81,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.editor.destroy();
+        this.editor && this.editor.destroy();
 
         this.subscriptions.forEach(subscription => {
             subscription && subscription.unsubscribe();

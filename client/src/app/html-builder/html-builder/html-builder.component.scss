@@ -15,4 +15,8 @@ html-builder {
     flex: 1 1 auto;
     height: 100%;
   }
+
+  loading-indicator.overlay {
+    background-color: $site-bg-color-100;
+  }
 }
