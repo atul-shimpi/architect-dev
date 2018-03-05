@@ -1,12 +1,12 @@
 <?php namespace App\Http\Controllers;
 
 use App\User;
-use DB;
 use Cache;
 use Artisan;
 use Exception;
 use Vebto\Settings\Setting;
 use Vebto\Settings\DotEnvEditor;
+use Vebto\Bootstrap\Controller;
 
 class UpdateController extends Controller {
     /**
@@ -93,7 +93,7 @@ class UpdateController extends Controller {
         try {
             return $this->dotEnvEditor->load(base_path('.env.example'))['app_version'];
         } catch (Exception $e) {
-            return '2.0.2';
+            return '2.0.3';
         }
     }
 }

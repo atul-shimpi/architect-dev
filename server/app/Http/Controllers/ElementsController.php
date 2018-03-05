@@ -1,6 +1,6 @@
 <?php namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use Vebto\Bootstrap\Controller;
 use Illuminate\Filesystem\Filesystem;
 
 class ElementsController extends Controller

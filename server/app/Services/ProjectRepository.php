@@ -186,7 +186,8 @@ class ProjectRepository
         $project = $this->project->create([
             'name' => $data['name'],
             'template' => $data['template']['name'],
-            'uuid' => $data['uuid']
+            'uuid' => $data['uuid'],
+            'framework' => Arr::get($data, 'framework', 'bootstrap-3'),
         ])->fresh();
 
         //attach to user

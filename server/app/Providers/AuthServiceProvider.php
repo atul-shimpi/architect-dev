@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\User;
 use Vebto\Billing\BillingPlan;
 use App\BuilderPage;
 use App\Policies\BillingPlanPolicy;
@@ -10,6 +11,7 @@ use App\Policies\ProjectPolicy;
 use App\Policies\SubscriptionPolicy;
 use App\Project;
 use Vebto\Billing\Subscription;
+use Vebto\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -21,11 +23,12 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         'App\Model' => 'App\Policies\ModelPolicy',
+        'Template' => 'App\Policies\TemplatePolicy',
         BuilderPage::class => BuilderPagePolicy::class,
         Project::class => ProjectPolicy::class,
-        'Template' => 'App\Policies\TemplatePolicy',
         BillingPlan::class => BillingPlanPolicy::class,
         Subscription::class => SubscriptionPolicy::class,
+        User::class => UserPolicy::class,
     ];
 
     /**

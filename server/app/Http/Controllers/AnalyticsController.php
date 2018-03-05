@@ -6,6 +6,7 @@ use Cache;
 use App\User;
 use Carbon\Carbon;
 use Vebto\Pages\Page;
+use Vebto\Bootstrap\Controller;
 
 class AnalyticsController extends Controller
 {

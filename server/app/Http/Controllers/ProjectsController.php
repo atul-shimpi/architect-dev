@@ -135,6 +135,7 @@ class ProjectsController extends Controller {
             'template.js' => 'nullable|string|min:1',
             'uuid' => 'required|string|size:36',
             'published' => 'boolean',
+            'framework' => 'string|max:255',
         ]);
 
         $project = $this->repository->create($this->request->all());

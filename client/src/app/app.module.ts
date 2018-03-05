@@ -25,7 +25,6 @@ import {WildcardRoutingModule} from "vebto-client/core/wildcard-routing.module";
         SharedModule,
         WildcardRoutingModule,
     ],
-    providers: [],
     bootstrap: [AppComponent]
 })
 export class AppModule {

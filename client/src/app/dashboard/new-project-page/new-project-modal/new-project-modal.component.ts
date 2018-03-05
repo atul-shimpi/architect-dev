@@ -85,6 +85,7 @@ export class NewProjectModalComponent {
 
             this.templates.get(this.data.templateName).subscribe(response => {
                 params.template = response.template;
+                params.framework = response.template.config.framework;
                 params.pages = this.transformTemplatePages(response.template);
                 resolve(params);
             });
@@ -125,6 +126,7 @@ export class NewProjectModalComponent {
             name: this.newProject.name,
             uuid: this.newProject.uuid,
             pages: [],
+            framework: 'bootstrap-3',
             template: null,
         };
     }

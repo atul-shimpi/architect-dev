@@ -1,8 +1,7 @@
 <?php namespace App\Services;
 
-use Illuminate\Http\UploadedFile;
-use Zipper;
-use Storage;
+use Chumper\Zipper\Zipper;
+use Illuminate\Filesystem\Filesystem;
 
 class TemplateRepository
 {
@@ -12,17 +11,19 @@ class TemplateRepository
     private $templatesPath;
 
     /**
-     * @var \Illuminate\Filesystem\FilesystemAdapter
+     * @var Filesystem
      */
-    private $storage;
+    private $filesystem;
 
     /**
      * TemplateRepository constructor.
+     *
+     * @param Filesystem $filesystem
      */
-    public function __construct()
+    public function __construct(Filesystem $filesystem)
     {
-        $this->storage = Storage::disk('public');
-        $this->templatesPath = config('filesystems.disks.public.root').'/templates/';
+        $this->filesystem = $filesystem;
+        $this->templatesPath = public_path('builder/templates');
     }
 
     /**
@@ -43,21 +44,24 @@ class TemplateRepository
      * @param string $name
      * @param array $params
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @throws \Exception
      */
     public function update($name, $params)
     {
-        $templatePath = $this->templatesPath.$name;
+        $templatePath = "$this->templatesPath/$name";
 
         //extract template files
         if (isset($params['template'])) {
-            Zipper::make($params['template']->getRealPath())->extractTo($templatePath);
+            $zipper = new Zipper;
+            $zipper->make($params['template']->getRealPath())->extractTo($templatePath);
+            $zipper->close();
         }
 
         //load config file if it exists
-        $configPath = "templates/$name/config.json";
+        $configPath = "$this->templatesPath/$name/config.json";
         $config = [];
-        if ($this->storage->exists($configPath)) {
-            $config = json_decode($this->storage->get($configPath), true);
+        if ($this->filesystem->exists($configPath)) {
+            $config = json_decode($this->filesystem->get($configPath), true);
         }
 
         //update config file
@@ -65,11 +69,11 @@ class TemplateRepository
             $config[$key] = $value;
         }
 
-        $this->storage->put($configPath, json_encode($config, JSON_PRETTY_PRINT));
+        $this->filesystem->put($configPath, json_encode($config, JSON_PRETTY_PRINT));
 
         //update thumbnail
         if (isset($params['thumbnail'])) {
-            $params['thumbnail']->storeAs("templates/$name", 'thumbnail.png', ['disk' => 'public']);
+            $this->filesystem->put("$this->templatesPath/$name/thumbnail.png", file_get_contents($params['thumbnail']));
         }
     }
 
@@ -81,7 +85,7 @@ class TemplateRepository
     public function delete($names)
     {
         foreach ($names as $name) {
-            $this->storage->deleteDirectory("templates/$name");
+            $this->filesystem->deleteDirectory("$this->templatesPath/$name");
         }
     }
 }
