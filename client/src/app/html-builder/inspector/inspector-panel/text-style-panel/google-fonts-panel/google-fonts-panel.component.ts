@@ -4,6 +4,7 @@ import {FormControl} from "@angular/forms";
 import {BuilderDocument} from "../../../../builder-document.service";
 import {debounceTime} from "rxjs/operators/debounceTime";
 import {distinctUntilChanged} from "rxjs/operators/distinctUntilChanged";
+import {Settings} from "vebto-client/core/services/settings.service";
 
 @Component({
     selector: 'google-fonts-panel',
@@ -38,7 +39,11 @@ export class GoogleFontsPanelComponent implements OnInit {
     /**
      * GoogleFontsPanelComponent Constructor.
      */
-    constructor(private http: HttpCacheClient, private builderDocument: BuilderDocument) {}
+    constructor(
+        private http: HttpCacheClient,
+        private builderDocument: BuilderDocument,
+        private settings: Settings,
+    ) {}
 
     ngOnInit() {
         this.getAll();
@@ -89,7 +94,7 @@ export class GoogleFontsPanelComponent implements OnInit {
     }
 
     private getAll() {
-        let key = 'AIzaSyDhc_8NKxXjtv69htFcUPe6A7oGSQ4om2o';
+        let key = this.settings.get('builder.google_fonts_api_key');
 
         this.http.get('https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key='+key)
             .subscribe(response => {
@@ -160,7 +165,7 @@ export class GoogleFontsPanelComponent implements OnInit {
         } else {
             const link = document.createElement('link');
             link.rel = 'stylesheet';
-            link.href = 'http://fonts.googleapis.com/css?family='+compiled;
+            link.href = 'https://fonts.googleapis.com/css?family='+compiled;
             link.id = 'dynamic-fonts';
 
             head.appendChild(link);

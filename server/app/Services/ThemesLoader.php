@@ -62,7 +62,7 @@ class ThemesLoader
         $path = "$this->themesPath/$name/image.png";
 
         if ($this->filesystem->exists($path)) {
-            return str_replace(public_path('/'), '', $path);
+            return str_replace(public_path(DIRECTORY_SEPARATOR), '', $path);
         }
 
         return $default;

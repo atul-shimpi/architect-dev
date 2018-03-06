@@ -25,7 +25,7 @@ class TemplateLoader
      */
     public function __construct(Filesystem $filesystem)
     {
-        $this->templatesPath = public_path('builder/templates');
+        $this->templatesPath = public_path('builder'.DIRECTORY_SEPARATOR.'templates');
         $this->filesystem = $filesystem;
     }
 
@@ -120,7 +120,7 @@ class TemplateLoader
 
         if ($this->filesystem->exists($path)) {
             //only need relative path: 'builder/templates/name/thumbnail.png'
-            return str_replace(public_path('/'), '', $path);
+            return str_replace(public_path(DIRECTORY_SEPARATOR), '', $path);
         }
 
         return $default;

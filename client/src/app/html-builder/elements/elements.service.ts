@@ -122,7 +122,7 @@ export class Elements {
     }
 
     public isRow(node: HTMLElement): boolean {
-        if ( ! node) return false;
+        if ( ! node || ! node.classList) return false;
         return node.classList.contains('row');
     }
 

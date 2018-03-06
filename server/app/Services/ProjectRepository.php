@@ -364,7 +364,7 @@ class ProjectRepository
         //copy template files recursively
         foreach ($this->filesystem->allFiles("$this->templatesPath/$templateName") as $fileInfo) {
             $filePath = $fileInfo->getRealPath();
-            $innerPath = str_replace("$this->templatesPath/$templateName", $projectPath, $filePath);
+            $innerPath = str_replace($this->templatesPath.DIRECTORY_SEPARATOR.$templateName, $projectPath, $filePath);
 
             if ($this->storage->exists($innerPath) && ! $overrideFiles) continue;
 

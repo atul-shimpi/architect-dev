@@ -33,10 +33,11 @@ export class ContextBoxes {
     ) {}
 
     public repositionBox(name: 'hover'|'selected', node: HTMLElement, el?: any) {
+
         //hide context boxes depending on user settings
         if ( ! this.localStorage.get('settings.'+name+'BoxEnabled', true)) return;
 
-        if (node && (node.nodeName === 'BODY' || node.nodeName === 'HTML')) {
+        if ( ! node || node.nodeType !== Node.ELEMENT_NODE || this.nodeIsHtmlOrBody(node)) {
             return this.hideBox(name);
         }
 
@@ -120,5 +121,10 @@ export class ContextBoxes {
 
     private getBox(name: 'hover'|'selected'): HTMLElement {
         return name === 'hover' ? this.hoverBox : this.selectedBox;
+    }
+
+    private nodeIsHtmlOrBody(node: HTMLElement) {
+        if ( ! node) return false;
+        return node.nodeName === 'BODY' || node.nodeName === 'HTML';
     }
 }

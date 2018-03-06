@@ -1,9 +1,11 @@
 <?php namespace App\Http\Controllers;
 
+use Auth;
 use App\User;
 use Cache;
 use Artisan;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Vebto\Settings\Setting;
 use Vebto\Settings\DotEnvEditor;
 use Vebto\Bootstrap\Controller;
@@ -30,12 +32,14 @@ class UpdateController extends Controller {
      * @param DotEnvEditor $dotEnvEditor
      * @param Setting $setting
      * @param User $user
+     * @throws AuthorizationException
      */
 	public function __construct(DotEnvEditor $dotEnvEditor, Setting $setting, User $user)
 	{
 	    if ( ! config('vebto.site.disable_update_auth')) {
-            $this->middleware('auth');
-            if ( ! \Auth::user()->hasPermission('admin')) abort(403);
+            if ( ! Auth::check() || ! Auth::user()->hasPermission('admin'))  {
+                throw new AuthorizationException('This action is unauthorized.');
+            }
         }
 
         $this->user = $user;

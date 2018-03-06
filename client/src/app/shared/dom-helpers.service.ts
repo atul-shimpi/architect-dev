@@ -25,7 +25,8 @@ export class DomHelpers {
      * Check if node or its parent has content editable attribute.
      */
     public static nodeIsEditable(node: HTMLElement) {
-        return node.hasAttribute('contenteditable') || node.parentNode['hasAttribute']('contenteditable')
+        return node.hasAttribute('contenteditable') ||
+            node.parentNode && node.parentNode['hasAttribute']('contenteditable')
     }
 
     /**
@@ -67,6 +68,8 @@ export class DomHelpers {
             // just put node1 before node2
             parent2.insertBefore(node1, node2);
         } else {
+            if ( ! node1.parentNode) return;
+
             // insert node2 right before node1
             node1.parentNode.insertBefore(node2, node1);
 

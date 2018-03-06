@@ -19,6 +19,11 @@
         </p>
     </div>
 
+    <div class="input-container">
+        <label for="builder.google_fonts_api_key">Google Fonts API Key</label>
+        <input name="builder.google_fonts_api_key" id="builder.google_fonts_api_key" type="text" required [(ngModel)]="state.client['builder.google_fonts_api_key']">
+    </div>
+
     <button mat-raised-button color="accent" class="button primary update-button" type="submit" trans>Update</button>
 </form>
 
