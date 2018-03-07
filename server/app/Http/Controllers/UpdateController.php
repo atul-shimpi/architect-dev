@@ -5,7 +5,6 @@ use App\User;
 use Cache;
 use Artisan;
 use Exception;
-use Illuminate\Auth\Access\AuthorizationException;
 use Vebto\Settings\Setting;
 use Vebto\Settings\DotEnvEditor;
 use Vebto\Bootstrap\Controller;
@@ -32,16 +31,9 @@ class UpdateController extends Controller {
      * @param DotEnvEditor $dotEnvEditor
      * @param Setting $setting
      * @param User $user
-     * @throws AuthorizationException
      */
 	public function __construct(DotEnvEditor $dotEnvEditor, Setting $setting, User $user)
 	{
-	    if ( ! config('vebto.site.disable_update_auth')) {
-            if ( ! Auth::check() || ! Auth::user()->hasPermission('admin'))  {
-                throw new AuthorizationException('This action is unauthorized.');
-            }
-        }
-
         $this->user = $user;
         $this->setting = $setting;
         $this->dotEnvEditor = $dotEnvEditor;
@@ -54,6 +46,10 @@ class UpdateController extends Controller {
      */
     public function show()
     {
+        if ( ! $this->canAccessUpdatePage()) {
+            return redirect('/login');
+        }
+
         return view('update');
     }
 
@@ -64,7 +60,11 @@ class UpdateController extends Controller {
      */
     public function update()
 	{
-        //fix "index is too long" issue on MariaDB and older mysql versions
+        if ( ! $this->canAccessUpdatePage()) {
+            return redirect('/login');
+        }
+
+	    //fix "index is too long" issue on MariaDB and older mysql versions
         \Schema::defaultStringLength(191);
 
         Artisan::call('migrate', ['--force' => 'true']);
@@ -97,7 +97,19 @@ class UpdateController extends Controller {
         try {
             return $this->dotEnvEditor->load(base_path('.env.example'))['app_version'];
         } catch (Exception $e) {
-            return '2.0.3';
+            return '2.0.4';
         }
+    }
+
+    /**
+     * Check if currently logged in user can access update page.
+     *
+     * @return bool
+     */
+    private function canAccessUpdatePage()
+    {
+        if (config('vebto.site.disable_update_auth')) return true;
+
+        return Auth::check() && Auth::user()->hasPermission('admin');
     }
 }

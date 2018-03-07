@@ -18,6 +18,11 @@ export class NewProjectPageComponent implements OnInit {
     public colors = TemplateColors;
 
     /**
+     * List of all available template categories.
+     */
+    public allCategories: string[] = [];
+
+    /**
      * All available templates.
      */
     public templates: BuilderTemplate[] = [];
@@ -49,6 +54,8 @@ export class NewProjectPageComponent implements OnInit {
     ) {}
 
     ngOnInit() {
+        this.allCategories = this.settings.getJson('builder.template_categories', []);
+
         this.route.data.subscribe(data => {
             this.templates = data.templates;
             this.filteredTemplates = data.templates;

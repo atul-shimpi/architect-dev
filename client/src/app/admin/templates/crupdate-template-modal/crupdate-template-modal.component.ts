@@ -7,6 +7,7 @@ import {TemplateColors} from '../../../shared/templates/template-colors';
 import {Theme} from '../../../shared/themes/Theme';
 import {BuilderTemplate} from '../../../shared/builder-types';
 import {Themes} from '../../../shared/themes/themes.service';
+import {Settings} from "vebto-client/core/services/settings.service";
 
 @Component({
     selector: 'crupdate-template-modal',
@@ -15,6 +16,11 @@ import {Themes} from '../../../shared/themes/themes.service';
     encapsulation: ViewEncapsulation.None
 })
 export class CrupdateTemplateModalComponent implements OnInit {
+
+    /**
+     * List of all available template categories.
+     */
+    public allCategories: string[] = [];
 
     public colors = TemplateColors;
 
@@ -63,7 +69,9 @@ export class CrupdateTemplateModalComponent implements OnInit {
         public templates: Templates,
         private toast: Toast,
         private themesApi: Themes,
+        private settings: Settings,
     ) {
+        this.allCategories = this.settings.getJson('builder.template_categories', []);
         this.resetState();
     }
 
@@ -144,7 +152,7 @@ export class CrupdateTemplateModalComponent implements OnInit {
      * Reset all modal state to default.
      */
     private resetState() {
-        this.model = {color: 'black', category: 'Landing Page', framework: '', theme: ''};
+        this.model = {color: 'black', category: this.allCategories[0], framework: '', theme: ''};
         this.errors = {};
     }
 

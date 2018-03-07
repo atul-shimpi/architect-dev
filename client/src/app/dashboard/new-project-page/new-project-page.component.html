@@ -24,9 +24,7 @@
                 <div class="panel-header" trans>Categories</div>
                 <mat-list class="panel-body categories">
                     <mat-list-item class="category" [class.active]="!selectedCategory" (click)="filterByCategory(null)" trans>All Categories</mat-list-item>
-                    <mat-list-item class="category" [class.active]="selectedCategory === 'landing page'" (click)="filterByCategory('landing page')" trans>Landing Page</mat-list-item>
-                    <mat-list-item class="category" [class.active]="selectedCategory === 'blog'" (click)="filterByCategory('blog')" trans>Blog</mat-list-item>
-                    <mat-list-item class="category" [class.active]="selectedCategory === 'portfolio'" (click)="filterByCategory('portfolio')" trans>Portfolio</mat-list-item>
+                    <mat-list-item class="category" *ngFor="let category of allCategories" [class.active]="selectedCategory === category" (click)="filterByCategory(category)">{{category}}</mat-list-item>
                 </mat-list>
             </div>
         </aside>

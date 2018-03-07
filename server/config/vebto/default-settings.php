@@ -20,4 +20,5 @@ return [
     //builder
     ['name' => 'builder.routing_type', 'value' => 'regular'],
     ['name' => 'builder.googgle_fonts_api_key', 'value' => 'AIzaSyDhc_8NKxXjtv69htFcUPe6A7oGSQ4om2o'],
+    ['name' => 'builder.template_categories', 'value' => json_encode(['Landing Page', 'Blog', 'Portfolio'])],
 ];

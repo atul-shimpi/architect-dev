@@ -35,9 +35,7 @@
         <div class="input-container">
             <label for="category" trans>Category</label>
             <select id="category" name="category" [(ngModel)]="model.category" required>
-                <option value="Landing Page" trans>Landing Page</option>
-                <option value="Blog" trans>Blog</option>
-                <option value="Portfolio" trans>Portfolio</option>
+                <option [value]="category" *ngFor="let category of allCategories">{{category}}</option>
             </select>
             <div class="error" *ngIf="errors.category">{{errors.category}}</div>
         </div>

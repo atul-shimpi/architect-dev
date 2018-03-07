@@ -24,6 +24,22 @@
         <input name="builder.google_fonts_api_key" id="builder.google_fonts_api_key" type="text" required [(ngModel)]="state.client['builder.google_fonts_api_key']">
     </div>
 
+    <mat-chip-list #chipList class="input-container">
+        <label for="builder.template_categories" trans>Template Categories</label>
+        <input placeholder="+New Category..."
+               trans-placeholder
+               id="builder.template_categories"
+               [matChipInputFor]="chipList"
+               [matChipInputAddOnBlur]="true"
+               (matChipInputTokenEnd)="addCategory($event.value); $event.input.value = ''" />
+        <div class="chips-container">
+            <mat-chip (remove)="removeCategory(card)" [removable]="true" *ngFor="let category of categories">
+                {{category}}
+                <svg-icon name="cancel" matChipRemove></svg-icon>
+            </mat-chip>
+        </div>
+    </mat-chip-list>
+
     <button mat-raised-button color="accent" class="button primary update-button" type="submit" trans>Update</button>
 </form>
 
