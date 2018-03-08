@@ -24,9 +24,14 @@ export class DomHelpers {
     /**
      * Check if node or its parent has content editable attribute.
      */
-    public static nodeIsEditable(node: HTMLElement) {
-        return node.hasAttribute('contenteditable') ||
-            node.parentNode && node.parentNode['hasAttribute']('contenteditable')
+    public static nodeIsEditable(node: HTMLElement): boolean {
+        if (node.nodeType !== Node.ELEMENT_NODE) return false;
+
+        if (node.hasAttribute('contenteditable')) return true;
+
+        const parent = node.parentNode as HTMLElement;
+
+        return parent && parent.hasAttribute('contenteditable');
     }
 
     /**

@@ -61,7 +61,7 @@ export class SelectedElement extends ActiveElement {
      * Select specified node as active one in the builder.
      */
     public selectNode(node: HTMLElement) {
-        if ( ! node || this.node === node) return;
+        if ( ! node || node.nodeType !== Node.ELEMENT_NODE || this.node === node) return;
 
         if (node.nodeName.toLowerCase() === 'html') {
             node = node.firstChild as HTMLElement;

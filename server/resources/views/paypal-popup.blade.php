@@ -2,16 +2,8 @@
 
 <script>
     var token = "{!! $token !!}";
-    var data   = null;
+    var status = "{!! $status !!}";
 
-    @if(isset($data) && $data)
-        @if(json_decode($data))
-            data = {!! $data !!};
-        @else
-            data = '{!! $data !!}';
-        @endif
-    @endif
-
-    window.opener.postMessage({token: token, callbackData: data}, '*');
+    window.opener.postMessage({token: token, status: status}, '*');
     window.close();
 </script>

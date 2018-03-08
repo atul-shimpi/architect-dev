@@ -180,7 +180,7 @@ export class LivePreview {
                this.linkEditor.close();
 
                //select node
-               if (node.nodeName !== 'HTML') this.selected.selectNode(node);
+               this.selected.selectNode(node);
            });
         }, true);
     }

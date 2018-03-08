@@ -266,6 +266,8 @@ class ProjectRepository
 
     private function applyFramework($projectPath, $framework)
     {
+        if ( ! $framework) return;
+
         //add framework
         $this->storage->put(
             "$projectPath/css/framework.css",

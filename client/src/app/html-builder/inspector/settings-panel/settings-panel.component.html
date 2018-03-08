@@ -4,6 +4,7 @@
     <div class="input-container">
         <label for="project-framework" trans>Framework</label>
         <select name="project-framework" id="project-framework" [(ngModel)]="selectedFramework" (ngModelChange)="changeFramework(selectedFramework)">
+            <option [value]="null" trans>None</option>
             <option value="bootstrap-3">Bootstrap 3</option>
             <option value="bootstrap-4">Bootstrap 4</option>
         </select>

@@ -31,6 +31,7 @@ class TemplateRepository
      *
      * @param array $params
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @throws \Exception
      */
     public function create($params)
     {
@@ -48,6 +49,7 @@ class TemplateRepository
      */
     public function update($name, $params)
     {
+        $name = str_slug($name);
         $templatePath = "$this->templatesPath/$name";
 
         //extract template files

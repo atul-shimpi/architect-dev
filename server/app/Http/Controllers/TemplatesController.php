@@ -55,6 +55,12 @@ class TemplatesController extends Controller {
 	    $perPage = $this->request->get('per_page', 10);
 	    $page = $this->request->get('page', 1);
 
+	    if ($this->request->has('query')) {
+	        $templates = $templates->filter(function($template) {
+	           return str_contains(strtolower($template['name']), $this->request->get('query'));
+            });
+        }
+
 	    $paginator = new LengthAwarePaginator(
 	        $templates->slice($perPage * ($page - 1), $perPage)->values(),
             count($templates),
