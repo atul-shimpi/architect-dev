@@ -4,7 +4,7 @@
         <ng-container *ngIf="slider !== 'spread' || props.type === 'boxShadow'">
             <div class="title">{{slider}}</div>
             <div class="inner-container">
-                <mat-slider min="1" [max]="slider == 'angle' ? 360 : 20" step="1" (input)="applyStyle(slider, $event.value, false)" [(ngModel)]="props[slider]"></mat-slider>
+                <mat-slider min="0" [max]="slider == 'angle' ? 360 : 20" step="1" (input)="applyStyle(slider, $event.value, false)" [(ngModel)]="props[slider]"></mat-slider>
                 <div class="input-container">
                     <input type="number" [(ngModel)]="props[slider]" min="1" [max]="slider == 'angle' ? 360 : 20">
                 </div>

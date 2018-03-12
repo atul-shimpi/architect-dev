@@ -75,7 +75,7 @@ export class LivePreviewContextMenuComponent {
 
     public viewSourceCode() {
         this.codeEditor.open().subscribe(editor => {
-            editor.selectNodeSource(this.selected.node);
+            setTimeout(() => editor.selectNodeSource(this.selected.node));
         });
     }
 

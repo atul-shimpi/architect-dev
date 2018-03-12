@@ -66,6 +66,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
 
             //select node html in the code editor when new node is selected in the builder
             const sub = this.selectedElement.changed.subscribe(() => {
+                console.log('x');
                 if (this.selectedElement.node) this.selectNodeSource(this.selectedElement.node);
             });
 

@@ -42,6 +42,8 @@ export class PreviewDragAndDropDirective extends BaseDragAndDrop {
     }
 
     protected sortColumns(node: HTMLElement, e: HammerInput) {
+        if ( ! node.parentNode) return;
+
         const className = node.parentElement.className;
 
         if (node === this.dragEl.node || node.parentNode !== this.dragEl.node.parentNode) return;
