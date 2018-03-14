@@ -77,8 +77,9 @@
         <ng-container matColumnDef="edit">
             <mat-header-cell *matHeaderCellDef></mat-header-cell>
             <mat-cell *matCellDef="let project">
-                <button mat-icon-button (click)="showCrupdateProjectModal(project)" *ngIf="currentUser.hasPermission('projects.update')" matTooltip="Edit project">
-                    <svg-icon name="edit"></svg-icon>
+                <a mat-icon-button [routerLink]="['/builder', project.id]" matTooltip="Edit project"><svg-icon name="edit"></svg-icon></a>
+                <button mat-icon-button (click)="showCrupdateProjectModal(project)" *ngIf="currentUser.hasPermission('projects.update')" matTooltip="Update details">
+                    <svg-icon name="settings"></svg-icon>
                 </button>
             </mat-cell>
         </ng-container>

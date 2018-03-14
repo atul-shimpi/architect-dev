@@ -27,6 +27,7 @@ export class ProjectResolver implements Resolve<BuilderProject> {
     }
 
     private userCanOpenProjectInBuilder(project: BuilderProject): boolean {
-        return project.model.users.find(user => user.id === this.currentUser.get('id')) !== undefined;
+        const isOwner = project.model.users.find(user => user.id === this.currentUser.get('id')) !== undefined;
+        return this.currentUser.hasPermission('projects.update') || isOwner;
     }
 }
