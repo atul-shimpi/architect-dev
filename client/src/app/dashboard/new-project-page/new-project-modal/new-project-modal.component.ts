@@ -1,4 +1,4 @@
-import {Component, Inject, ViewEncapsulation} from '@angular/core';
+import {Component, Inject, ViewEncapsulation, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 import {utils} from "vebto-client/core/services/utils";
 import {Projects} from '../../../shared/projects/projects.service';
@@ -6,6 +6,7 @@ import {ProjectUrl} from '../../../shared/projects/project-url.service';
 import {BuilderTemplate} from '../../../shared/builder-types';
 import {PageDocument} from '../../../shared/page-document';
 import {Templates} from "../../../shared/templates/templates.service";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
     selector: 'new-project-modal',
@@ -13,12 +14,13 @@ import {Templates} from "../../../shared/templates/templates.service";
     styleUrls: ['./new-project-modal.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class NewProjectModalComponent {
+export class NewProjectModalComponent implements OnInit{
 
     /**
      * New project model.
      */
     public newProject: {name?: string, uuid?: string} = {};
+    isHostCCbizon: boolean = false;
 
     /**
      * Errors from backend.
@@ -41,14 +43,26 @@ export class NewProjectModalComponent {
         private projects: Projects,
         private templates: Templates,
         private projectUrl: ProjectUrl,
+        private activeRoute: ActivatedRoute
     ) {
         this.newProject.uuid = utils.randomString(36);
         this.pageDocument.setBaseUrl(this.projectUrl.getBaseUrl((this.newProject) as any));
+
+      if ( this.activeRoute.snapshot.queryParams['project_name'] ) {
+        this.isHostCCbizon = true;
+        this.newProject.name = this.activeRoute.snapshot.queryParams['project_name'];
+        this.confirm();
+      }
     }
 
     /**
      * Create a new project.
      */
+
+    ngOnInit() {
+
+    }
+
     public async confirm() {
         this.loading = true;
 

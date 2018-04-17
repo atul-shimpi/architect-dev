@@ -62,6 +62,10 @@ class ProjectsController extends Controller {
             $paginator->query()->where('published', $this->request->get('published'));
         }
 
+        if ($this->request->has('name')) {
+          $paginator->query()->where('name', $this->request->get('name'));
+        }
+
         return $paginator->with('users')->paginate($this->request->all());
     }
 

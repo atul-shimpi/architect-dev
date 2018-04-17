@@ -5,7 +5,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --aot --proxy-config proxy.conf.json --host 0.0.0.0",
-    "build": "ng build --prod --sourcemaps=true --named-chunks=true --common-chunk=false --stats-json --deploy-url=client/",
+    "xxbuild": "ng build --prod --sourcemaps=true --named-chunks=true --common-chunk=false --stats-json --deploy-url=client/",
+    "build": "ng build --build-optimizer=false --prod --named-chunks=true --common-chunk=false --stats-json --deploy-url=client/",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

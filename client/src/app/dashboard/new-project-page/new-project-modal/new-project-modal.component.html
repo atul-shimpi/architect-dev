@@ -1,6 +1,6 @@
 <div class="modal-header">
-    <h2 class="modal-title" mat-dialog-title trans>New Project</h2>
-    <button type="button" (click)="close()" class="close-button no-style icon-button">
+    <h2 class="modal-title" mat-dialog-title trans>Creating site...</h2>
+    <button type="button" (click)="close()" class="close-button no-style icon-button" *ngIf="!isHostCCbizon">
         <svg-icon name="close"></svg-icon>
     </button>
 </div>
@@ -15,7 +15,7 @@
         </div>
     </div>
 
-    <div class="buttons right mat-dialog-actions" mat-dialog-actions>
+    <div class="buttons right mat-dialog-actions" mat-dialog-actions *ngIf="!isHostCCbizon">
         <button (click)="close()" type="button" mat-button class="button cancel cancel-button" trans>Cancel</button>
         <button type="submit" mat-raised-button color="accent" class="button primary submit-button" [disabled]="loading" trans>Create</button>
     </div>

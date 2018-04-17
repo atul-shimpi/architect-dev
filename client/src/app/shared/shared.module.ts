@@ -28,8 +28,8 @@ import {Projects} from "./projects/projects.service";
         Themes,
         ProjectUrl,
         DomHelpers,
-        Projects,
-    ],
+        Projects
+    ]
 })
 export class SharedModule {
 }
